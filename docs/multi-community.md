@@ -21,6 +21,64 @@ Glåüm is the first community on the platform.
 
 ---
 
+## Delivery model — bespoke feel, SaaS chassis (direction logged 2026-09-04, work not started)
+
+The commercial framing shifted (see [`business.md`](./business.md) → discussion log 2026-09-04):
+the platform — Chante now calls it **Many Hands** (working name) — would initially be sold as a
+**done-for-you / productized service**, with Chante setting up each community's hub. That changes
+nothing about this roadmap's destination and raises its stakes: each client hub must *feel* like
+a custom website (branding, colours, logo, domain, terminology, navigation, profile fields,
+categories, groups, roles, applications, schedules, resources, distinctions, permissions, feature
+toggles) while *being* a tenant/configuration of the one platform. **One codebase, one
+generalized data model, one backend/API layer, one shared deployment architecture, many highly
+customized community instances. Never clone the codebase per client.**
+
+### Three levels of customization
+
+| Level | What it is | Cost posture |
+|---|---|---|
+| **A — Configuration** | Already-supported capabilities: labels, profile fields, categories, colours, roles, navigation, feature toggles, permissions, content | Cheap/easy — this is the setup service |
+| **B — Platform extension** | Client needs something the platform can't do yet, but the underlying need generalizes | Higher fee; client part-funds platform R&D |
+| **C — True bespoke** | No sensible generalized abstraction exists | Rare, expensive, possibly web-only or declined |
+
+**Platform-extension protocol (level B):** never one-shot a client-specific feature. Instead:
+(1) understand their actual workflow/problem → (2) identify the generalized primitive underneath
+→ (3) build that capability into the platform → (4) configure it for the original client →
+(5) it's available to every future community. Example: "supervision-hour tracking" for a
+counselling org is built as a generalized **participation/hours-tracking module** (configurable
+activity types, approval, totals, member visibility, reporting, permissions) that later serves
+volunteer/practicum/service/training hours.
+
+**The guiding philosophy: clients describe the problem; the platform decides the abstraction.**
+"Who completed orientation before signing up for certain shifts" → *conditional eligibility based
+on member attributes*, not an "orientation shift approval" feature. Every capability added this
+way should strengthen the platform's conceptual coherence.
+
+**The anti-pattern to refuse: per-client conditionals.** No `if community == X` branches in
+platform code, ever — that's how the platform becomes a pile of exceptions. When a request seems
+one-off ("rotating 3D llama on our homepage"), ask what the reusable abstraction is (custom
+interactive content block? embed block? custom page module?). If a sensible generalized component
+exists, build that; if not, the request is web-only, true-bespoke, or declined.
+
+**The native-app constraint** (see [`mobile-companion.md`](./mobile-companion.md) → One shared
+app): the shared mobile app can only render capabilities it knows how to render. Generalized
+platform features appear in the app; tenant configuration can vary its rendering dramatically;
+arbitrary custom client code cannot. Escape hatches for rare one-offs — web-only functionality,
+a generic embedded/webview page, custom content blocks — exist but must not replace proper
+generalized design. Practically: every level-B extension should be designed as a primitive the
+app can render from config.
+
+### Questions to work when this starts (parked, from the 2026-09-04 session)
+
+How tenant configuration is structured · data-driven vs code-driven boundaries · feature
+flags/modules design · preserving native-app compatibility · custom domains + branding ·
+the config-vs-extension boundary (and pricing the levels) · preventing client-specific technical
+debt · the bespoke→primitive evolution path · onboarding tooling fast enough that **a typical
+community launches in roughly a day** on the existing generalized foundation (the seed-script /
+starter-template work in `business.md` → Showcase is the head start on this).
+
+---
+
 ## What each community will eventually be able to configure
 
 - Name, tagline, logo, hero imagery

@@ -38,6 +38,37 @@ Both clients navigate the same surfaces:
 
 ---
 
+## One shared app, many communities (direction logged 2026-09-04, work not started)
+
+From the delivery-model direction in [`business.md`](./business.md) (discussion log 2026-09-04)
+/ [`multi-community.md`](./multi-community.md) → Delivery model — the multi-tenant future of this
+same app:
+
+- **One published Many Hands app for all communities — not a branded app per community.** A user
+  logs in and sees the communities they belong to (Glåüm *and* a retreat *and* a festival *and*
+  a local collective), each rendered according to that community's configuration. Publishing the
+  app once must NOT force communities to look or behave identically — the app is **driven by
+  platform configuration** (branding, terminology, navigation, enabled features per tenant).
+- **Push notifications are community-specific** and deep-link into the relevant content — the
+  existing webview-bar rule "anything worth notifying about has a URL" extends naturally to
+  "…namespaced by community."
+- **The rendering constraint (this is the load-bearing point):** the native app can only render
+  capabilities the platform generalizes. Tenant *configuration* can vary the app dramatically;
+  truly arbitrary custom client code cannot appear in it. Escape hatches for rare one-offs —
+  web-only features, a generic embedded/webview page, custom content blocks — exist but must not
+  substitute for generalized platform design. Consequence: every future platform extension
+  should be designed as a config-renderable primitive (see the extension protocol in
+  `multi-community.md`), which is a strong argument for keeping the app a thin client over the
+  shared backend rather than accreting client-side feature logic.
+- One firsthand motivation Chante named: Glåüm showed people want extremely fast phone access,
+  and push could make a huge difference in engagement — preserving the generalized architecture
+  is largely *for* this app.
+- **Naming note:** "Many Hands" as the platform's working name collides with this doc's use of
+  Many Hands as Glåüm's member-registry nav surface — resolve deliberately if the platform name
+  sticks (business.md open question #4).
+
+---
+
 ## Mobile-specific improvements
 
 Make the existing experience feel native rather than redesigning it. The current web app is already evolving mobile-friendly bones — mostly single-column layouts, large touch targets, clear hierarchy — so responsive design plus native capabilities do most of the work:
