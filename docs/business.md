@@ -115,6 +115,20 @@ on the other. One-liner: **"communities where people contribute, not just consum
 
 ## Business-model directions (nothing decided yet)
 
+- **Done-for-you / productized service — the current lead direction (2026-09-04, not started).**
+  No longer thinking primarily in pure self-serve-SaaS-with-monthly-subscription terms. Instead,
+  offer the platform initially as a **done-for-you implementation of a highly configurable
+  community platform** for small communities (camps, festivals, collectives, retreats, volunteer
+  groups): Chante sets up and configures each community's hub as a service. Core principle:
+  **it feels bespoke to the customer, but behaves like SaaS underneath** — every "custom" hub is
+  a tenant/configuration of the one platform, never a cloned codebase. Fee shape under
+  consideration: an accessible upfront setup/configuration fee; higher fees when a request needs
+  genuinely new platform functionality; possibly lower renewal/reactivation fees for later
+  seasons. True bespoke development should be rarer and more expensive — this is *not*
+  traditional custom software development. Target stays small communities, never enterprise;
+  accessibility matters a lot. Full model (customization levels, extension protocol, the
+  client-funded-R&D flywheel): discussion log 2026-09-04; technical implications:
+  [`multi-community.md`](./multi-community.md) → Delivery model.
 - **Annual, per-community flat tiers by member count.** Never per-member metering (hostile to
   community culture, annoying to administer). "Season pass" framing for camps; plain annual for
   year-round communities. Ballpark instinct: $100–400/yr by size, free or pay-what-you-can below
@@ -213,10 +227,16 @@ eventually new-tenant starter templates. If anything gets built early, it's this
 
 1. **Which tier are we building toward?** A is guaranteed acceptable; is B the actual target?
    (Affects how much energy goes into the IC segment vs. pure camp polish.)
-2. **Pricing numbers** — set after free test users reveal willingness to pay.
+2. **Pricing numbers** — set after free test users reveal willingness to pay. (2026-09-04: now
+   three price surfaces, not one — setup/configuration fee, platform-extension work, seasonal
+   renewal/reactivation — plus how they compose with the earlier annual "season pass" instinct.)
 3. **Open-source or not** — decide deliberately, once, after test-user phase.
 4. **Platform name/brand** — the product needs an identity distinct from Glåüm before the first
-   external community onboards.
+   external community onboards. (2026-09-04: Chante now consistently calls the platform
+   **Many Hands** — treat as the working name, not formally decided. Two collisions to resolve
+   deliberately if it sticks: "Many Hands" is also Glåüm's ceremonial name for the member
+   registry nav surface (see genlog terminology row / `mobile-companion.md`), and it sits in the
+   same naming family as **All Hands**, the catering product.)
 5. **Boring-but-real launch mechanics** — business entity, liability, payment processing (Stripe
    already deferred once), privacy policy for multi-tenant member data. Park until first paid
    customer is in sight.
@@ -341,3 +361,69 @@ eventually new-tenant starter templates. If anything gets built early, it's this
 - The honest risk: off-season mode is only worth building if there's off-season *content*. A
   toggle that reveals an empty room reads as a dead app — worse for retention than event
   clutter. The real design work is "what makes the app worth opening in the off-season."
+
+### 2026-09-04 — Delivery model: done-for-you service on a SaaS chassis
+
+Chante brought this in as a summary of a ChatGPT conversation, explicitly to **preserve the
+direction before starting the work** — nothing here is scheduled or in progress. The big shift:
+stop thinking primarily in pure self-service-SaaS-with-monthly-subscription terms; instead offer
+the platform initially as a **done-for-you / productized service** for small communities (camps,
+festivals, collectives, retreats, volunteer groups). Throughout, she referred to the platform as
+**Many Hands** (see open question #4 note).
+
+- **The core principle: feels bespoke, behaves like SaaS.** Each client gets what feels like
+  their own custom community hub — branding, colours, logo, domain, terminology, navigation,
+  profile fields, categories, groups, roles, applications, schedules, resources, distinctions,
+  permissions, enabled/disabled features. Underneath, every hub is a tenant/configuration of the
+  same platform: **one codebase, one generalized data model, one backend/API layer, one shared
+  deployment architecture, many highly customized community instances.** Never clone the
+  codebase per client. This *strengthens* the generalized-platform architecture rather than
+  abandoning it — the strongest version of the service model depends on it.
+- **Three levels of customization** (full technical treatment in
+  [`multi-community.md`](./multi-community.md) → Delivery model):
+  **(A) Configuration** — already-supported capabilities (labels, fields, colors, roles, nav,
+  toggles, permissions, content); cheap and easy to provide.
+  **(B) Platform extensions** — the client asks for something the platform can't do yet but the
+  underlying need generalizes. Protocol: understand their actual workflow → identify the
+  generalized primitive underneath → build *that* into the platform → configure it for the
+  original client → it's available to every future community. Worked example: a counselling org
+  asks for supervision-hour tracking → build a generalized **participation/hours-tracking
+  module** (configurable activity types, approval, totals, visibility, reporting, permissions),
+  reusable for volunteer/practicum/service/training hours.
+  **(C) True bespoke** — rare, expensive, possibly web-only or declined.
+- **Product philosophy: clients describe the problem; the platform decides the abstraction.**
+  "Members must complete orientation before signing up for certain shifts" becomes *conditional
+  eligibility based on member attributes*, not a feature literally called "orientation shift
+  approval." Every new capability should strengthen the platform's conceptual coherence — and
+  never land as per-client conditionals (`if community == X`), which would rot the platform into
+  a pile of exceptions.
+- **The flywheel — client-funded custom work becomes product R&D.** Client 1 asks for a new
+  useful capability and partly funds its development; it ships as a platform feature; client 2
+  wanting the same thing later is just configuration. Repeat, and the feature library grows from
+  *real* community needs instead of speculative roadmap work. Chante's line: **"Many Hands grows
+  through the needs of many hands."** This is the service-model version of what the
+  generalizability log already does for the Glåüm dogfood.
+- **One shared mobile app, not per-community branded apps.** Glåüm proved people want extremely
+  fast phone access and that push could transform engagement. One published Many Hands app →
+  users log in → see the communities they belong to (someone might be in Glåüm *and* a retreat
+  *and* a festival), each rendered per that community's configuration; push is
+  community-specific and deep-links into the relevant content. Constraint that feeds back into
+  architecture: the native app can only render capabilities the platform generalizes — full
+  treatment in [`mobile-companion.md`](./mobile-companion.md) → One shared app.
+- **Business shape (considering, not decided):** accessible upfront setup/configuration fee;
+  higher fees for genuine platform extensions; possibly lower seasonal renewal/reactivation
+  fees. Small communities only; accessibility matters. Positioning: *done-for-you implementation
+  of a highly configurable community platform*, not custom software development.
+- **Fit with existing thinking:** compatible with the participation-shaped wedge (2026-08-27)
+  and the mission-first north star — done-for-you setup is exactly what an unpaid organizer with
+  coordination pain and no IT capacity can buy. It also reframes the showcase ladder: the seed
+  script / starter-template work doubles as the onboarding tooling this model needs. How the
+  service fees compose with the annual "season pass" instinct is unresolved (folded into open
+  question #2).
+- **Questions queued for when this work actually starts** (Chante's list, verbatim in spirit):
+  how tenant configuration should be structured; what's data-driven vs code-driven; how feature
+  flags/modules work; preserving native-app compatibility; custom domains and branding;
+  distinguishing configuration from platform extensions; preventing client-specific technical
+  debt; evolving bespoke requests into generalized primitives; pricing the levels of work; and
+  making onboarding fast enough that **a typical community can genuinely launch in roughly a
+  day** on the existing generalized foundation.
