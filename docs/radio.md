@@ -32,7 +32,7 @@ light the moment's **entity** gold via a `**…**` convention rendered by
 `components/RadioMessage.tsx` ("Sarah is bringing a **camping stove**.") —
 organizer broadcasts can use it too.
 
-## Visual language (from Chante's 2026-07-03 mockup)
+## Visual language (from Chanté's 2026-07-03 mockup)
 
 No card boxes and **no avatars** — an airy hairline-separated list where a
 large raw emoji (or medal art) is each moment's emblem and gold highlights
@@ -45,7 +45,7 @@ speaker reads the same**: organizer broadcasts and member voices share one
 style — **right-aligned**, purple, italic, emoji inline (no emblem column),
 the clock on the left edge, and always **signed with the speaker's name**
 ("— Sarah") — a voice calling in from the other side of the airwaves, whoever
-holds the mic (Chante 2026-07-08: "anyone messaging to radio should look the
+holds the mic (Chanté 2026-07-08: "anyone messaging to radio should look the
 same"; the earlier broadcast-flush-left / voice-right split was retired — now
 both read as the right-aligned voice). **@mentions** of members render as
 gold/purple profile-linked pills, and the inline emoji is a **📢 megaphone**
@@ -75,7 +75,7 @@ Automatic sources are toggleable in `page_content.config_radio`
 parsed by `parseRadioSources` — absent key = all on). Organizer broadcasts
 have no toggle; posting one is already the decision.
 
-## Writing is open (Chante 2026-07-08 — reversed the 2026-07-03 gate)
+## Writing is open (Chanté 2026-07-08 — reversed the 2026-07-03 gate)
 
 Radio is an open airwave: the `/radio` composer ("Share with camp…", ON AIR
 button, GO LIVE bar at the feed's end) is available to **any approved member**
@@ -92,7 +92,7 @@ Two things ride on a post:
   rings that member's bell + email (their message preference), and the feed
   renders it as a profile-linked pill. Server-side matching is the same
   name-based whole-token match the group threads use.
-- **@here** — the notify-everyone token (Slack-style; Chante 2026-07-08,
+- **@here** — the notify-everyone token (Slack-style; Chanté 2026-07-08,
   replacing an earlier "Notify everyone" checkbox). It sits atop the @
   autocomplete, and the server matches `@here` as a whole token (so a typed one
   counts too). Posting an `@here` line arms a **confirm step** ("📢 @here alerts

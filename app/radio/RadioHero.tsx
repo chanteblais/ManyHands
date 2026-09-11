@@ -1,4 +1,4 @@
-// The Radio hero — built to Chante's banner mockup (assets/radio_mockup.png):
+// The Radio hero — built to Chanté's banner mockup (assets/radio_mockup.png):
 // the ((✦)) waves mark beside a high-contrast serif RADIO, an ornamental rule
 // with a four-point diamond, an elegant italic subtitle, and the frequency
 // band on the right. The band is a PULSE — an ECG-like trace ("the pulse of

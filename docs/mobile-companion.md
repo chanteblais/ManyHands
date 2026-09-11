@@ -60,7 +60,7 @@ same app:
   should be designed as a config-renderable primitive (see the extension protocol in
   `multi-community.md`), which is a strong argument for keeping the app a thin client over the
   shared backend rather than accreting client-side feature logic.
-- One firsthand motivation Chante named: Glåüm showed people want extremely fast phone access,
+- One firsthand motivation Chanté named: Glåüm showed people want extremely fast phone access,
   and push could make a huge difference in engagement — preserving the generalized architecture
   is largely *for* this app.
 - **Naming note:** "Many Hands" as the platform's working name collides with this doc's use of

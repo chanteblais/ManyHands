@@ -13,7 +13,7 @@ verify before betting anything real on them (marked ⚠︎).
 
 ## North star
 
-Chante's framing (2026-07-10, verbatim in spirit):
+Chanté's framing (2026-07-10, verbatim in spirit):
 
 > Burn camp organizers **need** this. Even at break-even I'd still do it. If it happens to make
 > some passive income, I wouldn't be mad.
@@ -77,7 +77,7 @@ checklist, groups, shifts, dues, distinctions, messaging, schedule, lead-up gath
 
 | Segment | Size (⚠︎ verify) | Fit | Notes |
 |---|---|---|---|
-| **Burn camps** (BM + regionals) | Low thousands of camps worldwide | ★★★ native | The beachhead: Chante's network, credibility, design soul, live dogfood. Seasonal. |
+| **Burn camps** (BM + regionals) | Low thousands of camps worldwide | ★★★ native | The beachhead: Chanté's network, credibility, design soul, live dogfood. Seasonal. |
 | **Intentional communities / ecovillages / cohousing** | ~1,000+ listed in the FIC directory (US); cohousing ~170 built + ~100 forming | ★★★ eerily close | Year-round. Dues, work-share shifts (cooking/cleaning rotas), membership pipeline with provisional periods (≈ attunement), consensus culture. Tooling today: spreadsheets, Google Groups, Hylo (social, weak on ops). **The operations layer is underserved.** |
 | **Housing & student co-ops** (NASCO orbit) | Hundreds of group-equity/student co-ops | ★★☆ | Work-shift scheduling + dues + annual member turnover (constant onboarding). Notorious spreadsheet pain. Year-round. |
 | **Volunteer-run festivals** (fringe, folk, transformational) | Thousands of events | ★★☆ | Same shape as burns (seasonal), but orgs often run several events — the lead-up-gatherings model already fits. |
@@ -119,7 +119,7 @@ on the other. One-liner: **"communities where people contribute, not just consum
   No longer thinking primarily in pure self-serve-SaaS-with-monthly-subscription terms. Instead,
   offer the platform initially as a **done-for-you implementation of a highly configurable
   community platform** for small communities (camps, festivals, collectives, retreats, volunteer
-  groups): Chante sets up and configures each community's hub as a service. Core principle:
+  groups): Chanté sets up and configures each community's hub as a service. Core principle:
   **it feels bespoke to the customer, but behaves like SaaS underneath** — every "custom" hub is
   a tenant/configuration of the one platform, never a cloned codebase. Fee shape under
   consideration: an accessible upfront setup/configuration fee; higher fees when a request needs
@@ -171,7 +171,7 @@ see: **the admin console**. The buyer is an organizer; the demo must let them *b
 
 ### The ladder (cheapest → richest)
 
-1. **Guided walkthrough (available now).** Screen-share or in-person tour, driven by Chante.
+1. **Guided walkthrough (available now).** Screen-share or in-person tour, driven by Chanté.
    Highest-conversion format for warm leads. Rule: demo from **seeded fake data**, never live
    member data (member PII is not demo material, even among friends).
 2. **Demo video.** A 3–5 min narrated tour (apply → approve → groups/shifts → dues → radio →
@@ -232,7 +232,7 @@ eventually new-tenant starter templates. If anything gets built early, it's this
    renewal/reactivation — plus how they compose with the earlier annual "season pass" instinct.)
 3. **Open-source or not** — decide deliberately, once, after test-user phase.
 4. **Platform name/brand** — the product needs an identity distinct from Glåüm before the first
-   external community onboards. (2026-09-04: Chante now consistently calls the platform
+   external community onboards. (2026-09-04: Chanté now consistently calls the platform
    **Many Hands** — treat as the working name, not formally decided. Two collisions to resolve
    deliberately if it sticks: "Many Hands" is also Glåüm's ceremonial name for the member
    registry nav surface (see genlog terminology row / `mobile-companion.md`), and it sits in the
@@ -253,7 +253,7 @@ eventually new-tenant starter templates. If anything gets built early, it's this
 
 ### 2026-07-10 — Doc created; seasonality + adjacent markets
 
-- Chante: organizers **need** this; break-even acceptable; passive income welcome. → North star +
+- Chanté: organizers **need** this; break-even acceptable; passive income welcome. → North star +
   success tiers written down.
 - Seasonality analyzed: annual "season pass" billing neutralizes the churn mechanics; the registry
   (institutional memory) is the anti-churn moat; the real cap is burn-niche TAM (~Tier A/B alone).
@@ -264,7 +264,7 @@ eventually new-tenant starter templates. If anything gets built early, it's this
 
 ### 2026-07-10 (later) — Showcase strategy
 
-- Chante has a concrete intentional community she can reach out to — the IC segment gets its
+- Chanté has a concrete intentional community she can reach out to — the IC segment gets its
   first warm lead.
 - "Join my camp as a pretend member" rejected as the demo path (unscalable + exposes real member
   PII + never shows the admin console). → Showcase & demo strategy section added: walkthrough →
@@ -277,7 +277,7 @@ eventually new-tenant starter templates. If anything gets built early, it's this
 
 ### 2026-08-04 — Catering: a possible adjacent segment
 
-- Chante's partner Daniel is catering a festival right now (176 volunteers + 241 production
+- Chanté's partner Daniel is catering a festival right now (176 volunteers + 241 production
   artists on the Thursday alone) and the whole operation runs on spreadsheets and handwritten
   sheets — she reads this as an additional market gap adjacent to the community-ops product
   (festivals/events are the same seasonal-community world; camp feeding is already in-domain).
@@ -301,12 +301,12 @@ eventually new-tenant starter templates. If anything gets built early, it's this
   genuine differentiator for the catering segment — spreadsheets can't do it, and the
   propose→preview→apply pattern keeps the human accountable for every number (matters for
   food-cost trust). Cost ~5¢/interaction — noise against a catering contract.
-- Chante accepted the unauthenticated-endpoint risk explicitly for the festival window
+- Chanté accepted the unauthenticated-endpoint risk explicitly for the festival window
   ("no one knows about it, worth it for real data"); retire-or-gate stays on the books.
 
 ### 2026-08-27 — Reframe: software for community builders, not volunteer organization
 
-- Chante's reframe (thinking out loud, **nothing decided**): the product's category isn't
+- Chanté's reframe (thinking out loud, **nothing decided**): the product's category isn't
   volunteer organization — it's **software for community builders**. Question posed: does that
   change viability, given the earlier seasonality concerns?
 - Assessment: the reframe is *accurate to what's already built*. The event-specific surface
@@ -334,7 +334,7 @@ eventually new-tenant starter templates. If anything gets built early, it's this
 
 ### 2026-08-27 (later) — Event-mode toggle: could it do both?
 
-- Chante's idea (logged as **open question #6**, undecided): an admin **event toggle** — on =
+- Chanté's idea (logged as **open question #6**, undecided): an admin **event toggle** — on =
   current event-planning implementation, off = community-focused functionality. One product
   serving both seasonal camps and year-round communities.
 - Assessment: right move, with a reframe — it's less a feature toggle than the app admitting a
@@ -364,7 +364,7 @@ eventually new-tenant starter templates. If anything gets built early, it's this
 
 ### 2026-09-04 — Delivery model: done-for-you service on a SaaS chassis
 
-Chante brought this in as a summary of a ChatGPT conversation, explicitly to **preserve the
+Chanté brought this in as a summary of a ChatGPT conversation, explicitly to **preserve the
 direction before starting the work** — nothing here is scheduled or in progress. The big shift:
 stop thinking primarily in pure self-service-SaaS-with-monthly-subscription terms; instead offer
 the platform initially as a **done-for-you / productized service** for small communities (camps,
@@ -400,7 +400,7 @@ festivals, collectives, retreats, volunteer groups). Throughout, she referred to
 - **The flywheel — client-funded custom work becomes product R&D.** Client 1 asks for a new
   useful capability and partly funds its development; it ships as a platform feature; client 2
   wanting the same thing later is just configuration. Repeat, and the feature library grows from
-  *real* community needs instead of speculative roadmap work. Chante's line: **"Many Hands grows
+  *real* community needs instead of speculative roadmap work. Chanté's line: **"Many Hands grows
   through the needs of many hands."** This is the service-model version of what the
   generalizability log already does for the Glåüm dogfood.
 - **One shared mobile app, not per-community branded apps.** Glåüm proved people want extremely
@@ -420,7 +420,7 @@ festivals, collectives, retreats, volunteer groups). Throughout, she referred to
   script / starter-template work doubles as the onboarding tooling this model needs. How the
   service fees compose with the annual "season pass" instinct is unresolved (folded into open
   question #2).
-- **Questions queued for when this work actually starts** (Chante's list, verbatim in spirit):
+- **Questions queued for when this work actually starts** (Chanté's list, verbatim in spirit):
   how tenant configuration should be structured; what's data-driven vs code-driven; how feature
   flags/modules work; preserving native-app compatibility; custom domains and branding;
   distinguishing configuration from platform extensions; preventing client-specific technical

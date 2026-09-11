@@ -2,7 +2,7 @@
 
 Running log of findings from the recurring UX-adviser pass. Each finding carries a
 **Severity** (how much it hurts an organizer using the console), an **Effort** guess,
-and a **Status** (`proposed` → Chante decides → `fix agreed` / `fixed` / `dismissed`).
+and a **Status** (`proposed` → Chanté decides → `fix agreed` / `fixed` / `dismissed`).
 Newest review at the top. Fixes are only applied once agreed.
 
 ---
@@ -131,7 +131,7 @@ member *does* for the whole") — the one place the plainest empty copy sits.
 is a no-results-after-filter case (philosophy tolerates plainer there — it's a
 search result, not a threshold moment). But the true-empty line in particular is a
 missed reciprocity beat on the surface named for it. A single warm line in the
-"Many Hands" voice ("The circle's still gathering." / similar — Chante's phrasing)
+"Many Hands" voice ("The circle's still gathering." / similar — Chanté's phrasing)
 would close the gap with `ResourceCommitments`' "Nobody yet — be the first." No
 new wink budget spent; it replaces one flat sentence with one warm one.
 
@@ -268,7 +268,7 @@ the role picker and the Registry of Roles chips show the plain ✦ ring beside
 five sculpted-gold seals — the one inconsistency on the app's most icon-forward
 surfaces. Data, not code: the library already holds candidates
 (`covered-wagon.webp`, `fruit-bowl.webp`), or fresh subjects strike in minutes
-via `scripts/strike-icon.py`. Needs Chante's pick, then set in admin.
+via `scripts/strike-icon.py`. Needs Chanté's pick, then set in admin.
 
 ### 22. The hands margin ornament is pasted inline on ~10 pages · Severity: low now, medium for multi-tenant · Status: proposed
 
@@ -283,7 +283,7 @@ those pages is touched; row added to `generalizability-log.md`.
 
 The section still assumes a flat 3 h/member (`HOURS_PER_MEMBER = 3`), but
 requirements now live on groups/roles/attunement tasks and members hold many
-shifts — Chante alone shows 6/3h with three group commitments. "Total
+shifts — Chanté alone shows 6/3h with three group commitments. "Total
 committed / still pending" is now derived from a fiction. Rebuild the section
 on the same requirement derivation the attunement checklist uses
 (`lib/attunement.ts`), or drop the hours cards until it can be done right.
@@ -313,7 +313,7 @@ all four keys map to live form fields ("Current Attunement Status", "Confirmatio
 "Preferred Role", "Space Requrements") whose `profileFieldKey` binding is now null.
 They're relics of the profile catch-up seeding; the values duplicate
 `applications.custom_answers`, render nowhere, and orphan nothing. **Proposed
-cleanup (needs Chante's go-ahead, ~5-line script):** strip `cf_*` keys from
+cleanup (needs Chanté's go-ahead, ~5-line script):** strip `cf_*` keys from
 `member_profiles.values` so stored profile data is exactly the registry's schema.
 Harmless to leave; mildly confusing to future debugging if kept.
 
@@ -357,7 +357,7 @@ Scope: the remaining member surfaces — /messages inbox (threads left unopened 
 avoid marking reads), /signup (Participate), /profile. Mobile still blocked
 (Brave full-screen). **Clean bill overall — no code changes this pass.** Notes:
 
-### 18. Joining several groups stacks shift requirements · Severity: question for Chante · Status: **resolved 2026-07-02** (decision + build, `feat/commitment-tiers`)
+### 18. Joining several groups stacks shift requirements · Severity: question for Chanté · Status: **resolved 2026-07-02** (decision + build, `feat/commitment-tiers`)
 
 **Decision (Chanté):** "Attuned" = the authored minimum only; commitments the
 member chose still show as a guide to meeting them. **Built:** checklist items now
@@ -417,7 +417,7 @@ the window, the empty state now reads "The schedule begins Wednesday, July 22."
 - The Admin link lives in the avatar dropdown (with About), not the main nav —
   deliberate-looking and fine for a single-admin community; revisit if more admins.
 - The stale "Shifts Currently Closed" announcement is the most prominent thing on
-  members' dashboards right now (content, Chante's call).
+  members' dashboards right now (content, Chanté's call).
 - Member-facing pages otherwise read beautifully — the dated schedule calendar,
   Many Hands directory with search/filters, and dashboard widgets all hang together.
 
@@ -480,14 +480,14 @@ stopped afterwards. Everything below is uncommitted in the working tree.
   didn't want to fight overnight. Still the top item for next pass, ideally via
   responsive dev tools or a real device.
 - Content notes from finding 14 (Prostelatizing typo, stale "Shifts Closed"
-  announcement) are **data, not code** — left for Chante.
+  announcement) are **data, not code** — left for Chanté.
 
 ---
 
 ## Review — 2026-07-02 (second pass, live walkthrough + fixes)
 
 Scope: first *visual* pass — drove the real console in Chrome against a local dev
-server (port 3001) with Chante's session: Manage, Overview, Configure, the
+server (port 3001) with Chanté's session: Manage, Overview, Configure, the
 Application Builder, and the `/admin/[id]` member detail page. Verified iteration 1's
 five fixes render correctly in the browser. Fixes below were applied same-day
 (approved mode: "keep resolving, use judgment").

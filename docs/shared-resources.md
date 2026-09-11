@@ -67,7 +67,7 @@ with the added ability to delete a list.
   anchored `#bring`, **above** Your Groups — needs are live and time-sensitive,
   group membership is set-once): a **preparation board**, not an inventory —
   it answers *"what can I do that would be most helpful?"* first (redesigned
-  2026-07-02 on Chante's direction). **Each list is ONE collapsible card**
+  2026-07-02 on Chanté's direction). **Each list is ONE collapsible card**
   (gold border, header / items / footer, 2026-07-03) — **collapsed by default**
   (2026-07-08): the board reads as a scannable index of *every* list (a header
   row with title + health pill + a one-line summary like "3 still needed · 14

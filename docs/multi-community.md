@@ -24,8 +24,8 @@ Glåüm is the first community on the platform.
 ## Delivery model — bespoke feel, SaaS chassis (direction logged 2026-09-04, work not started)
 
 The commercial framing shifted (see [`business.md`](./business.md) → discussion log 2026-09-04):
-the platform — Chante now calls it **Many Hands** (working name) — would initially be sold as a
-**done-for-you / productized service**, with Chante setting up each community's hub. That changes
+the platform — Chanté now calls it **Many Hands** (working name) — would initially be sold as a
+**done-for-you / productized service**, with Chanté setting up each community's hub. That changes
 nothing about this roadmap's destination and raises its stakes: each client hub must *feel* like
 a custom website (branding, colours, logo, domain, terminology, navigation, profile fields,
 categories, groups, roles, applications, schedules, resources, distinctions, permissions, feature

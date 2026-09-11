@@ -1,13 +1,13 @@
 'use client'
 
-// The on-page Radio composer. Anyone approved can pick up the mic (Chante
+// The on-page Radio composer. Anyone approved can pick up the mic (Chanté
 // 2026-07-08: Radio is an open airwave now, not an organizer-only megaphone) —
 // posts go out as 'voice' through /api/radio, right-aligned and signed. Two
 // extras beyond a plain line, both reached through the @ autocomplete:
 //   • @mention a member — mentioning them rings their bell + email.
 //   • @here — notify EVERYONE (bell + email to all members); the post is
 //     marked 📢. High-stakes, so posting an @here line asks for a confirm.
-// (Replaced the earlier "Notify everyone" checkbox — Chante 2026-07-08.)
+// (Replaced the earlier "Notify everyone" checkbox — Chanté 2026-07-08.)
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'

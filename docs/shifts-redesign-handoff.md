@@ -5,7 +5,7 @@
 Paste at the start of a new session. Project root: `glaum-camp-website/`.
 
 ## What this is
-A redesign of the **event schedule + shifts** system. The full spec lives in **`docs/shifts-redesign.md`** — read it first. Design was agreed in conversation on 2026-07-01; **nothing is built yet.** It began as a bug report (an admin "calendar" vanished after toggling shift signup) but Chante chose to redesign rather than restore the old behavior.
+A redesign of the **event schedule + shifts** system. The full spec lives in **`docs/shifts-redesign.md`** — read it first. Design was agreed in conversation on 2026-07-01; **nothing is built yet.** It began as a bug report (an admin "calendar" vanished after toggling shift signup) but Chanté chose to redesign rather than restore the old behavior.
 
 ## The model that's been decided (summary — details in the spec)
 - Schedule items get a **participation type**: **Info** / **Shift** / **Mandatory**.
@@ -20,10 +20,10 @@ A redesign of the **event schedule + shifts** system. The full spec lives in **`
 
 Also still open (lower stakes): admin editing surface (calendar grid vs date-aware list — Claude to recommend); whether picking a contribution shift auto-joins the matching group (leaning: keep join + schedule distinct).
 
-## Constraints from Chante (hold these)
+## Constraints from Chanté (hold these)
 - Keep the UX **intuitive, not overcomplicated** — every "several sub-items" idea uses the same one-expandable-line shape.
 - **Don't end up as a What-If-specific implementation** — category names, mandatory flags, requirements are all data. New Glåüm/What-If hardcodes → append to `docs/generalizability-log.md` (4 rows added 2026-07-01).
-- This is a **design discussion first** — talk it through; don't jump to code without agreeing the model. Chante prefers prose over multiple-choice menus for open design questions.
+- This is a **design discussion first** — talk it through; don't jump to code without agreeing the model. Chanté prefers prose over multiple-choice menus for open design questions.
 
 ## Orientation (current code)
 - **Program/shift editing:** `app/admin/ScheduleManager.tsx` (a list; the shift-signup toggle `ShiftSignupToggle.tsx` sits above it in Admin → Program → Schedule). Backing table `schedule_events`; a "shift" today = a row with a non-null `capacity`.
@@ -33,4 +33,4 @@ Also still open (lower stakes): admin editing surface (calendar grid vs date-awa
 - **Roles/departments:** the parallel system the open branch is about — `app/api/signup/route.ts` reads `departments` + `roles`; member picker in `SignupSection.tsx`.
 - **Dead code to remove in the redesign:** `shifts` table, `app/api/admin/shifts/{route,[id]/route}.ts` (nothing calls them).
 
-Stack + conventions: see the root `CLAUDE.md` (Next.js 16 App Router, Clerk, Supabase, Vercel). Don't touch port 3000 (Chante's); use 3001 if a server is needed, and stop it after verifying.
+Stack + conventions: see the root `CLAUDE.md` (Next.js 16 App Router, Clerk, Supabase, Vercel). Don't touch port 3000 (Chanté's); use 3001 if a server is needed, and stop it after verifying.

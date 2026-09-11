@@ -56,7 +56,7 @@ Rules:
    ln -s <main-checkout>/.env.local .env.local
    ```
 3. **Never `git add -A` / `git add .` in the shared checkout.** Stage explicit
-   paths only — the tree may contain another session's (or Chante's) in-flight
+   paths only — the tree may contain another session's (or Chanté's) in-flight
    files. This applies to quick `git commit -m "docs"`-style snapshots too:
    `git add docs/` beats `git add -A`, and a glance at `git status` first
    catches stray `lib/…` or `.claude/worktrees/` entries that belong to another
@@ -117,10 +117,10 @@ will change files, it creates its own branch — `type/slug` when the scope is
 clear, `session/YYYY-MM-DD-<topic>` when it isn't yet (rename or split later if
 the work firms up). Unrelated tasks in one session get separate branches. Merge
 with `--no-ff` after verification (tsc + click-through), delete the branch, and
-**push `main`** — Chante's approval to merge covers the deploy too (changed
+**push `main`** — Chanté's approval to merge covers the deploy too (changed
 2026-07-02; it used to be a separate call). Guardrails on the push:
 
-- **Approval first.** Merge + push happen when Chante has signed off on the
+- **Approval first.** Merge + push happen when Chanté has signed off on the
   change ("looks good", "merge it"). Never push work she hasn't seen.
 - **A push ships all of `main`.** Check `git log --first-parent origin/main..main`
   before pushing; if it carries another session's unpushed merge, that's fine —
@@ -136,7 +136,7 @@ with `--no-ff` after verification (tsc + click-through), delete the branch, and
   part of the same merge+push, and note the number in the merge commit. If the
   migration can't be applied right then, hold the push and say why.
 - **When in doubt, don't.** Anything half-verified or prod acting strange —
-  leave the push to Chante.
+  leave the push to Chanté.
 
 Rule-5 tiny tweaks (log updates, one-line doc fixes) may still go straight to
 `main` — the pre-commit guard asks for `GLAUM_ALLOW_MAIN=1` on those so a

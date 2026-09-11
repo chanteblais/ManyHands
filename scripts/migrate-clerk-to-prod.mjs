@@ -8,7 +8,7 @@
 //      duplicated.
 //   2. Emits supabase-migrations/059_clerk_prod_remap.sql — a transaction that
 //      remaps every Clerk-ID column in Supabase from old (dev) to new (prod)
-//      IDs, including the derived conversations.direct_key. Chante applies it
+//      IDs, including the derived conversations.direct_key. Chanté applies it
 //      herself, then swaps the Vercel env keys and redeploys.
 //
 // DRY RUN by default — prints an aggregate plan and writes nothing to Clerk.

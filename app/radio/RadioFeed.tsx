@@ -1,12 +1,12 @@
 'use client'
 
 // The Radio feed — a curated stream of moments, not an audit log
-// (docs/radio.md; visual language from Chante's 2026-07-03 mockup): an airy
+// (docs/radio.md; visual language from Chanté's 2026-07-03 mockup): an airy
 // hairline-separated list, no card boxes. Automatic moments read as a large
 // emblem + a headline with the moment's entity lit gold (RadioMessage) + a
 // quiet supporting line, timestamp whispering from the right. Human speech —
 // anyone picking up the mic, organizer or member — reads the SAME way
-// (Chante 2026-07-08): right-aligned, purple, signed "— Name", a call coming
+// (Chanté 2026-07-08): right-aligned, purple, signed "— Name", a call coming
 // in from the other side of the airwaves. Client component so times and day
 // groupings read in the member's own clock; posts arrive server-fetched.
 

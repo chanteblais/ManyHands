@@ -16,7 +16,7 @@ function escapeRegExp(s: string): string {
 const HERE_RE = /(?:^|\s)@here(?![\w])/i
 
 // POST — a member puts a moment on the air (kind 'voice'). Radio is an open
-// airwave (Chante 2026-07-08): any approved member can share a line, @mention
+// airwave (Chanté 2026-07-08): any approved member can share a line, @mention
 // another member (rings their bell + email), and — via @here (guarded by a
 // confirm in the composer) — notify everyone (bell + email to all members, the
 // post marked 📢). One line, no threads, no replies.
