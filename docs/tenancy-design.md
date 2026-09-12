@@ -18,10 +18,12 @@ the display font on `:root` (`lib/theme.ts` ↔ `globals.css`), ~1,100 hex liter
 variants across 109 files rewritten to `var()`, `communities.theme` overrides injected by the root
 layout. **Tenant 2 rehearsal 2026-09-12:** `scripts/seed-demo-community.mjs` stood up the fictional
 *Lantern Hollow* as a second community with rows only (own hosts, theme, timezone, copy, people,
-program) — no code change needed. **Domain 2026-09-12: `withmanyhands.ca`** — platform host,
-Clerk satellites and the platform sender are built (`lib/platform.ts`, `docs/domains.md` runbook);
-the DNS / Vercel / Clerk / Resend steps are Chanté's, in the runbook's order. Vercel Pro only
-matters for per-community cron hours.** Drafted 2026-09-11 from a full inventory of the schema (36 tables), config layer,
+program) — no code change needed. **Domain 2026-09-12: `withmanyhands.ca`** — platform host and
+platform sender are built (`lib/platform.ts`, `docs/domains.md` runbook). **Decided (option 1):
+every community is a subdomain of the platform domain** — Glåüm moves to `glaum.withmanyhands.ca`
+(no redirect from `camp.glaum.ca`), so Clerk needs no satellites (paid); the satellite code stays
+dormant for a future client on its own domain. The DNS / Vercel / Clerk / Resend steps are
+Chanté's, in the runbook's order. Vercel Pro only matters for per-community cron hours.** Drafted 2026-09-11 from a full inventory of the schema (36 tables), config layer,
 auth and data access (94 API routes, ~500 `.from()` call sites). Supersedes the Phase 1 sketch in
 [`multi-community.md`](./multi-community.md) (kept there as history).
 
