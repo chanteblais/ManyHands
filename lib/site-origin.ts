@@ -1,24 +1,28 @@
-/** Resolve the public origin for redirects. Prefer NEXT_PUBLIC_SITE_URL when sane; never trust localhost alone in deployed builds. */
+/**
+ * Resolve the public origin for redirects. The REQUEST host wins whenever it
+ * is a real hostname — one deployment serves many communities on many hosts
+ * (docs/domains.md), so a deployment-wide NEXT_PUBLIC_SITE_URL would send
+ * every other tenant's sign-in returns and sign-out landings to Glåüm.
+ * NEXT_PUBLIC_SITE_URL is only a fallback when the host is missing or local.
+ */
 export function resolveSiteOrigin(headerList: Headers): string {
-  const configured =
-    typeof process.env.NEXT_PUBLIC_SITE_URL === 'string'
-      ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
-      : ''
-
-  if (configured && !configured.includes('localhost')) {
-    return configured
-  }
-
   const forwardedHost = headerList.get('x-forwarded-host')?.split(',')[0]?.trim()
   const forwardedProto = headerList.get('x-forwarded-proto')
   const rawHost = forwardedHost || headerList.get('host') || ''
   const hostOnly = rawHost.split(':')[0] || ''
+  const isLocal = !hostOnly || hostOnly === 'localhost' || hostOnly === '127.0.0.1' || hostOnly.endsWith('.localhost')
 
-  // Prefer the actual request host (e.g. camp.glaum.ca) over VERCEL_URL (*.vercel.app),
-  // especially when NEXT_PUBLIC_SITE_URL was wrongly set to localhost at build time.
-  if (hostOnly && !hostOnly.includes('localhost')) {
+  if (!isLocal) {
     const protocol = forwardedProto || 'https'
     return `${protocol}://${rawHost.split(':')[0]}`
+  }
+
+  const configured =
+    typeof process.env.NEXT_PUBLIC_SITE_URL === 'string'
+      ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
+      : ''
+  if (configured && !configured.includes('localhost')) {
+    return configured
   }
 
   if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL_URL) {
@@ -26,13 +30,12 @@ export function resolveSiteOrigin(headerList: Headers): string {
   }
 
   const host = rawHost || process.env.VERCEL_URL || 'localhost:3000'
-  const protocol = forwardedProto || (host.includes('localhost') ? 'http' : 'https')
-
+  const protocol = forwardedProto || (isLocal ? 'http' : 'https')
   return `${protocol}://${host}`
 }
 
 /** Home URL passed to Clerk: absolute only when origin is non-localhost. */
 export function clerkFallbackHome(origin: string): string {
-  if (!origin.includes('localhost')) return `${origin.replace(/\/$/, '')}/`
+  if (!origin.includes('localhost') && !origin.includes('127.0.0.1')) return `${origin.replace(/\/$/, '')}/`
   return '/'
 }

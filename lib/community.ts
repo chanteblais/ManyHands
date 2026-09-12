@@ -2,6 +2,7 @@ import { unstable_cache } from 'next/cache'
 import { headers } from 'next/headers'
 import { supabaseAdmin } from '@/lib/supabase'
 import { SITE_NAME, EVENT_NAME, SITE_DESCRIPTION } from '@/lib/site-config'
+import { isPlatformHost, platformHosts, PLATFORM_NAME } from '@/lib/platform'
 
 // Tenant resolution (docs/tenancy-design.md §2). Every server render and API
 // route resolves the current community ONCE from the request host and passes
@@ -121,6 +122,21 @@ function fallbackCommunity(): Community {
   }
 }
 
+// The platform host (docs/domains.md) is not a community: it serves the
+// picker and the auth pages only. Requests there resolve to this pseudo-
+// community so the layout, header and auth pages render; every scoped query
+// against its all-zero id returns nothing.
+export const PLATFORM_COMMUNITY_SLUG = 'platform'
+function platformCommunity(): Community {
+  return {
+    id: FALLBACK_COMMUNITY_ID, slug: PLATFORM_COMMUNITY_SLUG, name: PLATFORM_NAME, description: null,
+    hosts: platformHosts(), timezone: 'UTC', eventName: null, emailFrom: null, theme: {}, settings: {}, status: 'active',
+  }
+}
+export function isPlatformCommunity(c: Pick<Community, 'slug'>): boolean {
+  return c.slug === PLATFORM_COMMUNITY_SLUG
+}
+
 /** All communities (cached). Falls back to the synthetic default when the table is missing. */
 export async function listCommunities(): Promise<Community[]> {
   try {
@@ -153,6 +169,7 @@ export function resolveCommunityForHost(all: Community[], host: string): Communi
  */
 export async function getCommunity(): Promise<Community> {
   const host = requestHost(await headers())
+  if (isPlatformHost(host)) return platformCommunity()
   const community = resolveCommunityForHost(await listCommunities(), host)
   if (!community) throw new CommunityNotFoundError(host)
   return community
@@ -182,6 +199,19 @@ export async function listCommunitiesForUser(
     }
   }
   return out
+}
+
+/**
+ * Origins a sign-in/sign-up may return to: the platform hosts and every
+ * community host (https). Used by the auth pages on the primary host, which
+ * receive satellite return URLs.
+ */
+export async function isKnownOrigin(origin: string): Promise<boolean> {
+  let host: string
+  try { const u = new URL(origin); if (u.protocol !== 'https:' && u.protocol !== 'http:') return false; host = u.host.toLowerCase() } catch { return false }
+  if (platformHosts().includes(host) || platformHosts().includes(host.split(':')[0])) return true
+  const all = await listCommunities()
+  return all.some(c => c.hosts.includes(host) || c.hosts.includes(host.split(':')[0]))
 }
 
 export function toPublicCommunity(c: Community): PublicCommunity {

@@ -1,11 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { clerkDomainConfig, isPlatformHost, isPlatformPath } from '@/lib/platform'
 
 const isProtectedRoute = createRouteMatcher(['/profile(.*)', '/admin(.*)', '/apply(.*)', '/volunteer(.*)'])
 
 // Central sign-in wall for /admin pages and /api/admin routes: an anonymous
 // request never reaches a handler (401 for the API, Clerk's sign-in redirect
-// for pages). The ADMIN check itself moved into the handlers in branch 1d —
+// for pages). The ADMIN check itself lives in the handlers (branch 1d) —
 // admin is a per-community fact on `members.role` (lib/admin-auth.ts
 // requireAdmin), which this edge layer can't read cheaply. Every /api/admin
 // route's gate is asserted statically by scripts/check-route-auth.mjs, and
@@ -19,9 +20,26 @@ const isProtectedRoute = createRouteMatcher(['/profile(.*)', '/admin(.*)', '/app
 // session, so it stays behind the sign-in wall here.
 const isAdminRoute = createRouteMatcher(['/admin(.*)', '/api/admin(.*)'])
 
+function requestHost(req: { headers: Headers }): string {
+  return (req.headers.get('x-forwarded-host')?.split(',')[0]?.trim() || req.headers.get('host') || '').toLowerCase()
+}
+
 export default clerkMiddleware(async (auth, req) => {
   if (req.nextUrl.pathname === '/api/sign-out') {
     return
+  }
+
+  // The platform host (docs/domains.md) is the picker + auth pages, nothing
+  // else: `/` rewrites to the picker, community pages redirect to it.
+  if (isPlatformHost(requestHost(req))) {
+    const { pathname } = req.nextUrl
+    if (pathname === '/') return NextResponse.rewrite(new URL('/communities', req.url))
+    if (!isPlatformPath(pathname) && !pathname.startsWith('/api/')) {
+      return NextResponse.redirect(new URL('/communities', req.url))
+    }
+    if (pathname.startsWith('/api/') && !isPlatformPath(pathname)) {
+      return NextResponse.json({ error: 'Not a community host' }, { status: 404 })
+    }
   }
 
   if (isAdminRoute(req)) {
@@ -38,6 +56,13 @@ export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
     await auth.protect()
   }
+}, req => {
+  // Clerk multi-domain: every non-primary, non-local host is a satellite of
+  // CLERK_PRIMARY_HOST (lib/platform.ts). Unset → plain single-domain Clerk.
+  const cfg = clerkDomainConfig(requestHost(req))
+  return cfg.isSatellite
+    ? { isSatellite: true, domain: cfg.domain, signInUrl: cfg.signInUrl, signUpUrl: cfg.signUpUrl }
+    : {}
 })
 
 export const config = {
