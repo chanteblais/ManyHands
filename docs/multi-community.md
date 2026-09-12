@@ -139,6 +139,11 @@ All TypeScript references updated to match across: `lib/form-config.ts`, `lib/ap
 
 ## Phase 1 — When a second community joins
 
+> **Superseded 2026-09-11 by [`tenancy-design.md`](./tenancy-design.md)** — the full Phase 1
+> design (data model, request context, scoped client, DB roles, storage, crons, six-branch
+> sequence, verification), drafted from a complete code inventory now that two interested
+> communities exist. The sketch below is kept as history; where they differ, the design doc wins.
+
 These changes require a real second community to validate design decisions. Do not implement speculatively.
 
 ### Database
