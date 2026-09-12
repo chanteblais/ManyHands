@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 import {
@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const member = await getApprovedMember(community.id, userId)
   if (!member) {
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
   if (!name?.trim()) return NextResponse.json({ error: 'name is required' }, { status: 400 })
 
   // Items only land on lists members can see.
-  const { data: list } = await supabaseAdmin
+  const { data: list } = await db
     .from('resource_lists')
     .select('id, visible')
     .eq('id', list_id)
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
       ? null
       : Math.min(99, Math.max(1, Math.floor(Number(quantity_needed) || 1)))
 
-  const { data: item, error } = await supabaseAdmin
+  const { data: item, error } = await db
     .from('resources')
     .insert({
       list_id,
@@ -64,12 +65,12 @@ export async function POST(req: NextRequest) {
 
   // Seed the adder's claim when they're bringing it themselves.
   if (bring !== false) {
-    const { error: claimError } = await supabaseAdmin
+    const { error: claimError } = await db
       .from('resource_claims')
       .insert({ resource_id: item.id, clerk_user_id: userId, quantity: 1 })
     if (claimError) {
       // Don't leave an orphan item behind on a failed claim.
-      await supabaseAdmin.from('resources').delete().eq('id', item.id)
+      await db.from('resources').delete().eq('id', item.id)
       return NextResponse.json({ error: claimError.message }, { status: 500 })
     }
 
@@ -78,8 +79,8 @@ export async function POST(req: NextRequest) {
     // (targeted) or reads as an open offer (untargeted), and a fill that
     // completes the list is a community milestone.
     const [actorName, state] = await Promise.all([
-      getRadioActorName(userId),
-      resourceStateAfterClaim(item.id, list_id),
+      getRadioActorName(community.id, userId),
+      resourceStateAfterClaim(community.id, item.id, list_id),
     ])
     await postSourcedRadioEvent(community.id, 'contribution', {
       ...contributionRadioPost(actorName, item.name, 1, state.remaining),

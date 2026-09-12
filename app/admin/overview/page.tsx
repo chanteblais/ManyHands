@@ -1,7 +1,7 @@
 import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { requireAdmin } from '@/lib/admin-auth'
 import { NotificationBell } from '@/app/admin/NotificationBell'
 import { AdminNav } from '@/app/admin/AdminNav'
@@ -59,6 +59,7 @@ export default async function OverviewPage() {
 
   if (!(await requireAdmin())) redirect('/')
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // Everything below is independent — one parallel batch, no waterfalls.
   // attention/runway = the "Needs attention" digest + runway strip
@@ -80,11 +81,11 @@ export default async function OverviewPage() {
   ] = await Promise.all([
     getAttentionItems(community.id),
     getAdminRunway(community.id),
-    getShiftEventByUser(),
+    getShiftEventByUser(community.id),
     getShiftHoursOverview(community.id),
-    getGroupNamesByUser(),
-    supabaseAdmin.from('groups').select('id, name').order('sort_order'),
-    supabaseAdmin
+    getGroupNamesByUser(community.id),
+    db.from('groups').select('id, name').order('sort_order'),
+    db
       .from('applications')
       .select('id, first_name, last_name, preferred_name, email, status, clerk_user_id, rideshare')
       .order('submitted_at', { ascending: false }),
@@ -92,25 +93,25 @@ export default async function OverviewPage() {
     // count below and surfaced in their own box, so paused commitments don't
     // muddy the organizer's numbers. Shared with Manage (lib/admin-counts.ts)
     // so "who is suspended" can never drift between tabs.
-    getSuspendedClerkUserIds(),
-    supabaseAdmin
+    getSuspendedClerkUserIds(community.id),
+    db
       .from('camp_signups')
       .select('clerk_user_id, role_id, role_approval_status'),
-    supabaseAdmin
+    db
       .from('volunteers')
       .select('id, first_name, last_name, preferred_name, email, status')
       .eq('status', 'active')
       .order('created_at', { ascending: false }),
-    supabaseAdmin
+    db
       .from('admin_notifications')
       .select('id, application_id, event_type, message, details, created_at, read_at')
       .order('created_at', { ascending: false })
       .limit(20),
-    supabaseAdmin
+    db
       .from('polls')
       .select('id, question, options, visible, allow_multiple, expires_at, created_at')
       .order('created_at', { ascending: false }),
-    supabaseAdmin
+    db
       .from('poll_votes')
       .select('poll_id, option_index, clerk_user_id'),
   ])

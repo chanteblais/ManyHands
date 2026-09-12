@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 import { memberDisplayNames } from './member-names'
 
 // ── Member view (Participate → Bring Something) ──────────────────────────────
@@ -40,7 +40,8 @@ export type MemberResourceView = { lists: MemberResourceList[]; pulse: ResourceP
 const EMPTY_PULSE: ResourcePulse = { contributorsToday: 0, latest: null }
 
 export async function getMemberResourceView(communityId: string, userId: string): Promise<MemberResourceView> {
-  const { data: lists, error } = await supabaseAdmin
+  const db = tenantDb(communityId)
+  const { data: lists, error } = await db
     .from('resource_lists')
     .select('id, title, description, visible, show_on_dashboard, sort_order, groups(name), departments(name), roles(name)')
     .eq('visible', true)
@@ -52,7 +53,7 @@ export async function getMemberResourceView(communityId: string, userId: string)
   if (!lists || lists.length === 0) return { lists: [], pulse: EMPTY_PULSE }
 
   const listIds = lists.map(l => l.id)
-  const { data: items } = await supabaseAdmin
+  const { data: items } = await db
     .from('resources')
     .select('id, list_id, name, note, quantity_needed, offered_by, icon, sort_order')
     .in('list_id', listIds)
@@ -65,7 +66,7 @@ export async function getMemberResourceView(communityId: string, userId: string)
   const [offererNames, claimsRes] = await Promise.all([
     memberDisplayNames(communityId, (items ?? []).map(i => i.offered_by).filter(Boolean) as string[]),
     itemIds.length > 0
-      ? supabaseAdmin.from('resource_claims').select('resource_id, clerk_user_id, quantity, updated_at').in('resource_id', itemIds)
+      ? db.from('resource_claims').select('resource_id, clerk_user_id, quantity, updated_at').in('resource_id', itemIds)
       : Promise.resolve({ data: [] }),
   ])
 
@@ -174,11 +175,12 @@ export type ResourceWidgetState = {
   myClaims: MemberResourceClaim[] // the caller's claims, board order
 }
 
-export async function getResourceWidgetState(clerkUserId: string | null | undefined): Promise<ResourceWidgetState | null> {
+export async function getResourceWidgetState(communityId: string, clerkUserId: string | null | undefined): Promise<ResourceWidgetState | null> {
+  const db = tenantDb(communityId)
   // The caller's claims depend on nothing below — fetch alongside the lists.
   const [myClaims, listsRes] = await Promise.all([
-    getMemberResourceClaims(clerkUserId),
-    supabaseAdmin
+    getMemberResourceClaims(communityId, clerkUserId),
+    db
       .from('resource_lists')
       .select('id, title, description, sort_order')
       .eq('visible', true)
@@ -190,14 +192,14 @@ export async function getResourceWidgetState(clerkUserId: string | null | undefi
   if (listsRes.error || !listsRes.data || listsRes.data.length === 0) return null
   const lists = listsRes.data
 
-  const { data: items } = await supabaseAdmin
+  const { data: items } = await db
     .from('resources')
     .select('id, list_id, quantity_needed')
     .in('list_id', lists.map(l => l.id))
 
   const targeted = (items ?? []).filter(i => i.quantity_needed !== null)
   const { data: claims } = targeted.length
-    ? await supabaseAdmin.from('resource_claims').select('resource_id, quantity').in('resource_id', targeted.map(i => i.id))
+    ? await db.from('resource_claims').select('resource_id, quantity').in('resource_id', targeted.map(i => i.id))
     : { data: [] as { resource_id: string; quantity: number }[] }
   const claimed: Record<string, number> = {}
   for (const c of claims ?? []) claimed[c.resource_id] = (claimed[c.resource_id] ?? 0) + c.quantity
@@ -257,9 +259,9 @@ export type MemberResourceClaim = {
   icon: string | null
 }
 
-export async function getMemberResourceClaims(clerkUserId: string | null | undefined): Promise<MemberResourceClaim[]> {
+export async function getMemberResourceClaims(communityId: string, clerkUserId: string | null | undefined): Promise<MemberResourceClaim[]> {
   if (!clerkUserId) return []
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await tenantDb(communityId)
     .from('resource_claims')
     .select('id, quantity, resources(name, icon, sort_order, resource_lists(title, sort_order))')
     .eq('clerk_user_id', clerkUserId)

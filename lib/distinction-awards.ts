@@ -5,12 +5,12 @@
 // missing table or error logs and returns a benign value, so the medal display
 // degrades to rule-derived-only rather than breaking.
 
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 
 /** Distinction ids manually granted to a member. */
-export async function getMemberAwards(memberId: string): Promise<string[]> {
+export async function getMemberAwards(communityId: string, memberId: string): Promise<string[]> {
   try {
-    const { data } = await supabaseAdmin
+    const { data } = await tenantDb(communityId)
       .from('member_distinctions')
       .select('distinction_id')
       .eq('member_id', memberId)
@@ -22,13 +22,14 @@ export async function getMemberAwards(memberId: string): Promise<string[]> {
 }
 
 export async function grantDistinction(
+  communityId: string,
   memberId: string,
   distinctionId: string,
   grantedBy: string,
   note?: string,
 ): Promise<boolean> {
   try {
-    const { error } = await supabaseAdmin
+    const { error } = await tenantDb(communityId)
       .from('member_distinctions')
       .upsert(
         [{ member_id: memberId, distinction_id: distinctionId, granted_by: grantedBy, note: note ?? null, granted_at: new Date().toISOString() }],
@@ -42,9 +43,9 @@ export async function grantDistinction(
   }
 }
 
-export async function revokeDistinction(memberId: string, distinctionId: string): Promise<boolean> {
+export async function revokeDistinction(communityId: string, memberId: string, distinctionId: string): Promise<boolean> {
   try {
-    const { error } = await supabaseAdmin
+    const { error } = await tenantDb(communityId)
       .from('member_distinctions')
       .delete()
       .eq('member_id', memberId)

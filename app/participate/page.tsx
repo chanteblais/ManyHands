@@ -25,7 +25,7 @@ export default async function SignupPage() {
     getApprovedMember(community.id, userId),
     getRoleSignupData(community.id, userId),
     getShiftSignupData(community.id, userId),
-    getSelfJoinGroups(userId),
+    getSelfJoinGroups(community.id, userId),
     getMemberResourceView(community.id, userId),
     requireAdmin(),
   ])

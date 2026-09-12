@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 const BUCKET = 'lead-up-images'
@@ -8,6 +9,9 @@ const MAX_BYTES = 5 * 1024 * 1024 // 5 MB
 
 export async function POST(req: NextRequest) {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const formData = await req.formData()
   const file = formData.get('image') as File | null
@@ -23,12 +27,12 @@ export async function POST(req: NextRequest) {
   const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  const { error: uploadError } = await supabaseAdmin.storage
+  const { error: uploadError } = await db.storage
     .from(BUCKET)
     .upload(path, buffer, { contentType: file.type, upsert: false, cacheControl: '31536000' })
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 })
 
-  const { data: { publicUrl } } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(path)
+  const { data: { publicUrl } } = db.storage.from(BUCKET).getPublicUrl(path)
   return NextResponse.json({ url: publicUrl })
 }
 
@@ -36,13 +40,16 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const { url } = await req.json()
   if (!url) return NextResponse.json({ error: 'No URL provided' }, { status: 400 })
 
   const match = (url as string).match(new RegExp(`${BUCKET}/(.+?)(\\?|$)`))
   if (!match) return NextResponse.json({ error: 'Invalid image URL' }, { status: 400 })
 
-  const { error } = await supabaseAdmin.storage.from(BUCKET).remove([match[1]])
+  const { error } = await db.storage.from(BUCKET).remove([match[1]])
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
 }

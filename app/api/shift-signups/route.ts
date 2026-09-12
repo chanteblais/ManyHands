@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { getPageContent, getPageContentValue } from '@/lib/page-content'
 import { getShiftParticipant, participantDisplayName } from '@/lib/members'
@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const { schedule_event_id, occurrence_date: rawDate, role: rawRole } = await req.json()
   if (!schedule_event_id) return NextResponse.json({ error: 'schedule_event_id required' }, { status: 400 })
@@ -66,7 +67,7 @@ export async function POST(req: NextRequest) {
   const [participant, flagValue, { data: event }, rangeDays] = await Promise.all([
     getShiftParticipant(community.id, userId),
     getPageContentValue(community.id, 'config_shift_signup_open'),
-    supabaseAdmin
+    db
       .from('schedule_events')
       .select('id, title, capacity, participation_type, visible, needs_lead, is_recurring, recurrence_days, event_date, time, start_time')
       .eq('id', schedule_event_id)
@@ -96,7 +97,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'This shift does not have a lead role' }, { status: 400 })
   }
 
-  let existingQuery = supabaseAdmin
+  let existingQuery = db
     .from('member_shift_signups')
     .select('id, role')
     .eq('clerk_user_id', userId)
@@ -113,12 +114,12 @@ export async function POST(req: NextRequest) {
   let created = false
   if (existing) {
     if (role && role !== existing.role) {
-      const { error } = await supabaseAdmin
+      const { error } = await db
         .from('member_shift_signups').update({ role }).eq('id', existing.id)
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     }
   } else {
-    const { data: claim, error } = await supabaseAdmin.rpc('claim_shift_signup', {
+    const { data: claim, error } = await db.rpc('claim_shift_signup', {
       p_clerk_user_id: userId,
       p_schedule_event_id: schedule_event_id,
       p_occurrence_date: occurrenceDate,
@@ -170,7 +171,7 @@ export async function POST(req: NextRequest) {
       : `${name} stepped back from leading "${event.title}"`
     : `${name} signed up ${role === 'lead' ? 'to lead' : 'for'} "${event.title}"`
   if (created || (existing && role && role !== existing.role)) {
-    await supabaseAdmin.from('admin_notifications').insert({
+    await db.from('admin_notifications').insert({
       application_id: participant.kind === 'member' ? participant.member.id : null,
       event_type: 'shift_change',
       message,
@@ -185,6 +186,7 @@ export async function DELETE(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const participant = await getShiftParticipant(community.id, userId)
   if (!participant) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -194,7 +196,7 @@ export async function DELETE(req: NextRequest) {
   const occurrenceDate = req.nextUrl.searchParams.get('occurrence_date') // null = non-recurring hold
 
   // Cancelling stays allowed while signup is closed (matches legacy behaviour).
-  let del = supabaseAdmin
+  let del = db
     .from('member_shift_signups')
     .delete()
     .eq('clerk_user_id', userId)

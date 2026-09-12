@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { weekdayFromISO } from '@/lib/shift-hours'
 import { requireAdmin } from '@/lib/admin-auth'
 import { getAdminScheduleEvents } from '@/lib/admin-program-data'
@@ -9,8 +10,11 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   try {
-    return NextResponse.json({ events: await getAdminScheduleEvents() })
+    return NextResponse.json({ events: await getAdminScheduleEvents(community.id) })
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 })
   }
@@ -21,10 +25,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const body = await req.json()
 
   // Place new event at the end of its group
-  const { data: last } = await supabaseAdmin
+  const { data: last } = await db
     .from('schedule_events')
     .select('sort_order')
     .eq('is_recurring', body.is_recurring ?? false)
@@ -37,7 +44,7 @@ export async function POST(req: NextRequest) {
   const participation_type = body.participation_type ?? 'general'
   const shift_type_id = participation_type === 'shift' ? (body.shift_type_id ?? null) : null
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('schedule_events')
     .insert([{
       // `day` derives from the real date when one is set (wrong-weekday-proof).

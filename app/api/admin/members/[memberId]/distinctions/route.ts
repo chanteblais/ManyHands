@@ -23,7 +23,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ memberId
     return NextResponse.json({ error: 'distinctionId required' }, { status: 400 })
   }
 
-  const ok = await grantDistinction(params.memberId, distinctionId, adminId, typeof note === 'string' ? note : undefined)
+  const ok = await grantDistinction(community.id, params.memberId, distinctionId, adminId, typeof note === 'string' ? note : undefined)
 
   // Radio: a manual grant is the one distinction moment with a stored "when"
   // (rule-derived earns are computed, never stored — see docs/radio.md).
@@ -62,10 +62,11 @@ export async function DELETE(req: NextRequest, props: { params: Promise<{ member
   const adminId = await requireAdmin()
   if (!adminId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
   const distinctionId = new URL(req.url).searchParams.get('distinctionId')
   if (!distinctionId) return NextResponse.json({ error: 'distinctionId required' }, { status: 400 })
 
-  const ok = await revokeDistinction(params.memberId, distinctionId)
+  const ok = await revokeDistinction(community.id, params.memberId, distinctionId)
   return ok
     ? NextResponse.json({ success: true })
     : NextResponse.json({ error: 'Failed to revoke' }, { status: 500 })

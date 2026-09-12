@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import type { ReminderItem } from '@/lib/send-email'
 
 // Collects who should get a gathering/shift reminder for a given calendar date,
@@ -56,23 +56,24 @@ type ShiftJoin = {
  * filters to approved, non-suspended members (a suspended member's commitments
  * are already released, but we guard anyway).
  */
-export async function collectEventReminders(targetDate: string): Promise<ReminderRecipient[]> {
+export async function collectEventReminders(communityId: string, targetDate: string): Promise<ReminderRecipient[]> {
+  const db = tenantDb(communityId)
   // Gatherings on the date + their RSVPs; and shift holds on the date (both the
   // per-night occurrence rows and non-recurring single holds whose event is dated
   // that day). Independent — one batch.
   const [gatheringsRes, occRes, singleRes] = await Promise.all([
-    supabaseAdmin
+    db
       .from('lead_up_events')
       .select('id, title, start_time, location, event_date, visible, lead_up_event_rsvps(clerk_user_id)')
       .eq('event_date', targetDate)
       .eq('visible', true),
     // Recurring nights: the signup names its date.
-    supabaseAdmin
+    db
       .from('member_shift_signups')
       .select('clerk_user_id, occurrence_date, schedule_events(id, title, time, start_time, event_date, visible)')
       .eq('occurrence_date', targetDate),
     // Non-recurring single holds: occurrence_date NULL, event dated that day.
-    supabaseAdmin
+    db
       .from('member_shift_signups')
       .select('clerk_user_id, occurrence_date, schedule_events(id, title, time, start_time, event_date, visible)')
       .is('occurrence_date', null),
@@ -120,11 +121,11 @@ export async function collectEventReminders(targetDate: string): Promise<Reminde
   // clerk_user_id). A member row wins when both exist.
   const ids = Array.from(byMember.keys())
   const [{ data: members }, { data: volunteers }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('members')
       .select('clerk_user_id, email, first_name, preferred_name, status, suspended_at')
       .in('clerk_user_id', ids),
-    supabaseAdmin
+    db
       .from('volunteers')
       .select('clerk_user_id, email, first_name, preferred_name, status')
       .in('clerk_user_id', ids),

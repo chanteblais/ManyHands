@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 
 // Group Collections — the configurable container above leaf `groups` (see
 // migration 042 + lib/groups.ts). An organizer names a collection ("Contributions",
@@ -39,16 +39,17 @@ export type GroupCollectionWithGroups = GroupCollection & {
 // `collection_id` is null (shouldn't happen post-backfill, but possible if a
 // collection was deleted with ON DELETE SET NULL) are returned under a synthetic
 // `uncollected` bucket so the admin can always see and re-home them.
-export async function getGroupCollections(): Promise<{
+export async function getGroupCollections(communityId: string): Promise<{
   collections: GroupCollectionWithGroups[]
   uncollected: GroupCollectionWithGroups['groups']
 }> {
+  const db = tenantDb(communityId)
   const [{ data: collections }, { data: groups }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('group_collections')
       .select('id, name, description, selection, show_on_profile, self_join, sort_order')
       .order('sort_order', { ascending: true }),
-    supabaseAdmin
+    db
       .from('groups')
       .select('id, name, icon, icon_image, description, apply_selectable, sort_order, collection_id')
       .order('sort_order', { ascending: true }),

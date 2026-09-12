@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const body = await req.json()
   const allowed = ['title', 'body', 'pinned', 'visible', 'expires_at']
@@ -13,7 +17,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
     if (key in body) updates[key] = body[key]
   }
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('announcements')
     .update(updates)
     .eq('id', params.id)
@@ -28,7 +32,10 @@ export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: s
   const params = await props.params;
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { error } = await supabaseAdmin
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const { error } = await db
     .from('announcements')
     .delete()
     .eq('id', params.id)

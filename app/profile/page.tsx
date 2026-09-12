@@ -128,14 +128,14 @@ export default async function ProfilePage() {
         ])
       : ([{ data: null }, { data: null }] as const),
     // Groups the member belongs to (replaces the old setup_preference "contributions").
-    getMemberGroups(memberClerkId),
+    getMemberGroups(community.id, memberClerkId),
     // Shared-resource claims ("I'll bring one") — BRINGING rows on the commitments card.
-    getMemberResourceClaims(memberClerkId),
+    getMemberResourceClaims(community.id, memberClerkId),
     // Attunement config (Admin → Manage → Attunement Tasks) + distinction rules.
     getPageContent(community.id, ['config_attunement_tasks', 'config_shift_signup_open', 'config_distinctions', 'config_profile_fields', 'config_dues']),
     // Shift-hours state: held hours per shift type + obligations derived from the
     // member's groups/roles. Same helper as the home dashboard — keep in sync.
-    getMemberShiftState(memberClerkId),
+    getMemberShiftState(community.id, memberClerkId),
     // Canonical member row (Phase 1 member_profiles) for stored profile values.
     resolveMember(community.id, memberClerkId, email),
     // Email preferences — server-rendered so NotificationPreferences skips its
@@ -196,7 +196,7 @@ export default async function ProfilePage() {
   // from reported Gatherings-Attended years). Guarded — empty when no member row
   // exists yet, so everything falls back to application-data-only behavior.
   const [profileValues, awardIds] = profileMember
-    ? await Promise.all([getMemberProfileValues(community.id, profileMember.id), getMemberAwards(profileMember.id)])
+    ? await Promise.all([getMemberProfileValues(community.id, profileMember.id), getMemberAwards(community.id, profileMember.id)])
     : [{} as Record<string, unknown>, null]
   // Profile-completion nudge: registry fields flagged "catch-up" (askExisting)
   // that this member hasn't filled and hasn't permanently dismissed. Computed

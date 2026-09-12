@@ -2,7 +2,8 @@
 // synthetic late-night rows, so the after-midnight rendering can be checked
 // without planting test events in the shared database. 404 in production.
 import { notFound } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { shiftColorIndexMap } from '@/lib/shift-colors'
 import { buildScheduleDays } from '@/lib/schedule-days'
 import { displayPlacement } from '@/lib/late-night'
@@ -31,16 +32,18 @@ const SYNTHETIC = [
 
 export default async function DevSchedulePage() {
   if (process.env.NODE_ENV === 'production') notFound()
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const [{ data: eventsRaw }, { data: shiftTypes }, { data: configRows }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('schedule_events')
       .select('id, day, time, title, subtitle, detail_desc, icon_type, highlight, is_recurring, recurrence_days, event_date, participation_type, shift_type_id')
       .eq('visible', true)
       .eq('show_on_schedule', true)
       .order('sort_order', { ascending: true }),
-    supabaseAdmin.from('shift_types').select('id').order('sort_order'),
-    supabaseAdmin.from('page_content').select('key, value').in('key', ['config_event_start_date', 'config_event_end_date']),
+    db.from('shift_types').select('id').order('sort_order'),
+    db.from('page_content').select('key, value').in('key', ['config_event_start_date', 'config_event_end_date']),
   ])
 
   const colorIndex = shiftColorIndexMap(shiftTypes ?? [])

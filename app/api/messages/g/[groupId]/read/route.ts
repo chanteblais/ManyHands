@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
+import { getCommunity } from '@/lib/community'
 import { findGroupConversation, isGroupMember, markConversationRead } from '@/lib/conversations'
 
 export const dynamic = 'force-dynamic'
@@ -10,10 +11,11 @@ export async function POST(_req: Request, props: { params: Promise<{ groupId: st
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  if (!(await isGroupMember(params.groupId, userId))) return NextResponse.json({ ok: true })
+  const community = await getCommunity()
+  if (!(await isGroupMember(community.id, params.groupId, userId))) return NextResponse.json({ ok: true })
 
-  const convId = await findGroupConversation(params.groupId)
-  if (convId) await markConversationRead(convId, userId)
+  const convId = await findGroupConversation(community.id, params.groupId)
+  if (convId) await markConversationRead(community.id, convId, userId)
 
   return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } })
 }

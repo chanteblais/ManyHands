@@ -118,7 +118,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
           .maybeSingle()
       : { data: null },
     // Group affiliations — the member's "Contributions" (Setup / Decor / Teardown …).
-    getMemberGroups(member.clerk_user_id as string | null),
+    getMemberGroups(community.id, member.clerk_user_id as string | null),
     getPageContent(community.id, ['config_distinctions', 'config_profile_fields']),
     resolveMember(community.id, (member.clerk_user_id as string | null) ?? null),
     // Shifts the member holds — same source as their own /profile commitments
@@ -139,7 +139,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
   // Merged namespace: stored profile values ∪ derived system facts (system wins).
   // Guarded — falls back to system-facts-only when no member row exists yet.
   const [profileValues, awardedIdList] = profileMember
-    ? await Promise.all([getMemberProfileValues(community.id, profileMember.id), getMemberAwards(profileMember.id)])
+    ? await Promise.all([getMemberProfileValues(community.id, profileMember.id), getMemberAwards(community.id, profileMember.id)])
     : [{} as Record<string, unknown>, null]
   const awardedIds = awardedIdList ? new Set(awardedIdList) : undefined
 

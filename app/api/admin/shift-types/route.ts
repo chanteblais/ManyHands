@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 import { getAdminShiftTypes } from '@/lib/admin-program-data'
 
@@ -10,8 +11,11 @@ import { getAdminShiftTypes } from '@/lib/admin-program-data'
 export async function GET() {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   try {
-    return NextResponse.json({ shiftTypes: await getAdminShiftTypes() })
+    return NextResponse.json({ shiftTypes: await getAdminShiftTypes(community.id) })
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 })
   }
@@ -20,10 +24,13 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const body = await req.json()
   if (!body.name) return NextResponse.json({ error: 'name is required' }, { status: 400 })
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('shift_types')
     .insert({ name: body.name, icon: body.icon || null, sort_order: body.sort_order ?? 0 })
     .select('id, name, icon, sort_order')

@@ -71,7 +71,7 @@ export async function suspendMember(
     // per-(group, member) idempotence would find the stale note and skip the
     // welcome when they're re-added after resuming. Keep last — the entries
     // above are destructured by position.
-    deleteGroupWelcome(member.clerk_user_id),
+    deleteGroupWelcome(communityId, member.clerk_user_id),
   ])
   return {
     roleRemoved: (campSignup.count ?? 0) > 0,

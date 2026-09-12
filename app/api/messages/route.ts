@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity, type Community } from '@/lib/community'
 import { getNotificationPreferences } from '@/lib/notification-prefs'
 import { dispatchMemberNotification } from '@/lib/notify'
@@ -19,8 +19,9 @@ const EMAIL_THROTTLE_MS = 30 * 60 * 1000 // 30 minutes
 export async function GET() {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
-  const conversations = await getInboxConversations(userId)
+  const conversations = await getInboxConversations(community.id, userId)
   return NextResponse.json({ conversations }, { headers: { 'Cache-Control': 'no-store' } })
 }
 
@@ -29,6 +30,7 @@ export async function POST(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const { recipientId, body } = await req.json()
   if (!recipientId || !body?.trim()) {
@@ -46,7 +48,7 @@ export async function POST(req: Request) {
   // paid a Clerk Backend-API call just for a name fallback).
   const [{ data: recipient }, { data: senderApp }, existingConvId] = await Promise.all([
     // Verify recipient is an approved member (email feeds the notification below).
-    supabaseAdmin
+    db
       .from('members')
       .select('clerk_user_id, first_name, preferred_name, email')
       .eq('clerk_user_id', recipientId)
@@ -55,14 +57,14 @@ export async function POST(req: Request) {
     // Snapshot the sender's display name onto the message so the conversation
     // stays readable even if the sender's application is later deleted.
     // status rides along for the sender-side membership gate below.
-    supabaseAdmin
+    db
       .from('members')
       .select('preferred_name, first_name, status')
       .eq('clerk_user_id', userId)
       .maybeSingle(),
     // Read-only lookup here; creation (below) waits for the recipient check so
     // a bad recipient id never leaves a dangling conversation.
-    findDirectConversation(userId, recipientId),
+    findDirectConversation(community.id, userId, recipientId),
   ])
 
   if (!recipient) return NextResponse.json({ error: 'Recipient not found' }, { status: 404 })
@@ -77,9 +79,9 @@ export async function POST(req: Request) {
 
   // Attach to the direct conversation (resolve-or-create), so the message lives in
   // the conversations model. recipient_clerk_id is still set for DMs (legacy reads).
-  const conversationId = existingConvId ?? await getOrCreateDirectConversation(userId, recipientId)
+  const conversationId = existingConvId ?? await getOrCreateDirectConversation(community.id, userId, recipientId)
 
-  const { data: message, error } = await supabaseAdmin
+  const { data: message, error } = await db
     .from('messages')
     .insert({ conversation_id: conversationId, sender_clerk_id: userId, recipient_clerk_id: recipientId, body: body.trim(), sender_name: senderName })
     .select()
@@ -90,7 +92,7 @@ export async function POST(req: Request) {
   // In-app notification and the (guarded, best-effort) push+email dispatch
   // are independent.
   await Promise.all([
-    supabaseAdmin.from('user_notifications').insert({
+    db.from('user_notifications').insert({
       clerk_user_id: recipientId,
       event_type: 'new_message',
       message: `${senderName} sent you a message`,
@@ -125,6 +127,7 @@ async function notifyRecipient(opts: {
   messageBody: string
 }) {
   try {
+    const db = tenantDb(opts.community.id)
     // The preference and throttle checks are independent — one round-trip.
     const since = new Date(Date.now() - EMAIL_THROTTLE_MS).toISOString()
     const [prefs, { data: recent }] = await Promise.all([
@@ -132,7 +135,7 @@ async function notifyRecipient(opts: {
       getNotificationPreferences(opts.recipientId),
       // Throttle: skip the email if we already emailed this recipient about a
       // message from this sender within the throttle window.
-      supabaseAdmin
+      db
         .from('messages')
         .select('id')
         .eq('sender_clerk_id', opts.senderId)
@@ -196,7 +199,7 @@ async function sendThrottledMessageEmail(opts: {
   }
 
   // Mark this exact message as having triggered an email for throttling.
-  await supabaseAdmin
+  await tenantDb(opts.community.id)
     .from('messages')
     .update({ notified_at: new Date().toISOString() })
     .eq('id', opts.messageId)

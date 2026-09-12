@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import {
   buildAttunementChecklist,
   memberGroupCounts,
@@ -32,15 +32,16 @@ const BATCH_SIZE = 8
  * clerk_user_id are skipped — they can't have groups/shifts/roles yet, and the
  * email's links would land them nowhere actionable.
  */
-export async function collectOutstandingAttunement(): Promise<MemberAttunement[]> {
+export async function collectOutstandingAttunement(communityId: string): Promise<MemberAttunement[]> {
+  const db = tenantDb(communityId)
   const [{ data: membersRaw }, { data: configRows }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('members')
       .select('clerk_user_id, email, first_name, preferred_name, avatar_url, dues_paid_at, dues_reported_at')
       .eq('status', 'approved')
       // Suspended members have no commitments to chase — don't nudge them (063).
       .is('suspended_at', null),
-    supabaseAdmin
+    db
       .from('page_content')
       .select('key, value')
       .in('key', ['config_attunement_tasks', 'config_shift_signup_open', 'config_dues']),
@@ -52,7 +53,7 @@ export async function collectOutstandingAttunement(): Promise<MemberAttunement[]
   if (members.length === 0) return []
 
   // Role state for everyone in one query (fetch + join in JS).
-  const { data: signupRows } = await supabaseAdmin
+  const { data: signupRows } = await db
     .from('camp_signups')
     .select('clerk_user_id, role_id, role_approval_status')
     .in('clerk_user_id', members.map(m => m.clerk_user_id as string))
@@ -65,8 +66,8 @@ export async function collectOutstandingAttunement(): Promise<MemberAttunement[]
       batch.map(async m => {
         const clerkId = m.clerk_user_id as string
         const [memberGroups, shiftState] = await Promise.all([
-          getMemberGroups(clerkId),
-          getMemberShiftState(clerkId),
+          getMemberGroups(communityId, clerkId),
+          getMemberShiftState(communityId, clerkId),
         ])
         const signup = signupByClerkId.get(clerkId)
         const { groupCountsByCollection, totalGroupCount } = memberGroupCounts(memberGroups)

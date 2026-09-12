@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,20 +10,22 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // Approval gate, own memberships, and the open-group registry are
   // independent — one parallel round trip instead of three serial ones.
   const [{ data: app }, { data: mine }, { data: groups, error }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('members')
       .select('status')
       .eq('clerk_user_id', userId)
       .maybeSingle(),
-    supabaseAdmin
+    db
       .from('group_members')
       .select('group_id')
       .eq('clerk_user_id', userId),
-    supabaseAdmin
+    db
       .from('groups')
       .select('id, name, icon, icon_image, description')
       .eq('join_policy', 'open')
@@ -40,7 +43,7 @@ export async function GET() {
 
   // Member counts (one query, joined in JS).
   const { data: memberRows } = joinable.length
-    ? await supabaseAdmin.from('group_members').select('group_id').in('group_id', joinable.map(g => g.id))
+    ? await db.from('group_members').select('group_id').in('group_id', joinable.map(g => g.id))
     : { data: [] }
   const counts: Record<string, number> = {}
   for (const r of memberRows ?? []) counts[r.group_id] = (counts[r.group_id] ?? 0) + 1

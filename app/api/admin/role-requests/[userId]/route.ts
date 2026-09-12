@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function PATCH(req: NextRequest, props: { params: Promise<{ userId: string }> }) {
   const params = await props.params;
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const { decision } = await req.json() // 'approved' | 'rejected'
   if (decision !== 'approved' && decision !== 'rejected') {
@@ -14,7 +18,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ userId:
   const { userId } = params
 
   // Fetch the signup to get role info
-  const { data: signup } = await supabaseAdmin
+  const { data: signup } = await db
     .from('camp_signups')
     .select('role_id')
     .eq('clerk_user_id', userId)
@@ -23,7 +27,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ userId:
   if (!signup) return NextResponse.json({ error: 'Signup not found' }, { status: 404 })
 
   // Fetch role name for notification
-  const { data: role } = await supabaseAdmin
+  const { data: role } = await db
     .from('roles')
     .select('name')
     .eq('id', signup.role_id)
@@ -33,7 +37,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ userId:
   const update: Record<string, unknown> = { role_approval_status: decision }
   if (decision === 'rejected') update.role_id = null
 
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('camp_signups')
     .update(update)
     .eq('clerk_user_id', userId)
@@ -46,7 +50,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ userId:
     ? `Your request for the "${roleName}" role has been approved.`
     : `Your request for the "${roleName}" role was not approved. Please choose a different role.`
 
-  await supabaseAdmin.from('user_notifications').insert({
+  await db.from('user_notifications').insert({
     clerk_user_id: userId,
     event_type: decision === 'approved' ? 'role_approved' : 'role_rejected',
     message,

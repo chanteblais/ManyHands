@@ -1,7 +1,7 @@
 import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { requireAdmin } from '@/lib/admin-auth'
 import { AdminNav } from '../AdminNav'
 import { CategoryHeading } from '../CategoryHeading'
@@ -35,6 +35,7 @@ export default async function ConfigurePage() {
 
   if (!(await requireAdmin())) redirect('/')
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const [
     { data: configRows },
@@ -46,33 +47,33 @@ export default async function ConfigurePage() {
     { data: applications },
     runway,
   ] = await Promise.all([
-    supabaseAdmin
+    db
       .from('page_content')
       .select('key, value')
       .in('key', ['config_attunement_tasks', 'config_distinctions', 'config_profile_fields', 'config_event_start_date', 'config_event_end_date', 'config_attunement_nudge_days']),
     // Group icon images — offered as medal art in the distinctions builder.
-    supabaseAdmin
+    db
       .from('groups')
       .select('name, icon_image')
       .not('icon_image', 'is', null)
       .order('sort_order'),
     // Collections + their group counts — power the Attunement "collection membership"
     // requirement (which collection, and the cap on how many groups can be required).
-    getGroupCollections(),
+    getGroupCollections(community.id),
     // Shift types — offered as targets for a shift-hours attunement task.
-    supabaseAdmin
+    db
       .from('shift_types').select('id, name').order('sort_order'),
     // Department count — the Departments panel's status chip (the manager
     // itself loads its data client-side).
-    supabaseAdmin
+    db
       .from('departments').select('id', { count: 'exact', head: true }),
-    supabaseAdmin
+    db
       .from('admin_notifications')
       .select('id, application_id, event_type, message, details, created_at, read_at')
       .order('created_at', { ascending: false })
       .limit(20),
     // Approved members + which of them are admins in Clerk (for the Admins manager).
-    supabaseAdmin
+    db
       .from('applications')
       .select('clerk_user_id, first_name, last_name, preferred_name, email, status')
       .eq('status', 'approved'),

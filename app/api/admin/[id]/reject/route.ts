@@ -47,7 +47,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
       .from('group_members')
       .delete()
       .eq('clerk_user_id', application.clerk_user_id)
-    await deleteGroupWelcome(application.clerk_user_id)
+    await deleteGroupWelcome(community.id, application.clerk_user_id)
   }
 
   // Notify the applicant

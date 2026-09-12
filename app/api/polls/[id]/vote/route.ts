@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 
@@ -9,6 +9,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const body = await req.json()
   const optionIndexes: number[] = Array.isArray(body.option_indexes) ? body.option_indexes : [body.option_index]
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   // Polls live on the member dashboard — approved members only.
   const [approvedMember, { data: poll }] = await Promise.all([
     getApprovedMember(community.id, userId),
-    supabaseAdmin
+    db
       .from('polls')
       .select('id, allow_multiple, expires_at, options')
       .eq('id', params.id)
@@ -43,14 +44,14 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   }
 
   // Remove existing votes for this user+poll, then insert new ones
-  await supabaseAdmin.from('poll_votes').delete().eq('poll_id', params.id).eq('clerk_user_id', userId)
+  await db.from('poll_votes').delete().eq('poll_id', params.id).eq('clerk_user_id', userId)
 
   const rows = optionIndexes.map(option_index => ({ poll_id: params.id, clerk_user_id: userId, option_index }))
-  const { error } = await supabaseAdmin.from('poll_votes').insert(rows)
+  const { error } = await db.from('poll_votes').insert(rows)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   // Return updated vote counts
-  const { data: votes } = await supabaseAdmin
+  const { data: votes } = await db
     .from('poll_votes')
     .select('option_index')
     .eq('poll_id', params.id)

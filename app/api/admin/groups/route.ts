@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { getOrCreateGroupConversation } from '@/lib/conversations'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function GET() {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { data: groups, error } = await supabaseAdmin
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const { data: groups, error } = await db
     .from('groups')
     .select('id, name, description, icon, icon_image, apply_selectable, sort_order, join_policy, visibility, collection_id, required_shift_type_id, required_shift_hours')
     .order('sort_order', { ascending: true })
@@ -14,7 +18,7 @@ export async function GET() {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   // Attach a member count to each group (one extra query, joined in JS).
-  const { data: memberRows } = await supabaseAdmin
+  const { data: memberRows } = await db
     .from('group_members')
     .select('group_id')
   const counts: Record<string, number> = {}
@@ -28,12 +32,15 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const body = await req.json()
   const { name, description, icon, icon_image, apply_selectable, sort_order, join_policy, visibility, collection_id, required_shift_type_id, required_shift_hours } = body
 
   if (!name) return NextResponse.json({ error: 'name is required' }, { status: 400 })
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('groups')
     .insert({
       name,
@@ -55,7 +62,7 @@ export async function POST(req: NextRequest) {
 
   // Give the new group its message thread up front so members have an entry point.
   try {
-    await getOrCreateGroupConversation(data.id)
+    await getOrCreateGroupConversation(community.id, data.id)
   } catch (err) {
     console.error('[POST /api/admin/groups] conversation create failed:', err)
   }

@@ -2,14 +2,17 @@
 // auth gate, so the headless preview browser can verify it. Returns 404 in
 // production — never ships a usable bypass.
 import { notFound } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { mergeMemberConfig, mergeVolunteerConfig } from '@/lib/form-config'
 import { ApplicationBuilder } from '../../admin/configure/ApplicationBuilder'
 
 export default async function DevBuilderPage() {
   if (process.env.NODE_ENV === 'production') notFound()
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
-  const { data: configRows } = await supabaseAdmin
+  const { data: configRows } = await db
     .from('page_content')
     .select('key, value')
     .in('key', ['config_member_form', 'config_volunteer_form'])

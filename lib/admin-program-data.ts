@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 import { memberDisplayNames, applicationIdsByClerkId } from './member-names'
 import { fetchShiftHolds } from './shift-signups'
 import type { ScheduleEvent, ShiftTypeOption, RosterEntry } from '@/app/admin/ScheduleManager'
@@ -14,8 +14,9 @@ import type { AdminRadioEvent } from '@/app/admin/RadioManager'
 
 export type { RosterEntry }
 
-export async function getAdminScheduleEvents(): Promise<ScheduleEvent[]> {
-  const { data, error } = await supabaseAdmin
+export async function getAdminScheduleEvents(communityId: string): Promise<ScheduleEvent[]> {
+  const db = tenantDb(communityId)
+  const { data, error } = await db
     .from('schedule_events')
     .select('*')
     .order('sort_order', { ascending: true })
@@ -25,8 +26,9 @@ export async function getAdminScheduleEvents(): Promise<ScheduleEvent[]> {
 
 export type ShiftTypeRow = ShiftTypeOption & { icon: string | null; sort_order: number }
 
-export async function getAdminShiftTypes(): Promise<ShiftTypeRow[]> {
-  const { data, error } = await supabaseAdmin
+export async function getAdminShiftTypes(communityId: string): Promise<ShiftTypeRow[]> {
+  const db = tenantDb(communityId)
+  const { data, error } = await db
     .from('shift_types')
     .select('id, name, icon, sort_order')
     .order('sort_order', { ascending: true })
@@ -41,7 +43,7 @@ export async function getAdminShiftTypes(): Promise<ShiftTypeRow[]> {
 // fetchShiftHolds), so the admin count always agrees with the member-facing
 // "N signed up".
 export async function getAdminRosters(communityId: string): Promise<Record<string, RosterEntry[]>> {
-  const many = await fetchShiftHolds()
+  const many = await fetchShiftHolds(communityId)
 
   // Each night of a recurring shift is its own roster: hold identity is
   // (event, occurrence, member). Rosters stay keyed by event; the entry carries
@@ -83,14 +85,15 @@ export async function getAdminRosters(communityId: string): Promise<Record<strin
 }
 
 // All lead-up gatherings with their RSVP headcounts (admin view).
-export async function getAdminLeadUpEvents(): Promise<LeadUpEvent[]> {
+export async function getAdminLeadUpEvents(communityId: string): Promise<LeadUpEvent[]> {
+  const db = tenantDb(communityId)
   const [{ data, error }, { data: rsvps }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('lead_up_events')
       .select('*')
       .order('event_date', { ascending: true, nullsFirst: false })
       .order('sort_order', { ascending: true }),
-    supabaseAdmin.from('lead_up_event_rsvps').select('lead_up_event_id'),
+    db.from('lead_up_event_rsvps').select('lead_up_event_id'),
   ])
   if (error) throw new Error(error.message)
 
@@ -102,8 +105,9 @@ export async function getAdminLeadUpEvents(): Promise<LeadUpEvent[]> {
 }
 
 // The Radio manager's "recently on the air" list (all kinds, for curation).
-export async function getAdminRadioEvents(): Promise<AdminRadioEvent[]> {
-  const { data, error } = await supabaseAdmin
+export async function getAdminRadioEvents(communityId: string): Promise<AdminRadioEvent[]> {
+  const db = tenantDb(communityId)
+  const { data, error } = await db
     .from('radio_events')
     .select('id, kind, message, icon, actor_name, created_at')
     .eq('visible', true)

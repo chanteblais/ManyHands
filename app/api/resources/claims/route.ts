@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 import {
@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const { resource_id, quantity } = await req.json()
   if (!resource_id || typeof quantity !== 'number' || !Number.isFinite(quantity)) {
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
   // Approved members only — same gate as the /participate page this backs.
   const [member, { data: resource }] = await Promise.all([
     getApprovedMember(community.id, userId),
-    supabaseAdmin
+    db
       .from('resources')
       .select('id, name, list_id, offered_by, resource_lists(visible)')
       .eq('id', resource_id)
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (qty === 0) {
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('resource_claims')
       .delete()
       .eq('resource_id', resource_id)
@@ -61,23 +62,23 @@ export async function POST(req: NextRequest) {
     // Retracting your own offer removes the listing too — unless others have
     // piled on, in which case the item has become communal and stays.
     if (resource.offered_by === userId) {
-      const { count } = await supabaseAdmin
+      const { count } = await db
         .from('resource_claims')
         .select('id', { count: 'exact', head: true })
         .eq('resource_id', resource_id)
       if ((count ?? 0) === 0) {
-        await supabaseAdmin.from('resources').delete().eq('id', resource_id)
+        await db.from('resources').delete().eq('id', resource_id)
       }
     }
   } else {
-    const { data: priorClaim } = await supabaseAdmin
+    const { data: priorClaim } = await db
       .from('resource_claims')
       .select('id')
       .eq('resource_id', resource_id)
       .eq('clerk_user_id', userId)
       .maybeSingle()
 
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('resource_claims')
       .upsert(
         { resource_id, clerk_user_id: userId, quantity: qty, updated_at: new Date().toISOString() },
@@ -89,8 +90,8 @@ export async function POST(req: NextRequest) {
     // quantity edits are silent, and unclaims are never broadcast.
     if (!priorClaim && resource.name) {
       const [actorName, state] = await Promise.all([
-        getRadioActorName(userId),
-        resourceStateAfterClaim(resource_id, resource.list_id),
+        getRadioActorName(community.id, userId),
+        resourceStateAfterClaim(community.id, resource_id, resource.list_id),
       ])
       await postSourcedRadioEvent(community.id, 'contribution', {
         ...contributionRadioPost(actorName, resource.name, qty, state.remaining),

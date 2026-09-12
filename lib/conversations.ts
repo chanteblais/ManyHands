@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 
 // Helpers for the conversations model (group messaging — see docs/group-messaging.md).
 // Phase 2 uses these to back the existing 1:1 DM endpoints; group threads come later.
@@ -11,8 +11,8 @@ export function directKey(a: string, b: string): string {
 }
 
 // Find the existing direct conversation between two users, or null. Does not create.
-export async function findDirectConversation(a: string, b: string): Promise<string | null> {
-  const { data } = await supabaseAdmin
+export async function findDirectConversation(communityId: string, a: string, b: string): Promise<string | null> {
+  const { data } = await tenantDb(communityId)
     .from('conversations')
     .select('id')
     .eq('direct_key', directKey(a, b))
@@ -23,23 +23,24 @@ export async function findDirectConversation(a: string, b: string): Promise<stri
 // Resolve-or-create the direct conversation between two users, ensuring both are
 // participants. Idempotent and race-safe (the unique index on direct_key is the
 // source of truth).
-export async function getOrCreateDirectConversation(a: string, b: string): Promise<string> {
+export async function getOrCreateDirectConversation(communityId: string, a: string, b: string): Promise<string> {
+  const db = tenantDb(communityId)
   const key = directKey(a, b)
 
-  const existing = await findDirectConversation(a, b)
+  const existing = await findDirectConversation(communityId, a, b)
   let convId: string
 
   if (existing) {
     convId = existing
   } else {
-    const { data: created, error } = await supabaseAdmin
+    const { data: created, error } = await db
       .from('conversations')
       .insert({ type: 'direct', direct_key: key })
       .select('id')
       .single()
     if (error) {
       // Likely a concurrent insert hit the unique index first — re-read.
-      const again = await findDirectConversation(a, b)
+      const again = await findDirectConversation(communityId, a, b)
       if (!again) throw error
       convId = again
     } else {
@@ -48,7 +49,7 @@ export async function getOrCreateDirectConversation(a: string, b: string): Promi
   }
 
   // Ensure both participants exist; never clobber existing last_read_at.
-  await supabaseAdmin.from('conversation_participants').upsert(
+  await db.from('conversation_participants').upsert(
     [
       { conversation_id: convId, clerk_user_id: a },
       { conversation_id: convId, clerk_user_id: b },
@@ -62,8 +63,8 @@ export async function getOrCreateDirectConversation(a: string, b: string): Promi
 // ── Group conversation helpers ───────────────────────────────────────────────
 
 // The conversation bound to a group, or null. (One per group.)
-export async function findGroupConversation(groupId: string): Promise<string | null> {
-  const { data } = await supabaseAdmin
+export async function findGroupConversation(communityId: string, groupId: string): Promise<string | null> {
+  const { data } = await tenantDb(communityId)
     .from('conversations')
     .select('id')
     .eq('type', 'group')
@@ -74,16 +75,16 @@ export async function findGroupConversation(groupId: string): Promise<string | n
 
 // The group's conversation, creating it if missing. Used on group creation and as
 // a fallback on thread access (existing groups got theirs in migration 033).
-export async function getOrCreateGroupConversation(groupId: string): Promise<string> {
-  const existing = await findGroupConversation(groupId)
+export async function getOrCreateGroupConversation(communityId: string, groupId: string): Promise<string> {
+  const existing = await findGroupConversation(communityId, groupId)
   if (existing) return existing
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await tenantDb(communityId)
     .from('conversations')
     .insert({ type: 'group', group_id: groupId })
     .select('id')
     .single()
   if (error) {
-    const again = await findGroupConversation(groupId)
+    const again = await findGroupConversation(communityId, groupId)
     if (!again) throw error
     return again
   }
@@ -110,14 +111,15 @@ export function visibleToFilter(userId: string): string {
 // removal paths delete the note (deleteGroupWelcome) so a re-add re-welcomes.
 // Best-effort: a failure here must never block the membership write it follows.
 // Keep the body in sync with the migration 071 backfill.
-export async function sendGroupWelcome(groupId: string, userId: string): Promise<void> {
+export async function sendGroupWelcome(communityId: string, groupId: string, userId: string): Promise<void> {
   try {
+    const db = tenantDb(communityId)
     const [{ data: group }, convId] = await Promise.all([
-      supabaseAdmin.from('groups').select('name').eq('id', groupId).maybeSingle(),
-      getOrCreateGroupConversation(groupId),
+      db.from('groups').select('name').eq('id', groupId).maybeSingle(),
+      getOrCreateGroupConversation(communityId, groupId),
     ])
     if (!group) return
-    const { data: existing } = await supabaseAdmin
+    const { data: existing } = await db
       .from('messages')
       .select('id')
       .eq('conversation_id', convId)
@@ -125,7 +127,7 @@ export async function sendGroupWelcome(groupId: string, userId: string): Promise
       .eq('visible_to', userId)
       .limit(1)
     if (existing?.length) return
-    await supabaseAdmin.from('messages').insert({
+    await db.from('messages').insert({
       conversation_id: convId,
       sender_clerk_id: SYSTEM_SENDER,
       sender_name: group.name,
@@ -141,15 +143,15 @@ export async function sendGroupWelcome(groupId: string, userId: string): Promise
 // group_members rows must call this, or sendGroupWelcome's idempotence finds the
 // stale note and the re-add is silently welcome-less. Omit groupId to clear
 // across all groups (member removal / rejection / suspension).
-export async function deleteGroupWelcome(userId: string, groupId?: string): Promise<void> {
+export async function deleteGroupWelcome(communityId: string, userId: string, groupId?: string): Promise<void> {
   try {
-    let query = supabaseAdmin
+    let query = tenantDb(communityId)
       .from('messages')
       .delete()
       .eq('sender_clerk_id', SYSTEM_SENDER)
       .eq('visible_to', userId)
     if (groupId) {
-      const convId = await findGroupConversation(groupId)
+      const convId = await findGroupConversation(communityId, groupId)
       if (!convId) return
       query = query.eq('conversation_id', convId)
     }
@@ -159,8 +161,8 @@ export async function deleteGroupWelcome(userId: string, groupId?: string): Prom
   }
 }
 
-export async function isGroupMember(groupId: string, userId: string): Promise<boolean> {
-  const { data } = await supabaseAdmin
+export async function isGroupMember(communityId: string, groupId: string, userId: string): Promise<boolean> {
+  const { data } = await tenantDb(communityId)
     .from('group_members')
     .select('clerk_user_id')
     .eq('group_id', groupId)
@@ -172,8 +174,8 @@ export async function isGroupMember(groupId: string, userId: string): Promise<bo
 // Advance a user's read cursor to now, creating their participant row if needed
 // (group participant rows are created lazily on first read/post). Only sets
 // last_read_at — muted / email_opt_in keep their existing values on conflict.
-export async function markConversationRead(conversationId: string, userId: string): Promise<void> {
-  await supabaseAdmin.from('conversation_participants').upsert(
+export async function markConversationRead(communityId: string, conversationId: string, userId: string): Promise<void> {
+  await tenantDb(communityId).from('conversation_participants').upsert(
     { conversation_id: conversationId, clerk_user_id: userId, last_read_at: new Date().toISOString() },
     { onConflict: 'conversation_id,clerk_user_id' },
   )
@@ -193,21 +195,23 @@ export type MyConversation = {
 // Read/write a participant's per-conversation prefs (mute / email opt-in). The
 // upsert only touches the supplied keys, so it never clobbers last_read_at.
 export async function setParticipantPrefs(
+  communityId: string,
   conversationId: string,
   userId: string,
   prefs: { muted?: boolean; email_opt_in?: boolean },
 ): Promise<void> {
-  await supabaseAdmin.from('conversation_participants').upsert(
+  await tenantDb(communityId).from('conversation_participants').upsert(
     { conversation_id: conversationId, clerk_user_id: userId, ...prefs },
     { onConflict: 'conversation_id,clerk_user_id' },
   )
 }
 
 export async function getParticipantPrefs(
+  communityId: string,
   conversationId: string,
   userId: string,
 ): Promise<{ muted: boolean; email_opt_in: boolean }> {
-  const { data } = await supabaseAdmin
+  const { data } = await tenantDb(communityId)
     .from('conversation_participants')
     .select('muted, email_opt_in')
     .eq('conversation_id', conversationId)
@@ -220,14 +224,15 @@ export async function getParticipantPrefs(
 // Direct conversations come from participant rows; group conversations are derived
 // from group membership (the source of truth) so a newly added member sees their
 // group even before a participant row exists.
-export async function getMyConversations(userId: string): Promise<MyConversation[]> {
+export async function getMyConversations(communityId: string, userId: string): Promise<MyConversation[]> {
+  const db = tenantDb(communityId)
   // My participant rows and my group memberships are independent — fetch together.
   const [{ data: parts, error }, { data: myGroups }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('conversation_participants')
       .select('conversation_id, last_read_at, muted')
       .eq('clerk_user_id', userId),
-    supabaseAdmin
+    db
       .from('group_members')
       .select('group_id')
       .eq('clerk_user_id', userId),
@@ -246,13 +251,13 @@ export async function getMyConversations(userId: string): Promise<MyConversation
   // this batch; only direct rows read from it below.
   const [directConvsRes, groupConvsRes, othersRes] = await Promise.all([
     partIds.length
-      ? supabaseAdmin.from('conversations').select('id').eq('type', 'direct').in('id', partIds)
+      ? db.from('conversations').select('id').eq('type', 'direct').in('id', partIds)
       : Promise.resolve({ data: [] }),
     groupIds.length
-      ? supabaseAdmin.from('conversations').select('id, group_id').eq('type', 'group').in('group_id', groupIds)
+      ? db.from('conversations').select('id, group_id').eq('type', 'group').in('group_id', groupIds)
       : Promise.resolve({ data: [] }),
     partIds.length
-      ? supabaseAdmin
+      ? db
           .from('conversation_participants')
           .select('conversation_id, clerk_user_id')
           .in('conversation_id', partIds)
@@ -280,8 +285,8 @@ export async function getMyConversations(userId: string): Promise<MyConversation
 
 // Total unread across all of a user's conversations (direct + group): messages they
 // didn't send, created after their per-conversation read cursor.
-export async function getUnreadCount(userId: string): Promise<number> {
-  const convs = (await getMyConversations(userId)).filter(c => !c.muted) // muted threads don't badge
+export async function getUnreadCount(communityId: string, userId: string): Promise<number> {
+  const convs = (await getMyConversations(communityId, userId)).filter(c => !c.muted) // muted threads don't badge
   if (!convs.length) return 0
 
   const lastReadByConv = new Map(convs.map(c => [c.conversationId, c.lastReadAt]))
@@ -292,7 +297,7 @@ export async function getUnreadCount(userId: string): Promise<number> {
   const oldestCursor = cursors.every((c): c is string => !!c)
     ? cursors.reduce((a, b) => (a < b ? a : b))
     : null
-  let query = supabaseAdmin
+  let query = tenantDb(communityId)
     .from('messages')
     .select('conversation_id, created_at')
     .in('conversation_id', convs.map(c => c.conversationId))

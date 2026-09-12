@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 import { sendGroupWelcome, deleteGroupWelcome } from '@/lib/conversations'
 
@@ -9,7 +10,10 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
   const params = await props.params;
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { data: rows, error } = await supabaseAdmin
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const { data: rows, error } = await db
     .from('group_members')
     .select('clerk_user_id, source, created_at')
     .eq('group_id', params.id)
@@ -20,7 +24,7 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
   const ids = (rows ?? []).map(r => r.clerk_user_id)
   const appsById: Record<string, { id: string; first_name: string; last_name: string; preferred_name: string | null; email: string; status: string }> = {}
   if (ids.length > 0) {
-    const { data: apps } = await supabaseAdmin
+    const { data: apps } = await db
       .from('applications')
       .select('id, clerk_user_id, first_name, last_name, preferred_name, email, status')
       .in('clerk_user_id', ids)
@@ -51,10 +55,13 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const params = await props.params;
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const { clerk_user_id } = await req.json()
   if (!clerk_user_id) return NextResponse.json({ error: 'clerk_user_id is required' }, { status: 400 })
 
-  const { data: inserted, error } = await supabaseAdmin
+  const { data: inserted, error } = await db
     .from('group_members')
     .upsert(
       { group_id: params.id, clerk_user_id, source: 'admin' },
@@ -66,7 +73,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
 
   // Fresh membership (not an idempotent re-add) → private welcome note in the
   // group thread, so the member's unread badge tells them they're in the group.
-  if ((inserted ?? []).length > 0) await sendGroupWelcome(params.id, clerk_user_id)
+  if ((inserted ?? []).length > 0) await sendGroupWelcome(community.id, params.id, clerk_user_id)
 
   return NextResponse.json({ success: true })
 }
@@ -76,10 +83,13 @@ export async function DELETE(req: NextRequest, props: { params: Promise<{ id: st
   const params = await props.params;
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const clerkUserId = req.nextUrl.searchParams.get('clerk_user_id')
   if (!clerkUserId) return NextResponse.json({ error: 'clerk_user_id is required' }, { status: 400 })
 
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('group_members')
     .delete()
     .eq('group_id', params.id)
@@ -88,7 +98,7 @@ export async function DELETE(req: NextRequest, props: { params: Promise<{ id: st
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   // Clear the member's private welcome note so a later re-add welcomes freshly.
-  await deleteGroupWelcome(clerkUserId, params.id)
+  await deleteGroupWelcome(community.id, clerkUserId, params.id)
 
   return NextResponse.json({ success: true })
 }

@@ -61,16 +61,16 @@ export default async function AdminPage() {
     // Suspended members (063) — marked in the roster so a member with released
     // commitments doesn't read as inexplicably empty. Shared with Overview
     // (lib/admin-counts.ts) so "who is suspended" can never drift between tabs.
-    getSuspendedClerkUserIds(),
-    getGroupNamesByUser(),
-    getShiftEventByUser(),
+    getSuspendedClerkUserIds(community.id),
+    getGroupNamesByUser(community.id),
+    getShiftEventByUser(community.id),
     getAdminRunway(community.id),
     db
       .from('admin_notifications')
       .select('id, application_id, event_type, message, details, created_at, read_at')
       .order('created_at', { ascending: false })
       .limit(20),
-    safe(getAdminRadioEvents()),
+    safe(getAdminRadioEvents(community.id)),
     db
       .from('page_content')
       .select('value')

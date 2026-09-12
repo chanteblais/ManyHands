@@ -172,7 +172,7 @@ export async function POST(req: NextRequest) {
           if (gmError) console.error('group_members insert error:', gmError)
           // Private welcome note per fresh membership — sits unread until the
           // applicant is approved and can open their inbox.
-          await Promise.all((insertedRows ?? []).map(r => sendGroupWelcome(r.group_id, userId)))
+          await Promise.all((insertedRows ?? []).map(r => sendGroupWelcome(community.id, r.group_id, userId)))
         }
       }
     }

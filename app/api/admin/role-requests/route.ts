@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function GET() {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { data: signups, error } = await supabaseAdmin
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const { data: signups, error } = await db
     .from('camp_signups')
     .select('clerk_user_id, role_id, role_approval_status, updated_at')
     .eq('role_approval_status', 'pending')
@@ -18,12 +22,12 @@ export async function GET() {
   const roleIds = Array.from(new Set(signups.map(s => s.role_id).filter(Boolean)))
   const userIds = signups.map(s => s.clerk_user_id)
   const [{ data: roles }, { data: applications }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('roles')
       .select('id, name, department_id, departments(name, icon)')
       .in('id', roleIds),
     // Applicant names from the canonical members table (Phase 5).
-    supabaseAdmin
+    db
       .from('members')
       .select('clerk_user_id, first_name, last_name, preferred_name')
       .in('clerk_user_id', userIds),

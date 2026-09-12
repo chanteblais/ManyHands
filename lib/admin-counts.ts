@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 
 // Canonical "who is suspended" population (migration 063) — a suspended member
 // stays `status = 'approved'` (full read access) but has released every
@@ -8,8 +8,9 @@ import { supabaseAdmin } from './supabase'
 // Manage marks them inline instead of hiding them) — extracted here so the
 // query and the "who counts as suspended" definition can never drift apart.
 // Mirrors the exclusion already applied to attunement nudges (`lib/attunement-nudge.ts`).
-export async function getSuspendedClerkUserIds(): Promise<Set<string>> {
-  const { data } = await supabaseAdmin
+export async function getSuspendedClerkUserIds(communityId: string): Promise<Set<string>> {
+  const db = tenantDb(communityId)
+  const { data } = await db
     .from('members')
     .select('clerk_user_id')
     .eq('status', 'approved')

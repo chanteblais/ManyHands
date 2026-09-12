@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
+import { getCommunity } from '@/lib/community'
 import { getDirectThreadMessages } from '@/lib/inbox'
 
 export const dynamic = 'force-dynamic'
@@ -14,7 +15,7 @@ export async function GET(_req: Request, props: { params: Promise<{ userId: stri
   if (!myId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
-    const messages = await getDirectThreadMessages(myId, params.userId)
+    const messages = await getDirectThreadMessages((await getCommunity()).id, myId, params.userId)
     return NextResponse.json({ messages }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to load messages'

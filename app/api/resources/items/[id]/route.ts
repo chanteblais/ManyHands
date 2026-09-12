@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 
@@ -22,6 +22,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
   const params = await props.params;
   const { userId } = await auth()
   const community = await getCommunity()
+  const db = tenantDb(community.id)
   const denied = await gate(community.id, userId)
   if (denied) return NextResponse.json({ error: denied.error }, { status: denied.status })
 
@@ -40,7 +41,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
   }
   if (Object.keys(patch).length === 0) return NextResponse.json({ error: 'Nothing to update' }, { status: 400 })
 
-  const { error } = await supabaseAdmin.from('resources').update(patch).eq('id', params.id)
+  const { error } = await db.from('resources').update(patch).eq('id', params.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
 }
@@ -49,10 +50,11 @@ export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: s
   const params = await props.params;
   const { userId } = await auth()
   const community = await getCommunity()
+  const db = tenantDb(community.id)
   const denied = await gate(community.id, userId)
   if (denied) return NextResponse.json({ error: denied.error }, { status: denied.status })
 
-  const { error } = await supabaseAdmin.from('resources').delete().eq('id', params.id)
+  const { error } = await db.from('resources').delete().eq('id', params.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
 }

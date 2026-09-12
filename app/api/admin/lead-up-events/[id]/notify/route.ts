@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { sendLeadUpGatheringEmail } from '@/lib/send-email'
 import { clockLabel } from '@/lib/shift-hours'
 import { requireAdmin } from '@/lib/admin-auth'
@@ -28,8 +28,9 @@ export async function POST(_req: NextRequest, props: { params: Promise<{ id: str
   if (!actingUserId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
-  const { data: gathering } = await supabaseAdmin
+  const { data: gathering } = await db
     .from('lead_up_events')
     .select('id, title, event_date, start_time, location, link, image_url, visible')
     .eq('id', params.id)
@@ -42,7 +43,7 @@ export async function POST(_req: NextRequest, props: { params: Promise<{ id: str
 
   // All approved members — including the sending admin, so they see the
   // blast land exactly as members do.
-  const { data: membersRaw } = await supabaseAdmin
+  const { data: membersRaw } = await db
     .from('members')
     .select('clerk_user_id, email, first_name, preferred_name')
     .eq('status', 'approved')
@@ -61,14 +62,14 @@ export async function POST(_req: NextRequest, props: { params: Promise<{ id: str
       details: { leadUpEventId: gathering.id },
     }))
   if (bellRows.length) {
-    await supabaseAdmin.from('user_notifications').insert(bellRows)
+    await db.from('user_notifications').insert(bellRows)
   }
 
   // Announcement-email preferences in one query (default ON when no row).
   const clerkIds = recipients.map(m => m.clerk_user_id).filter(Boolean) as string[]
   const optedOut = new Set<string>()
   if (clerkIds.length) {
-    const { data: prefRows } = await supabaseAdmin
+    const { data: prefRows } = await db
       .from('notification_preferences')
       .select('clerk_user_id, email_announcements')
       .in('clerk_user_id', clerkIds)
@@ -100,7 +101,7 @@ export async function POST(_req: NextRequest, props: { params: Promise<{ id: str
   }
 
   const notified_at = new Date().toISOString()
-  await supabaseAdmin.from('lead_up_events').update({ notified_at }).eq('id', gathering.id)
+  await db.from('lead_up_events').update({ notified_at }).eq('id', gathering.id)
 
   return NextResponse.json({ notified: bellRows.length, emailed, notified_at })
 }
