@@ -14,9 +14,12 @@ export const dynamic = 'force-dynamic'
 // give the function room beyond the default 10s.
 export const maxDuration = 60
 
-// Fires HOURLY (vercel.json) and sweeps every active community, sending only
-// in the hour that matches the community's local nudge hour
-// (communities.settings.nudge_hour_local, default 9). Per-member cadence comes
+// Sweeps every active community. With an HOURLY schedule it sends only in the
+// hour matching each community's local nudge hour
+// (communities.settings.nudge_hour_local, default 9); the live vercel.json uses
+// a DAILY entry with ?force=1 instead (Vercel Hobby allows crons at most once
+// a day) at Glåüm's 16:00 UTC — per-community hours need the hourly entry (Pro
+// plan). Per-member cadence comes
 // from that community's `config_attunement_nudge_days` (0 = off) — each member
 // is only emailed once their cooldown has lapsed. 4h of slack keeps drift in
 // Vercel's fire time from silently pushing everyone a day late.
