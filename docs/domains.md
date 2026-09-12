@@ -1,7 +1,9 @@
 # Domains, Clerk & email — the platform host and every community host
 
-**Status: runbook (2026-09-12) with the code side built (branch `feat/platform-domain`); the
-dashboard/DNS steps below are Chanté's to execute, in order.** Platform domain:
+**Status: LIVE 2026-09-12.** Steps 1–4 done: the platform host, Glåüm on
+`glaum.withmanyhands.ca` (row cut over; `camp.glaum.ca` no longer resolves to a community) and the
+demo are all serving on `withmanyhands.ca` with Clerk's primary domain moved. Remaining: remove
+`camp.glaum.ca` from the Vercel project when convenient, and step 5 (Resend + `PLATFORM_EMAIL_FROM`). Platform domain:
 **withmanyhands.ca** (registered 2026-09-12). **Decision 2026-09-12 (option 1):** every
 community lives on a **subdomain of withmanyhands.ca** — Glåüm moves from `camp.glaum.ca` to
 `glaum.withmanyhands.ca` (no redirect kept; the old domain is simply dropped). Reason: Clerk
@@ -14,7 +16,7 @@ are the deferred option 2 at the end of this doc.
 | Host | What it is | Resolves to |
 |---|---|---|
 | `withmanyhands.ca`, `www.withmanyhands.ca` | **Platform host** — the picker (`/communities`) and the auth pages. Nothing else. | `PLATFORM_HOSTS` env → the pseudo-community `platform` (`lib/community.ts`); `proxy.ts` rewrites `/` to the picker and redirects community pages there |
-| `glaum.withmanyhands.ca` | Glåüm (community 1) | `communities.hosts` (added 2026-09-12, alongside `camp.glaum.ca` until cutover) |
+| `glaum.withmanyhands.ca` | Glåüm (community 1) | `communities.hosts` (cut over 2026-09-12; the old `camp.glaum.ca` was dropped without a redirect) |
 | `demo.withmanyhands.ca` | Lantern Hollow, the demo (`scripts/seed-demo-community.mjs`) | `communities.hosts` |
 | `<slug>.withmanyhands.ca` | a future community | its `communities.hosts` row |
 

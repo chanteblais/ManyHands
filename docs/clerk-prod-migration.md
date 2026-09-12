@@ -1,6 +1,6 @@
 # Clerk dev → production migration
 
-**Status: prepared, not yet executed.** The live site (camp.glaum.ca) currently
+**Status: executed (migration 059 applied); kept for provenance. Since 2026-09-12 the production instance's primary domain is `withmanyhands.ca` and Glåüm lives at `glaum.withmanyhands.ca` — see `docs/domains.md`.** At the time of writing the live site (camp.glaum.ca)
 runs on the Clerk **dev instance** (`sweet-lionfish-23.clerk.accounts.dev`) —
 all ~21 member accounts and every stored `clerk_user_id` belong to it. The
 production instance (DNS + settings configured) has **0 users**. Swapping keys

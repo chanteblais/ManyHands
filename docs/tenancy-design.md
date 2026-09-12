@@ -62,7 +62,7 @@ create table communities (
   slug         text unique not null,                 -- 'glaum'; URL-safe, immutable
   name         text not null,                        -- 'Glåüm'
   description  text,
-  hosts        text[] not null default '{}',         -- ['camp.glaum.ca']; resolution key
+  hosts        text[] not null default '{}',         -- ['glaum.withmanyhands.ca']; resolution key
   timezone     text not null default 'UTC',          -- 'America/Vancouver'; crons + "today"
   event_name   text,                                 -- 'What If 2026' (interim; Event object later)
   email_from   text,                                 -- 'Glåüm Camp <hello@glaum.ca>'; null → platform default
@@ -299,7 +299,7 @@ One Vercel cron per job, **hourly**, sweeping all active communities:
 ## 8. Sequencing — branches, in order
 
 Each is one reviewable branch with the standing checks (`npm run check` + click-through). Glåüm
-must be pixel-identical after every merge; production keeps resolving `camp.glaum.ca` → glaum.
+must be pixel-identical after every merge; production keeps resolving Glåüm's host → glaum.
 
 | Step | Branch | Contents | Done when |
 |---|---|---|---|
