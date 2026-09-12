@@ -2,7 +2,7 @@
 
 > **⚠️ Historical document (2026-07-01, pre-build).** The redesign it hands off was designed *and built* the same day — "nothing is built yet" below is no longer true, and several file/model details changed during design (event-type registry → shift types; participation lives on events). Current state: [shifts-redesign.md](shifts-redesign.md) (status + addendum), [features.md → Shifts](features.md). Kept for context only.
 
-Paste at the start of a new session. Project root: `glaum-camp-website/`.
+Paste at the start of a new session. Project root: `ManyHands/`.
 
 ## What this is
 A redesign of the **event schedule + shifts** system. The full spec lives in **`docs/shifts-redesign.md`** — read it first. Design was agreed in conversation on 2026-07-01; **nothing is built yet.** It began as a bug report (an admin "calendar" vanished after toggling shift signup) but Chanté chose to redesign rather than restore the old behavior.

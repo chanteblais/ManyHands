@@ -30,7 +30,7 @@ fi
 #    so the normal merge flow is unaffected.)
 branch=$(git symbolic-ref --quiet --short HEAD)
 if [ "$branch" = "main" ] && [ -z "$GLAUM_ALLOW_MAIN" ]; then
-  echo "✗ Direct commit to main in glaum-camp-website blocked." >&2
+  echo "✗ Direct commit to main in ManyHands blocked." >&2
   echo "  Working on another project (glaum-ca?) — then your cwd is crossed: this is the CAMP repo." >&2
   echo "  Meant to commit here? Use a branch (docs/branching.md), or for a deliberate tiny tweak:" >&2
   echo "    GLAUM_ALLOW_MAIN=1 git commit …" >&2

@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import * as dotenv from 'dotenv';
 
-dotenv.config({ path: '/Users/chante/Documents/Glaum/website/glaum-camp-website/.env.local' });
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+dotenv.config({ path: path.join(ROOT, '.env.local') });
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -19,7 +20,7 @@ const departments = [
   { name: 'operational-continuity',  prompt: `${STYLE} Subject: an ouroboros serpent (snake eating its tail) encircling a gear, symbolizing continuity and sustained operations.` },
 ];
 
-const OUT = '/Users/chante/Documents/Glaum/website/glaum-camp-website/public';
+const OUT = path.join(ROOT, 'public');
 
 for (const dept of departments) {
   process.stdout.write(`Generating: ${dept.name}... `);
