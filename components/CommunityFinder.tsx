@@ -20,7 +20,7 @@ export function CommunityFinder({ communities }: { communities: DirectoryEntry[]
         Find a community
       </h2>
       <p style={{ margin: '0 0 1rem', opacity: 0.7, lineHeight: 1.6 }}>
-        Communities on Many Hands that are open to new people. Search by name, and apply on the community&rsquo;s own page.
+        Communities on Many Hands. Search by name; each community&rsquo;s own page says how to join.
       </p>
       <input
         type="search"
@@ -43,23 +43,13 @@ export function CommunityFinder({ communities }: { communities: DirectoryEntry[]
           {matches.map(c => (
             <li key={c.slug}>
               <a
-                href={c.applicationsOpen ? `${c.origin}/apply` : `${c.origin}/`}
+                href={`${c.origin}/`}
                 style={{
                   display: 'block', padding: '1rem 1.25rem', borderRadius: '12px', textDecoration: 'none', color: 'var(--cream)',
                   border: '1px solid rgb(var(--gold-rgb) / 0.25)', background: 'rgba(255,255,255,0.02)',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem' }}>
-                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', color: 'var(--gold)' }}>{c.name}</span>
-                  <span
-                    style={{
-                      fontSize: '0.66rem', letterSpacing: '0.18em', textTransform: 'uppercase', whiteSpace: 'nowrap',
-                      color: c.applicationsOpen ? 'var(--success)' : 'var(--muted)',
-                    }}
-                  >
-                    {c.applicationsOpen ? 'Accepting applications' : 'Applications closed'}
-                  </span>
-                </div>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', color: 'var(--gold)' }}>{c.name}</span>
                 {(c.eventName || c.description) && (
                   <span style={{ display: 'block', fontSize: '0.85rem', opacity: 0.7, marginTop: '0.35rem', lineHeight: 1.5 }}>
                     {[c.eventName, c.description].filter(Boolean).join(' · ')}
