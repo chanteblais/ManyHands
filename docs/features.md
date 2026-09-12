@@ -530,6 +530,8 @@ Members pick a role via `SignupSection` on `/participate` (Participate) — a **
 | `'pending'` | Waiting for admin review |
 | `'approved'` | Admin approved the role request |
 
+A `'pending'` request notifies every admin of the community — bell entry **and** email — through `notifyAdmin` (`role_approval_request`), the same path as a new application. Plain role changes only write a bell entry (`role_change`). (Both were silently dropped from 2026-07 until 2026-09-12: the insert passed the member-row id into `admin_notifications.application_id`, which references `applications`.)
+
 **Admin approval:** via `PATCH /api/admin/role-requests/[clerkUserId]` with `{ decision: 'approved' | 'rejected' }`. Approval sets `role_approval_status = 'approved'`. Rejection sets `role_id = null` and clears the status. Both send a `user_notifications` row to the member.
 
 The dedicated **Participate** page (`/participate`) hosts `SignupSection` (the standing plaques, then the **Choose a Role** and **Shifts** sections — headers rendered inside the component since the data lives there), then the member-owned **Bring Something** shared resources (`ResourceCommitments` — create lists, add items, claim; see [Shared Resources](#shared-resources); anchored `#bring` for the home-banner deep link, placed above groups because needs are live and time-sensitive while group membership is a set-once choice), then the **Your Groups** group opt-in (`GroupCommitments` — see [Groups](#groups)). The Commitments card's "Manage commitments →" link points here. **Active volunteers** get a shifts-only variant of the page ("Lend a Hand" h1, `SignupSection` with `hideRole` + empty departments + `owed: []` — just the shifts plaque and the calendar picker; see Volunteer above).

@@ -4,6 +4,7 @@ import { getCommunity } from '@/lib/community'
 import { tenantDb } from '@/lib/tenant-db'
 import { getApprovedMember, memberDisplayName } from '@/lib/members'
 import { getRoleSignupData } from '@/lib/participate-data'
+import { notifyAdmin } from '@/lib/notify-admin'
 
 export async function GET() {
   const { userId } = await auth()
@@ -87,17 +88,19 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Notify admin if role requires approval
+  // Notify admins if the role requires approval — bell + email, like a new
+  // application (an admin has to act on it). `application` is the MEMBER
+  // record: admin_notifications.application_id references applications(id),
+  // so pass its application_id, not its own id (that FK violation silently
+  // dropped every role notification until 2026-09-12).
   if (requiresApproval && isRoleChange && next_role_id) {
     const name = memberDisplayName(application, userId)
-
-    const { error: notifError } = await db.from('admin_notifications').insert({
-      application_id: application.id,
-      event_type: 'role_approval_request',
+    await notifyAdmin(community, {
+      applicationId: application.application_id,
+      eventType: 'role_approval_request',
       message: `${name} requested the "${roleData?.name}" role (requires approval)`,
       details: { role_id: next_role_id, role_name: roleData?.name },
     })
-    if (notifError) console.error('[Signup] Approval notification error:', notifError)
   }
 
   // Notify admin on role change (non-approval roles)
@@ -108,8 +111,8 @@ export async function POST(req: NextRequest) {
       db.from('roles').select('name').eq('id', existing?.role_id ?? '').single(),
       db.from('roles').select('name').eq('id', role_id).single(),
     ])
-    await db.from('admin_notifications').insert({
-      application_id: application.id,
+    const { error: notifError } = await db.from('admin_notifications').insert({
+      application_id: application.application_id,
       event_type: 'role_change',
       message: `${name} changed their role`,
       details: {
@@ -117,6 +120,7 @@ export async function POST(req: NextRequest) {
         to_role: newRole.data?.name ?? role_id,
       },
     })
+    if (notifError) console.error('[Signup] Role change notification error:', notifError)
   }
 
   return NextResponse.json({ signup: data })
