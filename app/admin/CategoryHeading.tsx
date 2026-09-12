@@ -10,13 +10,13 @@ export function CategoryHeading({ id, large }: { id: string; large?: boolean }) 
       id={id}
       style={{
         scrollMarginTop: '6rem',
-        fontFamily: 'TokyoDreams, serif',
+        fontFamily: 'var(--font-display)',
         fontSize: large ? '1.5rem' : '1.4rem',
-        color: '#C8A848',
+        color: 'var(--gold)',
         opacity: 0.85,
         margin: '3.5rem 0 1.5rem',
         paddingBottom: '0.5rem',
-        borderBottom: '1px solid rgba(200,168,72,0.18)',
+        borderBottom: '1px solid rgb(var(--gold-rgb) / 0.18)',
       }}
     >
       {catLabel(id)}

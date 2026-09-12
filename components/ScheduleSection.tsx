@@ -42,7 +42,7 @@ export async function ScheduleSection() {
   return (
     <div>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <p style={{ fontSize: '0.65rem', letterSpacing: '0.35em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.7, marginBottom: '0.4rem' }}>
+        <p style={{ fontSize: '0.65rem', letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.7, marginBottom: '0.4rem' }}>
           ✦ &nbsp;Schedule&nbsp; ✦
         </p>
         <p style={{ fontSize: '0.82rem', fontStyle: 'italic', opacity: 0.45 }}>

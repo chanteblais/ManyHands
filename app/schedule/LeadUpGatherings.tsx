@@ -90,10 +90,10 @@ export function LeadUpGatherings({ initialEvents }: {
           hydration mismatch on the child combinator + media query). */}
       <style dangerouslySetInnerHTML={{ __html: `
         .leadup-card { display: flex; align-items: center; gap: 1.1rem;
-          border-radius: 1rem; border: 1px solid rgba(200,168,72,0.28);
+          border-radius: 1rem; border: 1px solid rgb(var(--gold-rgb) / 0.28);
           background: rgba(10,0,20,0.45); padding: 0.9rem 1.2rem; }
         .leadup-divider { width: 1px; align-self: stretch; flex-shrink: 0;
-          background: linear-gradient(to bottom, transparent, rgba(200,168,72,0.32), transparent); }
+          background: linear-gradient(to bottom, transparent, rgb(var(--gold-rgb) / 0.32), transparent); }
         .leadup-body { flex: 1; min-width: 0; }
         .leadup-rsvp-col { flex-shrink: 0; display: flex; flex-direction: column;
           align-items: flex-end; gap: 0.35rem; }
@@ -105,7 +105,7 @@ export function LeadUpGatherings({ initialEvents }: {
           .leadup-rsvp-col { flex: 1 1 100%; align-items: flex-start; }
         }
       ` }} />
-      <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '0.78rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.9, textAlign: 'center', margin: '0 0 0.4rem' }}>
+      <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.9, textAlign: 'center', margin: '0 0 0.4rem' }}>
         Before We Gather
       </p>
       <p style={{ fontSize: '0.82rem', opacity: 0.5, textAlign: 'center', fontStyle: 'italic', margin: '0 0 1.75rem' }}>
@@ -121,11 +121,11 @@ export function LeadUpGatherings({ initialEvents }: {
               {/* Date block */}
               <div style={{
                 flexShrink: 0, width: '66px', textAlign: 'center',
-                padding: '0.55rem 0.45rem', border: '1px solid rgba(200,168,72,0.25)',
-                borderRadius: '0.6rem', background: 'rgba(200,168,72,0.07)',
+                padding: '0.55rem 0.45rem', border: '1px solid rgb(var(--gold-rgb) / 0.25)',
+                borderRadius: '0.6rem', background: 'rgb(var(--gold-rgb) / 0.07)',
               }}>
-                <p style={{ fontSize: '0.58rem', letterSpacing: '0.12em', color: '#C8A848', opacity: 0.65, margin: '0 0 0.18rem' }}>{weekday}</p>
-                <p style={{ fontSize: '0.86rem', color: '#C8A848', margin: 0, letterSpacing: '0.02em' }}>{date}</p>
+                <p style={{ fontSize: '0.58rem', letterSpacing: '0.12em', color: 'var(--gold)', opacity: 0.65, margin: '0 0 0.18rem' }}>{weekday}</p>
+                <p style={{ fontSize: '0.86rem', color: 'var(--gold)', margin: 0, letterSpacing: '0.02em' }}>{date}</p>
               </div>
 
               {/* Gold hairline (hidden on mobile) */}
@@ -133,9 +133,9 @@ export function LeadUpGatherings({ initialEvents }: {
 
               {/* Body */}
               <div className="leadup-body">
-                <p style={{ fontSize: '1.05rem', color: '#EDE0C8', margin: '0 0 0.25rem', fontFamily: 'TokyoDreams, serif' }}>{ev.title}</p>
+                <p style={{ fontSize: '1.05rem', color: 'var(--parchment)', margin: '0 0 0.25rem', fontFamily: 'var(--font-display)' }}>{ev.title}</p>
                 {(time || ev.location || ev.host) && (
-                  <p style={{ fontSize: '0.75rem', color: '#C8A848', opacity: 0.6, margin: '0 0 0.4rem' }}>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--gold)', opacity: 0.6, margin: '0 0 0.4rem' }}>
                     {[time, ev.location, ev.host && `with ${ev.host}`].filter(Boolean).join('  ·  ')}
                   </p>
                 )}
@@ -143,7 +143,7 @@ export function LeadUpGatherings({ initialEvents }: {
                   <p style={{ fontSize: '0.84rem', opacity: 0.7, lineHeight: 1.6, margin: '0 0 0.5rem' }}>{ev.description}</p>
                 )}
                 {ev.link && (
-                  <a href={ev.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.78rem', color: '#D239F8', textDecoration: 'none', opacity: 0.85 }}>
+                  <a href={ev.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.78rem', color: 'var(--purple)', textDecoration: 'none', opacity: 0.85 }}>
                     Join link →
                   </a>
                 )}
@@ -157,9 +157,9 @@ export function LeadUpGatherings({ initialEvents }: {
                   style={{
                     padding: '0.4rem 0.9rem', borderRadius: '9999px', cursor: 'pointer',
                     fontSize: '0.76rem', letterSpacing: '0.04em', whiteSpace: 'nowrap',
-                    border: ev.rsvped ? '1px solid rgba(200,168,72,0.6)' : '1px solid rgba(200,168,72,0.25)',
-                    background: ev.rsvped ? 'rgba(200,168,72,0.15)' : 'transparent',
-                    color: ev.rsvped ? '#FFFACD' : '#C8A848',
+                    border: ev.rsvped ? '1px solid rgb(var(--gold-rgb) / 0.6)' : '1px solid rgb(var(--gold-rgb) / 0.25)',
+                    background: ev.rsvped ? 'rgb(var(--gold-rgb) / 0.15)' : 'transparent',
+                    color: ev.rsvped ? 'var(--lemon)' : 'var(--gold)',
                     opacity: pending === ev.id ? 0.5 : 1, transition: 'all 0.15s',
                   }}
                 >
@@ -176,7 +176,7 @@ export function LeadUpGatherings({ initialEvents }: {
         })}
       </div>
 
-      <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.3), transparent)', margin: '3rem 0 0' }} />
+      <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)', margin: '3rem 0 0' }} />
     </div>
   )
 }

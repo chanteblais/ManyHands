@@ -18,9 +18,9 @@ import { getMemberAwards } from '@/lib/distinction-awards'
 import { CabinetOfDistinctions } from '@/app/profile/CabinetOfDistinctions'
 import { ApprovedCamperPill } from '@/app/ApprovedCamperPill'
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
 // Warm, well-lit cream for value text (names, group titles, bio) — matches the
 // golden-lit tone of the profile mock more closely than the cooler CREAM.
 const WARM = '#D9CBA8'
@@ -35,10 +35,10 @@ const isImageIcon = (v: string) => /^https?:\/\//.test(v) || v.startsWith('/')
 // Card shell shared by every section — the warm, gold-edged registry panel.
 function cardStyle(): React.CSSProperties {
   return {
-    border: '1px solid rgba(200,168,72,0.28)',
+    border: '1px solid rgb(var(--gold-rgb) / 0.28)',
     borderRadius: '1rem',
     background: 'rgba(10,0,20,0.55)',
-    boxShadow: '0 0 0 1px rgba(200,168,72,0.06), 0 18px 50px rgba(0,0,0,0.35)',
+    boxShadow: '0 0 0 1px rgb(var(--gold-rgb) / 0.06), 0 18px 50px rgba(0,0,0,0.35)',
     padding: '0.9rem 1.05rem 1.05rem',
   }
 }
@@ -48,13 +48,13 @@ function SectionHeading({ title }: { title: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.85rem', marginBottom: '1.4rem' }}>
       <span aria-hidden style={{ color: GOLD, fontSize: '0.7rem', opacity: 0.85 }}>✦</span>
-      <span aria-hidden style={{ width: '34px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.55))' }} />
+      <span aria-hidden style={{ width: '34px', height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.55))' }} />
       <h2 style={{
         fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: '1.05rem', fontWeight: 600,
         letterSpacing: '0.22em', textTransform: 'uppercase', color: GOLD, margin: 0,
-        textShadow: '0 0 18px rgba(200,168,72,0.3)', whiteSpace: 'nowrap',
+        textShadow: '0 0 18px rgb(var(--gold-rgb) / 0.3)', whiteSpace: 'nowrap',
       }}>{title}</h2>
-      <span aria-hidden style={{ width: '34px', height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.55), transparent)' }} />
+      <span aria-hidden style={{ width: '34px', height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.55), transparent)' }} />
       <span aria-hidden style={{ color: GOLD, fontSize: '0.7rem', opacity: 0.85 }}>✦</span>
     </div>
   )
@@ -197,7 +197,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
       <style dangerouslySetInnerHTML={{ __html: `
         .pub-hero { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2.5rem; }
         .pub-hero-id { min-width: 0; }
-        .pub-msg-btn:hover { background: rgba(210,57,248,0.22) !important; border-color: rgba(210,57,248,0.78) !important; box-shadow: 0 0 14px rgba(175,75,255,0.3) !important; }
+        .pub-msg-btn:hover { background: rgb(var(--purple-rgb) / 0.22) !important; border-color: rgb(var(--purple-rgb) / 0.78) !important; box-shadow: 0 0 14px rgba(175,75,255,0.3) !important; }
         .pub-roles { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; justify-items: center; gap: 1.4rem; }
         @media (max-width: 720px) {
           .pub-hero { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 1.4rem; margin-left: 0 !important; }
@@ -217,23 +217,23 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
         <header className="pub-hero" style={{ marginBottom: '0.85rem', marginLeft: '2rem' }}>
           <div style={{
             width: '260px', height: '260px', borderRadius: '50%',
-            border: '5px solid #6F491F',
+            border: '5px solid var(--bronze)',
             boxShadow: '0 0 0 1px rgba(60,35,10,0.6), 0 0 20px rgba(111,73,31,0.25), 0 8px 32px rgba(0,0,0,0.55)',
-            background: 'rgba(200,168,72,0.08)', overflow: 'hidden', flexShrink: 0,
+            background: 'rgb(var(--gold-rgb) / 0.08)', overflow: 'hidden', flexShrink: 0,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             {member.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={supabaseResizedUrl(member.avatar_url as string, 520) ?? ''} alt={`${displayName}'s portrait`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              <span aria-hidden="true" style={{ fontFamily: 'TokyoDreams, serif', fontSize: '3rem', color: GOLD, opacity: 0.5 }}>
+              <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: GOLD, opacity: 0.5 }}>
                 {displayName.charAt(0).toUpperCase()}
               </span>
             )}
           </div>
 
           <div className="pub-hero-id">
-            <h1 id="member-heading" style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 4.5vw, 3rem)', color: GOLD, margin: '0 0 0.35rem', textShadow: '0 0 40px rgba(210,57,248,0.4)' }}>
+            <h1 id="member-heading" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 4.5vw, 3rem)', color: GOLD, margin: '0 0 0.35rem', textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.4)' }}>
               {displayName}
               <span aria-hidden style={{ color: GOLD, fontSize: '0.5em', opacity: 0.8, marginLeft: '0.5rem', verticalAlign: '0.25em' }}>✦</span>
             </h1>
@@ -252,7 +252,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
             )}
             <div style={{ marginTop: '1rem', display: 'flex', flexWrap: 'wrap', gap: '0.7rem' }}>
               <ApprovedCamperPill />
-              {member.clerk_user_id && <a className="pub-msg-btn" href={`/messages/${member.clerk_user_id}`} aria-label={`Send a message to ${displayName}`} style={{ display: 'inline-block', padding: '0.42rem 1.3rem', borderRadius: '9999px', background: 'rgba(210,57,248,0.13)', border: '1px solid rgba(210,57,248,0.5)', boxShadow: '0 0 10px rgba(175,75,255,0.14)', color: '#EEB4F6', fontSize: '0.72rem', letterSpacing: '0.08em', textDecoration: 'none', fontFamily: 'TokyoDreams, serif', transition: 'background 0.15s, border-color 0.15s, box-shadow 0.15s' }}>
+              {member.clerk_user_id && <a className="pub-msg-btn" href={`/messages/${member.clerk_user_id}`} aria-label={`Send a message to ${displayName}`} style={{ display: 'inline-block', padding: '0.42rem 1.3rem', borderRadius: '9999px', background: 'rgb(var(--purple-rgb) / 0.13)', border: '1px solid rgb(var(--purple-rgb) / 0.5)', boxShadow: '0 0 10px rgba(175,75,255,0.14)', color: '#EEB4F6', fontSize: '0.72rem', letterSpacing: '0.08em', textDecoration: 'none', fontFamily: 'var(--font-display)', transition: 'background 0.15s, border-color 0.15s, box-shadow 0.15s' }}>
                 <span aria-hidden="true">✉ </span>Message
               </a>}
             </div>
@@ -296,7 +296,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
                     <span
                       key={`cdiv-${col.id ?? ci}`}
                       aria-hidden
-                      style={{ alignSelf: 'stretch', width: '1px', margin: '0 1.6rem', background: 'linear-gradient(to bottom, transparent, rgba(200,168,72,0.28) 22%, rgba(200,168,72,0.28) 78%, transparent)' }}
+                      style={{ alignSelf: 'stretch', width: '1px', margin: '0 1.6rem', background: 'linear-gradient(to bottom, transparent, rgb(var(--gold-rgb) / 0.28) 22%, rgb(var(--gold-rgb) / 0.28) 78%, transparent)' }}
                     />,
                   ] : []),
                   <div key={col.id ?? '__none__'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -340,7 +340,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
                     {Array.isArray(value) ? (
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
                         {value.map((v, i) => (
-                          <span key={i} style={{ padding: '0.35rem 0.85rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.3)', background: 'rgba(200,168,72,0.07)', color: CREAM, fontSize: '0.82rem' }}>{String(v)}</span>
+                          <span key={i} style={{ padding: '0.35rem 0.85rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.3)', background: 'rgb(var(--gold-rgb) / 0.07)', color: CREAM, fontSize: '0.82rem' }}>{String(v)}</span>
                         ))}
                       </div>
                     ) : (
@@ -360,7 +360,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
                 {skills.map((s, i) => (
                   <span key={i} style={{
                     padding: '0.45rem 1rem', borderRadius: '9999px',
-                    border: '1px solid rgba(210,57,248,0.32)', background: 'rgba(210,57,248,0.07)',
+                    border: '1px solid rgb(var(--purple-rgb) / 0.32)', background: 'rgb(var(--purple-rgb) / 0.07)',
                     color: '#F4E3FA', fontSize: '0.85rem', letterSpacing: '0.02em',
                   }}>{s}</span>
                 ))}
@@ -395,7 +395,7 @@ function ColHeading({ title, align = 'center' }: { title: string; align?: 'cente
       <h2 style={{
         fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: '0.92rem', fontWeight: 600,
         letterSpacing: '0.14em', textTransform: 'uppercase', color: GOLD, textAlign: 'center',
-        margin: 0, textShadow: '0 0 18px rgba(200,168,72,0.25)', whiteSpace: 'nowrap',
+        margin: 0, textShadow: '0 0 18px rgb(var(--gold-rgb) / 0.25)', whiteSpace: 'nowrap',
       }}>{title}</h2>
       <span aria-hidden style={{ color: GOLD, fontSize: '0.72rem', opacity: 0.8 }}>✦</span>
     </div>
@@ -407,9 +407,9 @@ function ColHeading({ title, align = 'center' }: { title: string; align?: 'cente
 function Flourish() {
   return (
     <div aria-hidden style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', marginTop: '1.15rem' }}>
-      <span style={{ width: '30px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.55))' }} />
+      <span style={{ width: '30px', height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.55))' }} />
       <span style={{ color: GOLD, fontSize: '0.6rem', opacity: 0.85 }}>✦</span>
-      <span style={{ width: '30px', height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.55), transparent)' }} />
+      <span style={{ width: '30px', height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.55), transparent)' }} />
     </div>
   )
 }
@@ -420,7 +420,7 @@ function IconMedallion({ icon, size = 44 }: { icon: string; size?: number }) {
     <span aria-hidden style={{
       width: size, height: size, flexShrink: 0, borderRadius: '50%', overflow: 'hidden',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'radial-gradient(circle at 42% 38%, rgba(200,168,72,0.14), rgba(8,0,18,0.85))',
+      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgba(8,0,18,0.85))',
       border: '1.5px solid #C07C26', fontSize: size >= 74 ? '1.85rem' : size >= 64 ? '1.55rem' : size >= 52 ? '1.3rem' : '1.1rem',
     }}>
       {isImageIcon(icon)
@@ -439,7 +439,7 @@ function ShiftMedallion({ icon, size = 76 }: { icon: string; size?: number }) {
     <span aria-hidden style={{
       width: size, height: size, flexShrink: 0, borderRadius: '50%', overflow: 'hidden',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'radial-gradient(circle at 42% 38%, rgba(200,168,72,0.14), rgba(8,0,18,0.85))',
+      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgba(8,0,18,0.85))',
       border: '1.5px solid #C07C26',
     }}>
       {isImageIcon(icon)
@@ -528,9 +528,9 @@ function shiftNightsLabel(s: { nights: string[]; dayFallback: string }): string 
 function RoleSeparator() {
   return (
     <div aria-hidden style={{ alignSelf: 'stretch', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '2.75rem' }}>
-      <span style={{ width: '1px', flex: 1, background: 'linear-gradient(to bottom, transparent, rgba(200,168,72,0.4))' }} />
+      <span style={{ width: '1px', flex: 1, background: 'linear-gradient(to bottom, transparent, rgb(var(--gold-rgb) / 0.4))' }} />
       <span style={{ color: GOLD, fontSize: '0.6rem', opacity: 0.85, padding: '0.3rem 0' }}>✦</span>
-      <span style={{ width: '1px', flex: 1, background: 'linear-gradient(to top, transparent, rgba(200,168,72,0.4))' }} />
+      <span style={{ width: '1px', flex: 1, background: 'linear-gradient(to top, transparent, rgb(var(--gold-rgb) / 0.4))' }} />
     </div>
   )
 }
@@ -606,23 +606,23 @@ function VolunteerProfile({ volunteer, heldShifts = [] }: {
         <header className="pub-hero" style={{ marginBottom: '0.85rem', marginLeft: '2rem' }}>
           <div style={{
             width: '260px', height: '260px', borderRadius: '50%',
-            border: '5px solid #6F491F',
+            border: '5px solid var(--bronze)',
             boxShadow: '0 0 0 1px rgba(60,35,10,0.6), 0 0 20px rgba(111,73,31,0.25), 0 8px 32px rgba(0,0,0,0.55)',
-            background: 'rgba(200,168,72,0.08)', overflow: 'hidden', flexShrink: 0,
+            background: 'rgb(var(--gold-rgb) / 0.08)', overflow: 'hidden', flexShrink: 0,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             {volunteer.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={supabaseResizedUrl(volunteer.avatar_url, 520) ?? ''} alt={`${displayName}'s portrait`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              <span aria-hidden="true" style={{ fontFamily: 'TokyoDreams, serif', fontSize: '3rem', color: GOLD, opacity: 0.5 }}>
+              <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: GOLD, opacity: 0.5 }}>
                 {displayName.charAt(0).toUpperCase()}
               </span>
             )}
           </div>
 
           <div className="pub-hero-id">
-            <h1 id="member-heading" style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 4.5vw, 3rem)', color: GOLD, margin: '0 0 0.35rem', textShadow: '0 0 40px rgba(210,57,248,0.4)' }}>
+            <h1 id="member-heading" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 4.5vw, 3rem)', color: GOLD, margin: '0 0 0.35rem', textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.4)' }}>
               {displayName}
               <span aria-hidden style={{ color: GOLD, fontSize: '0.5em', opacity: 0.8, marginLeft: '0.5rem', verticalAlign: '0.25em' }}>✦</span>
             </h1>

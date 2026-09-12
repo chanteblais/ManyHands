@@ -6,7 +6,7 @@
 // re-create data that already exists.
 export function LoadError({ onRetry }: { onRetry: () => void }) {
   return (
-    <p style={{ fontSize: '0.85rem', color: '#ffb4b4', opacity: 0.85 }}>
+    <p style={{ fontSize: '0.85rem', color: 'var(--danger-soft)', opacity: 0.85 }}>
       Couldn&apos;t load this section — it may be a connection hiccup.{' '}
       <button
         type="button"
@@ -14,7 +14,7 @@ export function LoadError({ onRetry }: { onRetry: () => void }) {
         style={{
           background: 'none',
           border: 'none',
-          color: '#C8A848',
+          color: 'var(--gold)',
           cursor: 'pointer',
           textDecoration: 'underline',
           textUnderlineOffset: '3px',

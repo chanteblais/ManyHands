@@ -94,11 +94,11 @@ function RecurringEventCard({ event }: { event: ScheduleEvent }) {
           {event.time}
         </p>
       )}
-      <div style={{ color: '#C8A848', opacity: 0.55, display: 'flex', justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+      <div style={{ color: 'var(--gold)', opacity: 0.55, display: 'flex', justifyContent: 'center', flex: 1, alignItems: 'center' }}>
         <EventIcon type={event.icon_type} size={38} />
       </div>
       <div style={{ marginTop: 'auto' }}>
-        <p style={{ fontSize: '1rem', fontWeight: 700, color: '#F3EDE6', margin: '0 0 0.4rem', textAlign: 'center' }}>{event.title}</p>
+        <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--cream)', margin: '0 0 0.4rem', textAlign: 'center' }}>{event.title}</p>
         {event.detail_desc && <p style={{ fontSize: '0.85rem', lineHeight: 1.65, opacity: 0.6, margin: 0, textAlign: 'center' }}>{event.detail_desc}</p>}
       </div>
     </div>
@@ -136,11 +136,11 @@ function EventBlock({ event, top, height }: { event: ScheduleEvent; top: number;
         borderRadius: '0.35rem',
         border: `1px solid ${style.border}`,
         background: expanded
-          ? `linear-gradient(${style.background}, ${style.background}) #1A0A24`
+          ? `linear-gradient(${style.background}, ${style.background}) var(--ink)`
           : style.background,
         boxShadow: expanded
           ? '0 6px 18px rgba(0,0,0,0.55)'
-          : event.highlight ? '0 0 10px rgba(200,168,72,0.35), 0 0 20px rgba(200,168,72,0.15)' : undefined,
+          : event.highlight ? '0 0 10px rgb(var(--gold-rgb) / 0.35), 0 0 20px rgb(var(--gold-rgb) / 0.15)' : undefined,
         overflow: 'hidden',
         cursor: hasDetail ? 'pointer' : 'default',
         zIndex: expanded ? 10 : 1,
@@ -151,7 +151,7 @@ function EventBlock({ event, top, height }: { event: ScheduleEvent; top: number;
       <div style={{ padding: '0.25rem 0.35rem', height: expanded ? 'auto' : '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem', textAlign: 'center' }}>
           {(showIcon || expanded) && (
-            <div style={{ color: '#C8A848', opacity: 0.65 }}>
+            <div style={{ color: 'var(--gold)', opacity: 0.65 }}>
               <EventIcon type={event.icon_type} size={10} />
             </div>
           )}
@@ -168,13 +168,13 @@ function EventBlock({ event, top, height }: { event: ScheduleEvent; top: number;
             {event.title}
           </p>
           {(showCaret || (hasDetail && expanded)) && (
-            <span style={{ fontSize: '0.45rem', color: '#C8A848', opacity: 0.4 }}>
+            <span style={{ fontSize: '0.45rem', color: 'var(--gold)', opacity: 0.4 }}>
               {expanded ? '▲' : '▼'}
             </span>
           )}
         </div>
         {expanded && expandedText && (
-          <div style={{ marginTop: '0.3rem', paddingTop: '0.3rem', borderTop: '1px solid rgba(200,168,72,0.1)', paddingBottom: '0.15rem' }}>
+          <div style={{ marginTop: '0.3rem', paddingTop: '0.3rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)', paddingBottom: '0.15rem' }}>
             <p style={{ fontSize: '0.65rem', opacity: 0.6, margin: 0, lineHeight: 1.5, textAlign: 'center' }}>{expandedText}</p>
           </div>
         )}
@@ -258,9 +258,9 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
                     flexShrink: 0,
                     padding: '0.4rem 0.9rem',
                     borderRadius: '9999px',
-                    border: `1px solid ${active ? 'rgba(200,168,72,0.7)' : 'rgba(200,168,72,0.2)'}`,
-                    background: active ? 'rgba(200,168,72,0.1)' : 'transparent',
-                    color: active ? '#C8A848' : 'rgba(200,168,72,0.5)',
+                    border: `1px solid ${active ? 'rgb(var(--gold-rgb) / 0.7)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
+                    background: active ? 'rgb(var(--gold-rgb) / 0.1)' : 'transparent',
+                    color: active ? 'var(--gold)' : 'rgb(var(--gold-rgb) / 0.5)',
                     cursor: 'pointer',
                     fontSize: '0.72rem',
                     letterSpacing: '0.08em',
@@ -284,7 +284,7 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
                   position: 'absolute',
                   top: (hour - START_HOUR) * PX_PER_HOUR - 7,
                   left: 0, right: '6px',
-                  fontSize: '0.58rem', color: '#C8A848',
+                  fontSize: '0.58rem', color: 'var(--gold)',
                   opacity: label === 'Midnight' || label === 'Noon' ? 0.7 : 0.35,
                   whiteSpace: 'nowrap', textAlign: 'right',
                   letterSpacing: '0.02em',
@@ -293,11 +293,11 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
               ))}
             </div>
             {/* Single day column */}
-            <div style={{ flex: 1, position: 'relative', height: TOTAL_HEIGHT, border: '1px solid rgba(200,168,72,0.12)', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.01)', overflow: 'visible' }}>
+            <div style={{ flex: 1, position: 'relative', height: TOTAL_HEIGHT, border: '1px solid rgb(var(--gold-rgb) / 0.12)', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.01)', overflow: 'visible' }}>
               {HOUR_LABELS.map(({ hour, label }) => (
                 <div key={hour} style={{
                   position: 'absolute', top: (hour - START_HOUR) * PX_PER_HOUR, left: 0, right: 0,
-                  borderTop: `1px solid rgba(200,168,72,${label === 'Midnight' || label === 'Noon' ? '0.15' : '0.06'})`,
+                  borderTop: `1px solid rgb(var(--gold-rgb) / ${label === 'Midnight' || label === 'Noon' ? '0.15' : '0.06'})`,
                 }} />
               ))}
               {[...regular.filter(e => columnIso(e) === selectedDay), ...recurringOn(selectedDay)].map(ev => {
@@ -319,7 +319,7 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
                 position: 'absolute',
                 top: (hour - START_HOUR) * PX_PER_HOUR - 7,
                 left: 0, right: '6px',
-                fontSize: '0.58rem', color: '#C8A848',
+                fontSize: '0.58rem', color: 'var(--gold)',
                 opacity: label === 'Midnight' || label === 'Noon' ? 0.7 : 0.35,
                 whiteSpace: 'nowrap', textAlign: 'right',
                 letterSpacing: '0.02em',
@@ -336,23 +336,23 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
                     height: '52px',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                     borderRadius: '0.5rem 0.5rem 0 0',
-                    background: 'rgba(200,168,72,0.07)',
-                    border: '1px solid rgba(200,168,72,0.2)',
+                    background: 'rgb(var(--gold-rgb) / 0.07)',
+                    border: '1px solid rgb(var(--gold-rgb) / 0.2)',
                     borderBottom: 'none',
                   }}>
-                    <p style={{ fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.6, margin: 0 }}>{day.short} · {day.month}</p>
-                    <p style={{ fontSize: '1rem', color: '#F3EDE6', margin: '0.1rem 0 0', fontFamily: 'TokyoDreams, serif' }}>{day.date}</p>
+                    <p style={{ fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.6, margin: 0 }}>{day.short} · {day.month}</p>
+                    <p style={{ fontSize: '1rem', color: 'var(--cream)', margin: '0.1rem 0 0', fontFamily: 'var(--font-display)' }}>{day.date}</p>
                   </div>
                   <div style={{
                     position: 'relative', height: TOTAL_HEIGHT,
-                    border: '1px solid rgba(200,168,72,0.12)',
+                    border: '1px solid rgb(var(--gold-rgb) / 0.12)',
                     borderRadius: '0 0 0.5rem 0.5rem',
                     background: 'rgba(255,255,255,0.01)', overflow: 'visible',
                   }}>
                     {HOUR_LABELS.map(({ hour, label }) => (
                       <div key={hour} style={{
                         position: 'absolute', top: (hour - START_HOUR) * PX_PER_HOUR, left: 0, right: 0,
-                        borderTop: `1px solid rgba(200,168,72,${label === 'Midnight' || label === 'Noon' ? '0.15' : '0.06'})`,
+                        borderTop: `1px solid rgb(var(--gold-rgb) / ${label === 'Midnight' || label === 'Noon' ? '0.15' : '0.06'})`,
                       }} />
                     ))}
                     {dayEvents.map(ev => {
@@ -373,11 +373,11 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
       {/* Untimed events */}
       {untimed.length > 0 && (
         <div style={{ marginTop: '1.5rem' }}>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.75rem' }}>No fixed time</p>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.75rem' }}>No fixed time</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
             {untimed.map(ev => (
-              <div key={ev.id} style={{ padding: '0.4rem 0.75rem', border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
-                <p style={{ fontSize: '0.78rem', color: '#F3EDE6', margin: 0 }}>{ev.day} · {ev.title}</p>
+              <div key={ev.id} style={{ padding: '0.4rem 0.75rem', border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
+                <p style={{ fontSize: '0.78rem', color: 'var(--cream)', margin: 0 }}>{ev.day} · {ev.title}</p>
               </div>
             ))}
           </div>
@@ -387,9 +387,9 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
       {/* Every Day — recurring events without picked dates (compact) */}
       {everyDay.length > 0 && (
         <div style={{ marginTop: '2.5rem' }}>
-          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', marginBottom: '2rem' }} />
+          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', marginBottom: '2rem' }} />
           <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
-            <p style={{ fontSize: '0.62rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.65 }}>
+            <p style={{ fontSize: '0.62rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.65 }}>
               ✦ &nbsp;Every Day&nbsp; ✦
             </p>
           </div>
@@ -402,9 +402,9 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
       {/* Event Details cards */}
       {regular.length > 0 && (
         <div style={{ marginTop: '3rem' }}>
-          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', marginBottom: '2.5rem' }} />
+          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', marginBottom: '2.5rem' }} />
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <p style={{ fontSize: '0.65rem', letterSpacing: '0.35em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.7 }}>
+            <p style={{ fontSize: '0.65rem', letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.7 }}>
               ✦ &nbsp;Event Details&nbsp; ✦
             </p>
           </div>
@@ -417,15 +417,15 @@ export function ScheduleCalendarClient({ events, days }: { events: ScheduleEvent
                 ? `${days.find(d => d.iso === p.displayDate)?.label ?? card.day} night`
                 : card.day
               return (
-              <div key={card.id} style={{ padding: '1.25rem', border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.85rem', background: 'rgba(200,168,72,0.03)', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxShadow: card.highlight ? '0 0 18px rgba(200,168,72,0.3), 0 0 40px rgba(200,168,72,0.1)' : undefined }}>
-                <p style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.85, margin: 0, textAlign: 'center' }}>
+              <div key={card.id} style={{ padding: '1.25rem', border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.85rem', background: 'rgb(var(--gold-rgb) / 0.03)', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxShadow: card.highlight ? '0 0 18px rgb(var(--gold-rgb) / 0.3), 0 0 40px rgb(var(--gold-rgb) / 0.1)' : undefined }}>
+                <p style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.85, margin: 0, textAlign: 'center' }}>
                   {dayLabel}&nbsp;&nbsp;{card.time}
                 </p>
-                <div style={{ color: '#C8A848', opacity: 0.55, display: 'flex', justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                <div style={{ color: 'var(--gold)', opacity: 0.55, display: 'flex', justifyContent: 'center', flex: 1, alignItems: 'center' }}>
                   <EventIcon type={card.icon_type} size={card.icon_type.startsWith('http') || card.icon_type.startsWith('/') ? 72 : 38} />
                 </div>
                 <div style={{ marginTop: 'auto' }}>
-                  <p style={{ fontSize: '1rem', fontWeight: 700, color: '#F3EDE6', margin: '0 0 0.4rem', textAlign: 'center' }}>{card.title}</p>
+                  <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--cream)', margin: '0 0 0.4rem', textAlign: 'center' }}>{card.title}</p>
                   {card.detail_desc && <p style={{ fontSize: '0.85rem', lineHeight: 1.65, opacity: 0.6, margin: 0, textAlign: 'center' }}>{card.detail_desc}</p>}
                 </div>
               </div>

@@ -35,7 +35,7 @@ import { roleSlug } from '@/lib/role-slug'
 
 // ── Identity stat list (mirrors the mockup's right-column at-a-glance facts) ──
 function StatIcon({ name }: { name: 'calendar' | 'star' | 'shield' | 'hand' }) {
-  const common = { width: 15, height: 15, viewBox: '0 0 24 24', fill: 'none', stroke: '#C8A848', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, style: { opacity: 0.8, flexShrink: 0 } }
+  const common = { width: 15, height: 15, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--gold)', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, style: { opacity: 0.8, flexShrink: 0 } }
   switch (name) {
     case 'calendar': return <svg {...common}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
     case 'star':     return <svg {...common}><path d="M12 3l2.6 5.6 6 .6-4.5 4 1.3 6-5.4-3.1L7.6 19l1.3-6-4.5-4 6-.6z" /></svg>
@@ -46,11 +46,11 @@ function StatIcon({ name }: { name: 'calendar' | 'star' | 'shield' | 'hand' }) {
 
 function StatRow({ icon, label, value }: { icon: 'calendar' | 'star' | 'shield' | 'hand'; label: string; value: string | number }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '0.4rem 0', borderTop: '1px solid rgba(200,168,72,0.12)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '0.4rem 0', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
       <span style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.8rem', color: '#D8C7A0' }}>
         <StatIcon name={icon} />{label}
       </span>
-      <span style={{ fontSize: '0.8rem', color: '#C8A848', fontWeight: 500, whiteSpace: 'nowrap' }}>{value}</span>
+      <span style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 500, whiteSpace: 'nowrap' }}>{value}</span>
     </div>
   )
 }
@@ -267,12 +267,12 @@ export default async function ProfilePage() {
   const identityContent = (
     <>
       {kicker && (
-        <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '0.3rem', opacity: 0.85 }}>
+        <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '0.3rem', opacity: 0.85 }}>
           {kicker}
         </p>
       )}
       <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.15rem' }}>
-        <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.9rem, 4.5vw, 2.5rem)', color: '#C8A848', margin: 0, textShadow: '0 0 40px rgba(210,57,248,0.4)' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.9rem, 4.5vw, 2.5rem)', color: 'var(--gold)', margin: 0, textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.4)' }}>
           {displayName}
         </h1>
         {application && (application.status === 'approved' || application.status === 'pending') && (
@@ -318,14 +318,14 @@ export default async function ProfilePage() {
     <>
       {/* Emblem — department glyph in a brass ring flanked by tiny sparkles */}
       <div style={{ position: 'relative', width: '84px', height: '84px', margin: '0 auto 0.7rem' }}>
-        <span aria-hidden style={{ position: 'absolute', top: '-2px', left: '-11px', color: 'rgba(200,168,72,0.6)', fontSize: '0.65rem' }}>✦</span>
-        <span aria-hidden style={{ position: 'absolute', bottom: '2px', right: '-9px', color: 'rgba(200,168,72,0.42)', fontSize: '0.5rem' }}>✦</span>
+        <span aria-hidden style={{ position: 'absolute', top: '-2px', left: '-11px', color: 'rgb(var(--gold-rgb) / 0.6)', fontSize: '0.65rem' }}>✦</span>
+        <span aria-hidden style={{ position: 'absolute', bottom: '2px', right: '-9px', color: 'rgb(var(--gold-rgb) / 0.42)', fontSize: '0.5rem' }}>✦</span>
         <div style={{
           width: '84px', height: '84px', borderRadius: '50%',
-          border: '1.5px solid #C8A848',
-          background: 'radial-gradient(circle at 42% 38%, rgba(200,168,72,0.18), rgba(8,0,18,0.85))',
+          border: '1.5px solid var(--gold)',
+          background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgba(8,0,18,0.85))',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 22px rgba(200,168,72,0.22), inset 0 0 0 1px rgba(255,249,232,0.1)',
+          boxShadow: '0 0 22px rgb(var(--gold-rgb) / 0.22), inset 0 0 0 1px rgba(255,249,232,0.1)',
         }}>
           {roleInfo?.departments?.icon && !isImageIcon(roleInfo.departments.icon)
             ? <span style={{ fontSize: '2.1rem', lineHeight: 1 }}>{roleInfo.departments.icon}</span>
@@ -333,11 +333,11 @@ export default async function ProfilePage() {
             : <IconImage src={isImageIcon(roleInfo?.departments?.icon) ? roleInfo!.departments!.icon! : '/handicon.png'} size="100%" fill={ROUND_FILL} opacity={0.92} />}
         </div>
       </div>
-      <p style={{ fontSize: '0.64rem', letterSpacing: '0.34em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '0.35rem', opacity: 0.85 }}>
+      <p style={{ fontSize: '0.64rem', letterSpacing: '0.34em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '0.35rem', opacity: 0.85 }}>
         Designation
       </p>
       {/* The title itself is the doorway to the full charge in the Registry. */}
-      <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.7rem, 3vw, 2.2rem)', color: '#C8A848', margin: '0 auto', maxWidth: '13rem', lineHeight: 1.05, textShadow: '0 0 30px rgba(210,57,248,0.35)' }}>
+      <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.7rem, 3vw, 2.2rem)', color: 'var(--gold)', margin: '0 auto', maxWidth: '13rem', lineHeight: 1.05, textShadow: '0 0 30px rgb(var(--purple-rgb) / 0.35)' }}>
         {roleInfo?.name ? (
           <a href={`/roles#${roleSlug(roleInfo.name)}`} className="designation-link">
             {memberFacts.designation}
@@ -346,9 +346,9 @@ export default async function ProfilePage() {
       </h2>
       {/* Stylized divider under the designation — ── ✦ ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', width: '68%', margin: '0.6rem auto 0.6rem' }}>
-        <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.65))' }} />
-        <span aria-hidden style={{ color: '#C8A848', fontSize: '0.6rem', opacity: 0.9, lineHeight: 1 }}>✦</span>
-        <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.65), transparent)' }} />
+        <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.65))' }} />
+        <span aria-hidden style={{ color: 'var(--gold)', fontSize: '0.6rem', opacity: 0.9, lineHeight: 1 }}>✦</span>
+        <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.65), transparent)' }} />
       </div>
       {(roleInfo?.description || roleInfo?.purpose) && (
         <p style={{ fontSize: '0.95rem', color: '#C9B68F', opacity: 0.88, lineHeight: 1.45, margin: '0 auto 1.05rem', maxWidth: '15rem', fontFamily: 'var(--font-cormorant-garamond), serif', fontStyle: 'italic' }}>
@@ -362,16 +362,16 @@ export default async function ProfilePage() {
         const deptName = roleInfo?.departments?.name
         return (
           <div>
-            <p style={{ fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.72, lineHeight: 1.45 }}>
+            <p style={{ fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.72, lineHeight: 1.45 }}>
               {deptName
                 ? <a href={`/roles#${roleSlug(deptName)}`} className="designation-link">{deptLabel}</a>
                 : deptLabel}
             </p>
             {/* Decorative closing flourish — small and delicate */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', width: '12%', margin: '1.3rem auto 0' }}>
-              <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.5))' }} />
-              <span aria-hidden style={{ color: '#C8A848', fontSize: '0.32rem', opacity: 0.8, lineHeight: 1 }}>✦</span>
-              <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.5), transparent)' }} />
+              <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.5))' }} />
+              <span aria-hidden style={{ color: 'var(--gold)', fontSize: '0.32rem', opacity: 0.8, lineHeight: 1 }}>✦</span>
+              <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.5), transparent)' }} />
             </div>
           </div>
         )
@@ -397,7 +397,7 @@ export default async function ProfilePage() {
         /* Designation title + department double as doorways into the Registry —
            quiet by default, a gentle underline on hover. */
         .designation-link       { color: inherit; text-decoration: none; }
-        .designation-link:hover { text-decoration: underline; text-decoration-color: rgba(200,168,72,0.45); text-underline-offset: 5px; text-decoration-thickness: 1px; }
+        .designation-link:hover { text-decoration: underline; text-decoration-color: rgb(var(--gold-rgb) / 0.45); text-underline-offset: 5px; text-decoration-thickness: 1px; }
         .profile-header-desig   { text-align: center; min-width: 0; }
         .profile-header-id      { text-align: center; min-width: 0; }
         /* Let the portrait feel slightly oversized — it can bleed past its grid cell. */
@@ -419,7 +419,7 @@ export default async function ProfilePage() {
         {isSuspended && (
           <div style={{ marginBottom: '1.75rem', padding: '1rem 1.4rem', border: '1px solid rgba(255,180,80,0.35)', borderRadius: '0.85rem', background: 'rgba(255,180,80,0.07)', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: '220px' }}>
-              <p style={{ fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#ffcf80', margin: '0 0 0.35rem' }}>
+              <p style={{ fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--warning)', margin: '0 0 0.35rem' }}>
                 Attendance suspended
               </p>
               <p style={{ fontSize: '0.88rem', lineHeight: 1.6, opacity: 0.85, margin: 0 }}>
@@ -453,7 +453,7 @@ export default async function ProfilePage() {
         {!application && !volunteer && (
           <div>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-              <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: '#C8A848', marginBottom: '0.5rem', textShadow: '0 0 40px rgba(210,57,248,0.4)' }}>
+              <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--gold)', marginBottom: '0.5rem', textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.4)' }}>
                 {user?.firstName ? `Welcome, ${user.firstName}.` : 'Welcome.'}
               </h1>
               <p style={{ fontSize: '0.85rem', opacity: 0.5 }}>{email}</p>
@@ -461,11 +461,11 @@ export default async function ProfilePage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
               {/* Camp member card */}
-              <div style={{ padding: '2rem', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '1rem', background: 'rgba(200,168,72,0.03)', display: 'flex', flexDirection: 'column' }}>
-                <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.7, marginBottom: '0.75rem' }}>
+              <div style={{ padding: '2rem', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '1rem', background: 'rgb(var(--gold-rgb) / 0.03)', display: 'flex', flexDirection: 'column' }}>
+                <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.7, marginBottom: '0.75rem' }}>
                   Camp Member
                 </p>
-                <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.3rem', color: '#C8A848', marginBottom: '0.75rem' }}>
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--gold)', marginBottom: '0.75rem' }}>
                   Join the Camp
                 </p>
                 <p style={{ fontSize: '0.875rem', lineHeight: 1.7, opacity: 0.6, marginBottom: '2rem', flex: 1 }}>
@@ -478,12 +478,12 @@ export default async function ProfilePage() {
                     textAlign: 'center',
                     padding: '0.75rem 1.5rem',
                     borderRadius: '9999px',
-                    border: '1px solid rgba(200,168,72,0.5)',
-                    color: '#FFFACD',
+                    border: '1px solid rgb(var(--gold-rgb) / 0.5)',
+                    color: 'var(--lemon)',
                     textDecoration: 'none',
                     letterSpacing: '0.1em',
                     fontSize: '0.82rem',
-                    fontFamily: 'TokyoDreams, serif',
+                    fontFamily: 'var(--font-display)',
                   }}
                 >
                   Apply to Camp
@@ -491,11 +491,11 @@ export default async function ProfilePage() {
               </div>
 
               {/* Volunteer card */}
-              <div style={{ padding: '2rem', border: '1px solid rgba(210,57,248,0.15)', borderRadius: '1rem', background: 'rgba(210,57,248,0.03)', display: 'flex', flexDirection: 'column' }}>
-                <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.7, marginBottom: '0.75rem' }}>
+              <div style={{ padding: '2rem', border: '1px solid rgb(var(--purple-rgb) / 0.15)', borderRadius: '1rem', background: 'rgb(var(--purple-rgb) / 0.03)', display: 'flex', flexDirection: 'column' }}>
+                <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.7, marginBottom: '0.75rem' }}>
                   Volunteer
                 </p>
-                <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.3rem', color: '#D239F8', marginBottom: '0.75rem' }}>
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--purple)', marginBottom: '0.75rem' }}>
                   Volunteer for a Shift
                 </p>
                 <p style={{ fontSize: '0.875rem', lineHeight: 1.7, opacity: 0.6, marginBottom: '2rem', flex: 1 }}>
@@ -508,12 +508,12 @@ export default async function ProfilePage() {
                     textAlign: 'center',
                     padding: '0.75rem 1.5rem',
                     borderRadius: '9999px',
-                    border: '1px solid rgba(210,57,248,0.7)',
-                    color: '#F3EDE6',
+                    border: '1px solid rgb(var(--purple-rgb) / 0.7)',
+                    color: 'var(--cream)',
                     textDecoration: 'none',
                     letterSpacing: '0.1em',
                     fontSize: '0.82rem',
-                    fontFamily: 'TokyoDreams, serif',
+                    fontFamily: 'var(--font-display)',
                   }}
                 >
                   Sign Up to Volunteer
@@ -526,13 +526,13 @@ export default async function ProfilePage() {
         {/* ── CAMP APPLICATION STATES ── */}
         {application && !volunteer && application.status === 'pending' && (
           <div>
-            <div style={{ textAlign: 'center', marginBottom: '2rem', padding: '2rem 2rem 1.5rem', border: '1px solid rgba(200,168,72,0.15)', borderRadius: '1rem', background: 'rgba(210,57,248,0.04)' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2rem', padding: '2rem 2rem 1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '1rem', background: 'rgb(var(--purple-rgb) / 0.04)' }}>
               <div style={{ marginBottom: '1.25rem' }}>
-                <span style={{ display: 'inline-block', padding: '0.35rem 1.25rem', borderRadius: '9999px', backgroundColor: 'rgba(200,168,72,0.08)', border: '1px solid rgba(200,168,72,0.25)', fontSize: '0.75rem', letterSpacing: '0.12em', color: '#C8A848', opacity: 0.7 }}>
+                <span style={{ display: 'inline-block', padding: '0.35rem 1.25rem', borderRadius: '9999px', backgroundColor: 'rgb(var(--gold-rgb) / 0.08)', border: '1px solid rgb(var(--gold-rgb) / 0.25)', fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--gold)', opacity: 0.7 }}>
                   ○ PENDING PARTICIPANT
                 </span>
               </div>
-              <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.2rem', color: '#C8A848', marginBottom: '0.75rem' }}>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--gold)', marginBottom: '0.75rem' }}>
                 Application under review.
               </p>
               <p style={{ fontSize: '0.82rem', lineHeight: 1.7, opacity: 0.45 }}>
@@ -545,7 +545,7 @@ export default async function ProfilePage() {
 
         {application && application.status === 'cancelled' && (
           <div style={{ textAlign: 'center', padding: '3rem 2rem', border: '1px solid rgba(255,120,120,0.2)', borderRadius: '1rem', background: 'rgba(255,0,0,0.04)' }}>
-            <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.2rem', color: '#ffb4b4', marginBottom: '0.75rem' }}>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--danger-soft)', marginBottom: '0.75rem' }}>
               Attendance cancelled
             </p>
             <p style={{ fontSize: '0.9rem', lineHeight: 1.7, opacity: 0.6 }}>
@@ -555,8 +555,8 @@ export default async function ProfilePage() {
         )}
 
         {application && application.status === 'rejected' && (
-          <div style={{ textAlign: 'center', padding: '3rem 2rem', border: '1px solid rgba(200,168,72,0.12)', borderRadius: '1rem', background: 'rgba(255,255,255,0.02)' }}>
-            <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.2rem', color: '#C8A848', marginBottom: '0.75rem' }}>
+          <div style={{ textAlign: 'center', padding: '3rem 2rem', border: '1px solid rgb(var(--gold-rgb) / 0.12)', borderRadius: '1rem', background: 'rgba(255,255,255,0.02)' }}>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--gold)', marginBottom: '0.75rem' }}>
               Application not approved
             </p>
             <p style={{ fontSize: '0.9rem', lineHeight: 1.7, opacity: 0.6 }}>
@@ -596,14 +596,14 @@ export default async function ProfilePage() {
               </div>
             )}
             <div style={{ marginBottom: '1.5rem' }}>
-              <a href="/participate" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.35)', background: 'rgba(200,168,72,0.06)', color: '#C8A848', textDecoration: 'none', fontSize: '0.82rem', letterSpacing: '0.06em' }}>
+              <a href="/participate" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.35)', background: 'rgb(var(--gold-rgb) / 0.06)', color: 'var(--gold)', textDecoration: 'none', fontSize: '0.82rem', letterSpacing: '0.06em' }}>
                 ✦ Choose / change your role & shift
               </a>
             </div>
 
             <PersonalSchedule userId={userId} />
 
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.3), transparent)', marginBottom: '2.5rem' }} />
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)', marginBottom: '2.5rem' }} />
 
             <div className="profile-info-grid">
               {[
@@ -611,14 +611,14 @@ export default async function ProfilePage() {
                 { label: 'Departure', value: application.departure_date },
                 { label: 'Traveling From', value: application.location },
               ].filter(({ value }) => value).map(({ label, value }) => (
-                <div key={label} style={{ padding: '1rem 1.25rem', border: '1px solid rgba(200,168,72,0.12)', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)' }}>
-                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: '#C8A848', opacity: 0.6, marginBottom: '0.35rem', textTransform: 'uppercase' }}>{label}</p>
+                <div key={label} style={{ padding: '1rem 1.25rem', border: '1px solid rgb(var(--gold-rgb) / 0.12)', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)' }}>
+                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: 'var(--gold)', opacity: 0.6, marginBottom: '0.35rem', textTransform: 'uppercase' }}>{label}</p>
                   <p style={{ fontSize: '0.9rem' }}>{value}</p>
                 </div>
               ))}
             </div>
 
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', margin: '0 0 2.5rem' }} />
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', margin: '0 0 2.5rem' }} />
 
 
             {/* Registry-defined profile fields the member can view / edit
@@ -634,10 +634,10 @@ export default async function ProfilePage() {
               />
             </div>
 
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', margin: '2.5rem 0' }} />
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', margin: '2.5rem 0' }} />
 
-            <div style={{ padding: '2rem', border: '1px solid rgba(210,57,248,0.2)', borderRadius: '1rem', background: 'rgba(210,57,248,0.04)' }}>
-              <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: '#C8A848', marginBottom: '1rem' }}>
+            <div style={{ padding: '2rem', border: '1px solid rgb(var(--purple-rgb) / 0.2)', borderRadius: '1rem', background: 'rgb(var(--purple-rgb) / 0.04)' }}>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--gold)', marginBottom: '1rem' }}>
                 Camp Information
               </p>
               <p style={{ fontSize: '0.9rem', lineHeight: 1.8, opacity: 0.65, fontStyle: 'italic' }}>
@@ -645,16 +645,16 @@ export default async function ProfilePage() {
               </p>
             </div>
 
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', margin: '2.5rem 0' }} />
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', margin: '2.5rem 0' }} />
 
             <NotificationPreferences initialPrefs={notificationPrefs} />
 
-            <a href="/members" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', border: '1px solid rgba(200,168,72,0.18)', borderRadius: '1rem', background: 'rgba(200,168,72,0.03)', textDecoration: 'none' }}>
+            <a href="/members" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.18)', borderRadius: '1rem', background: 'rgb(var(--gold-rgb) / 0.03)', textDecoration: 'none' }}>
               <div>
-                <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: '#C8A848', margin: '0 0 0.2rem' }}>Many Hands</p>
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--gold)', margin: '0 0 0.2rem' }}>Many Hands</p>
                 <p style={{ fontSize: '0.8rem', opacity: 0.45, margin: 0 }}>View your fellow camp members</p>
               </div>
-              <span style={{ fontSize: '1rem', color: '#C8A848', opacity: 0.4 }}>→</span>
+              <span style={{ fontSize: '1rem', color: 'var(--gold)', opacity: 0.4 }}>→</span>
             </a>
           </>
         )}
@@ -664,17 +664,17 @@ export default async function ProfilePage() {
           <>
             <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
               {volunteer.status === 'pending' ? (
-                <span style={{ display: 'inline-block', padding: '0.35rem 1.25rem', borderRadius: '9999px', backgroundColor: 'rgba(200,168,72,0.08)', border: '1px solid rgba(200,168,72,0.25)', fontSize: '0.75rem', letterSpacing: '0.12em', color: '#C8A848', opacity: 0.8 }}>
+                <span style={{ display: 'inline-block', padding: '0.35rem 1.25rem', borderRadius: '9999px', backgroundColor: 'rgb(var(--gold-rgb) / 0.08)', border: '1px solid rgb(var(--gold-rgb) / 0.25)', fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--gold)', opacity: 0.8 }}>
                   ○ PENDING REVIEW
                 </span>
               ) : (
-                <span style={{ display: 'inline-block', padding: '0.35rem 1.25rem', borderRadius: '9999px', backgroundColor: 'rgba(210,57,248,0.1)', border: '1px solid rgba(210,57,248,0.25)', fontSize: '0.75rem', letterSpacing: '0.12em', color: '#D239F8' }}>
+                <span style={{ display: 'inline-block', padding: '0.35rem 1.25rem', borderRadius: '9999px', backgroundColor: 'rgb(var(--purple-rgb) / 0.1)', border: '1px solid rgb(var(--purple-rgb) / 0.25)', fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--purple)' }}>
                   ✦ HELPING HAND
                 </span>
               )}
             </div>
 
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(210,57,248,0.2), transparent)', marginBottom: '2.5rem' }} />
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--purple-rgb) / 0.2), transparent)', marginBottom: '2.5rem' }} />
 
             {/* Shifts the volunteer holds + the door to picking more. Volunteers
                 get no member nav, so this button IS their route to /participate
@@ -697,7 +697,7 @@ export default async function ProfilePage() {
                   </div>
                 )}
                 <div style={{ marginBottom: '2.5rem' }}>
-                  <a href="/participate" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.35)', background: 'rgba(200,168,72,0.06)', color: '#C8A848', textDecoration: 'none', fontSize: '0.82rem', letterSpacing: '0.06em' }}>
+                  <a href="/participate" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.35)', background: 'rgb(var(--gold-rgb) / 0.06)', color: 'var(--gold)', textDecoration: 'none', fontSize: '0.82rem', letterSpacing: '0.06em' }}>
                     ✦ {heldShifts.length > 0 ? 'Pick up / change your shifts' : 'Pick your shifts'}
                   </a>
                 </div>
@@ -706,24 +706,24 @@ export default async function ProfilePage() {
 
             <div className="profile-info-grid">
               {volunteer.days_available?.length > 0 && (
-                <div style={{ padding: '1rem 1.25rem', border: '1px solid rgba(200,168,72,0.12)', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)', gridColumn: '1 / -1' }}>
-                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: '#C8A848', opacity: 0.6, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Days Available</p>
+                <div style={{ padding: '1rem 1.25rem', border: '1px solid rgb(var(--gold-rgb) / 0.12)', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)', gridColumn: '1 / -1' }}>
+                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: 'var(--gold)', opacity: 0.6, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Days Available</p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                     {volunteer.days_available.map((d: string) => (
-                      <span key={d} style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', fontSize: '0.8rem', opacity: 0.8 }}>{d}</span>
+                      <span key={d} style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', fontSize: '0.8rem', opacity: 0.8 }}>{d}</span>
                     ))}
                   </div>
                 </div>
               )}
               {volunteer.preferred_times?.length > 0 && (
-                <div style={{ padding: '1rem 1.25rem', border: '1px solid rgba(200,168,72,0.12)', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)' }}>
-                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: '#C8A848', opacity: 0.6, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Preferred Times</p>
+                <div style={{ padding: '1rem 1.25rem', border: '1px solid rgb(var(--gold-rgb) / 0.12)', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)' }}>
+                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: 'var(--gold)', opacity: 0.6, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Preferred Times</p>
                   <p style={{ fontSize: '0.9rem' }}>{volunteer.preferred_times.join(', ')}</p>
                 </div>
               )}
               {volunteer.shift_interests?.length > 0 && (
-                <div style={{ padding: '1rem 1.25rem', border: '1px solid rgba(200,168,72,0.12)', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)' }}>
-                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: '#C8A848', opacity: 0.6, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Shift Interests</p>
+                <div style={{ padding: '1rem 1.25rem', border: '1px solid rgb(var(--gold-rgb) / 0.12)', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.02)' }}>
+                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: 'var(--gold)', opacity: 0.6, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Shift Interests</p>
                   <p style={{ fontSize: '0.9rem' }}>{volunteer.shift_interests.join(', ')}</p>
                 </div>
               )}

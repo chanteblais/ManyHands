@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation'
 import { DEFAULT_DUES_CONFIG, formatDuesAmount, type DuesConfig, type DuesMode } from '@/lib/dues'
 import type { DuesRosterRow } from '@/lib/dues-roster'
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
 
 const inputStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box',
-  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+  background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
   borderRadius: '0.4rem', color: CREAM, fontSize: '0.85rem',
   padding: '0.45rem 0.6rem', outline: 'none', fontFamily: 'inherit',
 }
@@ -168,7 +168,7 @@ export function DuesManager({
       </p>
 
       {/* ── Settings: on/off + who owes ─────────────────── */}
-      <div style={{ border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.75rem', background: 'rgba(200,168,72,0.02)', padding: '1.1rem 1.25rem', marginBottom: '1.5rem' }}>
+      <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.75rem', background: 'rgb(var(--gold-rgb) / 0.02)', padding: '1.1rem 1.25rem', marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
           <div>
             <span style={{ display: 'block', fontSize: '0.9rem', color: CREAM }}>Collect camp dues</span>
@@ -182,12 +182,12 @@ export function DuesManager({
             title={config.enabled ? 'On' : 'Off'}
             style={{ width: '44px', height: '24px', borderRadius: '9999px', flexShrink: 0, border: 'none', cursor: 'pointer', background: config.enabled ? GOLD : 'rgba(255,255,255,0.12)', transition: 'background 0.2s', position: 'relative' }}
           >
-            <div style={{ position: 'absolute', top: '3px', left: config.enabled ? '23px' : '3px', width: '18px', height: '18px', borderRadius: '50%', background: config.enabled ? '#1A0A24' : 'rgba(255,255,255,0.5)', transition: 'left 0.2s' }} />
+            <div style={{ position: 'absolute', top: '3px', left: config.enabled ? '23px' : '3px', width: '18px', height: '18px', borderRadius: '50%', background: config.enabled ? 'var(--ink)' : 'rgba(255,255,255,0.5)', transition: 'left 0.2s' }} />
           </button>
         </div>
 
         {config.enabled && (
-          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(200,168,72,0.12)' }}>
+          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
             <span style={labelStyle}>Who owes dues</span>
             <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
               {([['members', 'Camp members'], ['volunteers', 'Volunteers']] as const).map(([key, label]) => {
@@ -201,8 +201,8 @@ export function DuesManager({
                       display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                       padding: '0.35rem 0.8rem', borderRadius: '9999px', cursor: 'pointer', fontFamily: 'inherit',
                       fontSize: '0.78rem', letterSpacing: '0.03em',
-                      border: `1px solid ${on ? 'rgba(200,168,72,0.5)' : 'rgba(255,255,255,0.14)'}`,
-                      background: on ? 'rgba(200,168,72,0.14)' : 'transparent',
+                      border: `1px solid ${on ? 'rgb(var(--gold-rgb) / 0.5)' : 'rgba(255,255,255,0.14)'}`,
+                      background: on ? 'rgb(var(--gold-rgb) / 0.14)' : 'transparent',
                       color: on ? GOLD : CREAM, opacity: on ? 1 : 0.6,
                     }}
                   >
@@ -227,7 +227,7 @@ export function DuesManager({
       {config.enabled && (<>
 
       {/* ── Payment settings ─────────────────────────────── */}
-      <div style={{ border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.75rem', background: 'rgba(200,168,72,0.02)', padding: '1.1rem 1.25rem', marginBottom: '1.5rem' }}>
+      <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.75rem', background: 'rgb(var(--gold-rgb) / 0.02)', padding: '1.1rem 1.25rem', marginBottom: '1.5rem' }}>
         <h4 style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: GOLD, opacity: 0.75, margin: '0 0 1rem' }}>
           How members pay
         </h4>
@@ -245,7 +245,7 @@ export function DuesManager({
         {/* Fixed vs sliding scale */}
         <div style={{ marginBottom: '1rem' }}>
           <label style={labelStyle}>Amount</label>
-          <div style={{ display: 'inline-flex', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '0.5rem', overflow: 'hidden', marginBottom: '0.75rem' }}>
+          <div style={{ display: 'inline-flex', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '0.5rem', overflow: 'hidden', marginBottom: '0.75rem' }}>
             {(['fixed', 'sliding'] as DuesMode[]).map(m => (
               <button
                 key={m}
@@ -253,7 +253,7 @@ export function DuesManager({
                 style={{
                   padding: '0.35rem 0.9rem', fontSize: '0.75rem', letterSpacing: '0.05em',
                   border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                  background: config.mode === m ? 'rgba(200,168,72,0.18)' : 'transparent',
+                  background: config.mode === m ? 'rgb(var(--gold-rgb) / 0.18)' : 'transparent',
                   color: config.mode === m ? GOLD : CREAM,
                   opacity: config.mode === m ? 1 : 0.6,
                 }}
@@ -310,7 +310,7 @@ export function DuesManager({
         </div>
 
         <div style={{ minHeight: '1.1rem', marginTop: '0.6rem' }}>
-          {cfgError && <p style={{ fontSize: '0.75rem', color: '#ff8a8a', margin: 0 }}>{cfgError}</p>}
+          {cfgError && <p style={{ fontSize: '0.75rem', color: 'var(--danger)', margin: 0 }}>{cfgError}</p>}
           {!cfgError && savedCfg && <p style={{ fontSize: '0.72rem', color: GOLD, opacity: 0.6, margin: 0 }}>Saved ✓</p>}
         </div>
       </div>
@@ -333,7 +333,7 @@ export function DuesManager({
         </span>
       </div>
 
-      <div style={{ display: 'inline-flex', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.5rem', overflow: 'hidden', marginBottom: '0.9rem' }}>
+      <div style={{ display: 'inline-flex', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.5rem', overflow: 'hidden', marginBottom: '0.9rem' }}>
         {(['all', 'awaiting', 'owed', 'paid'] as const).map(f => (
           <button
             key={f}
@@ -341,7 +341,7 @@ export function DuesManager({
             style={{
               padding: '0.3rem 0.8rem', fontSize: '0.72rem', letterSpacing: '0.05em',
               border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-              background: filter === f ? 'rgba(200,168,72,0.15)' : 'transparent',
+              background: filter === f ? 'rgb(var(--gold-rgb) / 0.15)' : 'transparent',
               color: filter === f ? GOLD : CREAM, opacity: filter === f ? 1 : 0.55,
             }}
           >
@@ -350,7 +350,7 @@ export function DuesManager({
         ))}
       </div>
 
-      {rowError && <p style={{ fontSize: '0.75rem', color: '#ff8a8a', margin: '0 0 0.6rem' }}>{rowError}</p>}
+      {rowError && <p style={{ fontSize: '0.75rem', color: 'var(--danger)', margin: '0 0 0.6rem' }}>{rowError}</p>}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
         {visible.length === 0 && (
@@ -374,16 +374,16 @@ export function DuesManager({
               key={row.id}
               className="dues-row"
               style={{
-                border: `1px solid ${state === 'awaiting' ? 'rgba(210,57,248,0.3)' : 'rgba(200,168,72,0.12)'}`,
+                border: `1px solid ${state === 'awaiting' ? 'rgb(var(--purple-rgb) / 0.3)' : 'rgb(var(--gold-rgb) / 0.12)'}`,
                 borderRadius: '0.65rem',
-                background: state === 'paid' ? 'rgba(200,168,72,0.04)' : state === 'awaiting' ? 'rgba(210,57,248,0.05)' : 'rgba(255,255,255,0.015)',
+                background: state === 'paid' ? 'rgb(var(--gold-rgb) / 0.04)' : state === 'awaiting' ? 'rgb(var(--purple-rgb) / 0.05)' : 'rgba(255,255,255,0.015)',
                 padding: '0.7rem 0.9rem', opacity: row.suspended ? 0.5 : 1,
               }}
             >
               <div className="grow" style={{ minWidth: 0 }}>
                 <p style={{ margin: 0, fontSize: '0.88rem', color: CREAM, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {row.name}
-                  {row.kind === 'volunteer' && <span style={{ fontSize: '0.62rem', letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.55, marginLeft: '0.5rem', border: '1px solid rgba(200,168,72,0.3)', borderRadius: '9999px', padding: '0.05rem 0.4rem' }}>Volunteer</span>}
+                  {row.kind === 'volunteer' && <span style={{ fontSize: '0.62rem', letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.55, marginLeft: '0.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '9999px', padding: '0.05rem 0.4rem' }}>Volunteer</span>}
                   {row.suspended && <span style={{ fontSize: '0.68rem', opacity: 0.6, marginLeft: '0.5rem' }}>· paused</span>}
                 </p>
                 {state === 'paid' && (
@@ -429,7 +429,7 @@ export function DuesManager({
                     title={state === 'paid' ? 'Mark unpaid' : state === 'awaiting' ? 'Confirm payment' : 'Mark paid'}
                     style={{ width: '40px', height: '22px', borderRadius: '9999px', flexShrink: 0, border: 'none', cursor: loading ? 'default' : 'pointer', background: state === 'paid' ? GOLD : 'rgba(255,255,255,0.14)', transition: 'background 0.2s', position: 'relative', opacity: loading ? 0.5 : 1 }}
                   >
-                    <div style={{ position: 'absolute', top: '3px', left: state === 'paid' ? '21px' : '3px', width: '16px', height: '16px', borderRadius: '50%', background: state === 'paid' ? '#1A0A24' : 'rgba(255,255,255,0.5)', transition: 'left 0.2s' }} />
+                    <div style={{ position: 'absolute', top: '3px', left: state === 'paid' ? '21px' : '3px', width: '16px', height: '16px', borderRadius: '50%', background: state === 'paid' ? 'var(--ink)' : 'rgba(255,255,255,0.5)', transition: 'left 0.2s' }} />
                   </button>
                 </div>
               </div>

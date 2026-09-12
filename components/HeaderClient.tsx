@@ -259,11 +259,11 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
           width: '34px',
           height: '34px',
           borderRadius: '50%',
-          background: 'rgba(200,168,72,0.15)',
-          border: '1px solid rgba(200,168,72,0.4)',
-          color: '#C8A848',
+          background: 'rgb(var(--gold-rgb) / 0.15)',
+          border: '1px solid rgb(var(--gold-rgb) / 0.4)',
+          color: 'var(--gold)',
           fontSize: '0.85rem',
-          fontFamily: 'TokyoDreams, serif',
+          fontFamily: 'var(--font-display)',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -271,12 +271,12 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
           transition: 'background 0.2s, border-color 0.2s',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(200,168,72,0.25)'
-          e.currentTarget.style.borderColor = 'rgba(200,168,72,0.7)'
+          e.currentTarget.style.background = 'rgb(var(--gold-rgb) / 0.25)'
+          e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.7)'
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(200,168,72,0.15)'
-          e.currentTarget.style.borderColor = 'rgba(200,168,72,0.4)'
+          e.currentTarget.style.background = 'rgb(var(--gold-rgb) / 0.15)'
+          e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.4)'
         }}
         aria-label="Account menu"
         aria-haspopup="menu"
@@ -300,7 +300,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
             right: 0,
             top: 'calc(100% + 0.5rem)',
             backgroundColor: 'rgba(22, 8, 32, 0.98)',
-            border: '1px solid rgba(200,168,72,0.2)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.2)',
             borderRadius: '0.75rem',
             padding: '0.5rem 0',
             minWidth: '160px',
@@ -309,9 +309,9 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
           }}
         >
           {userFirstName && (
-            <div style={{ padding: '0.5rem 1rem 0.75rem', borderBottom: '1px solid rgba(200,168,72,0.1)', marginBottom: '0.25rem' }}>
-              <p style={{ fontSize: '0.8rem', color: '#C8A848', opacity: 0.9, margin: 0 }}>{userFirstName}</p>
-              {userEmail && <p style={{ fontSize: '0.7rem', color: '#F3EDE6', opacity: 0.4, margin: 0 }}>{userEmail}</p>}
+            <div style={{ padding: '0.5rem 1rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.1)', marginBottom: '0.25rem' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--gold)', opacity: 0.9, margin: 0 }}>{userFirstName}</p>
+              {userEmail && <p style={{ fontSize: '0.7rem', color: 'var(--cream)', opacity: 0.4, margin: 0 }}>{userEmail}</p>}
             </div>
           )}
           {[
@@ -328,24 +328,24 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
                 padding: '0.5rem 1rem',
                 fontSize: '0.8rem',
                 letterSpacing: '0.06em',
-                color: '#F3EDE6',
+                color: 'var(--cream)',
                 textDecoration: 'none',
                 opacity: 0.7,
                 transition: 'opacity 0.15s, color 0.15s',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.opacity = '1'
-                e.currentTarget.style.color = '#C8A848'
+                e.currentTarget.style.color = 'var(--gold)'
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.opacity = '0.7'
-                e.currentTarget.style.color = '#F3EDE6'
+                e.currentTarget.style.color = 'var(--cream)'
               }}
             >
               {label}
             </Link>
           ))}
-          <div style={{ height: '1px', background: 'rgba(200,168,72,0.1)', margin: '0.25rem 0' }} role="separator" />
+          <div style={{ height: '1px', background: 'rgb(var(--gold-rgb) / 0.1)', margin: '0.25rem 0' }} role="separator" />
           <a
             href="/api/sign-out"
             role="menuitem"
@@ -364,7 +364,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
               padding: '0.5rem 1rem',
               fontSize: '0.8rem',
               letterSpacing: '0.06em',
-              color: '#F3EDE6',
+              color: 'var(--cream)',
               background: 'none',
               border: 'none',
               cursor: 'pointer',
@@ -387,7 +387,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
       style={{
         fontSize: '0.75rem',
         letterSpacing: '0.12em',
-        color: '#F3EDE6',
+        color: 'var(--cream)',
         textDecoration: 'none',
         opacity: 0.5,
       }}
@@ -397,12 +397,12 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
   )
 
   const mobileMenuLink: React.CSSProperties = {
-    color: '#F3EDE6',
+    color: 'var(--cream)',
     textDecoration: 'none',
     fontSize: '1rem',
     letterSpacing: '0.08em',
     padding: '0.75rem 0',
-    borderBottom: '1px solid rgba(200,168,72,0.08)',
+    borderBottom: '1px solid rgb(var(--gold-rgb) / 0.08)',
     display: 'block',
   }
 
@@ -417,7 +417,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
         left: 0,
         right: 0,
         zIndex: 50,
-        borderBottom: '1px solid rgba(200, 168, 72, 0.2)',
+        borderBottom: '1px solid rgb(var(--gold-rgb) / 0.2)',
       }}
     >
       <div
@@ -437,17 +437,17 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
           href="/"
           aria-label="Glåüm Camp home"
           style={{
-            fontFamily: 'TokyoDreams, serif',
+            fontFamily: 'var(--font-display)',
             fontSize: '1.4rem',
-            color: '#C8A848',
+            color: 'var(--gold)',
             textDecoration: 'none',
             letterSpacing: '0.05em',
-            textShadow: '0 0 20px rgba(210, 57, 248, 0.6)',
+            textShadow: '0 0 20px rgb(var(--purple-rgb) / 0.6)',
             flexShrink: 0,
           }}
         >
           Glåüm
-          <span style={{ color: '#F3EDE6', fontSize: '0.65rem', letterSpacing: '0.15em', marginLeft: '0.5rem', fontFamily: 'var(--font-libre-baskerville)', opacity: 0.6 }}>
+          <span style={{ color: 'var(--cream)', fontSize: '0.65rem', letterSpacing: '0.15em', marginLeft: '0.5rem', fontFamily: 'var(--font-libre-baskerville)', opacity: 0.6 }}>
             sponsored by Shrimp™
           </span>
         </Link>
@@ -458,8 +458,8 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
             {activeNavLinks.map((link) => {
               const active = isActiveLink(link.href)
               const linkStyle: React.CSSProperties = active
-                ? { color: '#C8A848', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '0.08em', opacity: 1, transition: 'opacity 0.2s, color 0.2s' }
-                : { color: '#F3EDE6', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '0.08em', opacity: 0.8, transition: 'opacity 0.2s, color 0.2s' }
+                ? { color: 'var(--gold)', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '0.08em', opacity: 1, transition: 'opacity 0.2s, color 0.2s' }
+                : { color: 'var(--cream)', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '0.08em', opacity: 0.8, transition: 'opacity 0.2s, color 0.2s' }
               return (
                 <span key={link.href} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
                   {'badge' in link && link.badge ? (
@@ -469,8 +469,8 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
                       href={link.href}
                       aria-current={active ? 'page' : undefined}
                       style={linkStyle}
-                      onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.color = '#C8A848' }}
-                      onMouseLeave={(e) => { e.currentTarget.style.opacity = active ? '1' : '0.8'; e.currentTarget.style.color = active ? '#C8A848' : '#F3EDE6' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.color = 'var(--gold)' }}
+                      onMouseLeave={(e) => { e.currentTarget.style.opacity = active ? '1' : '0.8'; e.currentTarget.style.color = active ? 'var(--gold)' : 'var(--cream)' }}
                     >
                       {link.label}
                     </a>
@@ -485,7 +485,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
                         transform: 'translateX(-50%)',
                         width: '100%',
                         height: '1px',
-                        background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.7), transparent)',
+                        background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.7), transparent)',
                       }}
                     >
                       <span
@@ -497,8 +497,8 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
                           width: '4px',
                           height: '4px',
                           borderRadius: '50%',
-                          background: '#C8A848',
-                          boxShadow: '0 0 6px rgba(200,168,72,0.9)',
+                          background: 'var(--gold)',
+                          boxShadow: '0 0 6px rgb(var(--gold-rgb) / 0.9)',
                         }}
                       />
                     </span>
@@ -533,7 +533,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.4rem', color: '#C8A848', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.4rem', color: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav-menu"
@@ -559,16 +559,16 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
           aria-label="Mobile"
           style={{
             backgroundColor: 'rgba(20, 8, 30, 0.98)',
-            borderTop: '1px solid rgba(200,168,72,0.15)',
+            borderTop: '1px solid rgb(var(--gold-rgb) / 0.15)',
             padding: '0.75rem 1.25rem 1.5rem',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
           {signedIn && (userFirstName || userEmail) && (
-            <div style={{ padding: '0.75rem 0 1rem', marginBottom: '0.25rem', borderBottom: '1px solid rgba(200,168,72,0.15)' }}>
-              {userFirstName && <p style={{ fontSize: '0.85rem', color: '#C8A848', opacity: 0.9, margin: 0 }}>{userFirstName}</p>}
-              {userEmail && <p style={{ fontSize: '0.72rem', color: '#F3EDE6', opacity: 0.35, margin: '0.2rem 0 0' }}>{userEmail}</p>}
+            <div style={{ padding: '0.75rem 0 1rem', marginBottom: '0.25rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.15)' }}>
+              {userFirstName && <p style={{ fontSize: '0.85rem', color: 'var(--gold)', opacity: 0.9, margin: 0 }}>{userFirstName}</p>}
+              {userEmail && <p style={{ fontSize: '0.72rem', color: 'var(--cream)', opacity: 0.35, margin: '0.2rem 0 0' }}>{userEmail}</p>}
             </div>
           )}
 
@@ -576,7 +576,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
             const active = isActiveLink(link.href)
             // Lit gold + a left accent bar marks the current page in the mobile menu.
             const itemStyle: React.CSSProperties = active
-              ? { ...mobileMenuLink, color: '#C8A848', paddingLeft: '0.75rem', borderLeft: '2px solid #C8A848' }
+              ? { ...mobileMenuLink, color: 'var(--gold)', paddingLeft: '0.75rem', borderLeft: '2px solid var(--gold)' }
               : mobileMenuLink
             return 'badge' in link && link.badge ? (
               <MessagesNavLink
@@ -596,7 +596,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
                 About
               </a>
               {isAdmin && (
-                <Link href="/admin" onClick={() => setMenuOpen(false)} style={{ ...mobileMenuLink, color: '#C8A848', opacity: 0.7 }}>
+                <Link href="/admin" onClick={() => setMenuOpen(false)} style={{ ...mobileMenuLink, color: 'var(--gold)', opacity: 0.7 }}>
                   Admin
                 </Link>
               )}

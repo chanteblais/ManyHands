@@ -37,10 +37,10 @@ export function ShiftSignupToggle({ initialOpen }: { initialOpen: boolean }) {
       <div style={{
         display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
         padding: '0.4rem 0.9rem', borderRadius: '9999px',
-        border: `1px solid ${open ? 'rgba(200,168,72,0.25)' : 'rgba(255,80,80,0.35)'}`,
-        background: open ? 'rgba(200,168,72,0.04)' : 'rgba(255,80,80,0.06)',
+        border: `1px solid ${open ? 'rgb(var(--gold-rgb) / 0.25)' : 'rgba(255,80,80,0.35)'}`,
+        background: open ? 'rgb(var(--gold-rgb) / 0.04)' : 'rgba(255,80,80,0.06)',
       }}>
-        <span style={{ fontSize: '0.72rem', letterSpacing: '0.08em', color: open ? '#C8A848' : '#ff8080', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '0.72rem', letterSpacing: '0.08em', color: open ? 'var(--gold)' : 'var(--danger-strong)', whiteSpace: 'nowrap' }}>
           Shift signup {open ? 'open' : 'closed'}
         </span>
         <button
@@ -53,14 +53,14 @@ export function ShiftSignupToggle({ initialOpen }: { initialOpen: boolean }) {
           style={{
             width: '34px', height: '18px', borderRadius: '9999px', flexShrink: 0,
             border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
-            background: open ? '#C8A848' : 'rgba(255,80,80,0.6)',
+            background: open ? 'var(--gold)' : 'rgba(255,80,80,0.6)',
             transition: 'background 0.2s', position: 'relative', opacity: saving ? 0.5 : 1,
           }}
         >
           <div style={{
             position: 'absolute', top: '3px', left: open ? '19px' : '3px',
             width: '12px', height: '12px', borderRadius: '50%',
-            background: '#1A0A24', transition: 'left 0.2s',
+            background: 'var(--ink)', transition: 'left 0.2s',
           }} />
         </button>
       </div>
@@ -69,7 +69,7 @@ export function ShiftSignupToggle({ initialOpen }: { initialOpen: boolean }) {
           The shift picker is hidden from members until times are confirmed. Existing shifts can still be cancelled.
         </p>
       )}
-      {error && <p style={{ fontSize: '0.78rem', color: '#ff8a8a', margin: '0.5rem 0 0' }}>{error}</p>}
+      {error && <p style={{ fontSize: '0.78rem', color: 'var(--danger)', margin: '0.5rem 0 0' }}>{error}</p>}
     </div>
   )
 }

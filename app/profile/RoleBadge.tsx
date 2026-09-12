@@ -15,7 +15,7 @@ export function RoleBadge({ roleName, deptName, deptIcon }: Props) {
           </radialGradient>
           <linearGradient id="rb_rim" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%"   stopColor="#7a5a10" />
-            <stop offset="20%"  stopColor="#c8a848" />
+            <stop offset="20%"  stopColor="var(--gold)" />
             <stop offset="45%"  stopColor="#f0d878" />
             <stop offset="70%"  stopColor="#b8940c" />
             <stop offset="100%" stopColor="#7a5a10" />
@@ -27,7 +27,7 @@ export function RoleBadge({ roleName, deptName, deptIcon }: Props) {
         <ellipse cx="80" cy="107" rx="76" ry="103" fill="none" stroke="url(#rb_rim)" strokeWidth="4" />
         <ellipse cx="80" cy="107" rx="76" ry="103" fill="none" stroke="rgba(255,240,160,0.3)" strokeWidth="1.5" />
         <ellipse cx="80" cy="107" rx="68" ry="95"
-          fill="none" stroke="#c8a848" strokeWidth="1.5"
+          fill="none" stroke="var(--gold)" strokeWidth="1.5"
           strokeDasharray="0.1 5.2" strokeLinecap="round" opacity="0.65"
         />
       </svg>
@@ -43,40 +43,40 @@ export function RoleBadge({ roleName, deptName, deptIcon }: Props) {
         />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', width: '100%', marginBottom: '8px' }}>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(200,168,72,0.45)' }} />
-          <span style={{ fontSize: '0.38rem', color: '#c8a848', opacity: 0.75, lineHeight: 1 }}>✦</span>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(200,168,72,0.45)' }} />
+          <div style={{ flex: 1, height: '1px', background: 'rgb(var(--gold-rgb) / 0.45)' }} />
+          <span style={{ fontSize: '0.38rem', color: 'var(--gold)', opacity: 0.75, lineHeight: 1 }}>✦</span>
+          <div style={{ flex: 1, height: '1px', background: 'rgb(var(--gold-rgb) / 0.45)' }} />
         </div>
 
         <p style={{
-          fontFamily: 'TokyoDreams, serif',
+          fontFamily: 'var(--font-display)',
           fontSize: '1rem',
           color: '#e8cc6a',
           margin: '0 0 8px',
           lineHeight: 1.2,
           letterSpacing: '0.06em',
-          textShadow: '0 0 16px rgba(200,168,72,0.55)',
+          textShadow: '0 0 16px rgb(var(--gold-rgb) / 0.55)',
           textTransform: 'uppercase',
         }}>
           {roleName}
         </p>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', width: '100%', marginBottom: '8px' }}>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(200,168,72,0.45)' }} />
-          <span style={{ fontSize: '0.38rem', color: '#c8a848', opacity: 0.75, lineHeight: 1 }}>✦</span>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(200,168,72,0.45)' }} />
+          <div style={{ flex: 1, height: '1px', background: 'rgb(var(--gold-rgb) / 0.45)' }} />
+          <span style={{ fontSize: '0.38rem', color: 'var(--gold)', opacity: 0.75, lineHeight: 1 }}>✦</span>
+          <div style={{ flex: 1, height: '1px', background: 'rgb(var(--gold-rgb) / 0.45)' }} />
         </div>
 
         {deptName && (
           <p style={{
             fontSize: '0.5rem', letterSpacing: '0.16em', textTransform: 'uppercase',
-            color: '#c8a848', opacity: 0.65, margin: '0 0 8px', lineHeight: 1.7,
+            color: 'var(--gold)', opacity: 0.65, margin: '0 0 8px', lineHeight: 1.7,
           }}>
             {deptName}
           </p>
         )}
 
-        <span style={{ fontSize: '0.55rem', color: '#c8a848', opacity: 0.5, lineHeight: 1 }}>✦</span>
+        <span style={{ fontSize: '0.55rem', color: 'var(--gold)', opacity: 0.5, lineHeight: 1 }}>✦</span>
       </div>
     </div>
   )

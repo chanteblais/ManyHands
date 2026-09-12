@@ -295,4 +295,5 @@ Every identity/config/notification helper takes the community first:
 
 - **Platform root host** — an unresolved host still falls back to `DEFAULT_COMMUNITY_SLUG`; the picker is reachable at `/communities` on any host. Routing the platform root to the picker lands with the second tenant (needs the domain).
 - **Direct `page_content` reads** in a few files (`app/admin/page.tsx`, `app/admin/[id]/page.tsx`, `app/api/admin/schedule/[id]/route.ts`, `lib/attunement-nudge.ts`) go through `db` (scoped) but bypass the cached reader — genlog row 2026-09-11.
-- **RLS** (1e) is built; it is live only once `SUPABASE_JWT_SECRET` is set in Vercel (after 076 + the leak test). **Colour tokens** (1f) — not started.
+- **RLS** (1e) is built; it is live only once `SUPABASE_JWT_SECRET` is set in Vercel (after 076 + the leak test).
+- **Theme tokens** (1f) are built: every UI colour is a `:root` custom property (`lib/theme.ts` ↔ `app/globals.css`), and `communities.theme.colors` / `.fonts.display` override them via a `<style>` the root layout injects. Not yet themeable: email HTML, the badge art/font (those come from `theme.badge`), the manifest/theme-color meta, Clerk's auth cards, and the schedule palette.

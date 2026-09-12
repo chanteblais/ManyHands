@@ -30,10 +30,10 @@ type ApplicationData = {
 const inputStyle: React.CSSProperties = {
   width: '100%',
   backgroundColor: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(200,168,72,0.25)',
+  border: '1px solid rgb(var(--gold-rgb) / 0.25)',
   borderRadius: '0.5rem',
   padding: '0.75rem 1rem',
-  color: '#F3EDE6',
+  color: 'var(--cream)',
   fontSize: '0.9rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
   outline: 'none',
@@ -43,7 +43,7 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: '0.72rem',
   letterSpacing: '0.1em',
-  color: '#C8A848',
+  color: 'var(--gold)',
   marginBottom: '0.45rem',
   textTransform: 'uppercase',
 }
@@ -246,9 +246,9 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
           width: '2.25rem',
           height: '2.25rem',
           borderRadius: '9999px',
-          border: '1px solid rgba(200,168,72,0.35)',
+          border: '1px solid rgb(var(--gold-rgb) / 0.35)',
           background: 'rgba(255,255,255,0.04)',
-          color: '#C8A848',
+          color: 'var(--gold)',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -279,9 +279,9 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
             top: 'calc(100% + 0.5rem)',
             right: 0,
             minWidth: '12rem',
-            border: '1px solid rgba(200,168,72,0.25)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.25)',
             borderRadius: '0.75rem',
-            background: '#1A0A24',
+            background: 'var(--ink)',
             boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
             overflow: 'hidden',
             zIndex: 20,
@@ -297,14 +297,14 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
           <button
             type="button"
             onClick={() => openPanel(suspended ? 'resume' : 'suspend')}
-            style={{ ...menuItemStyle, color: '#C8A848', borderTop: '1px solid rgba(200,168,72,0.12)' }}
+            style={{ ...menuItemStyle, color: 'var(--gold)', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)' }}
           >
             {suspended ? 'Resume attendance' : 'Suspend attendance'}
           </button>
           <button
             type="button"
             onClick={() => openPanel('cancel')}
-            style={{ ...menuItemStyle, color: '#ff8a8a', borderTop: '1px solid rgba(200,168,72,0.12)' }}
+            style={{ ...menuItemStyle, color: 'var(--danger)', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)' }}
           >
             Cancel attendance
           </button>
@@ -438,7 +438,7 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
             </select>
           </Field>
 
-          {error && <p style={{ color: '#ff8a8a', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
+          {error && <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
           {success && <p style={{ color: '#8fd48f', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{success}</p>}
 
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
@@ -452,7 +452,7 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
 
       {view === 'cancel' && (
         <Panel title="Cancel attendance" onClose={closeAll}>
-          <p style={{ fontSize: '0.9rem', lineHeight: 1.7, color: '#F3EDE6', opacity: 0.9, marginBottom: '1.25rem' }}>
+          <p style={{ fontSize: '0.9rem', lineHeight: 1.7, color: 'var(--cream)', opacity: 0.9, marginBottom: '1.25rem' }}>
             We're sorry to see you go. Please share why you're cancelling so the camp can plan accordingly.
           </p>
           <Field label="Reason (required)">
@@ -463,13 +463,13 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
               placeholder="Tell us what's changed…"
               style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
             />
-            <p style={{ fontSize: '0.78rem', color: cancelReasonOk ? '#7dcf8e' : '#F3EDE6', opacity: cancelReasonOk ? 0.9 : 0.75, marginTop: '0.5rem', marginBottom: 0 }}>
+            <p style={{ fontSize: '0.78rem', color: cancelReasonOk ? 'var(--success)' : 'var(--cream)', opacity: cancelReasonOk ? 0.9 : 0.75, marginTop: '0.5rem', marginBottom: 0 }}>
               {cancelReasonOk
                 ? '✓ Thank you — this helps us plan.'
                 : `Please write at least 10 characters before confirming (${cancelReason.trim().length}/10).`}
             </p>
           </Field>
-          {error && <p style={{ color: '#ff8a8a', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
+          {error && <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
             <button type="button" onClick={closeAll} style={secondaryBtnStyle}>Keep my spot</button>
             <button
@@ -479,7 +479,7 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
               style={{
                 ...primaryBtnStyle,
                 borderColor: 'rgba(255,120,120,0.5)',
-                color: '#ffb4b4',
+                color: 'var(--danger-soft)',
                 opacity: saving || !cancelReasonOk ? 0.45 : 1,
                 cursor: saving || !cancelReasonOk ? 'not-allowed' : 'pointer',
               }}
@@ -492,11 +492,11 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
 
       {view === 'suspend' && (
         <Panel title="Suspend attendance" onClose={closeAll}>
-          <p style={{ fontSize: '0.9rem', lineHeight: 1.7, color: '#F3EDE6', opacity: 0.9, marginBottom: '1rem' }}>
+          <p style={{ fontSize: '0.9rem', lineHeight: 1.7, color: 'var(--cream)', opacity: 0.9, marginBottom: '1rem' }}>
             Life happens. Suspending pauses your commitments while you stay part of the community — you'll keep full access to the site, the schedule, and messages.
           </p>
           <div style={{ padding: '1rem 1.25rem', border: '1px solid rgba(255,180,80,0.3)', borderRadius: '0.75rem', background: 'rgba(255,180,80,0.06)', marginBottom: '1.25rem' }}>
-            <p style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#ffcf80', marginBottom: '0.6rem' }}>
+            <p style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--warning)', marginBottom: '0.6rem' }}>
               What happens
             </p>
             <ul style={{ margin: 0, paddingLeft: '1.1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
@@ -514,7 +514,7 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
               style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
             />
           </Field>
-          {error && <p style={{ color: '#ff8a8a', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
+          {error && <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
             <button type="button" onClick={closeAll} style={secondaryBtnStyle}>Never mind</button>
             <button
@@ -524,7 +524,7 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
               style={{
                 ...primaryBtnStyle,
                 borderColor: 'rgba(255,180,80,0.5)',
-                color: '#ffcf80',
+                color: 'var(--warning)',
                 opacity: saving ? 0.45 : 1,
                 cursor: saving ? 'not-allowed' : 'pointer',
               }}
@@ -537,10 +537,10 @@ export function ProfileSettings({ application, suspended = false }: { applicatio
 
       {view === 'resume' && (
         <Panel title="Resume attendance" onClose={closeAll}>
-          <p style={{ fontSize: '0.9rem', lineHeight: 1.7, color: '#F3EDE6', opacity: 0.9, marginBottom: '1.25rem' }}>
+          <p style={{ fontSize: '0.9rem', lineHeight: 1.7, color: 'var(--cream)', opacity: 0.9, marginBottom: '1.25rem' }}>
             Welcome back! Resuming lifts your suspension right away. Your previous commitments aren't restored automatically — head to Participate to pick up your role, groups, shifts, and anything you'd like to bring.
           </p>
-          {error && <p style={{ color: '#ff8a8a', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
+          {error && <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
             <button type="button" onClick={closeAll} style={secondaryBtnStyle}>Not yet</button>
             <button
@@ -604,16 +604,16 @@ function Panel({
           width: 'min(92vw, 640px)',
           maxHeight: '85vh',
           overflowY: 'auto',
-          border: '1px solid rgba(200,168,72,0.25)',
+          border: '1px solid rgb(var(--gold-rgb) / 0.25)',
           borderRadius: '1rem',
-          background: '#1A0A24',
+          background: 'var(--ink)',
           padding: '1.5rem',
           zIndex: 201,
           boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.25rem', color: '#C8A848', margin: 0 }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: 'var(--gold)', margin: 0 }}>
             {title}
           </h2>
           <button type="button" onClick={onClose} aria-label="Close" style={closeBtnStyle}>×</button>
@@ -631,7 +631,7 @@ const menuItemStyle: React.CSSProperties = {
   padding: '0.85rem 1rem',
   border: 'none',
   background: 'transparent',
-  color: '#F3EDE6',
+  color: 'var(--cream)',
   textAlign: 'left',
   cursor: 'pointer',
   fontSize: '0.85rem',
@@ -640,9 +640,9 @@ const menuItemStyle: React.CSSProperties = {
 const primaryBtnStyle: React.CSSProperties = {
   padding: '0.65rem 1.25rem',
   borderRadius: '9999px',
-  border: '1px solid rgba(200,168,72,0.45)',
+  border: '1px solid rgb(var(--gold-rgb) / 0.45)',
   background: 'transparent',
-  color: '#FFFACD',
+  color: 'var(--lemon)',
   cursor: 'pointer',
   fontSize: '0.82rem',
   letterSpacing: '0.06em',
@@ -650,15 +650,15 @@ const primaryBtnStyle: React.CSSProperties = {
 
 const secondaryBtnStyle: React.CSSProperties = {
   ...primaryBtnStyle,
-  borderColor: 'rgba(200,168,72,0.2)',
-  color: '#F3EDE6',
+  borderColor: 'rgb(var(--gold-rgb) / 0.2)',
+  color: 'var(--cream)',
   opacity: 0.75,
 }
 
 const closeBtnStyle: React.CSSProperties = {
   border: 'none',
   background: 'transparent',
-  color: '#C8A848',
+  color: 'var(--gold)',
   fontSize: '1.5rem',
   lineHeight: 1,
   cursor: 'pointer',

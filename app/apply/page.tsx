@@ -95,10 +95,10 @@ function ClosedPage({ message }: { message: string }) {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
       <div style={{ textAlign: 'center', maxWidth: '480px' }}>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '2.5rem', color: '#C8A848', marginBottom: '0.5rem', textShadow: '0 0 40px rgba(200,168,72,0.4)' }}>✦</p>
-        <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: '#C8A848', marginBottom: '1rem' }}>Applications Closed</h1>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: 'var(--gold)', marginBottom: '0.5rem', textShadow: '0 0 40px rgb(var(--gold-rgb) / 0.4)' }}>✦</p>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--gold)', marginBottom: '1rem' }}>Applications Closed</h1>
         <p style={{ fontSize: '0.95rem', lineHeight: 1.8, opacity: 0.55, marginBottom: '2rem' }}>{message}</p>
-        <a href="/" style={{ padding: '0.75rem 2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.5)', color: '#C8A848', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '0.1em' }}>
+        <a href="/" style={{ padding: '0.75rem 2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.5)', color: 'var(--gold)', textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '0.1em' }}>
           ← Return home
         </a>
       </div>

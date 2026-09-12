@@ -44,10 +44,10 @@ const SHIFT_INTERESTS = [
 const inputStyle: React.CSSProperties = {
   width: '100%',
   backgroundColor: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(200,168,72,0.25)',
+  border: '1px solid rgb(var(--gold-rgb) / 0.25)',
   borderRadius: '0.5rem',
   padding: '0.75rem 1rem',
-  color: '#F3EDE6',
+  color: 'var(--cream)',
   fontSize: '0.9rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
   outline: 'none',
@@ -57,7 +57,7 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: '0.72rem',
   letterSpacing: '0.1em',
-  color: '#C8A848',
+  color: 'var(--gold)',
   marginBottom: '0.45rem',
   textTransform: 'uppercase',
 }
@@ -171,9 +171,9 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
           width: '2.25rem',
           height: '2.25rem',
           borderRadius: '9999px',
-          border: '1px solid rgba(200,168,72,0.35)',
+          border: '1px solid rgb(var(--gold-rgb) / 0.35)',
           background: 'rgba(255,255,255,0.04)',
-          color: '#C8A848',
+          color: 'var(--gold)',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -192,9 +192,9 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
           top: 'calc(100% + 0.5rem)',
           right: 0,
           minWidth: '12rem',
-          border: '1px solid rgba(200,168,72,0.25)',
+          border: '1px solid rgb(var(--gold-rgb) / 0.25)',
           borderRadius: '0.75rem',
-          background: '#1A0A24',
+          background: 'var(--ink)',
           boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
           overflow: 'hidden',
           zIndex: 20,
@@ -202,14 +202,14 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
           <button
             type="button"
             onClick={() => { setView('edit'); setError(null); setSuccess(null) }}
-            style={{ display: 'block', width: '100%', padding: '0.85rem 1rem', border: 'none', background: 'transparent', color: '#F3EDE6', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}
+            style={{ display: 'block', width: '100%', padding: '0.85rem 1rem', border: 'none', background: 'transparent', color: 'var(--cream)', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}
           >
             Edit profile
           </button>
           <button
             type="button"
             onClick={() => { setView('cancel'); setError(null) }}
-            style={{ display: 'block', width: '100%', padding: '0.85rem 1rem', border: 'none', borderTop: '1px solid rgba(200,168,72,0.12)', background: 'transparent', color: '#ff8a8a', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}
+            style={{ display: 'block', width: '100%', padding: '0.85rem 1rem', border: 'none', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)', background: 'transparent', color: 'var(--danger)', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}
           >
             Cancel signup
           </button>
@@ -230,18 +230,18 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
             width: 'min(92vw, 580px)',
             maxHeight: '85vh',
             overflowY: 'auto',
-            border: '1px solid rgba(200,168,72,0.25)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.25)',
             borderRadius: '1rem',
-            background: '#1A0A24',
+            background: 'var(--ink)',
             padding: '1.5rem',
             zIndex: 40,
             boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.25rem', color: '#C8A848', margin: 0 }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: 'var(--gold)', margin: 0 }}>
                 Edit volunteer info
               </h2>
-              <button type="button" onClick={closeAll} aria-label="Close" style={{ border: 'none', background: 'transparent', color: '#C8A848', fontSize: '1.5rem', lineHeight: 1, cursor: 'pointer', opacity: 0.7 }}>×</button>
+              <button type="button" onClick={closeAll} aria-label="Close" style={{ border: 'none', background: 'transparent', color: 'var(--gold)', fontSize: '1.5rem', lineHeight: 1, cursor: 'pointer', opacity: 0.7 }}>×</button>
             </div>
 
             <Field label="How would you like to contribute?">
@@ -249,16 +249,16 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
                 {SIGNUP_INTENT_OPTIONS.map(opt => {
                   const checked = form.signup_intent.includes(opt.value)
                   return (
-                    <label key={opt.value} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', padding: '0.7rem 0.85rem', borderRadius: '0.5rem', border: `1px solid ${checked ? 'rgba(210,57,248,0.4)' : 'rgba(200,168,72,0.12)'}`, background: checked ? 'rgba(210,57,248,0.06)' : 'transparent', transition: 'border-color 0.15s' }}>
+                    <label key={opt.value} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', padding: '0.7rem 0.85rem', borderRadius: '0.5rem', border: `1px solid ${checked ? 'rgb(var(--purple-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.12)'}`, background: checked ? 'rgb(var(--purple-rgb) / 0.06)' : 'transparent', transition: 'border-color 0.15s' }}>
                       <input
                         type="checkbox"
                         value={opt.value}
                         checked={checked}
                         onChange={() => toggle('signup_intent', opt.value)}
-                        style={{ marginTop: '0.2rem', flexShrink: 0, accentColor: '#D239F8', cursor: 'pointer' }}
+                        style={{ marginTop: '0.2rem', flexShrink: 0, accentColor: 'var(--purple)', cursor: 'pointer' }}
                       />
                       <div>
-                        <p style={{ fontSize: '0.85rem', color: '#F3EDE6', marginBottom: '0.1rem' }}>{opt.label}</p>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--cream)', marginBottom: '0.1rem' }}>{opt.label}</p>
                         <p style={{ fontSize: '0.75rem', opacity: 0.45, lineHeight: 1.4 }}>{opt.description}</p>
                       </div>
                     </label>
@@ -284,7 +284,7 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
                       type="checkbox"
                       checked={form.days_available.includes(day)}
                       onChange={() => toggle('days_available', day)}
-                      style={{ accentColor: '#D239F8' }}
+                      style={{ accentColor: 'var(--purple)' }}
                     />
                     {day}
                   </label>
@@ -300,7 +300,7 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
                       type="checkbox"
                       checked={form.preferred_times.includes(t)}
                       onChange={() => toggle('preferred_times', t)}
-                      style={{ accentColor: '#D239F8' }}
+                      style={{ accentColor: 'var(--purple)' }}
                     />
                     {t}
                   </label>
@@ -316,7 +316,7 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
                       type="checkbox"
                       checked={form.shift_interests.includes(s)}
                       onChange={() => toggle('shift_interests', s)}
-                      style={{ accentColor: '#D239F8' }}
+                      style={{ accentColor: 'var(--purple)' }}
                     />
                     {s}
                   </label>
@@ -334,14 +334,14 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
               />
             </Field>
 
-            {error && <p style={{ color: '#ff8a8a', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
+            {error && <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
             {success && <p style={{ color: '#8fd48f', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{success}</p>}
 
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-              <button type="button" onClick={closeAll} style={{ padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.75 }}>
+              <button type="button" onClick={closeAll} style={{ padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.75 }}>
                 Cancel
               </button>
-              <button type="button" onClick={handleSave} disabled={saving} style={{ padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.45)', background: 'transparent', color: '#FFFACD', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.06em' }}>
+              <button type="button" onClick={handleSave} disabled={saving} style={{ padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.45)', background: 'transparent', color: 'var(--lemon)', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.06em' }}>
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
             </div>
@@ -354,26 +354,26 @@ export function VolunteerSettings({ volunteer }: { volunteer: VolunteerData }) {
           <div onClick={closeAll} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 30 }} />
           <div style={{
             position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-            width: 'min(92vw, 480px)', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '1rem',
-            background: '#1A0A24', padding: '1.5rem', zIndex: 40, boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+            width: 'min(92vw, 480px)', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem',
+            background: 'var(--ink)', padding: '1.5rem', zIndex: 40, boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.25rem', color: '#C8A848', margin: 0 }}>Cancel signup</h2>
-              <button type="button" onClick={closeAll} aria-label="Close" style={{ border: 'none', background: 'transparent', color: '#C8A848', fontSize: '1.5rem', lineHeight: 1, cursor: 'pointer', opacity: 0.7 }}>×</button>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: 'var(--gold)', margin: 0 }}>Cancel signup</h2>
+              <button type="button" onClick={closeAll} aria-label="Close" style={{ border: 'none', background: 'transparent', color: 'var(--gold)', fontSize: '1.5rem', lineHeight: 1, cursor: 'pointer', opacity: 0.7 }}>×</button>
             </div>
             <p style={{ fontSize: '0.9rem', lineHeight: 1.7, opacity: 0.7, marginBottom: '1.25rem' }}>
               No worries — plans change. You can always sign up again later.
             </p>
-            {error && <p style={{ color: '#ff8a8a', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
+            {error && <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-              <button type="button" onClick={closeAll} style={{ padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.75 }}>
+              <button type="button" onClick={closeAll} style={{ padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.75 }}>
                 Keep my spot
               </button>
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={saving}
-                style={{ padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(255,120,120,0.5)', background: 'transparent', color: '#ffb4b4', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.06em' }}
+                style={{ padding: '0.65rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(255,120,120,0.5)', background: 'transparent', color: 'var(--danger-soft)', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.06em' }}
               >
                 {saving ? 'Cancelling…' : 'Confirm cancellation'}
               </button>

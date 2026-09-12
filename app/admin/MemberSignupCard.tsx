@@ -109,17 +109,17 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
       {/* Role card */}
       <div style={{
         padding: '1rem 1.25rem',
-        border: '1px solid rgba(200,168,72,0.15)',
+        border: '1px solid rgb(var(--gold-rgb) / 0.15)',
         borderRadius: '0.75rem',
         background: 'rgba(255,255,255,0.02)',
         display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap',
       }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, margin: '0 0 0.3rem' }}>Role</p>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, margin: '0 0 0.3rem' }}>Role</p>
           {currentRole ? (
             <>
               {currentRole.department && (
-                <p style={{ fontSize: '0.72rem', color: '#C8A848', opacity: 0.5, margin: '0 0 0.15rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                <p style={{ fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.5, margin: '0 0 0.15rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                   {currentRole.department_icon && (
                     isImageIcon(currentRole.department_icon)
                       ? <IconImage src={currentRole.department_icon} size="0.85rem" fill={0.92} />
@@ -128,12 +128,12 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
                   {currentRole.department}
                 </p>
               )}
-              <p style={{ fontSize: '0.92rem', color: '#F3EDE6', margin: 0 }}>{currentRole.name}</p>
+              <p style={{ fontSize: '0.92rem', color: 'var(--cream)', margin: 0 }}>{currentRole.name}</p>
               {currentRole.commitment && (
-                <p style={{ fontSize: '0.72rem', color: '#C8A848', opacity: 0.45, margin: '0.2rem 0 0' }}>{currentRole.commitment}</p>
+                <p style={{ fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.45, margin: '0.2rem 0 0' }}>{currentRole.commitment}</p>
               )}
               {currentRole.approval_status === 'pending' && (
-                <span style={{ display: 'inline-block', marginTop: '0.3rem', fontSize: '0.65rem', color: '#D239F8', border: '1px solid rgba(210,57,248,0.3)', borderRadius: '9999px', padding: '0.1rem 0.4rem' }}>
+                <span style={{ display: 'inline-block', marginTop: '0.3rem', fontSize: '0.65rem', color: 'var(--purple)', border: '1px solid rgb(var(--purple-rgb) / 0.3)', borderRadius: '9999px', padding: '0.1rem 0.4rem' }}>
                   pending approval
                 </span>
               )}
@@ -150,7 +150,7 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
                 disabled={approving}
                 style={{
                   background: 'rgba(100,200,120,0.08)', border: '1px solid rgba(100,200,120,0.35)', borderRadius: '9999px',
-                  color: '#7dcf8e', cursor: 'pointer', padding: '0.35rem 0.85rem',
+                  color: 'var(--success)', cursor: 'pointer', padding: '0.35rem 0.85rem',
                   fontSize: '0.75rem', opacity: approving ? 0.4 : 1,
                 }}
               >
@@ -162,7 +162,7 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
               disabled={clearing === 'role'}
               style={{
                 background: 'none', border: '1px solid rgba(255,80,80,0.25)', borderRadius: '9999px',
-                color: '#ff8a8a', cursor: 'pointer', padding: '0.35rem 0.85rem',
+                color: 'var(--danger)', cursor: 'pointer', padding: '0.35rem 0.85rem',
                 fontSize: '0.75rem', opacity: clearing === 'role' ? 0.4 : 0.75,
               }}
             >
@@ -175,11 +175,11 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
       {/* Shifts card — every shift the member holds */}
       <div style={{
         padding: '1rem 1.25rem',
-        border: '1px solid rgba(210,57,248,0.15)',
+        border: '1px solid rgb(var(--purple-rgb) / 0.15)',
         borderRadius: '0.75rem',
-        background: 'rgba(210,57,248,0.02)',
+        background: 'rgb(var(--purple-rgb) / 0.02)',
       }}>
-        <p style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.5, margin: '0 0 0.3rem' }}>
+        <p style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.5, margin: '0 0 0.3rem' }}>
           Shifts{currentShifts.length > 0 ? ` — ${currentShifts.length}` : ''}
         </p>
         {currentShifts.length === 0 ? (
@@ -189,20 +189,20 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
             {currentShifts.map(s => (
               <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: '0.9rem', color: '#F3EDE6', margin: 0 }}>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--cream)', margin: 0 }}>
                     {s.title}
                     {s.lead && (
                       <span style={{
                         marginLeft: '0.45rem', fontSize: '0.6rem', letterSpacing: '0.08em',
-                        textTransform: 'uppercase', color: '#C8A848',
-                        border: '1px solid rgba(200,168,72,0.4)', borderRadius: '9999px',
+                        textTransform: 'uppercase', color: 'var(--gold)',
+                        border: '1px solid rgb(var(--gold-rgb) / 0.4)', borderRadius: '9999px',
                         padding: '0.08rem 0.45rem', verticalAlign: 'middle',
                       }}>
                         ✦ Lead
                       </span>
                     )}
                   </p>
-                  <p style={{ fontSize: '0.72rem', color: '#D239F8', opacity: 0.45, margin: '0.15rem 0 0' }}>
+                  <p style={{ fontSize: '0.72rem', color: 'var(--purple)', opacity: 0.45, margin: '0.15rem 0 0' }}>
                     {s.day}{s.time ? ` · ${s.time}` : ''}
                   </p>
                 </div>
@@ -210,8 +210,8 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
                   onClick={() => handleToggleLead(s)}
                   disabled={clearing === s.id}
                   style={{
-                    background: 'none', border: '1px solid rgba(200,168,72,0.3)', borderRadius: '9999px',
-                    color: '#C8A848', cursor: 'pointer', padding: '0.25rem 0.7rem',
+                    background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '9999px',
+                    color: 'var(--gold)', cursor: 'pointer', padding: '0.25rem 0.7rem',
                     fontSize: '0.7rem', flexShrink: 0,
                     opacity: clearing === s.id ? 0.4 : 0.75,
                   }}
@@ -223,7 +223,7 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
                   disabled={clearing === s.id}
                   style={{
                     background: 'none', border: '1px solid rgba(255,80,80,0.25)', borderRadius: '9999px',
-                    color: '#ff8a8a', cursor: 'pointer', padding: '0.25rem 0.7rem',
+                    color: 'var(--danger)', cursor: 'pointer', padding: '0.25rem 0.7rem',
                     fontSize: '0.7rem', flexShrink: 0,
                     opacity: clearing === s.id ? 0.4 : 0.75,
                   }}
@@ -236,7 +236,7 @@ export function MemberSignupCard({ clerkUserId, role, shifts }: Props) {
         )}
       </div>
 
-      {error && <p style={{ color: '#ff8a8a', fontSize: '0.8rem' }}>{error}</p>}
+      {error && <p style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{error}</p>}
       {confirmDialog}
     </div>
   )

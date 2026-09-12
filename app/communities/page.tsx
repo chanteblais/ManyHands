@@ -23,15 +23,15 @@ export default async function CommunitiesPage() {
       <Header />
       <main style={{ paddingTop: '64px', minHeight: '70vh' }}>
         <div style={{ maxWidth: '640px', margin: '0 auto', padding: '4rem 1.5rem 3rem' }}>
-          <p style={{ fontSize: '0.68rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '1rem', opacity: 0.85 }}>
+          <p style={{ fontSize: '0.68rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '1rem', opacity: 0.85 }}>
             Many Hands
           </p>
-          <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 6vw, 3.5rem)', color: '#C8A848', margin: '0 0 0.75rem', lineHeight: 1 }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 6vw, 3.5rem)', color: 'var(--gold)', margin: '0 0 0.75rem', lineHeight: 1 }}>
             Your communities
           </h1>
 
           {visible.length === 0 ? (
-            <div style={{ marginTop: '2rem', padding: '1.5rem', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '12px', lineHeight: 1.7 }}>
+            <div style={{ marginTop: '2rem', padding: '1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '12px', lineHeight: 1.7 }}>
               <p style={{ margin: '0 0 0.75rem' }}>You&rsquo;re signed in, but you&rsquo;re not part of a community here yet.</p>
               <p style={{ margin: 0, opacity: 0.75 }}>
                 Ask your organizer for an invite — they&rsquo;ll point you at their community&rsquo;s page, where you can apply.
@@ -48,13 +48,13 @@ export default async function CommunitiesPage() {
                       style={{
                         display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem',
                         padding: '1rem 1.25rem', borderRadius: '12px', textDecoration: 'none',
-                        border: `1px solid ${isCurrent ? 'rgba(210,57,248,0.45)' : 'rgba(200,168,72,0.25)'}`,
-                        background: isCurrent ? 'rgba(210,57,248,0.05)' : 'rgba(255,255,255,0.02)',
-                        color: '#F3EDE6',
+                        border: `1px solid ${isCurrent ? 'rgb(var(--purple-rgb) / 0.45)' : 'rgb(var(--gold-rgb) / 0.25)'}`,
+                        background: isCurrent ? 'rgb(var(--purple-rgb) / 0.05)' : 'rgba(255,255,255,0.02)',
+                        color: 'var(--cream)',
                       }}
                     >
                       <span>
-                        <span style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.4rem', color: '#C8A848' }}>{community.name}</span>
+                        <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--gold)' }}>{community.name}</span>
                         {community.eventName && (
                           <span style={{ display: 'block', fontSize: '0.8rem', opacity: 0.65, marginTop: '0.2rem' }}>{community.eventName}</span>
                         )}

@@ -60,7 +60,7 @@ function PrefCheckbox({
         gap: '0.9rem',
         padding: '0.85rem 0',
         cursor: disabled ? 'wait' : 'pointer',
-        borderBottom: '1px solid rgba(200,168,72,0.1)',
+        borderBottom: '1px solid rgb(var(--gold-rgb) / 0.1)',
       }}
     >
       <input
@@ -74,7 +74,7 @@ function PrefCheckbox({
           width: '18px',
           height: '18px',
           marginTop: '0.15rem',
-          accentColor: '#D239F8',
+          accentColor: 'var(--purple)',
           cursor: disabled ? 'wait' : 'pointer',
         }}
       />
@@ -83,14 +83,14 @@ function PrefCheckbox({
           style={{
             display: 'block',
             fontSize: '0.92rem',
-            color: '#F3EDE6',
+            color: 'var(--cream)',
             fontFamily: 'var(--font-cormorant-garamond), Georgia, serif',
             marginBottom: '0.15rem',
           }}
         >
           {label}
         </span>
-        <span style={{ display: 'block', fontSize: '0.78rem', color: 'rgba(243,237,230,0.6)', lineHeight: 1.5 }}>
+        <span style={{ display: 'block', fontSize: '0.78rem', color: 'rgb(var(--cream-rgb) / 0.6)', lineHeight: 1.5 }}>
           {description}
         </span>
       </span>
@@ -143,7 +143,7 @@ export function NotificationPreferences({ initialPrefs }: { initialPrefs?: Prefs
       style={{
         scrollMarginTop: '6rem',
         background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(200,168,72,0.15)',
+        border: '1px solid rgb(var(--gold-rgb) / 0.15)',
         borderRadius: '1rem',
         padding: '1.5rem 1.6rem',
         marginBottom: '2.5rem',
@@ -152,9 +152,9 @@ export function NotificationPreferences({ initialPrefs }: { initialPrefs?: Prefs
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
         <h2
           style={{
-            fontFamily: 'TokyoDreams, serif',
+            fontFamily: 'var(--font-display)',
             fontSize: '1.15rem',
-            color: '#C8A848',
+            color: 'var(--gold)',
             margin: 0,
             textShadow: '0 2px 8px rgba(0,0,0,0.8)',
           }}
@@ -162,15 +162,15 @@ export function NotificationPreferences({ initialPrefs }: { initialPrefs?: Prefs
           Notification Preferences
         </h2>
         {savedAt && !error && (
-          <span style={{ fontSize: '0.72rem', color: '#7dcf8e', opacity: 0.85 }}>✓ Saved</span>
+          <span style={{ fontSize: '0.72rem', color: 'var(--success)', opacity: 0.85 }}>✓ Saved</span>
         )}
       </div>
-      <p style={{ fontSize: '0.8rem', color: 'rgba(243,237,230,0.6)', margin: '0 0 0.75rem', lineHeight: 1.5 }}>
+      <p style={{ fontSize: '0.8rem', color: 'rgb(var(--cream-rgb) / 0.6)', margin: '0 0 0.75rem', lineHeight: 1.5 }}>
         Choose which emails you&rsquo;d like to receive. You can change these anytime.
       </p>
 
       {error && (
-        <p style={{ fontSize: '0.8rem', color: '#ff8a8a', marginBottom: '0.5rem' }}>{error}</p>
+        <p style={{ fontSize: '0.8rem', color: 'var(--danger)', marginBottom: '0.5rem' }}>{error}</p>
       )}
 
       {prefs === null && !error ? (

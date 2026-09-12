@@ -18,7 +18,7 @@ type OptInGroup = {
   shift_commitment: { hours: number; type: string } | null
 }
 
-const GOLD = '#C8A848'
+const GOLD = 'var(--gold)'
 
 // Server-rendered pages pass the same shape /api/groups/membership returns
 // (lib/participate-data.ts → getSelfJoinGroups), so the section renders with
@@ -97,8 +97,8 @@ export function GroupCommitments({ initialGroups }: { initialGroups?: OptInGroup
         style={{
           display: 'flex', alignItems: 'center', gap: '1rem', textAlign: 'left', width: '100%',
           padding: '1rem 1.25rem', borderRadius: '0.85rem', cursor: busy ? 'wait' : 'pointer',
-          border: `1px solid ${g.joined ? 'rgba(210,57,248,0.45)' : 'rgba(200,168,72,0.18)'}`,
-          background: g.joined ? 'rgba(210,57,248,0.08)' : 'rgba(255,255,255,0.02)',
+          border: `1px solid ${g.joined ? 'rgb(var(--purple-rgb) / 0.45)' : 'rgb(var(--gold-rgb) / 0.18)'}`,
+          background: g.joined ? 'rgb(var(--purple-rgb) / 0.08)' : 'rgba(255,255,255,0.02)',
           transition: 'border-color 0.15s, background 0.15s', opacity: busy ? 0.6 : 1,
         }}
       >
@@ -111,7 +111,7 @@ export function GroupCommitments({ initialGroups }: { initialGroups?: OptInGroup
 
         {/* Name + description */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ margin: 0, fontSize: '0.95rem', color: '#F3EDE6', fontWeight: 600 }}>{g.name}</p>
+          <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--cream)', fontWeight: 600 }}>{g.name}</p>
           {g.description && (
             <p style={{ margin: '0.2rem 0 0', fontSize: '0.78rem', opacity: 0.5, lineHeight: 1.5 }}>{g.description}</p>
           )}
@@ -126,9 +126,9 @@ export function GroupCommitments({ initialGroups }: { initialGroups?: OptInGroup
         <span style={{
           flexShrink: 0, fontSize: '0.7rem', letterSpacing: '0.08em', padding: '0.35rem 0.85rem',
           borderRadius: '9999px', whiteSpace: 'nowrap',
-          border: `1px solid ${g.joined ? 'rgba(210,57,248,0.5)' : 'rgba(200,168,72,0.3)'}`,
-          color: g.joined ? '#D239F8' : GOLD,
-          background: g.joined ? 'rgba(210,57,248,0.12)' : 'transparent',
+          border: `1px solid ${g.joined ? 'rgb(var(--purple-rgb) / 0.5)' : 'rgb(var(--gold-rgb) / 0.3)'}`,
+          color: g.joined ? 'var(--purple)' : GOLD,
+          background: g.joined ? 'rgb(var(--purple-rgb) / 0.12)' : 'transparent',
         }}>
           {g.joined ? '✓ Joined' : '+ Join'}
         </span>
@@ -138,14 +138,14 @@ export function GroupCommitments({ initialGroups }: { initialGroups?: OptInGroup
 
   return (
     <div>
-      {error && <p style={{ color: '#ff8a8a', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{error}</p>}
+      {error && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{error}</p>}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
         {sections.map(section => (
           <div key={section.id}>
             {section.name && (
               <p style={{
                 margin: '0 0 0.85rem', fontSize: '1.15rem', letterSpacing: '0.05em',
-                color: GOLD, opacity: 0.9, fontFamily: 'TokyoDreams, serif',
+                color: GOLD, opacity: 0.9, fontFamily: 'var(--font-display)',
               }}>
                 {section.name}
               </p>

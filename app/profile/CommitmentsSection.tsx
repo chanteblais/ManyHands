@@ -34,11 +34,11 @@ function shiftDayLabel(s: CommitmentShift): string {
 }
 
 const TAG_STYLES: Record<string, { color: string; border: string; bg: string }> = {
-  GROUP:        { color: '#c8a848', border: 'rgba(200,168,72,0.4)', bg: 'rgba(200,168,72,0.08)' },
-  TEAM:         { color: '#c8a848', border: 'rgba(200,168,72,0.4)', bg: 'rgba(200,168,72,0.08)' },
-  LEAD:         { color: '#D239F8', border: 'rgba(210,57,248,0.35)', bg: 'rgba(210,57,248,0.07)' },
-  DESIGNATION:  { color: '#D239F8', border: 'rgba(210,57,248,0.35)', bg: 'rgba(210,57,248,0.07)' },
-  SHIFT:        { color: '#7dcf8e', border: 'rgba(100,200,120,0.35)', bg: 'rgba(100,200,120,0.07)' },
+  GROUP:        { color: 'var(--gold)', border: 'rgb(var(--gold-rgb) / 0.4)', bg: 'rgb(var(--gold-rgb) / 0.08)' },
+  TEAM:         { color: 'var(--gold)', border: 'rgb(var(--gold-rgb) / 0.4)', bg: 'rgb(var(--gold-rgb) / 0.08)' },
+  LEAD:         { color: 'var(--purple)', border: 'rgb(var(--purple-rgb) / 0.35)', bg: 'rgb(var(--purple-rgb) / 0.07)' },
+  DESIGNATION:  { color: 'var(--purple)', border: 'rgb(var(--purple-rgb) / 0.35)', bg: 'rgb(var(--purple-rgb) / 0.07)' },
+  SHIFT:        { color: 'var(--success)', border: 'rgba(100,200,120,0.35)', bg: 'rgba(100,200,120,0.07)' },
   BRINGING:     { color: '#8fc4cf', border: 'rgba(120,190,205,0.35)', bg: 'rgba(120,190,205,0.07)' },
 }
 
@@ -47,7 +47,7 @@ function CircleIcon({ children, size = '56px' }: { children: React.ReactNode; si
     <div style={{
       width: size, height: size, borderRadius: '50%', flexShrink: 0, overflow: 'hidden',
       border: '1.5px solid #C07C26',
-      background: 'radial-gradient(circle at 42% 38%, rgba(200,168,72,0.14), rgba(8,0,18,0.85))',
+      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgba(8,0,18,0.85))',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       {children}
@@ -80,7 +80,7 @@ function Row({ circleContent, title, description, tag, iconSize, compact }: {
     <div className="commitments-row">
       <CircleIcon size={iconSize}>{circleContent}</CircleIcon>
       <div className="commitments-row-text">
-        <p style={{ fontSize: '0.74rem', fontWeight: 400, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#EDE0C8', margin: '0 0 0.15rem', lineHeight: 1.45 }}>
+        <p style={{ fontSize: '0.74rem', fontWeight: 400, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--parchment)', margin: '0 0 0.15rem', lineHeight: 1.45 }}>
           {title}
         </p>
         {description && !compact && (
@@ -91,7 +91,7 @@ function Row({ circleContent, title, description, tag, iconSize, compact }: {
         )}
       </div>
       <Tag label={tag} />
-      <span aria-hidden style={{ color: '#C8A848', opacity: 0.4, fontSize: '1.2rem', lineHeight: 1, flexShrink: 0, marginLeft: '0.1rem' }}>›</span>
+      <span aria-hidden style={{ color: 'var(--gold)', opacity: 0.4, fontSize: '1.2rem', lineHeight: 1, flexShrink: 0, marginLeft: '0.1rem' }}>›</span>
     </div>
   )
 }
@@ -99,16 +99,16 @@ function Row({ circleContent, title, description, tag, iconSize, compact }: {
 // Section header: ✦ ── TITLE ── ✦  — the ceremonial accent used across the
 // profile cards (mirrors the Attunement Status header treatment).
 function AccentHeader({ title, compact }: { title: string; compact?: boolean }) {
-  const spark = <span aria-hidden style={{ color: '#C8A848', fontSize: '0.7rem', opacity: 0.9, lineHeight: 1 }}>✦</span>
+  const spark = <span aria-hidden style={{ color: 'var(--gold)', fontSize: '0.7rem', opacity: 0.9, lineHeight: 1 }}>✦</span>
   const line = (dir: 'l' | 'r') => (
-    <span aria-hidden style={{ width: '46px', height: '1px', flexShrink: 0, background: `linear-gradient(90deg, ${dir === 'l' ? 'transparent, rgba(200,168,72,0.6)' : 'rgba(200,168,72,0.6), transparent'})` }} />
+    <span aria-hidden style={{ width: '46px', height: '1px', flexShrink: 0, background: `linear-gradient(90deg, ${dir === 'l' ? 'transparent, rgb(var(--gold-rgb) / 0.6)' : 'rgb(var(--gold-rgb) / 0.6), transparent'})` }} />
   )
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem' }}>
       {spark}{line('l')}
       {/* No nowrap: the title is the card's widest content — on a phone it must
           be able to wrap rather than force the card past the viewport. */}
-      <p style={{ fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: compact ? '0.92rem' : '1.05rem', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C8A848', margin: 0, textShadow: '0 0 18px rgba(200,168,72,0.35)', textAlign: 'center' }}>
+      <p style={{ fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: compact ? '0.92rem' : '1.05rem', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', margin: 0, textShadow: '0 0 18px rgb(var(--gold-rgb) / 0.35)', textAlign: 'center' }}>
         {title}
       </p>
       {line('r')}{spark}
@@ -130,7 +130,7 @@ export function CommitmentsSection({ contributions, role, dept, shifts, bringing
   const sidepad = compact ? '0 1.25rem' : '0 1.5rem'
 
   return (
-    <div style={{ border: '1.5px solid rgba(200,168,72,0.7)', borderRadius: '1rem', background: 'rgba(10,0,20,0.6)', overflow: 'hidden', boxShadow: '0 0 0 1px rgba(200,168,72,0.12), 0 0 24px rgba(200,168,72,0.08)', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ border: '1.5px solid rgb(var(--gold-rgb) / 0.7)', borderRadius: '1rem', background: 'rgba(10,0,20,0.6)', overflow: 'hidden', boxShadow: '0 0 0 1px rgb(var(--gold-rgb) / 0.12), 0 0 24px rgb(var(--gold-rgb) / 0.08)', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <style dangerouslySetInnerHTML={{ __html: `
         .commitments-rows { padding: ${sidepad}; }
         .commitments-row  { display: flex; align-items: center; gap: ${rowGap}; padding: ${rowPad}; }
@@ -166,7 +166,7 @@ export function CommitmentsSection({ contributions, role, dept, shifts, bringing
               compact={compact}
             />
             {(contributions.length > 0 || shifts.length > 0 || bringing.length > 0) && (
-              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.3), transparent)' }} />
+              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)' }} />
             )}
           </div>
         )}
@@ -193,7 +193,7 @@ export function CommitmentsSection({ contributions, role, dept, shifts, bringing
                 compact={compact}
               />
               {(i < contributions.length - 1 || shifts.length > 0 || bringing.length > 0) && (
-                <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.3), transparent)' }} />
+                <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)' }} />
               )}
             </div>
           )
@@ -211,7 +211,7 @@ export function CommitmentsSection({ contributions, role, dept, shifts, bringing
                   ? <IconImage src={shift.icon_type} size="100%" fill={ROUND_FILL} />
                   // display:flex — an inline line box here baseline-shifts the icon
                   // ~2px above the circle's center.
-                  : <div style={{ color: '#C8A848', opacity: 0.75, display: 'flex' }}>
+                  : <div style={{ color: 'var(--gold)', opacity: 0.75, display: 'flex' }}>
                       <EventIcon type={shift.icon_type} size={compact ? 28 : 36} />
                     </div>
               }
@@ -222,7 +222,7 @@ export function CommitmentsSection({ contributions, role, dept, shifts, bringing
               compact={compact}
             />
             {(i < shifts.length - 1 || bringing.length > 0) && (
-              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.3), transparent)' }} />
+              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)' }} />
             )}
           </div>
         ))}
@@ -245,7 +245,7 @@ export function CommitmentsSection({ contributions, role, dept, shifts, bringing
               compact={compact}
             />
             {i < bringing.length - 1 && (
-              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.3), transparent)' }} />
+              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)' }} />
             )}
           </div>
         ))}
@@ -254,7 +254,7 @@ export function CommitmentsSection({ contributions, role, dept, shifts, bringing
       {/* Footer */}
       {showManageLink && (
         <div style={{ padding: '0.5rem 1.5rem 1rem', textAlign: 'center', marginTop: 'auto' }}>
-          <a href="/participate" style={{ fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.85, textDecoration: 'none', borderBottom: '1px solid rgba(200,168,72,0.35)', paddingBottom: '0.2rem' }}>
+          <a href="/participate" style={{ fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.85, textDecoration: 'none', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.35)', paddingBottom: '0.2rem' }}>
             View all commitments ›
           </a>
         </div>

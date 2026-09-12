@@ -57,16 +57,16 @@ export default async function MessagesPage() {
       <main aria-labelledby="messages-heading" style={{ maxWidth: '720px', margin: '0 auto', padding: '4.5rem 1.5rem 3rem', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2.5rem' }}>
           <div>
-            <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.7, marginBottom: '0.4rem' }}>
+            <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.7, marginBottom: '0.4rem' }}>
               <span aria-hidden="true">✦ &nbsp;</span>Messages<span aria-hidden="true">&nbsp; ✦</span>
             </p>
-            <h1 id="messages-heading" style={{ display: 'flex', alignItems: 'center', fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: '#C8A848', margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+            <h1 id="messages-heading" style={{ display: 'flex', alignItems: 'center', fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--gold)', margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
               Messages
               <UnreadCountBadge />
             </h1>
           </div>
         </div>
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.3), transparent)', marginBottom: '2.5rem' }} aria-hidden="true" />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)', marginBottom: '2.5rem' }} aria-hidden="true" />
         <MessagesInboxClient currentUserId={userId} members={memberOptions} initialConversations={initialConversations} />
       </main>
     </div>

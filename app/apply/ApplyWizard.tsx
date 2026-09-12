@@ -90,15 +90,15 @@ const BLANK: FormData = {
 
 // ── Shared styles ─────────────────────────────────────────────────────────────
 
-const GOLD = '#C8A848'
-const CREAM = '#F3EDE6'
-const PURPLE = '#D239F8'
+const GOLD = 'var(--gold)'
+const CREAM = 'var(--cream)'
+const PURPLE = 'var(--purple)'
 
 const inputStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box',
   padding: '0.65rem 0.9rem',
   background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(200,168,72,0.22)',
+  border: '1px solid rgb(var(--gold-rgb) / 0.22)',
   borderRadius: '0.65rem',
   color: CREAM, fontSize: '0.9rem', outline: 'none',
   transition: 'border-color 0.2s',
@@ -119,7 +119,7 @@ function Field({ label, optional, required, children }: { label: string; optiona
     <div style={{ marginBottom: '1.9rem' }}>
       <Label optional={optional}>
         {label}
-        {required && <span style={{ color: '#ff8a8a', marginLeft: '0.25rem', opacity: 0.85 }}>*</span>}
+        {required && <span style={{ color: 'var(--danger)', marginLeft: '0.25rem', opacity: 0.85 }}>*</span>}
       </Label>
       {children}
     </div>
@@ -134,8 +134,8 @@ function Input({ value, onChange, placeholder, type = 'text', maxLength, readOnl
       type={type} value={value} placeholder={placeholder} maxLength={maxLength} readOnly={readOnly}
       onChange={e => onChange(e.target.value)}
       style={{ ...inputStyle, opacity: readOnly ? 0.5 : 1, cursor: readOnly ? 'default' : 'text' }}
-      onFocus={e => { if (!readOnly) e.currentTarget.style.borderColor = 'rgba(210,57,248,0.6)' }}
-      onBlur={e => { e.currentTarget.style.borderColor = 'rgba(200,168,72,0.22)' }}
+      onFocus={e => { if (!readOnly) e.currentTarget.style.borderColor = 'rgb(var(--purple-rgb) / 0.6)' }}
+      onBlur={e => { e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.22)' }}
     />
   )
 }
@@ -149,8 +149,8 @@ function Textarea({ value, onChange, placeholder, maxLength = 500 }: {
         value={value} placeholder={placeholder} maxLength={maxLength}
         onChange={e => onChange(e.target.value)}
         style={{ ...inputStyle, resize: 'vertical', minHeight: '110px', lineHeight: 1.7 }}
-        onFocus={e => { e.currentTarget.style.borderColor = 'rgba(210,57,248,0.6)' }}
-        onBlur={e => { e.currentTarget.style.borderColor = 'rgba(200,168,72,0.22)' }}
+        onFocus={e => { e.currentTarget.style.borderColor = 'rgb(var(--purple-rgb) / 0.6)' }}
+        onBlur={e => { e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.22)' }}
       />
       <p style={{ fontSize: '0.68rem', textAlign: 'right', color: GOLD, opacity: value.length > maxLength * 0.85 ? 0.8 : 0.3, margin: '0.2rem 0 0' }}>
         {value.length} / {maxLength}
@@ -196,8 +196,8 @@ function RadioGroup({ options, value, onChange }: { options: string[]; value: st
           >
             <div style={{
               width: '18px', height: '18px', borderRadius: '50%', flexShrink: 0,
-              border: `1.5px solid ${checked ? GOLD : 'rgba(200,168,72,0.35)'}`,
-              background: checked ? 'rgba(200,168,72,0.12)' : 'transparent',
+              border: `1.5px solid ${checked ? GOLD : 'rgb(var(--gold-rgb) / 0.35)'}`,
+              background: checked ? 'rgb(var(--gold-rgb) / 0.12)' : 'transparent',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }} onClick={() => onChange(opt)}>
               {checked && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: GOLD }} />}
@@ -229,8 +229,8 @@ function CheckboxGroup({ options, value, onChange }: { options: string[]; value:
           >
             <div style={{
               width: '18px', height: '18px', borderRadius: '3px', flexShrink: 0, marginTop: '2px',
-              border: `1.5px solid ${checked ? GOLD : 'rgba(200,168,72,0.35)'}`,
-              background: checked ? 'rgba(200,168,72,0.12)' : 'transparent',
+              border: `1.5px solid ${checked ? GOLD : 'rgb(var(--gold-rgb) / 0.35)'}`,
+              background: checked ? 'rgb(var(--gold-rgb) / 0.12)' : 'transparent',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }} onClick={() => toggle(opt)}>
               {checked && <span style={{ fontSize: '0.7rem', color: GOLD, fontWeight: 700 }}>✓</span>}
@@ -244,12 +244,12 @@ function CheckboxGroup({ options, value, onChange }: { options: string[]; value:
 }
 
 function Divider({ label }: { label?: string }) {
-  if (!label) return <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', margin: '2rem 0' }} />
+  if (!label) return <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', margin: '2rem 0' }} />
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '2rem 0 1.5rem' }}>
-      <div style={{ flex: 1, height: '1px', background: 'rgba(200,168,72,0.15)' }} />
+      <div style={{ flex: 1, height: '1px', background: 'rgb(var(--gold-rgb) / 0.15)' }} />
       <p style={{ fontSize: '0.62rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: GOLD, opacity: 0.5, margin: 0, whiteSpace: 'nowrap' }}>{label}</p>
-      <div style={{ flex: 1, height: '1px', background: 'rgba(200,168,72,0.15)' }} />
+      <div style={{ flex: 1, height: '1px', background: 'rgb(var(--gold-rgb) / 0.15)' }} />
     </div>
   )
 }
@@ -322,8 +322,8 @@ function PhotoUpload({ value, onChange }: { value: string | null; onChange: (url
       {rawSrc && (
         <>
           <div onClick={() => !uploading && setRawSrc(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 60 }} />
-          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 61, background: '#130820', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '1rem', padding: '1.5rem', width: '90%', maxWidth: '440px' }}>
-            <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1rem', color: GOLD, margin: '0 0 1rem', textAlign: 'center' }}>Adjust Photo</p>
+          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 61, background: 'var(--ink-deep)', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', padding: '1.5rem', width: '90%', maxWidth: '440px' }}>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: GOLD, margin: '0 0 1rem', textAlign: 'center' }}>Adjust Photo</p>
             <div style={{ position: 'relative', width: '100%', paddingBottom: '100%', borderRadius: '0.75rem', overflow: 'hidden', background: '#000' }}>
               <div style={{ position: 'absolute', inset: 0 }}>
                 <Cropper
@@ -338,7 +338,7 @@ function PhotoUpload({ value, onChange }: { value: string | null; onChange: (url
                   onCropComplete={onCropComplete}
                   style={{
                     containerStyle: { borderRadius: '0.75rem' },
-                    cropAreaStyle: { border: '2px solid rgba(200,168,72,0.7)', boxShadow: '0 0 0 9999px rgba(0,0,0,0.55)' },
+                    cropAreaStyle: { border: '2px solid rgb(var(--gold-rgb) / 0.7)', boxShadow: '0 0 0 9999px rgba(0,0,0,0.55)' },
                   }}
                 />
               </div>
@@ -351,10 +351,10 @@ function PhotoUpload({ value, onChange }: { value: string | null; onChange: (url
                 style={{ width: '100%', accentColor: GOLD, cursor: 'pointer' }}
               />
             </div>
-            {error && <p style={{ fontSize: '0.8rem', color: '#ff8a8a', margin: '0.5rem 0' }}>{error}</p>}
+            {error && <p style={{ fontSize: '0.8rem', color: 'var(--danger)', margin: '0.5rem 0' }}>{error}</p>}
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1.25rem' }}>
-              <button onClick={() => setRawSrc(null)} disabled={uploading} style={{ padding: '0.55rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: CREAM, cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>Cancel</button>
-              <button onClick={handleSave} disabled={uploading} style={{ padding: '0.55rem 1.4rem', borderRadius: '9999px', border: 'none', background: uploading ? 'rgba(200,168,72,0.2)' : 'linear-gradient(135deg,#C8A848,#A8882A)', color: uploading ? GOLD : '#1A0800', cursor: uploading ? 'not-allowed' : 'pointer', fontSize: '0.82rem', fontWeight: 600 }}>
+              <button onClick={() => setRawSrc(null)} disabled={uploading} style={{ padding: '0.55rem 1.1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: CREAM, cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>Cancel</button>
+              <button onClick={handleSave} disabled={uploading} style={{ padding: '0.55rem 1.4rem', borderRadius: '9999px', border: 'none', background: uploading ? 'rgb(var(--gold-rgb) / 0.2)' : 'linear-gradient(135deg,var(--gold),var(--gold-deep))', color: uploading ? GOLD : '#1A0800', cursor: uploading ? 'not-allowed' : 'pointer', fontSize: '0.82rem', fontWeight: 600 }}>
                 {uploading ? 'Saving…' : 'Save photo'}
               </button>
             </div>
@@ -364,7 +364,7 @@ function PhotoUpload({ value, onChange }: { value: string | null; onChange: (url
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
         <div
           onClick={() => ref.current?.click()}
-          style={{ width: '90px', height: '90px', borderRadius: '50%', flexShrink: 0, border: `2px solid ${value ? 'rgba(111,73,31,0.8)' : 'rgba(200,168,72,0.3)'}`, background: 'rgba(200,168,72,0.06)', overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ width: '90px', height: '90px', borderRadius: '50%', flexShrink: 0, border: `2px solid ${value ? 'rgba(111,73,31,0.8)' : 'rgb(var(--gold-rgb) / 0.3)'}`, background: 'rgb(var(--gold-rgb) / 0.06)', overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           {value ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -378,7 +378,7 @@ function PhotoUpload({ value, onChange }: { value: string | null; onChange: (url
         </div>
         <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
         <div>
-          <button type="button" onClick={() => ref.current?.click()} style={{ padding: '0.45rem 1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.35)', background: 'transparent', color: GOLD, fontSize: '0.8rem', cursor: 'pointer' }}>
+          <button type="button" onClick={() => ref.current?.click()} style={{ padding: '0.45rem 1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.35)', background: 'transparent', color: GOLD, fontSize: '0.8rem', cursor: 'pointer' }}>
             {value ? 'Change photo' : 'Upload photo'}
           </button>
           <p style={{ fontSize: '0.72rem', opacity: 0.4, margin: '0.4rem 0 0', lineHeight: 1.5 }}>
@@ -433,13 +433,13 @@ function ApplicationFileUpload({ value, onChange }: { value: string; onChange: (
             </svg>
             <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{fileNameFromUrl(value)}</span>
           </a>
-          <button type="button" onClick={() => ref.current?.click()} disabled={uploading} style={{ padding: '0.35rem 0.85rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.3)', background: 'transparent', color: GOLD, fontSize: '0.75rem', cursor: uploading ? 'not-allowed' : 'pointer' }}>
+          <button type="button" onClick={() => ref.current?.click()} disabled={uploading} style={{ padding: '0.35rem 0.85rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.3)', background: 'transparent', color: GOLD, fontSize: '0.75rem', cursor: uploading ? 'not-allowed' : 'pointer' }}>
             {uploading ? 'Uploading…' : 'Replace'}
           </button>
-          <button type="button" onClick={() => onChange('')} disabled={uploading} style={{ background: 'none', border: 'none', color: '#ff8a8a', opacity: 0.6, fontSize: '0.8rem', cursor: 'pointer' }}>Remove</button>
+          <button type="button" onClick={() => onChange('')} disabled={uploading} style={{ background: 'none', border: 'none', color: 'var(--danger)', opacity: 0.6, fontSize: '0.8rem', cursor: 'pointer' }}>Remove</button>
         </div>
       ) : (
-        <button type="button" onClick={() => ref.current?.click()} disabled={uploading} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.55rem 1.1rem', borderRadius: '9999px', border: '1px dashed rgba(200,168,72,0.35)', background: 'transparent', color: GOLD, fontSize: '0.82rem', cursor: uploading ? 'not-allowed' : 'pointer' }}>
+        <button type="button" onClick={() => ref.current?.click()} disabled={uploading} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.55rem 1.1rem', borderRadius: '9999px', border: '1px dashed rgb(var(--gold-rgb) / 0.35)', background: 'transparent', color: GOLD, fontSize: '0.82rem', cursor: uploading ? 'not-allowed' : 'pointer' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
           </svg>
@@ -447,7 +447,7 @@ function ApplicationFileUpload({ value, onChange }: { value: string; onChange: (
         </button>
       )}
       <p style={{ fontSize: '0.72rem', opacity: 0.4, margin: '0.4rem 0 0' }}>Images, PDF, Word, or text — up to 10 MB.</p>
-      {error && <p style={{ fontSize: '0.78rem', color: '#ff8a8a', margin: '0.35rem 0 0' }}>{error}</p>}
+      {error && <p style={{ fontSize: '0.78rem', color: 'var(--danger)', margin: '0.35rem 0 0' }}>{error}</p>}
     </div>
   )
 }
@@ -560,7 +560,7 @@ function GroupChecklist({ groups, value, onChange }: { groups: SelectableGroup[]
       {groups.map(g => {
         const checked = value.includes(g.id)
         return (
-          <label key={g.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: `1px solid ${checked ? 'rgba(200,168,72,0.4)' : 'rgba(200,168,72,0.15)'}`, background: checked ? 'rgba(200,168,72,0.06)' : 'rgba(255,255,255,0.02)' }}>
+          <label key={g.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: `1px solid ${checked ? 'rgb(var(--gold-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.15)'}`, background: checked ? 'rgb(var(--gold-rgb) / 0.06)' : 'rgba(255,255,255,0.02)' }}>
             <input type="checkbox" checked={checked} onChange={() => toggle(g.id)} style={{ marginTop: '0.2rem', accentColor: GOLD }} />
             <span style={{ minWidth: 0 }}>
               <span style={{ display: 'block', fontSize: '0.9rem', color: CREAM }}>{g.name}</span>
@@ -758,7 +758,7 @@ function ModularSection({ step, form, set, answers, setAnswer, optionSources, is
     <>
       {requiredHint && (
         <p style={{ fontSize: '0.72rem', opacity: 0.4, textAlign: 'right', marginBottom: '1rem', marginTop: '-0.5rem' }}>
-          <span style={{ color: '#ff8a8a' }}>*</span> required
+          <span style={{ color: 'var(--danger)' }}>*</span> required
         </p>
       )}
       {rows.map((row, i) =>
@@ -929,12 +929,12 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
         <div style={{ textAlign: 'center', maxWidth: '500px' }}>
-          <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '2.5rem', color: GOLD, marginBottom: '0.5rem', textShadow: '0 0 40px rgba(200,168,72,0.4)' }}>✦</p>
-          <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: GOLD, marginBottom: '1rem' }}>Application Received</h1>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: GOLD, marginBottom: '0.5rem', textShadow: '0 0 40px rgb(var(--gold-rgb) / 0.4)' }}>✦</p>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: GOLD, marginBottom: '1rem' }}>Application Received</h1>
           <p style={{ fontSize: '0.95rem', lineHeight: 1.8, opacity: 0.55, marginBottom: '2rem' }}>
             Thank you for applying to Glåüm. Your application is under review. We'll be in touch.
           </p>
-          <a href="/profile" style={{ padding: '0.75rem 2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.5)', color: GOLD, textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '0.1em' }}>
+          <a href="/profile" style={{ padding: '0.75rem 2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.5)', color: GOLD, textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '0.1em' }}>
             Go to your profile →
           </a>
         </div>
@@ -948,15 +948,15 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
       flexShrink: 0,
       background: 'rgba(10,3,18,0.55)',
       backdropFilter: 'blur(0px)',
-      borderRight: isMobile ? 'none' : '1px solid rgba(200,168,72,0.12)',
-      borderBottom: isMobile ? '1px solid rgba(200,168,72,0.12)' : 'none',
+      borderRight: isMobile ? 'none' : '1px solid rgb(var(--gold-rgb) / 0.12)',
+      borderBottom: isMobile ? '1px solid rgb(var(--gold-rgb) / 0.12)' : 'none',
       display: 'flex', flexDirection: isMobile ? 'row' : 'column',
       padding: isMobile ? '0.75rem 1rem' : '2.5rem 0 2rem',
       overflowX: isMobile ? 'auto' : 'visible',
     }}>
       {!isMobile && (
-        <div style={{ padding: '0 1.5rem 2rem', textAlign: 'center', borderBottom: '1px solid rgba(200,168,72,0.1)', marginBottom: '1.5rem' }}>
-          <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.4rem', color: GOLD, margin: '0 0 0.1rem', letterSpacing: '0.06em' }}>Glåüm</p>
+        <div style={{ padding: '0 1.5rem 2rem', textAlign: 'center', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.1)', marginBottom: '1.5rem' }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: GOLD, margin: '0 0 0.1rem', letterSpacing: '0.06em' }}>Glåüm</p>
           <p style={{ fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: GOLD, opacity: 0.45, margin: 0 }}>APPLICATION FOR MEMBERSHIP</p>
         </div>
       )}
@@ -982,10 +982,10 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
               width: isMobile ? '26px' : '22px',
               height: isMobile ? '26px' : '22px',
               borderRadius: '50%', flexShrink: 0,
-              border: `1.5px solid ${active ? GOLD : done ? 'rgba(200,168,72,0.4)' : 'rgba(200,168,72,0.2)'}`,
-              background: active ? 'rgba(200,168,72,0.12)' : 'transparent',
+              border: `1.5px solid ${active ? GOLD : done ? 'rgb(var(--gold-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
+              background: active ? 'rgb(var(--gold-rgb) / 0.12)' : 'transparent',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '0.58rem', color: active ? GOLD : done ? 'rgba(200,168,72,0.6)' : 'rgba(200,168,72,0.35)',
+              fontSize: '0.58rem', color: active ? GOLD : done ? 'rgb(var(--gold-rgb) / 0.6)' : 'rgb(var(--gold-rgb) / 0.35)',
               letterSpacing: '0.02em', fontWeight: active ? 700 : 400,
             }}>
               {done ? '✓' : (ROMAN[i] ?? s.num)}
@@ -1001,8 +1001,8 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
       })}
 
       {!isMobile && (
-        <div style={{ marginTop: 'auto', padding: '2rem 1.5rem 0', borderTop: '1px solid rgba(200,168,72,0.1)' }}>
-          <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '0.75rem', color: GOLD, opacity: 0.35, textAlign: 'center', lineHeight: 1.5, margin: 0 }}>MANY HANDS<br />MAKE LIGHT WORK</p>
+        <div style={{ marginTop: 'auto', padding: '2rem 1.5rem 0', borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)' }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', color: GOLD, opacity: 0.35, textAlign: 'center', lineHeight: 1.5, margin: 0 }}>MANY HANDS<br />MAKE LIGHT WORK</p>
         </div>
       )}
     </div>
@@ -1023,13 +1023,13 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
         <p style={{ fontSize: '0.62rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: PURPLE, opacity: 0.65, margin: '0 0 0.4rem' }}>
           SECTION {ROMAN[step] ?? steps[step].num} OF {ROMAN[steps.length - 1] ?? steps[steps.length - 1].num}
         </p>
-        <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', color: GOLD, margin: '0 0 0.5rem', letterSpacing: '0.08em', textShadow: '0 0 30px rgba(200,168,72,0.3)' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', color: GOLD, margin: '0 0 0.5rem', letterSpacing: '0.08em', textShadow: '0 0 30px rgb(var(--gold-rgb) / 0.3)' }}>
           {steps[step].title}
         </h1>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', margin: '0.5rem 0' }}>
-          <div style={{ height: '1px', width: '40px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.4))' }} />
+          <div style={{ height: '1px', width: '40px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.4))' }} />
           <span style={{ color: GOLD, opacity: 0.4, fontSize: '0.65rem' }}>✦</span>
-          <div style={{ height: '1px', width: '40px', background: 'linear-gradient(90deg, rgba(200,168,72,0.4), transparent)' }} />
+          <div style={{ height: '1px', width: '40px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.4), transparent)' }} />
         </div>
         <p style={{ fontSize: '0.8rem', color: CREAM, opacity: 0.4, margin: 0, letterSpacing: '0.05em' }}>{steps[step].subtitle}</p>
       </div>
@@ -1043,17 +1043,17 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
             return (
               <div key={s.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  {i > 0 && <div style={{ flex: 1, height: '1px', background: i <= step ? 'rgba(200,168,72,0.45)' : 'rgba(200,168,72,0.12)' }} />}
+                  {i > 0 && <div style={{ flex: 1, height: '1px', background: i <= step ? 'rgb(var(--gold-rgb) / 0.45)' : 'rgb(var(--gold-rgb) / 0.12)' }} />}
                   <div style={{
                     width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
-                    border: `${active ? 2 : 1.5}px solid ${done ? 'rgba(200,168,72,0.6)' : active ? GOLD : 'rgba(200,168,72,0.2)'}`,
-                    background: done ? 'rgba(200,168,72,0.18)' : active ? 'rgba(200,168,72,0.12)' : 'transparent',
+                    border: `${active ? 2 : 1.5}px solid ${done ? 'rgb(var(--gold-rgb) / 0.6)' : active ? GOLD : 'rgb(var(--gold-rgb) / 0.2)'}`,
+                    background: done ? 'rgb(var(--gold-rgb) / 0.18)' : active ? 'rgb(var(--gold-rgb) / 0.12)' : 'transparent',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s',
                   }}>
                     {done && <span style={{ fontSize: '0.55rem', color: GOLD, opacity: 0.85 }}>✓</span>}
                     {active && <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: GOLD }} />}
                   </div>
-                  {i < steps.length - 1 && <div style={{ flex: 1, height: '1px', background: i < step ? 'rgba(200,168,72,0.45)' : 'rgba(200,168,72,0.12)' }} />}
+                  {i < steps.length - 1 && <div style={{ flex: 1, height: '1px', background: i < step ? 'rgb(var(--gold-rgb) / 0.45)' : 'rgb(var(--gold-rgb) / 0.12)' }} />}
                 </div>
                 <p style={{ fontSize: '0.6rem', letterSpacing: '0.1em', color: GOLD, opacity: active ? 0.9 : done ? 0.5 : 0.3, margin: '0.45rem 0 0' }}>
                   {ROMAN[i] ?? String(i + 1)}
@@ -1083,15 +1083,15 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
       </div>
 
       {error && (
-        <p style={{ color: '#ff8a8a', fontSize: '0.85rem', marginBottom: '1rem', textAlign: 'center' }}>{error}</p>
+        <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '1rem', textAlign: 'center' }}>{error}</p>
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem', borderTop: '1px solid rgba(200,168,72,0.1)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)' }}>
         <button
           onClick={() => step > 0 ? goTo(step - 1) : undefined}
           style={{
             padding: '0.75rem 1.75rem', borderRadius: '9999px',
-            border: '1px solid rgba(200,168,72,0.25)', background: 'transparent',
+            border: '1px solid rgb(var(--gold-rgb) / 0.25)', background: 'transparent',
             color: CREAM, cursor: step > 0 ? 'pointer' : 'default', fontSize: '0.82rem',
             letterSpacing: '0.08em', opacity: step > 0 ? 0.75 : 0.2,
           }}
@@ -1105,8 +1105,8 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
             disabled={!canContinue()}
             style={{
               padding: '0.75rem 2.5rem', borderRadius: '9999px',
-              border: 'none', background: canContinue() ? 'linear-gradient(135deg, #C8A848, #A8882A)' : 'rgba(200,168,72,0.2)',
-              color: canContinue() ? '#1A0A00' : 'rgba(200,168,72,0.5)',
+              border: 'none', background: canContinue() ? 'linear-gradient(135deg, var(--gold), var(--gold-deep))' : 'rgb(var(--gold-rgb) / 0.2)',
+              color: canContinue() ? '#1A0A00' : 'rgb(var(--gold-rgb) / 0.5)',
               cursor: canContinue() ? 'pointer' : 'not-allowed', fontSize: '0.85rem',
               letterSpacing: '0.1em', fontWeight: 600,
               transition: 'all 0.2s',
@@ -1120,8 +1120,8 @@ export function ApplyWizard({ userEmail, formConfig, agreementItems, attendanceO
             disabled={submitting || !canContinue()}
             style={{
               padding: '0.75rem 2.5rem', borderRadius: '9999px',
-              border: 'none', background: (submitting || !canContinue()) ? 'rgba(200,168,72,0.2)' : 'linear-gradient(135deg, #C8A848, #A8882A)',
-              color: (submitting || !canContinue()) ? 'rgba(200,168,72,0.5)' : '#1A0A00',
+              border: 'none', background: (submitting || !canContinue()) ? 'rgb(var(--gold-rgb) / 0.2)' : 'linear-gradient(135deg, var(--gold), var(--gold-deep))',
+              color: (submitting || !canContinue()) ? 'rgb(var(--gold-rgb) / 0.5)' : '#1A0A00',
               cursor: (submitting || !canContinue()) ? 'not-allowed' : 'pointer', fontSize: '0.85rem',
               letterSpacing: '0.1em', fontWeight: 600,
             }}

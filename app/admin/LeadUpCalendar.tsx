@@ -20,8 +20,8 @@ type CalendarGathering = {
   visible: boolean
 }
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
 const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
@@ -87,7 +87,7 @@ export function LeadUpCalendar<T extends CalendarGathering>({ events, rangeStart
     .reduce((n, [, list]) => n + list.length, 0)
 
   const navBtn: React.CSSProperties = {
-    background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem',
+    background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem',
     color: GOLD, cursor: 'pointer', padding: '0.15rem 0.6rem', fontSize: '0.8rem', opacity: 0.6, lineHeight: 1.4,
   }
 
@@ -101,7 +101,7 @@ export function LeadUpCalendar<T extends CalendarGathering>({ events, rangeStart
             {MONTHS[month.month]} {month.year}
           </span>
           {monthCount > 0 && (
-            <span style={{ fontSize: '0.68rem', color: '#F3EDE6', opacity: 0.35, marginLeft: '0.6rem' }}>
+            <span style={{ fontSize: '0.68rem', color: 'var(--cream)', opacity: 0.35, marginLeft: '0.6rem' }}>
               {monthCount} gathering{monthCount === 1 ? '' : 's'}
             </span>
           )}
@@ -136,9 +136,9 @@ export function LeadUpCalendar<T extends CalendarGathering>({ events, rangeStart
               title={`Add gathering — ${MONTHS[month.month]} ${day}`}
               style={{
                 minHeight: '64px', padding: '0.25rem 0.3rem', cursor: 'pointer',
-                border: `1px solid ${isToday ? 'rgba(200,168,72,0.45)' : 'rgba(200,168,72,0.1)'}`,
+                border: `1px solid ${isToday ? 'rgb(var(--gold-rgb) / 0.45)' : 'rgb(var(--gold-rgb) / 0.1)'}`,
                 borderRadius: '0.45rem',
-                background: isEventDay ? 'rgba(210,57,248,0.06)' : 'rgba(255,255,255,0.015)',
+                background: isEventDay ? 'rgb(var(--purple-rgb) / 0.06)' : 'rgba(255,255,255,0.015)',
                 opacity: isPast ? 0.45 : 1,
                 overflow: 'hidden',
               }}
@@ -158,7 +158,7 @@ export function LeadUpCalendar<T extends CalendarGathering>({ events, rangeStart
                   title={`${ev.title}${ev.visible ? '' : ' (hidden from members)'} — click to edit`}
                   style={{
                     display: 'block', width: '100%', textAlign: 'left',
-                    background: 'rgba(200,168,72,0.08)', border: '1px solid rgba(200,168,72,0.2)',
+                    background: 'rgb(var(--gold-rgb) / 0.08)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
                     borderRadius: '0.3rem', color: GOLD, cursor: 'pointer',
                     fontSize: '0.62rem', padding: '0.1rem 0.3rem', marginBottom: '0.15rem',
                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',

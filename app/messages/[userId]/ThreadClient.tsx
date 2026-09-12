@@ -150,16 +150,16 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
       {/* Thread header */}
       <div className="glass-bar" style={{
         padding: '5.5rem 1.5rem 1.25rem',
-        borderBottom: '1px solid rgba(200,168,72,0.15)',
+        borderBottom: '1px solid rgb(var(--gold-rgb) / 0.15)',
         display: 'flex',
         alignItems: 'center',
         gap: '0.85rem',
         position: 'sticky',
         top: 0,
-        ['--glass-bg' as string]: 'rgba(26,10,36,0.92)',
+        ['--glass-bg' as string]: 'rgb(var(--ink-rgb) / 0.92)',
         zIndex: 10,
       }}>
-        <a href="/messages" aria-label="Back to all messages" style={{ color: '#C8A848', opacity: 0.5, textDecoration: 'none', fontSize: '0.8rem', letterSpacing: '0.08em', flexShrink: 0 }}>
+        <a href="/messages" aria-label="Back to all messages" style={{ color: 'var(--gold)', opacity: 0.5, textDecoration: 'none', fontSize: '0.8rem', letterSpacing: '0.08em', flexShrink: 0 }}>
           <span aria-hidden="true">←</span>
         </a>
         {(() => {
@@ -168,18 +168,18 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
               <div style={{
                 width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0,
                 border: '1px solid rgba(111,73,31,0.7)',
-                background: 'rgba(200,168,72,0.08)',
+                background: 'rgb(var(--gold-rgb) / 0.08)',
                 overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={supabaseResizedUrl(avatarUrl, 76) ?? avatarUrl} loading="lazy" decoding="async" alt={`${displayName}'s avatar`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
-                  <span aria-hidden="true" style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1rem', color: '#C8A848', opacity: 0.6 }}>{initials}</span>
+                  <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: 'var(--gold)', opacity: 0.6 }}>{initials}</span>
                 )}
               </div>
               <div>
-                <p style={{ margin: 0, fontFamily: 'TokyoDreams, serif', fontSize: '1.05rem', color: '#C8A848' }}>{displayName}</p>
+                <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.05rem', color: 'var(--gold)' }}>{displayName}</p>
                 {recipientActive
                   ? pronouns && <p style={{ margin: 0, fontSize: '0.7rem', opacity: 0.4 }}>{pronouns}</p>
                   : <p style={{ margin: 0, fontSize: '0.7rem', opacity: 0.4, fontStyle: 'italic' }}>No longer active</p>}
@@ -239,14 +239,14 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
                   padding: '0.6rem 0.9rem',
                   borderRadius: isMe ? '1.1rem 1.1rem 0.25rem 1.1rem' : '1.1rem 1.1rem 1.1rem 0.25rem',
                   background: isMe
-                    ? 'rgba(210,57,248,0.18)'
-                    : 'rgba(200,168,72,0.09)',
+                    ? 'rgb(var(--purple-rgb) / 0.18)'
+                    : 'rgb(var(--gold-rgb) / 0.09)',
                   border: isMe
-                    ? '1px solid rgba(210,57,248,0.25)'
-                    : '1px solid rgba(200,168,72,0.15)',
+                    ? '1px solid rgb(var(--purple-rgb) / 0.25)'
+                    : '1px solid rgb(var(--gold-rgb) / 0.15)',
                   fontSize: '0.9rem',
                   lineHeight: 1.5,
-                  color: '#F3EDE6',
+                  color: 'var(--cream)',
                   wordBreak: 'break-word',
                   whiteSpace: 'pre-wrap',
                 }}>
@@ -261,7 +261,7 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
                     margin: '0.1rem 0.15rem 0.35rem',
                     fontSize: '0.66rem',
                     letterSpacing: '0.05em',
-                    color: msg.read ? '#D239F8' : '#F3EDE6',
+                    color: msg.read ? 'var(--purple)' : 'var(--cream)',
                     opacity: msg.read ? 0.7 : 0.35,
                   }}
                 >
@@ -280,10 +280,10 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
       {!recipientActive ? (
         <div className="glass-bar" style={{
           padding: '1.1rem 1.5rem 2rem',
-          borderTop: '1px solid rgba(200,168,72,0.12)',
+          borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)',
           position: 'sticky',
           bottom: 0,
-          ['--glass-bg' as string]: 'rgba(26,10,36,0.92)',
+          ['--glass-bg' as string]: 'rgb(var(--ink-rgb) / 0.92)',
         }}>
           <p style={{ textAlign: 'center', fontSize: '0.8rem', opacity: 0.45, fontStyle: 'italic', margin: 0 }}>
             This member is no longer active. You can read this conversation but can&rsquo;t reply.
@@ -292,10 +292,10 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
       ) : (
       <div className="glass-bar" style={{
         padding: '0.85rem 1.5rem 2rem',
-        borderTop: '1px solid rgba(200,168,72,0.12)',
+        borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)',
         position: 'sticky',
         bottom: 0,
-        ['--glass-bg' as string]: 'rgba(26,10,36,0.92)',
+        ['--glass-bg' as string]: 'rgb(var(--ink-rgb) / 0.92)',
       }}>
         {error && (
           <p role="alert" style={{ color: '#f87171', fontSize: '0.78rem', marginBottom: '0.5rem', opacity: 0.85 }}>{error}</p>
@@ -320,9 +320,9 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
                 width: '100%',
                 padding: '0.65rem 0.9rem',
                 background: 'rgba(255,255,255,0.04)',
-                border: `1px solid ${isOver ? 'rgba(248,113,113,0.5)' : 'rgba(200,168,72,0.2)'}`,
+                border: `1px solid ${isOver ? 'rgba(248,113,113,0.5)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
                 borderRadius: '0.75rem',
-                color: '#F3EDE6',
+                color: 'var(--cream)',
                 fontSize: '0.9rem',
                 resize: 'none',
                 outline: 'none',
@@ -333,14 +333,14 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
                 maxHeight: '160px',
                 overflowY: 'hidden',
               }}
-              onFocus={e => { e.target.style.borderColor = 'rgba(210,57,248,0.45)' }}
-              onBlur={e => { e.target.style.borderColor = isOver ? 'rgba(248,113,113,0.5)' : 'rgba(200,168,72,0.2)' }}
+              onFocus={e => { e.target.style.borderColor = 'rgb(var(--purple-rgb) / 0.45)' }}
+              onBlur={e => { e.target.style.borderColor = isOver ? 'rgba(248,113,113,0.5)' : 'rgb(var(--gold-rgb) / 0.2)' }}
             />
             {body.length > MAX_CHARS * 0.8 && (
               <span aria-live="polite" style={{
                 position: 'absolute', bottom: '0.45rem', right: '0.6rem',
                 fontSize: '0.65rem', opacity: 0.4,
-                color: isOver ? '#f87171' : '#F3EDE6',
+                color: isOver ? '#f87171' : 'var(--cream)',
               }}>
                 <span style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: 0 }}>characters remaining: </span>
                 {charsLeft}
@@ -353,12 +353,12 @@ export function ThreadClient({ currentUserId, recipientId, displayName, avatarUr
             aria-label="Send message"
             style={{
               padding: '0.65rem 1.25rem',
-              background: body.trim() && !isOver ? 'rgba(210,57,248,0.2)' : 'rgba(255,255,255,0.04)',
-              border: `1px solid ${body.trim() && !isOver ? 'rgba(210,57,248,0.4)' : 'rgba(200,168,72,0.1)'}`,
+              background: body.trim() && !isOver ? 'rgb(var(--purple-rgb) / 0.2)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${body.trim() && !isOver ? 'rgb(var(--purple-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.1)'}`,
               borderRadius: '0.75rem',
-              color: body.trim() && !isOver ? '#D239F8' : '#F3EDE6',
+              color: body.trim() && !isOver ? 'var(--purple)' : 'var(--cream)',
               fontSize: '0.82rem',
-              fontFamily: 'TokyoDreams, serif',
+              fontFamily: 'var(--font-display)',
               letterSpacing: '0.06em',
               cursor: body.trim() && !isOver && !sending ? 'pointer' : 'not-allowed',
               opacity: body.trim() && !isOver && !sending ? 1 : 0.35,

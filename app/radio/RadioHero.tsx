@@ -5,7 +5,7 @@
 // camp"): fine braided threads at the edges, irregular swells growing toward
 // a dramatic spike cluster wrapped in warm bloom, then decay. All inline SVG.
 
-const GOLD = '#C8A848'
+const GOLD = 'var(--gold)'
 const WARM = '#E0B472' // lighter, warmer gold for the subtitle
 // The band's colours, sampled from the mockup: the line is a warm amber
 // (#D8A15A avg) with a bright core (#FDD370); the motes burn #E8AC51.
@@ -37,7 +37,7 @@ function DiamondRule() {
           width: '100%',
           height: '1px',
           background:
-            'linear-gradient(90deg, rgba(200,168,72,0) 0%, rgba(200,168,72,0.45) 9%, rgba(200,168,72,0.5) 45%, rgba(200,168,72,0.22) 64%, rgba(200,168,72,0) 82%)',
+            'linear-gradient(90deg, rgb(var(--gold-rgb) / 0) 0%, rgb(var(--gold-rgb) / 0.45) 9%, rgb(var(--gold-rgb) / 0.5) 45%, rgb(var(--gold-rgb) / 0.22) 64%, rgb(var(--gold-rgb) / 0) 82%)',
         }}
       />
       <svg
@@ -351,7 +351,7 @@ export function RadioHero() {
 
       <h1
         style={{
-          fontFamily: 'TokyoDreams, serif',
+          fontFamily: 'var(--font-display)',
           // The exact scale + tracking of the other page titles (e.g.
           // /participate) — same optical weight and shadow density, so the
           // ornaments carry Radio's specialness, not font size.

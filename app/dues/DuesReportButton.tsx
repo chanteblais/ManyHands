@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const GOLD = '#C8A848'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const CREAM = 'var(--cream)'
 
 // Member self-report control on /dues. When they haven't reported, a primary
 // "I've sent my dues" button files the claim (dues_reported_at, 068). When they
@@ -48,7 +48,7 @@ export function DuesReportButton({ reported }: { reported: boolean }) {
         >
           {loading ? 'Updating…' : 'Undo — I haven’t paid yet'}
         </button>
-        {error && <p style={{ fontSize: '0.75rem', color: '#ff8a8a', margin: '0.5rem 0 0' }}>{error}</p>}
+        {error && <p style={{ fontSize: '0.75rem', color: 'var(--danger)', margin: '0.5rem 0 0' }}>{error}</p>}
       </div>
     )
   }
@@ -60,7 +60,7 @@ export function DuesReportButton({ reported }: { reported: boolean }) {
         disabled={loading}
         style={{
           padding: '0.6rem 1.4rem', borderRadius: '9999px',
-          border: `1px solid rgba(200,168,72,0.5)`, background: 'rgba(200,168,72,0.14)',
+          border: `1px solid rgb(var(--gold-rgb) / 0.5)`, background: 'rgb(var(--gold-rgb) / 0.14)',
           color: GOLD, fontSize: '0.85rem', letterSpacing: '0.05em',
           cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1, fontFamily: 'inherit',
         }}
@@ -70,7 +70,7 @@ export function DuesReportButton({ reported }: { reported: boolean }) {
       <p style={{ fontSize: '0.74rem', opacity: 0.45, margin: '0.5rem 0 0', lineHeight: 1.5 }}>
         Lets an organizer know to look for your payment — they’ll confirm it here.
       </p>
-      {error && <p style={{ fontSize: '0.75rem', color: '#ff8a8a', margin: '0.5rem 0 0' }}>{error}</p>}
+      {error && <p style={{ fontSize: '0.75rem', color: 'var(--danger)', margin: '0.5rem 0 0' }}>{error}</p>}
     </div>
   )
 }

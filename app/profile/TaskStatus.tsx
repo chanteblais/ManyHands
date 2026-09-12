@@ -61,16 +61,16 @@ export function TaskStatus({ track, volunteerStatus }: Props) {
       borderRadius: '1rem',
       border: isAllCaughtUp
         ? '1px solid rgba(100,200,120,0.25)'
-        : '1px solid rgba(200,168,72,0.2)',
+        : '1px solid rgb(var(--gold-rgb) / 0.2)',
       background: isAllCaughtUp
         ? 'rgba(100,200,120,0.04)'
-        : 'rgba(200,168,72,0.04)',
+        : 'rgb(var(--gold-rgb) / 0.04)',
     }}>
       <p style={{
         fontSize: '0.65rem',
         letterSpacing: '0.25em',
         textTransform: 'uppercase',
-        color: isAllCaughtUp ? '#7dcf8e' : '#C8A848',
+        color: isAllCaughtUp ? 'var(--success)' : 'var(--gold)',
         opacity: 0.7,
         marginBottom: '1rem',
       }}>
@@ -79,8 +79,8 @@ export function TaskStatus({ track, volunteerStatus }: Props) {
 
       {isAllCaughtUp ? (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <span style={{ color: '#7dcf8e', fontSize: '1rem' }}>✓</span>
-          <span style={{ fontSize: '0.9rem', color: '#7dcf8e' }}>
+          <span style={{ color: 'var(--success)', fontSize: '1rem' }}>✓</span>
+          <span style={{ fontSize: '0.9rem', color: 'var(--success)' }}>
             You're all set. Nothing left to do for now.
           </span>
         </div>
@@ -101,12 +101,12 @@ export function TaskStatus({ track, volunteerStatus }: Props) {
                 border: task.done
                   ? 'none'
                   : task.pending
-                  ? '1.5px solid rgba(210,57,248,0.5)'
-                  : '1.5px solid rgba(200,168,72,0.5)',
+                  ? '1.5px solid rgb(var(--purple-rgb) / 0.5)'
+                  : '1.5px solid rgb(var(--gold-rgb) / 0.5)',
                 background: task.done ? 'rgba(100,200,120,0.15)' : 'transparent',
               }}>
-                {task.done && <span style={{ fontSize: '0.6rem', color: '#7dcf8e' }}>✓</span>}
-                {task.pending && <span style={{ fontSize: '0.55rem', color: '#D239F8' }}>○</span>}
+                {task.done && <span style={{ fontSize: '0.6rem', color: 'var(--success)' }}>✓</span>}
+                {task.pending && <span style={{ fontSize: '0.55rem', color: 'var(--purple)' }}>○</span>}
               </div>
 
               {/* Label + note + CTA */}
@@ -114,7 +114,7 @@ export function TaskStatus({ track, volunteerStatus }: Props) {
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                   <span style={{
                     fontSize: '0.875rem',
-                    color: task.done ? '#F3EDE6' : task.pending ? '#D239F8' : '#C8A848',
+                    color: task.done ? 'var(--cream)' : task.pending ? 'var(--purple)' : 'var(--gold)',
                     opacity: task.done ? 0.45 : 1,
                     textDecoration: task.done ? 'line-through' : 'none',
                   }}>
@@ -125,7 +125,7 @@ export function TaskStatus({ track, volunteerStatus }: Props) {
                       href={task.href}
                       style={{
                         fontSize: '0.78rem',
-                        color: '#C8A848',
+                        color: 'var(--gold)',
                         opacity: 0.75,
                         textDecoration: 'underline',
                         textUnderlineOffset: '2px',

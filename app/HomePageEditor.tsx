@@ -54,8 +54,8 @@ function getSavedHidden(initialContent: Content): string[] {
 // ── Text panel (slide-in for copy fields) ────────────────────────
 const inputBase: React.CSSProperties = {
   width: '100%', backgroundColor: 'rgba(255,255,255,0.06)',
-  border: '1px solid rgba(200,168,72,0.35)', borderRadius: '0.5rem',
-  padding: '0.65rem 0.85rem', color: '#F3EDE6', fontSize: '0.875rem',
+  border: '1px solid rgb(var(--gold-rgb) / 0.35)', borderRadius: '0.5rem',
+  padding: '0.65rem 0.85rem', color: 'var(--cream)', fontSize: '0.875rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
   outline: 'none', lineHeight: 1.6, resize: 'vertical' as const, boxSizing: 'border-box' as const,
 }
@@ -82,17 +82,17 @@ function TextPanel({ initialContent, onClose }: { initialContent: Content; onClo
     <div style={{
       position: 'fixed', top: 0, right: 0, width: '380px', maxWidth: '100vw', height: '100vh',
       overflowY: 'auto', zIndex: 300, background: 'rgba(12,4,24,0.98)',
-      borderLeft: '1px solid rgba(200,168,72,0.2)', boxShadow: '-8px 0 40px rgba(0,0,0,0.5)',
+      borderLeft: '1px solid rgb(var(--gold-rgb) / 0.2)', boxShadow: '-8px 0 40px rgba(0,0,0,0.5)',
       display: 'flex', flexDirection: 'column',
     }}>
-      <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid rgba(200,168,72,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: '#C8A848', margin: 0 }}>Edit Text</p>
-        <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#F3EDE6', opacity: 0.4, cursor: 'pointer', fontSize: '1.1rem', padding: '0.2rem' }}>✕</button>
+      <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--gold)', margin: 0 }}>Edit Text</p>
+        <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--cream)', opacity: 0.4, cursor: 'pointer', fontSize: '1.1rem', padding: '0.2rem' }}>✕</button>
       </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1.5rem 3rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {COPY_FIELDS.map(f => (
           <div key={f.key}>
-            <label style={{ display: 'block', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.6, marginBottom: '0.4rem' }}>{f.label}</label>
+            <label style={{ display: 'block', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.6, marginBottom: '0.4rem' }}>{f.label}</label>
             {f.multiline
               ? <textarea value={content[f.key] ?? ''} onChange={e => { setContent(p => ({ ...p, [f.key]: e.target.value })); setSaved(false) }} rows={4} style={inputBase} />
               : <input type="text" value={content[f.key] ?? ''} onChange={e => { setContent(p => ({ ...p, [f.key]: e.target.value })); setSaved(false) }} style={inputBase} />
@@ -100,7 +100,7 @@ function TextPanel({ initialContent, onClose }: { initialContent: Content; onClo
           </div>
         ))}
         {error && <p style={{ fontSize: '0.8rem', color: '#ff6b6b' }}>{error}</p>}
-        <button onClick={handleSave} disabled={saving} style={{ padding: '0.7rem', borderRadius: '0.55rem', border: '1px solid rgba(200,168,72,0.45)', background: saved ? 'rgba(100,200,120,0.1)' : 'rgba(200,168,72,0.08)', color: saved ? '#7dcf8e' : '#FFFACD', fontFamily: 'TokyoDreams, serif', fontSize: '0.82rem', letterSpacing: '0.1em', cursor: saving ? 'not-allowed' : 'pointer' }}>
+        <button onClick={handleSave} disabled={saving} style={{ padding: '0.7rem', borderRadius: '0.55rem', border: '1px solid rgb(var(--gold-rgb) / 0.45)', background: saved ? 'rgba(100,200,120,0.1)' : 'rgb(var(--gold-rgb) / 0.08)', color: saved ? 'var(--success)' : 'var(--lemon)', fontFamily: 'var(--font-display)', fontSize: '0.82rem', letterSpacing: '0.1em', cursor: saving ? 'not-allowed' : 'pointer' }}>
           {saving ? 'Saving…' : saved ? '✓ Saved' : 'Save Text'}
         </button>
       </div>
@@ -137,36 +137,36 @@ function NewPollPanel({ onCreated, onClose }: { onCreated: () => void; onClose: 
     <div style={{
       position: 'fixed', top: 0, right: 0, width: '360px', maxWidth: '100vw', height: '100vh',
       overflowY: 'auto', zIndex: 300, background: 'rgba(12,4,24,0.98)',
-      borderLeft: '1px solid rgba(210,57,248,0.25)', boxShadow: '-8px 0 40px rgba(0,0,0,0.5)',
+      borderLeft: '1px solid rgb(var(--purple-rgb) / 0.25)', boxShadow: '-8px 0 40px rgba(0,0,0,0.5)',
       display: 'flex', flexDirection: 'column',
     }}>
-      <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid rgba(210,57,248,0.12)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: '#D239F8', margin: 0 }}>New Poll</p>
-        <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#F3EDE6', opacity: 0.4, cursor: 'pointer', fontSize: '1.1rem', padding: '0.2rem' }}>✕</button>
+      <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid rgb(var(--purple-rgb) / 0.12)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--purple)', margin: 0 }}>New Poll</p>
+        <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--cream)', opacity: 0.4, cursor: 'pointer', fontSize: '1.1rem', padding: '0.2rem' }}>✕</button>
       </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1.5rem 3rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div>
-          <label style={{ display: 'block', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.6, marginBottom: '0.4rem' }}>Question</label>
+          <label style={{ display: 'block', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.6, marginBottom: '0.4rem' }}>Question</label>
           <textarea value={question} onChange={e => setQuestion(e.target.value)} placeholder="Ask the camp something…" rows={2} style={{ ...si, resize: 'vertical' }} />
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.6, marginBottom: '0.4rem' }}>Options</label>
+          <label style={{ display: 'block', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.6, marginBottom: '0.4rem' }}>Options</label>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             {options.map((opt, i) => (
               <div key={i} style={{ display: 'flex', gap: '0.4rem' }}>
                 <input value={opt} onChange={e => { const n = [...options]; n[i] = e.target.value; setOptions(n) }} placeholder={`Option ${i + 1}`} style={{ ...si, flex: 1 }} />
-                {options.length > 2 && <button onClick={() => setOptions(o => o.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#ff8080', cursor: 'pointer', fontSize: '1rem', padding: '0 0.25rem' }}>×</button>}
+                {options.length > 2 && <button onClick={() => setOptions(o => o.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: 'var(--danger-strong)', cursor: 'pointer', fontSize: '1rem', padding: '0 0.25rem' }}>×</button>}
               </div>
             ))}
-            {options.length < 8 && <button onClick={() => setOptions(o => [...o, ''])} style={{ background: 'none', border: '1px dashed rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: '#C8A848', opacity: 0.5, cursor: 'pointer', padding: '0.3rem', fontSize: '0.72rem' }}>+ Add option</button>}
+            {options.length < 8 && <button onClick={() => setOptions(o => [...o, ''])} style={{ background: 'none', border: '1px dashed rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: 'var(--gold)', opacity: 0.5, cursor: 'pointer', padding: '0.3rem', fontSize: '0.72rem' }}>+ Add option</button>}
           </div>
         </div>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-          <input type="checkbox" checked={allowMultiple} onChange={e => setAllowMultiple(e.target.checked)} style={{ accentColor: '#C8A848' }} />
+          <input type="checkbox" checked={allowMultiple} onChange={e => setAllowMultiple(e.target.checked)} style={{ accentColor: 'var(--gold)' }} />
           <span style={{ fontSize: '0.78rem', opacity: 0.65 }}>Allow multiple selections</span>
         </label>
-        {error && <p style={{ fontSize: '0.75rem', color: '#ff8080' }}>{error}</p>}
-        <button onClick={handleCreate} disabled={saving || !valid} style={{ padding: '0.7rem', borderRadius: '0.55rem', border: '1px solid rgba(210,57,248,0.4)', background: 'rgba(210,57,248,0.08)', color: '#D239F8', fontFamily: 'TokyoDreams, serif', fontSize: '0.82rem', cursor: valid ? 'pointer' : 'not-allowed', opacity: saving ? 0.5 : 1 }}>
+        {error && <p style={{ fontSize: '0.75rem', color: 'var(--danger-strong)' }}>{error}</p>}
+        <button onClick={handleCreate} disabled={saving || !valid} style={{ padding: '0.7rem', borderRadius: '0.55rem', border: '1px solid rgb(var(--purple-rgb) / 0.4)', background: 'rgb(var(--purple-rgb) / 0.08)', color: 'var(--purple)', fontFamily: 'var(--font-display)', fontSize: '0.82rem', cursor: valid ? 'pointer' : 'not-allowed', opacity: saving ? 0.5 : 1 }}>
           {saving ? 'Creating…' : 'Create Poll'}
         </button>
       </div>
@@ -196,12 +196,12 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
     const style = document.createElement('style')
     style.textContent = `
       [data-widget-id] {
-        outline: 1px dashed rgba(200,168,72,0.22) !important;
+        outline: 1px dashed rgb(var(--gold-rgb) / 0.22) !important;
         border-radius: 1rem;
         position: relative;
       }
       [data-editable-key] {
-        outline: 1px dashed rgba(200,168,72,0.4) !important;
+        outline: 1px dashed rgb(var(--gold-rgb) / 0.4) !important;
         border-radius: 3px;
         padding: 1px 3px;
         cursor: text;
@@ -209,8 +209,8 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
         display: inline-block;
       }
       [data-editable-key]:focus {
-        outline: 1px solid rgba(200,168,72,0.75) !important;
-        background: rgba(200,168,72,0.04);
+        outline: 1px solid rgb(var(--gold-rgb) / 0.75) !important;
+        background: rgb(var(--gold-rgb) / 0.04);
       }
     `
     document.head.appendChild(style)
@@ -229,10 +229,10 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
         display: flex; align-items: center; gap: 5px;
         padding: 4px 8px 4px 6px;
         background: rgba(12,4,24,0.92);
-        border: 1px solid rgba(200,168,72,0.35);
+        border: 1px solid rgb(var(--gold-rgb) / 0.35);
         border-radius: 6px;
         cursor: grab;
-        color: #C8A848;
+        color: var(--gold);
         font-size: 11px;
         letter-spacing: 0.07em;
         opacity: 0;
@@ -247,7 +247,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
       widthBtn.style.cssText = `
         margin-left: 6px;
         padding: 1px 5px;
-        border: 1px solid rgba(200,168,72,0.3);
+        border: 1px solid rgb(var(--gold-rgb) / 0.3);
         border-radius: 4px;
         font-size: 10px;
         cursor: pointer;
@@ -277,13 +277,13 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
         widget.dataset.width = next
         widget.style.flex = flexFor(next)
         widthBtn.textContent = widthLabel(next)
-        widthBtn.style.background = next !== 'full' ? 'rgba(200,168,72,0.15)' : ''
+        widthBtn.style.background = next !== 'full' ? 'rgb(var(--gold-rgb) / 0.15)' : ''
         markChanged()
       })
 
       // Reflect initial state
       if (widget.dataset.width && widget.dataset.width !== 'full') {
-        widthBtn.style.background = 'rgba(200,168,72,0.15)'
+        widthBtn.style.background = 'rgb(var(--gold-rgb) / 0.15)'
       }
 
       widgetWidthBtnMap.set(widget, widthBtn)
@@ -366,9 +366,9 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
         placeholder.style.cssText = `
           height: ${rect.height}px;
           flex: ${flexFor(widget.dataset.width)};
-          border: 1px dashed rgba(200,168,72,0.3);
+          border: 1px dashed rgb(var(--gold-rgb) / 0.3);
           border-radius: 1rem;
-          background: rgba(200,168,72,0.03);
+          background: rgb(var(--gold-rgb) / 0.03);
           box-sizing: border-box;
           min-width: 0;
         `
@@ -379,7 +379,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
         widget.style.left = rect.left + 'px'
         widget.style.width = rect.width + 'px'
         widget.style.zIndex = '500'
-        widget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(200,168,72,0.3)'
+        widget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.65), 0 0 0 1px rgb(var(--gold-rgb) / 0.3)'
         widget.style.outline = 'none'
         widget.style.transition = 'box-shadow 0.15s'
         widget.style.margin = '0'
@@ -463,7 +463,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
             el.dataset.width = w
             el.style.flex = flexFor(w)
             btn.textContent = widthLabel(w)
-            btn.style.background = w !== 'full' ? 'rgba(200,168,72,0.15)' : ''
+            btn.style.background = w !== 'full' ? 'rgb(var(--gold-rgb) / 0.15)' : ''
           }
 
           if (placeholderHalf) {
@@ -482,7 +482,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
             widget.dataset.width = originalWidth
             widget.style.flex = originalFlex
             widthBtn.textContent = widthLabel(originalWidth)
-            widthBtn.style.background = originalWidth !== 'full' ? 'rgba(200,168,72,0.15)' : ''
+            widthBtn.style.background = originalWidth !== 'full' ? 'rgb(var(--gold-rgb) / 0.15)' : ''
           }
 
           placeholderHalf = false
@@ -560,21 +560,21 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
           height: '48px',
           padding: '0 1.25rem',
           background: 'rgba(10,2,20,0.97)',
-          borderBottom: '1px solid rgba(200,168,72,0.18)',
+          borderBottom: '1px solid rgb(var(--gold-rgb) / 0.18)',
           backdropFilter: 'blur(10px)',
           display: 'flex', alignItems: 'center', gap: '1rem',
         }}>
-          <span style={{ fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.8, flexShrink: 0 }}>Editing</span>
+          <span style={{ fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.8, flexShrink: 0 }}>Editing</span>
           <span style={{ fontSize: '0.7rem', opacity: 0.28, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             Drag sections to reorder · click gold text to edit inline
           </span>
 
-          {error && <span style={{ fontSize: '0.72rem', color: '#ff8080', flexShrink: 0 }}>{error}</span>}
+          {error && <span style={{ fontSize: '0.72rem', color: 'var(--danger-strong)', flexShrink: 0 }}>{error}</span>}
 
           {/* Add Poll */}
           <button
             onClick={() => setPanel(p => p === 'poll' ? null : 'poll')}
-            style={{ background: panel === 'poll' ? 'rgba(210,57,248,0.12)' : 'none', border: '1px solid rgba(210,57,248,0.3)', borderRadius: '0.4rem', color: '#D239F8', padding: '0.3rem 0.7rem', cursor: 'pointer', fontSize: '0.7rem', letterSpacing: '0.06em', flexShrink: 0 }}
+            style={{ background: panel === 'poll' ? 'rgb(var(--purple-rgb) / 0.12)' : 'none', border: '1px solid rgb(var(--purple-rgb) / 0.3)', borderRadius: '0.4rem', color: 'var(--purple)', padding: '0.3rem 0.7rem', cursor: 'pointer', fontSize: '0.7rem', letterSpacing: '0.06em', flexShrink: 0 }}
           >
             + Poll
           </button>
@@ -582,7 +582,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
           {/* Edit Text */}
           <button
             onClick={() => setPanel(p => p === 'text' ? null : 'text')}
-            style={{ background: panel === 'text' ? 'rgba(200,168,72,0.1)' : 'none', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '0.4rem', color: '#C8A848', padding: '0.3rem 0.7rem', cursor: 'pointer', fontSize: '0.7rem', letterSpacing: '0.06em', flexShrink: 0 }}
+            style={{ background: panel === 'text' ? 'rgb(var(--gold-rgb) / 0.1)' : 'none', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '0.4rem', color: 'var(--gold)', padding: '0.3rem 0.7rem', cursor: 'pointer', fontSize: '0.7rem', letterSpacing: '0.06em', flexShrink: 0 }}
           >
             Edit Text
           </button>
@@ -594,15 +594,15 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
             style={{
               padding: '0.35rem 1rem',
               borderRadius: '0.45rem',
-              border: '1px solid rgba(200,168,72,0.5)',
-              background: hasChanges ? 'rgba(200,168,72,0.18)' : 'rgba(200,168,72,0.07)',
-              color: '#C8A848',
+              border: '1px solid rgb(var(--gold-rgb) / 0.5)',
+              background: hasChanges ? 'rgb(var(--gold-rgb) / 0.18)' : 'rgb(var(--gold-rgb) / 0.07)',
+              color: 'var(--gold)',
               fontSize: '0.72rem',
               letterSpacing: '0.08em',
               cursor: saving ? 'not-allowed' : 'pointer',
               opacity: saving ? 0.5 : 1,
               flexShrink: 0,
-              fontFamily: 'TokyoDreams, serif',
+              fontFamily: 'var(--font-display)',
             }}
           >
             {saving ? 'Saving…' : 'Save'}
@@ -611,7 +611,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
           {/* Cancel */}
           <button
             onClick={handleCancel}
-            style={{ background: 'none', border: 'none', color: '#F3EDE6', opacity: 0.35, cursor: 'pointer', fontSize: '0.85rem', padding: '0.2rem 0.1rem', flexShrink: 0 }}
+            style={{ background: 'none', border: 'none', color: 'var(--cream)', opacity: 0.35, cursor: 'pointer', fontSize: '0.85rem', padding: '0.2rem 0.1rem', flexShrink: 0 }}
           >
             ✕
           </button>
@@ -639,8 +639,8 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
             style={{
               position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 200,
               padding: '0.55rem 1.1rem', borderRadius: '9999px',
-              border: '1px solid rgba(200,168,72,0.4)',
-              background: 'rgba(10,0,20,0.85)', color: '#C8A848',
+              border: '1px solid rgb(var(--gold-rgb) / 0.4)',
+              background: 'rgba(10,0,20,0.85)', color: 'var(--gold)',
               fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase',
               cursor: 'pointer', backdropFilter: 'blur(8px)',
             }}

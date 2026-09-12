@@ -34,10 +34,10 @@ const SOURCE_ROWS: { key: keyof RadioSources; label: string; example: string }[]
 ]
 
 const inputStyle: React.CSSProperties = {
-  background: 'rgba(26,10,36,0.6)',
-  border: '1px solid rgba(200,168,72,0.25)',
+  background: 'rgb(var(--ink-rgb) / 0.6)',
+  border: '1px solid rgb(var(--gold-rgb) / 0.25)',
   borderRadius: '0.5rem',
-  color: '#F3EDE6',
+  color: 'var(--cream)',
   padding: '0.6rem 0.75rem',
   fontSize: '0.85rem',
   fontFamily: 'inherit',
@@ -139,7 +139,7 @@ export function RadioManager({ initialEvents, initialSources }: {
   return (
     <div>
       <p style={{ fontSize: '0.82rem', opacity: 0.5, margin: '0 0 1.25rem', lineHeight: 1.6 }}>
-        Radio is the community's curated feed — members tune in at <span style={{ color: '#C8A848' }}>/radio</span>.
+        Radio is the community's curated feed — members tune in at <span style={{ color: 'var(--gold)' }}>/radio</span>.
         Post announcements here; the platform adds moments (welcomes, contributions, achievements,
         milestones) as camp life happens, and members can put their own on the air.
       </p>
@@ -181,9 +181,9 @@ export function RadioManager({ initialEvents, initialSources }: {
               marginLeft: 'auto',
               padding: '0.5rem 1.3rem',
               borderRadius: '9999px',
-              border: '1px solid rgba(200,168,72,0.4)',
-              background: 'rgba(200,168,72,0.12)',
-              color: '#C8A848',
+              border: '1px solid rgb(var(--gold-rgb) / 0.4)',
+              background: 'rgb(var(--gold-rgb) / 0.12)',
+              color: 'var(--gold)',
               fontSize: '0.78rem',
               letterSpacing: '0.08em',
               cursor: posting || !message.trim() ? 'default' : 'pointer',
@@ -194,13 +194,13 @@ export function RadioManager({ initialEvents, initialSources }: {
           </button>
         </div>
         {postStatus && (
-          <p style={{ margin: 0, fontSize: '0.72rem', color: '#C8A848', opacity: 0.8 }}>{postStatus}</p>
+          <p style={{ margin: 0, fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.8 }}>{postStatus}</p>
         )}
       </div>
 
       {/* Automatic sources */}
-      <div style={{ margin: '1.5rem 0', padding: '1rem 1.1rem', borderRadius: '0.75rem', border: '1px solid rgba(200,168,72,0.12)' }}>
-        <p style={{ margin: '0 0 0.75rem', fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.7 }}>
+      <div style={{ margin: '1.5rem 0', padding: '1rem 1.1rem', borderRadius: '0.75rem', border: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
+        <p style={{ margin: '0 0 0.75rem', fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.7 }}>
           Automatic broadcasts
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
@@ -222,7 +222,7 @@ export function RadioManager({ initialEvents, initialSources }: {
       </div>
 
       {/* Recent events */}
-      <p style={{ margin: '0 0 0.75rem', fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.7 }}>
+      <p style={{ margin: '0 0 0.75rem', fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.7 }}>
         Recently on the air
       </p>
       {loadError ? (
@@ -242,11 +242,11 @@ export function RadioManager({ initialEvents, initialSources }: {
                 gap: '0.6rem',
                 padding: '0.5rem 0.7rem',
                 borderRadius: '0.5rem',
-                border: '1px solid rgba(200,168,72,0.1)',
-                background: 'rgba(243,237,230,0.02)',
+                border: '1px solid rgb(var(--gold-rgb) / 0.1)',
+                background: 'rgb(var(--cream-rgb) / 0.02)',
               }}
             >
-              <span style={{ fontSize: '0.68rem', color: '#C8A848', opacity: 0.65, flexShrink: 0, width: '5.2rem', letterSpacing: '0.04em' }}>
+              <span style={{ fontSize: '0.68rem', color: 'var(--gold)', opacity: 0.65, flexShrink: 0, width: '5.2rem', letterSpacing: '0.04em' }}>
                 {KIND_LABEL[e.kind] ?? e.kind}
               </span>
               <span style={{ fontSize: '0.8rem', opacity: 0.8, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -261,7 +261,7 @@ export function RadioManager({ initialEvents, initialSources }: {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: confirmingDelete === e.id ? '#ff8080' : '#F3EDE6',
+                  color: confirmingDelete === e.id ? 'var(--danger-strong)' : 'var(--cream)',
                   opacity: confirmingDelete === e.id ? 0.9 : 0.35,
                   fontSize: '0.68rem',
                   cursor: 'pointer',

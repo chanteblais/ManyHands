@@ -47,8 +47,8 @@ export function CollapsibleSection({
       <div style={{
         marginBottom: '1.1rem',
         borderRadius: '0.9rem',
-        border: '1px solid rgba(200,168,72,0.14)',
-        background: 'rgba(243,237,230,0.03)',
+        border: '1px solid rgb(var(--gold-rgb) / 0.14)',
+        background: 'rgb(var(--cream-rgb) / 0.03)',
       }}>
         <button
           onClick={toggle}
@@ -71,26 +71,26 @@ export function CollapsibleSection({
           <span style={{ flex: '1 1 16rem', minWidth: 0 }}>
             {/* Same title scale as the flat variant below — the two admin pages
                 (Members flat, Configure panels) read as one family. */}
-            <span style={{ display: 'block', fontSize: '0.95rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.85 }}>
+            <span style={{ display: 'block', fontSize: '0.95rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.85 }}>
               {title}
             </span>
             {summary && (
-              <span style={{ display: 'block', marginTop: '0.4rem', fontSize: '0.8rem', lineHeight: 1.5, color: '#F3EDE6', opacity: 0.5 }}>
+              <span style={{ display: 'block', marginTop: '0.4rem', fontSize: '0.8rem', lineHeight: 1.5, color: 'var(--cream)', opacity: 0.5 }}>
                 {summary}
               </span>
             )}
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', whiteSpace: 'nowrap', paddingTop: '0.05rem' }}>
             {status && (
-              <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: '#C8A848', opacity: 0.6 }}>{status}</span>
+              <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'var(--gold)', opacity: 0.6 }}>{status}</span>
             )}
-            <span style={{ fontSize: '0.65rem', color: '#C8A848', opacity: 0.45 }}>
+            <span style={{ fontSize: '0.65rem', color: 'var(--gold)', opacity: 0.45 }}>
               {open ? '▲' : '▼'}
             </span>
           </span>
         </button>
         {open && (
-          <div style={{ padding: '1.2rem 1.3rem 1.4rem', borderTop: '1px solid rgba(200,168,72,0.1)' }}>
+          <div style={{ padding: '1.2rem 1.3rem 1.4rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)' }}>
             {children}
           </div>
         )}
@@ -109,7 +109,7 @@ export function CollapsibleSection({
           justifyContent: 'space-between',
           background: 'none',
           border: 'none',
-          borderBottom: `1px solid rgba(200,168,72,${open ? '0.2' : '0.1'})`,
+          borderBottom: `1px solid rgb(var(--gold-rgb) / ${open ? '0.2' : '0.1'})`,
           paddingBottom: '0.75rem',
           marginBottom: open ? '1.5rem' : 0,
           cursor: 'pointer',
@@ -117,14 +117,14 @@ export function CollapsibleSection({
           textAlign: 'left',
         }}
       >
-        <span style={{ fontSize: '0.95rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.85, flexShrink: 0 }}>
+        <span style={{ fontSize: '0.95rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.85, flexShrink: 0 }}>
           {title}
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
           {summary && !open && (
-            <span style={{ fontSize: '0.75rem', color: '#F3EDE6', opacity: 0.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{summary}</span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--cream)', opacity: 0.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{summary}</span>
           )}
-          <span style={{ fontSize: '0.65rem', color: '#C8A848', opacity: 0.4 }}>
+          <span style={{ fontSize: '0.65rem', color: 'var(--gold)', opacity: 0.4 }}>
             {open ? '▲' : '▼'}
           </span>
         </div>

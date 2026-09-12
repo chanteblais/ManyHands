@@ -54,14 +54,14 @@ function ReadStatus({ conv }: { conv: Conversation }) {
 
   if (conv.lastMessageFromMe) {
     label = 'Sent'
-    color = '#F3EDE6'
+    color = 'var(--cream)'
   } else if (conv.unreadCount > 0) {
     label = 'Unread'
-    color = '#D239F8'
+    color = 'var(--purple)'
     unread = true
   } else {
     label = 'Read'
-    color = '#C8A848'
+    color = 'var(--gold)'
   }
 
   return (
@@ -84,7 +84,7 @@ function Avatar({ avatarUrl, displayName, size = 44, icon, iconImage }: { avatar
     <div style={{
       width: size, height: size, borderRadius: '50%', flexShrink: 0,
       border: '1px solid rgba(111,73,31,0.7)',
-      background: 'rgba(200,168,72,0.08)',
+      background: 'rgb(var(--gold-rgb) / 0.08)',
       overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       {iconImage ? (
@@ -97,7 +97,7 @@ function Avatar({ avatarUrl, displayName, size = 44, icon, iconImage }: { avatar
         // eslint-disable-next-line @next/next/no-img-element
         <img src={supabaseResizedUrl(avatarUrl, size * 2) ?? ''} loading="lazy" decoding="async" alt={`${displayName}'s avatar`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       ) : (
-        <span aria-hidden="true" style={{ fontFamily: 'TokyoDreams, serif', fontSize: size * 0.4, color: '#C8A848', opacity: 0.6 }}>
+        <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: size * 0.4, color: 'var(--gold)', opacity: 0.6 }}>
           {displayName.charAt(0).toUpperCase()}
         </span>
       )}
@@ -137,19 +137,19 @@ function NewMessageModal({ members, onClose }: { members: MemberOption[]; onClos
       <div style={{
         width: '100%', maxWidth: '420px',
         background: 'rgba(22,8,34,0.98)',
-        border: '1px solid rgba(200,168,72,0.2)',
+        border: '1px solid rgb(var(--gold-rgb) / 0.2)',
         borderRadius: '1.1rem',
         boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
         overflow: 'hidden',
       }}>
         {/* Modal header */}
-        <div style={{ padding: '1.1rem 1.25rem 0.85rem', borderBottom: '1px solid rgba(200,168,72,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span id="new-message-title" style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1rem', color: '#C8A848' }}>New Message</span>
-          <button onClick={onClose} aria-label="Close new message dialog" style={{ background: 'none', border: 'none', color: '#F3EDE6', opacity: 0.4, cursor: 'pointer', fontSize: '1.1rem', lineHeight: 1, padding: '0.1rem 0.3rem' }}><span aria-hidden="true">×</span></button>
+        <div style={{ padding: '1.1rem 1.25rem 0.85rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span id="new-message-title" style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: 'var(--gold)' }}>New Message</span>
+          <button onClick={onClose} aria-label="Close new message dialog" style={{ background: 'none', border: 'none', color: 'var(--cream)', opacity: 0.4, cursor: 'pointer', fontSize: '1.1rem', lineHeight: 1, padding: '0.1rem 0.3rem' }}><span aria-hidden="true">×</span></button>
         </div>
 
         {/* Search */}
-        <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid rgba(200,168,72,0.08)' }}>
+        <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.08)' }}>
           <label htmlFor="new-message-search" style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: 0 }}>
             Search members
           </label>
@@ -164,14 +164,14 @@ function NewMessageModal({ members, onClose }: { members: MemberOption[]; onClos
             style={{
               width: '100%', padding: '0.55rem 0.75rem',
               background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(200,168,72,0.18)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.18)',
               borderRadius: '0.6rem',
-              color: '#F3EDE6', fontSize: '0.9rem',
+              color: 'var(--cream)', fontSize: '0.9rem',
               outline: 'none', boxSizing: 'border-box',
               fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
             }}
-            onFocus={e => { e.target.style.borderColor = 'rgba(210,57,248,0.45)' }}
-            onBlur={e => { e.target.style.borderColor = 'rgba(200,168,72,0.18)' }}
+            onFocus={e => { e.target.style.borderColor = 'rgb(var(--purple-rgb) / 0.45)' }}
+            onBlur={e => { e.target.style.borderColor = 'rgb(var(--gold-rgb) / 0.18)' }}
           />
         </div>
 
@@ -190,14 +190,14 @@ function NewMessageModal({ members, onClose }: { members: MemberOption[]; onClos
                   display: 'flex', alignItems: 'center', gap: '0.85rem',
                   padding: '0.75rem 1.25rem',
                   textDecoration: 'none', color: 'inherit',
-                  borderBottom: '1px solid rgba(200,168,72,0.06)',
+                  borderBottom: '1px solid rgb(var(--gold-rgb) / 0.06)',
                   transition: 'background 0.15s',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
               >
                 <Avatar avatarUrl={m.avatarUrl} displayName={m.displayName} size={36} />
-                <span style={{ fontFamily: 'TokyoDreams, serif', fontSize: '0.95rem', color: '#F3EDE6', opacity: 0.9 }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', color: 'var(--cream)', opacity: 0.9 }}>
                   {m.displayName}
                 </span>
               </a>
@@ -249,20 +249,20 @@ function FindGroupModal({ onClose, onJoined }: { onClose: () => void; onJoined: 
       style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(10,4,18,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div style={{ width: '100%', maxWidth: '440px', background: 'rgba(22,8,34,0.98)', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '1.1rem', boxShadow: '0 24px 64px rgba(0,0,0,0.6)', overflow: 'hidden' }}>
-        <div style={{ padding: '1.1rem 1.25rem 0.85rem', borderBottom: '1px solid rgba(200,168,72,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span id="find-group-title" style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1rem', color: '#C8A848' }}>Find a group</span>
-          <button onClick={onClose} aria-label="Close" style={{ background: 'none', border: 'none', color: '#F3EDE6', opacity: 0.4, cursor: 'pointer', fontSize: '1.1rem', lineHeight: 1, padding: '0.1rem 0.3rem' }}><span aria-hidden="true">×</span></button>
+      <div style={{ width: '100%', maxWidth: '440px', background: 'rgba(22,8,34,0.98)', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '1.1rem', boxShadow: '0 24px 64px rgba(0,0,0,0.6)', overflow: 'hidden' }}>
+        <div style={{ padding: '1.1rem 1.25rem 0.85rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span id="find-group-title" style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: 'var(--gold)' }}>Find a group</span>
+          <button onClick={onClose} aria-label="Close" style={{ background: 'none', border: 'none', color: 'var(--cream)', opacity: 0.4, cursor: 'pointer', fontSize: '1.1rem', lineHeight: 1, padding: '0.1rem 0.3rem' }}><span aria-hidden="true">×</span></button>
         </div>
 
-        <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid rgba(200,168,72,0.08)' }}>
+        <div style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.08)' }}>
           <input
             type="text"
             placeholder="Search groups…"
             value={query}
             onChange={e => setQuery(e.target.value)}
             aria-label="Search groups"
-            style={{ width: '100%', padding: '0.55rem 0.75rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.18)', borderRadius: '0.6rem', color: '#F3EDE6', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box', fontFamily: 'var(--font-libre-baskerville), Georgia, serif' }}
+            style={{ width: '100%', padding: '0.55rem 0.75rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.18)', borderRadius: '0.6rem', color: 'var(--cream)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box', fontFamily: 'var(--font-libre-baskerville), Georgia, serif' }}
           />
         </div>
 
@@ -275,14 +275,14 @@ function FindGroupModal({ onClose, onJoined }: { onClose: () => void; onJoined: 
             </p>
           ) : (
             filtered.map(g => (
-              <div key={g.id} role="listitem" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', padding: '0.75rem 1.25rem', borderBottom: '1px solid rgba(200,168,72,0.06)' }}>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', flexShrink: 0, border: '1px solid rgba(111,73,31,0.7)', background: 'rgba(200,168,72,0.08)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>
+              <div key={g.id} role="listitem" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', padding: '0.75rem 1.25rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.06)' }}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', flexShrink: 0, border: '1px solid rgba(111,73,31,0.7)', background: 'rgb(var(--gold-rgb) / 0.08)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>
                   {g.icon_image
                     ? <IconImage src={g.icon_image} size="100%" fill={ROUND_FILL} />
                     : <span aria-hidden="true">{g.icon || '✦'}</span>}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ margin: 0, fontFamily: 'TokyoDreams, serif', fontSize: '0.92rem', color: '#F3EDE6', opacity: 0.9 }}>{g.name}</p>
+                  <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '0.92rem', color: 'var(--cream)', opacity: 0.9 }}>{g.name}</p>
                   <p style={{ margin: 0, fontSize: '0.7rem', opacity: 0.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {g.description || `${g.member_count} member${g.member_count === 1 ? '' : 's'}`}
                   </p>
@@ -290,7 +290,7 @@ function FindGroupModal({ onClose, onJoined }: { onClose: () => void; onJoined: 
                 <button
                   onClick={() => join(g.id)}
                   disabled={joining === g.id}
-                  style={{ flexShrink: 0, padding: '0.4rem 0.95rem', borderRadius: '9999px', border: '1px solid rgba(210,57,248,0.4)', background: 'rgba(210,57,248,0.15)', color: '#D239F8', fontSize: '0.75rem', fontFamily: 'TokyoDreams, serif', letterSpacing: '0.06em', cursor: joining === g.id ? 'default' : 'pointer', opacity: joining === g.id ? 0.5 : 1 }}
+                  style={{ flexShrink: 0, padding: '0.4rem 0.95rem', borderRadius: '9999px', border: '1px solid rgb(var(--purple-rgb) / 0.4)', background: 'rgb(var(--purple-rgb) / 0.15)', color: 'var(--purple)', fontSize: '0.75rem', fontFamily: 'var(--font-display)', letterSpacing: '0.06em', cursor: joining === g.id ? 'default' : 'pointer', opacity: joining === g.id ? 0.5 : 1 }}
                 >
                   {joining === g.id ? 'Joining…' : 'Join'}
                 </button>
@@ -360,17 +360,17 @@ export function MessagesInboxClient({ currentUserId, members, initialConversatio
             display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
             padding: '0.5rem 1.1rem',
             background: 'transparent',
-            border: '1px solid rgba(200,168,72,0.35)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.35)',
             borderRadius: '9999px',
-            color: '#C8A848',
+            color: 'var(--gold)',
             fontSize: '0.8rem',
-            fontFamily: 'TokyoDreams, serif',
+            fontFamily: 'var(--font-display)',
             letterSpacing: '0.08em',
             cursor: 'pointer',
             transition: 'all 0.15s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(200,168,72,0.1)'; e.currentTarget.style.borderColor = 'rgba(200,168,72,0.6)' }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(200,168,72,0.35)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgb(var(--gold-rgb) / 0.1)'; e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.6)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.35)' }}
         >
           <span aria-hidden="true" style={{ fontSize: '0.9rem', lineHeight: 1 }}>✦</span>
           Find a group
@@ -382,18 +382,18 @@ export function MessagesInboxClient({ currentUserId, members, initialConversatio
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
             padding: '0.5rem 1.1rem',
-            background: 'rgba(210,57,248,0.12)',
-            border: '1px solid rgba(210,57,248,0.35)',
+            background: 'rgb(var(--purple-rgb) / 0.12)',
+            border: '1px solid rgb(var(--purple-rgb) / 0.35)',
             borderRadius: '9999px',
-            color: '#D239F8',
+            color: 'var(--purple)',
             fontSize: '0.8rem',
-            fontFamily: 'TokyoDreams, serif',
+            fontFamily: 'var(--font-display)',
             letterSpacing: '0.08em',
             cursor: 'pointer',
             transition: 'all 0.15s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(210,57,248,0.2)'; e.currentTarget.style.borderColor = 'rgba(210,57,248,0.6)' }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(210,57,248,0.12)'; e.currentTarget.style.borderColor = 'rgba(210,57,248,0.35)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgb(var(--purple-rgb) / 0.2)'; e.currentTarget.style.borderColor = 'rgb(var(--purple-rgb) / 0.6)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgb(var(--purple-rgb) / 0.12)'; e.currentTarget.style.borderColor = 'rgb(var(--purple-rgb) / 0.35)' }}
         >
           <span aria-hidden="true" style={{ fontSize: '1rem', lineHeight: 1 }}>✉</span>
           New Message
@@ -414,16 +414,16 @@ export function MessagesInboxClient({ currentUserId, members, initialConversatio
                 onClick={() => setFilter(val)}
                 style={{
                   padding: '0.4rem 0.9rem', borderRadius: '9999px',
-                  border: `1px solid ${active ? 'rgba(210,57,248,0.5)' : 'rgba(200,168,72,0.2)'}`,
-                  background: active ? 'rgba(210,57,248,0.15)' : 'transparent',
-                  color: active ? '#D239F8' : '#F3EDE6', opacity: active ? 1 : 0.6,
-                  fontSize: '0.75rem', fontFamily: 'TokyoDreams, serif', letterSpacing: '0.06em',
+                  border: `1px solid ${active ? 'rgb(var(--purple-rgb) / 0.5)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
+                  background: active ? 'rgb(var(--purple-rgb) / 0.15)' : 'transparent',
+                  color: active ? 'var(--purple)' : 'var(--cream)', opacity: active ? 1 : 0.6,
+                  fontSize: '0.75rem', fontFamily: 'var(--font-display)', letterSpacing: '0.06em',
                   cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                 }}
               >
                 {label}
                 {badge > 0 && (
-                  <span aria-hidden="true" style={{ minWidth: '16px', height: '16px', borderRadius: '9999px', background: '#D239F8', color: '#fff', fontSize: '0.6rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px' }}>
+                  <span aria-hidden="true" style={{ minWidth: '16px', height: '16px', borderRadius: '9999px', background: 'var(--purple)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px' }}>
                     {badge > 9 ? '9+' : badge}
                   </span>
                 )}
@@ -447,7 +447,7 @@ export function MessagesInboxClient({ currentUserId, members, initialConversatio
             aria-haspopup="dialog"
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: '0.82rem', color: '#C8A848', letterSpacing: '0.06em', opacity: 0.8,
+              fontSize: '0.82rem', color: 'var(--gold)', letterSpacing: '0.06em', opacity: 0.8,
               textDecoration: 'underline', textUnderlineOffset: '3px',
             }}
           >
@@ -469,19 +469,19 @@ export function MessagesInboxClient({ currentUserId, members, initialConversatio
               display: 'flex', alignItems: 'center', gap: '1rem',
               padding: '1rem 1.25rem',
               background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(200,168,72,0.12)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.12)',
               borderRadius: '0.85rem',
               textDecoration: 'none', color: 'inherit',
               transition: 'border-color 0.2s, background 0.2s',
               marginBottom: '0.75rem',
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(200,168,72,0.35)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(200,168,72,0.12)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.35)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.12)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
           >
             <Avatar avatarUrl={conv.avatarUrl} displayName={conv.displayName} size={44} icon={conv.kind === 'group' ? (conv.icon ?? null) : undefined} iconImage={conv.kind === 'group' ? conv.iconImage : undefined} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.2rem' }}>
-                <span style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1rem', color: conv.unreadCount > 0 ? '#C8A848' : '#F3EDE6', opacity: conv.unreadCount > 0 ? 1 : 0.85 }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: conv.unreadCount > 0 ? 'var(--gold)' : 'var(--cream)', opacity: conv.unreadCount > 0 ? 1 : 0.85 }}>
                   {conv.displayName}
                   {conv.muted && <span title="Muted" aria-label="muted" style={{ marginLeft: '0.4rem', fontSize: '0.7rem', opacity: 0.5 }}>🔕</span>}
                 </span>
@@ -510,7 +510,7 @@ export function MessagesInboxClient({ currentUserId, members, initialConversatio
             {conv.unreadCount > 0 && (
               <div aria-hidden="true" style={{
                 minWidth: '20px', height: '20px', borderRadius: '9999px',
-                background: '#D239F8', color: '#fff',
+                background: 'var(--purple)', color: '#fff',
                 fontSize: '0.65rem', fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '0 5px', flexShrink: 0,

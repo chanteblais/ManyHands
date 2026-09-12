@@ -10,16 +10,16 @@ export function TrackPicker({ hideMember = false, hideVolunteer = false, copy = 
 
       <div style={{ maxWidth: '720px', margin: '0 auto', padding: '3rem 1.5rem 6rem', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-          <a href="/" style={{ fontSize: '0.8rem', letterSpacing: '0.1em', color: '#C8A848', textDecoration: 'none', opacity: 0.6 }}>
+          <a href="/" style={{ fontSize: '0.8rem', letterSpacing: '0.1em', color: 'var(--gold)', textDecoration: 'none', opacity: 0.6 }}>
             ← Back to camp
           </a>
         </div>
 
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '1rem', opacity: 0.85 }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '1rem', opacity: 0.85 }}>
             What If 2026
           </p>
-          <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 6vw, 3rem)', color: '#C8A848', lineHeight: 1.1, marginBottom: '0.75rem', textShadow: '0 0 40px rgba(210,57,248,0.4)' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 6vw, 3rem)', color: 'var(--gold)', lineHeight: 1.1, marginBottom: '0.75rem', textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.4)' }}>
             How would you like to join?
           </h1>
           <p style={{ fontSize: '0.9rem', lineHeight: 1.8, opacity: 0.55, maxWidth: '480px', margin: '0 auto' }}>
@@ -35,9 +35,9 @@ export function TrackPicker({ hideMember = false, hideVolunteer = false, copy = 
           {!hideMember && <a href="/apply?track=member" style={{ textDecoration: 'none' }}>
             <div style={{
               padding: '2rem 1.75rem',
-              border: '1px solid rgba(200,168,72,0.3)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.3)',
               borderRadius: '1rem',
-              background: 'rgba(200,168,72,0.04)',
+              background: 'rgb(var(--gold-rgb) / 0.04)',
               cursor: 'pointer',
               transition: 'border-color 0.2s, background 0.2s',
               height: '100%',
@@ -45,17 +45,17 @@ export function TrackPicker({ hideMember = false, hideVolunteer = false, copy = 
             }}
               onMouseEnter={e => {
                 const el = e.currentTarget as HTMLDivElement
-                el.style.borderColor = 'rgba(200,168,72,0.65)'
-                el.style.background = 'rgba(200,168,72,0.08)'
+                el.style.borderColor = 'rgb(var(--gold-rgb) / 0.65)'
+                el.style.background = 'rgb(var(--gold-rgb) / 0.08)'
               }}
               onMouseLeave={e => {
                 const el = e.currentTarget as HTMLDivElement
-                el.style.borderColor = 'rgba(200,168,72,0.3)'
-                el.style.background = 'rgba(200,168,72,0.04)'
+                el.style.borderColor = 'rgb(var(--gold-rgb) / 0.3)'
+                el.style.background = 'rgb(var(--gold-rgb) / 0.04)'
               }}
             >
               <p style={{ fontSize: '1.6rem', marginBottom: '0.75rem', lineHeight: 1 }}>✦</p>
-              <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.3rem', color: '#C8A848', marginBottom: '0.6rem', letterSpacing: '0.05em' }}>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--gold)', marginBottom: '0.6rem', letterSpacing: '0.05em' }}>
                 {copy.memberTitle}
               </p>
               <p style={{ fontSize: '0.85rem', lineHeight: 1.7, opacity: 0.55, margin: 0, whiteSpace: 'pre-wrap' }}>
@@ -68,9 +68,9 @@ export function TrackPicker({ hideMember = false, hideVolunteer = false, copy = 
           {!hideVolunteer && <a href="/volunteer" style={{ textDecoration: 'none' }}>
             <div style={{
               padding: '2rem 1.75rem',
-              border: '1px solid rgba(210,57,248,0.25)',
+              border: '1px solid rgb(var(--purple-rgb) / 0.25)',
               borderRadius: '1rem',
-              background: 'rgba(210,57,248,0.03)',
+              background: 'rgb(var(--purple-rgb) / 0.03)',
               cursor: 'pointer',
               transition: 'border-color 0.2s, background 0.2s',
               height: '100%',
@@ -78,17 +78,17 @@ export function TrackPicker({ hideMember = false, hideVolunteer = false, copy = 
             }}
               onMouseEnter={e => {
                 const el = e.currentTarget as HTMLDivElement
-                el.style.borderColor = 'rgba(210,57,248,0.55)'
-                el.style.background = 'rgba(210,57,248,0.08)'
+                el.style.borderColor = 'rgb(var(--purple-rgb) / 0.55)'
+                el.style.background = 'rgb(var(--purple-rgb) / 0.08)'
               }}
               onMouseLeave={e => {
                 const el = e.currentTarget as HTMLDivElement
-                el.style.borderColor = 'rgba(210,57,248,0.25)'
-                el.style.background = 'rgba(210,57,248,0.03)'
+                el.style.borderColor = 'rgb(var(--purple-rgb) / 0.25)'
+                el.style.background = 'rgb(var(--purple-rgb) / 0.03)'
               }}
             >
               <p style={{ fontSize: '1.6rem', marginBottom: '0.75rem', lineHeight: 1 }}>🤝</p>
-              <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.3rem', color: '#D239F8', marginBottom: '0.6rem', letterSpacing: '0.05em' }}>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--purple)', marginBottom: '0.6rem', letterSpacing: '0.05em' }}>
                 {copy.volunteerTitle}
               </p>
               <p style={{ fontSize: '0.85rem', lineHeight: 1.7, opacity: 0.55, margin: 0, whiteSpace: 'pre-wrap' }}>

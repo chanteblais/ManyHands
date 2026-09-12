@@ -33,13 +33,13 @@ const blank = (): Draft => ({
 })
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(200,168,72,0.2)',
-  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: '#F3EDE6', fontSize: '0.875rem',
+  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: 'var(--cream)', fontSize: '0.875rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif', outline: 'none', boxSizing: 'border-box',
 }
 const labelStyle: React.CSSProperties = {
   fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase',
-  color: '#C8A848', opacity: 0.65, display: 'block', marginBottom: '0.35rem',
+  color: 'var(--gold)', opacity: 0.65, display: 'block', marginBottom: '0.35rem',
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -53,15 +53,15 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
         onClick={() => onChange(!checked)}
         style={{
           display: 'inline-block', width: '36px', height: '20px', borderRadius: '9999px', flexShrink: 0,
-          background: checked ? '#C8A848' : 'rgba(255,255,255,0.1)',
-          border: `1px solid ${checked ? '#C8A848' : 'rgba(200,168,72,0.2)'}`,
+          background: checked ? 'var(--gold)' : 'rgba(255,255,255,0.1)',
+          border: `1px solid ${checked ? 'var(--gold)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
           position: 'relative', transition: 'background 0.2s', cursor: 'pointer',
         }}
       >
         <span style={{
           position: 'absolute', top: '2px', left: checked ? '17px' : '2px',
           width: '14px', height: '14px', borderRadius: '50%',
-          background: '#F3EDE6', transition: 'left 0.2s',
+          background: 'var(--cream)', transition: 'left 0.2s',
         }} />
       </span>
       <span style={{ opacity: 0.75 }}>{label}</span>
@@ -137,15 +137,15 @@ function GatheringModal({ initial, isCreate, onSave, onClose, saving, error }: {
       <div style={{
         position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
         width: 'min(95vw, 560px)', maxHeight: '88vh', overflowY: 'auto',
-        background: '#1A0A24', border: '1px solid rgba(200,168,72,0.25)',
+        background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.25)',
         borderRadius: '1rem', padding: '1.5rem', zIndex: 50,
         boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <h3 style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.15rem', color: '#C8A848', margin: 0 }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', color: 'var(--gold)', margin: 0 }}>
             {initial.title ? 'Edit gathering' : 'New lead-up gathering'}
           </h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#C8A848', fontSize: '1.4rem', cursor: 'pointer', opacity: 0.7 }}>×</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '1.4rem', cursor: 'pointer', opacity: 0.7 }}>×</button>
         </div>
 
         <Field label="Title">
@@ -185,8 +185,8 @@ function GatheringModal({ initial, isCreate, onSave, onClose, saving, error }: {
           {form.image_url ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={form.image_url} alt="" style={{ width: '88px', height: '64px', objectFit: 'cover', borderRadius: '0.5rem', border: '1px solid rgba(200,168,72,0.25)' }} />
-              <button type="button" onClick={handleImageRemove} style={{ background: 'none', border: '1px solid rgba(255,100,100,0.3)', borderRadius: '0.4rem', color: '#ff8a8a', cursor: 'pointer', padding: '0.3rem 0.7rem', fontSize: '0.72rem', opacity: 0.7 }}>
+              <img src={form.image_url} alt="" style={{ width: '88px', height: '64px', objectFit: 'cover', borderRadius: '0.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.25)' }} />
+              <button type="button" onClick={handleImageRemove} style={{ background: 'none', border: '1px solid rgba(255,100,100,0.3)', borderRadius: '0.4rem', color: 'var(--danger)', cursor: 'pointer', padding: '0.3rem 0.7rem', fontSize: '0.72rem', opacity: 0.7 }}>
                 Remove
               </button>
             </div>
@@ -195,13 +195,13 @@ function GatheringModal({ initial, isCreate, onSave, onClose, saving, error }: {
               type="button"
               onClick={() => imageInputRef.current?.click()}
               disabled={imageUploading}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(200,168,72,0.08)', border: '1px dashed rgba(200,168,72,0.35)', borderRadius: '0.5rem', color: '#C8A848', cursor: 'pointer', padding: '0.5rem 0.9rem', fontSize: '0.78rem', opacity: imageUploading ? 0.5 : 0.85 }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgb(var(--gold-rgb) / 0.08)', border: '1px dashed rgb(var(--gold-rgb) / 0.35)', borderRadius: '0.5rem', color: 'var(--gold)', cursor: 'pointer', padding: '0.5rem 0.9rem', fontSize: '0.78rem', opacity: imageUploading ? 0.5 : 0.85 }}
             >
               {imageUploading ? 'Uploading…' : '＋ Upload image'}
             </button>
           )}
           <input ref={imageInputRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={handleImageUpload} style={{ display: 'none' }} />
-          {imageError && <p style={{ color: '#ff8a8a', fontSize: '0.72rem', marginTop: '0.4rem' }}>{imageError}</p>}
+          {imageError && <p style={{ color: 'var(--danger)', fontSize: '0.72rem', marginTop: '0.4rem' }}>{imageError}</p>}
         </Field>
 
         <div style={{ marginBottom: isCreate ? '0.75rem' : '1.25rem' }}>
@@ -209,7 +209,7 @@ function GatheringModal({ initial, isCreate, onSave, onClose, saving, error }: {
         </div>
 
         {isCreate && (
-          <div style={{ marginBottom: '1.25rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(200,168,72,0.1)' }}>
+          <div style={{ marginBottom: '1.25rem', paddingTop: '0.75rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)' }}>
             {form.visible ? (
               <Toggle checked={notify} onChange={setNotify} label="Notify members on save (bell + email)" />
             ) : (
@@ -218,18 +218,18 @@ function GatheringModal({ initial, isCreate, onSave, onClose, saving, error }: {
           </div>
         )}
 
-        {error && <p style={{ color: '#ff8a8a', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
+        {error && <p style={{ color: 'var(--danger)', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
 
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', alignItems: 'center' }}>
           {missing && (
-            <span style={{ fontSize: '0.72rem', color: '#C8A848', opacity: 0.55, fontStyle: 'italic', marginRight: 'auto' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.55, fontStyle: 'italic', marginRight: 'auto' }}>
               Needs {missing}
             </span>
           )}
-          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>
+          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>
             Cancel
           </button>
-          <button onClick={handleSubmit} disabled={saving || !canSave} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.45)', background: 'transparent', color: '#FFFACD', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.05em', opacity: saving || !canSave ? 0.5 : 1 }}>
+          <button onClick={handleSubmit} disabled={saving || !canSave} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.45)', background: 'transparent', color: 'var(--lemon)', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.05em', opacity: saving || !canSave ? 0.5 : 1 }}>
             {saving ? 'Saving…' : 'Save gathering'}
           </button>
         </div>
@@ -382,8 +382,8 @@ export function LeadUpGatheringsManager({ rangeStart, rangeEnd, initialEvents }:
   const addBtnStyle: React.CSSProperties = {
     display: 'flex', alignItems: 'center', gap: '0.4rem',
     padding: '0.5rem 1rem', borderRadius: '9999px',
-    border: '1px solid rgba(200,168,72,0.25)', background: 'transparent',
-    color: '#C8A848', cursor: 'pointer', fontSize: '0.78rem',
+    border: '1px solid rgb(var(--gold-rgb) / 0.25)', background: 'transparent',
+    color: 'var(--gold)', cursor: 'pointer', fontSize: '0.78rem',
     letterSpacing: '0.06em', opacity: 0.75,
   }
 
@@ -411,7 +411,7 @@ export function LeadUpGatheringsManager({ rangeStart, rangeEnd, initialEvents }:
         onEdit={ev => { setModal({ mode: 'edit', event: ev }); setModalError(null) }}
       />
 
-      {actionError && <p style={{ color: '#ff8a8a', fontSize: '0.8rem', margin: '0 0 0.6rem' }}>{actionError}</p>}
+      {actionError && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', margin: '0 0 0.6rem' }}>{actionError}</p>}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {events.length === 0 && <p style={{ opacity: 0.35, fontStyle: 'italic', fontSize: '0.82rem' }}>No gatherings yet.</p>}
@@ -426,24 +426,24 @@ export function LeadUpGatheringsManager({ rangeStart, rangeEnd, initialEvents }:
               // own line instead of crushing the title column to a sliver
               display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
               padding: '0.75rem 1rem', borderRadius: '0.65rem',
-              border: '1px solid rgba(200,168,72,0.12)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.12)',
               background: ev.visible ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.005)',
               opacity: !ev.visible ? 0.5 : isPast ? 0.6 : 1,
             }}
           >
             <div style={{
               flexShrink: 0, width: '70px', textAlign: 'center',
-              padding: '0.35rem 0.4rem', border: '1px solid rgba(200,168,72,0.2)',
-              borderRadius: '0.5rem', background: 'rgba(200,168,72,0.06)',
+              padding: '0.35rem 0.4rem', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+              borderRadius: '0.5rem', background: 'rgb(var(--gold-rgb) / 0.06)',
             }}>
-              <p style={{ fontSize: '0.62rem', color: '#C8A848', margin: 0, letterSpacing: '0.03em' }}>{formatDate(ev.event_date)}</p>
+              <p style={{ fontSize: '0.62rem', color: 'var(--gold)', margin: 0, letterSpacing: '0.03em' }}>{formatDate(ev.event_date)}</p>
             </div>
 
             <div style={{ flex: '1 1 11rem', minWidth: 0 }}>
-              <p style={{ fontSize: '0.88rem', fontWeight: 600, color: '#F3EDE6', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <p style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--cream)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {ev.title}
                 {isPast && (
-                  <span style={{ marginLeft: '0.5rem', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#F3EDE6', opacity: 0.45, border: '1px solid rgba(243,237,230,0.2)', borderRadius: '9999px', padding: '0.1rem 0.5rem', verticalAlign: 'middle' }}>
+                  <span style={{ marginLeft: '0.5rem', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--cream)', opacity: 0.45, border: '1px solid rgb(var(--cream-rgb) / 0.2)', borderRadius: '9999px', padding: '0.1rem 0.5rem', verticalAlign: 'middle' }}>
                     Past
                   </span>
                 )}
@@ -454,7 +454,7 @@ export function LeadUpGatheringsManager({ rangeStart, rangeEnd, initialEvents }:
             </div>
 
             <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.2rem', minWidth: '64px' }}>
-              <span title="RSVPs" style={{ fontSize: '0.72rem', color: '#C8A848', opacity: 0.7, border: '1px solid rgba(200,168,72,0.2)', borderRadius: '9999px', padding: '0.15rem 0.55rem' }}>
+              <span title="RSVPs" style={{ fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.7, border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '9999px', padding: '0.15rem 0.55rem' }}>
                 {ev.rsvp_count ?? 0} going
               </span>
               {notifyResult?.id === ev.id ? (
@@ -472,22 +472,22 @@ export function LeadUpGatheringsManager({ rangeStart, rangeEnd, initialEvents }:
                 disabled={notifyingId === ev.id}
                 title={ev.notified_at ? 'Re-send alert to members' : 'Alert all members (bell + email)'}
                 style={{
-                  background: ev.notified_at ? 'none' : 'rgba(200,168,72,0.1)',
-                  border: '1px solid rgba(200,168,72,0.3)', borderRadius: '0.4rem',
-                  color: '#C8A848', cursor: 'pointer', padding: '0.25rem 0.55rem',
+                  background: ev.notified_at ? 'none' : 'rgb(var(--gold-rgb) / 0.1)',
+                  border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '0.4rem',
+                  color: 'var(--gold)', cursor: 'pointer', padding: '0.25rem 0.55rem',
                   fontSize: '0.7rem', opacity: notifyingId === ev.id ? 0.4 : ev.notified_at ? 0.55 : 0.9, whiteSpace: 'nowrap',
                 }}
               >
                 {notifyingId === ev.id ? 'Sending…' : ev.notified_at ? '↻ Notify' : '🔔 Notify'}
               </button>
               )}
-              <button onClick={() => handleToggleVisible(ev)} title={ev.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'} aria-label={ev.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: '#C8A848', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
+              <button onClick={() => handleToggleVisible(ev)} title={ev.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'} aria-label={ev.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: 'var(--gold)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
                 {ev.visible ? '●' : '○'}
               </button>
-              <button onClick={() => { setModal({ mode: 'edit', event: ev }); setModalError(null) }} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: '#C8A848', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
+              <button onClick={() => { setModal({ mode: 'edit', event: ev }); setModalError(null) }} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: 'var(--gold)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
                 Edit
               </button>
-              <button onClick={() => handleDelete(ev.id)} style={{ background: 'none', border: '1px solid rgba(255,100,100,0.2)', borderRadius: '0.4rem', color: '#ff8a8a', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>
+              <button onClick={() => handleDelete(ev.id)} style={{ background: 'none', border: '1px solid rgba(255,100,100,0.2)', borderRadius: '0.4rem', color: 'var(--danger)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>
                 ✕
               </button>
             </div>

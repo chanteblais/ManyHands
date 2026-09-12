@@ -32,9 +32,9 @@ function Medal({ d, frame = 88, glyphSize = '2.1rem', labelSize = '0.66rem' }: {
           // let the transparent sides overflow — overflow:hidden trims that
           // excess to the round edge. (Outer box-shadow is unaffected by clip.)
           overflow: 'hidden',
-          background: 'radial-gradient(circle at 38% 30%, rgba(210,57,248,0.16), rgba(8,0,18,0.9) 72%)',
-          border: '2px solid #C8A848',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4), inset 0 0 18px rgba(200,168,72,0.18), inset 0 0 0 1px rgba(255,249,232,0.12)',
+          background: 'radial-gradient(circle at 38% 30%, rgb(var(--purple-rgb) / 0.16), rgba(8,0,18,0.9) 72%)',
+          border: '2px solid var(--gold)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4), inset 0 0 18px rgb(var(--gold-rgb) / 0.18), inset 0 0 0 1px rgba(255,249,232,0.12)',
         }}
       >
         {d.image ? (
@@ -63,7 +63,7 @@ function Medal({ d, frame = 88, glyphSize = '2.1rem', labelSize = '0.66rem' }: {
         fontSize: labelSize,
         letterSpacing: '0.12em',
         textTransform: 'uppercase',
-        color: '#EDE0C8',
+        color: 'var(--parchment)',
         lineHeight: 1.4,
         fontFamily: 'var(--font-cormorant-garamond), serif',
         fontWeight: 600,
@@ -75,7 +75,7 @@ function Medal({ d, frame = 88, glyphSize = '2.1rem', labelSize = '0.66rem' }: {
           marginTop: '0.05rem',
           fontSize: '0.62rem',
           letterSpacing: '0.04em',
-          color: '#C8A848',
+          color: 'var(--gold)',
           opacity: 0.85,
           fontStyle: 'italic',
           lineHeight: 1.0,
@@ -85,7 +85,7 @@ function Medal({ d, frame = 88, glyphSize = '2.1rem', labelSize = '0.66rem' }: {
         </p>
       )}
       {d.year != null && (
-        <p style={{ marginTop: '0.15rem', fontSize: '0.6rem', letterSpacing: '0.14em', color: '#D239F8', opacity: 0.8 }}>
+        <p style={{ marginTop: '0.15rem', fontSize: '0.6rem', letterSpacing: '0.14em', color: 'var(--purple)', opacity: 0.8 }}>
           {d.year}
         </p>
       )}
@@ -106,11 +106,11 @@ export function CabinetOfDistinctions({ distinctions, title = 'Cabinet of Distin
 
   return (
     <div style={{
-      border: compact ? '1px solid rgba(200,168,72,0.28)' : '1.5px solid rgba(200,168,72,0.7)',
+      border: compact ? '1px solid rgb(var(--gold-rgb) / 0.28)' : '1.5px solid rgb(var(--gold-rgb) / 0.7)',
       borderRadius: '1rem',
       background: 'rgba(10,0,20,0.6)',
       overflow: 'hidden',
-      boxShadow: compact ? '0 0 0 1px rgba(200,168,72,0.06)' : '0 0 0 1px rgba(200,168,72,0.12), 0 0 24px rgba(200,168,72,0.08)',
+      boxShadow: compact ? '0 0 0 1px rgb(var(--gold-rgb) / 0.06)' : '0 0 0 1px rgb(var(--gold-rgb) / 0.12), 0 0 24px rgb(var(--gold-rgb) / 0.08)',
     }}>
       <style dangerouslySetInnerHTML={{ __html: `
         .cabinet-grid {
@@ -131,13 +131,13 @@ export function CabinetOfDistinctions({ distinctions, title = 'Cabinet of Distin
       {/* Header */}
       <div style={{ padding: compact ? '0.55rem 1.25rem 0' : '0.6rem 1.5rem 0.1rem', textAlign: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', marginBottom: compact ? '0.1rem' : '0.25rem' }}>
-          <span aria-hidden style={{ color: '#C8A848', fontSize: '0.72rem', opacity: 0.9 }}>✦</span>
-          <span aria-hidden style={{ width: '46px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.6))' }} />
-          <p style={{ fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: compact ? '1rem' : '1.15rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', margin: 0, textShadow: '0 0 18px rgba(200,168,72,0.35)', whiteSpace: 'nowrap' }}>
+          <span aria-hidden style={{ color: 'var(--gold)', fontSize: '0.72rem', opacity: 0.9 }}>✦</span>
+          <span aria-hidden style={{ width: '46px', height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.6))' }} />
+          <p style={{ fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: compact ? '1rem' : '1.15rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', margin: 0, textShadow: '0 0 18px rgb(var(--gold-rgb) / 0.35)', whiteSpace: 'nowrap' }}>
             {title}
           </p>
-          <span aria-hidden style={{ width: '46px', height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.6), transparent)' }} />
-          <span aria-hidden style={{ color: '#C8A848', fontSize: '0.72rem', opacity: 0.9 }}>✦</span>
+          <span aria-hidden style={{ width: '46px', height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.6), transparent)' }} />
+          <span aria-hidden style={{ color: 'var(--gold)', fontSize: '0.72rem', opacity: 0.9 }}>✦</span>
         </div>
         {!compact && (
           <p style={{ fontSize: '0.82rem', opacity: 0.5, margin: 0, fontStyle: 'italic' }}>

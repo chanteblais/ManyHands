@@ -29,8 +29,8 @@ const workspacePanel: React.CSSProperties = {
   padding: '1.4rem 1.5rem',
   marginBottom: '3rem',
   borderRadius: '0.9rem',
-  border: '1px solid rgba(200,168,72,0.14)',
-  background: 'rgba(243,237,230,0.03)',
+  border: '1px solid rgb(var(--gold-rgb) / 0.14)',
+  background: 'rgb(var(--cream-rgb) / 0.03)',
 }
 
 export default async function ProgramPage() {
@@ -86,7 +86,7 @@ export default async function ProgramPage() {
           <NotificationBell initialNotifications={notifications ?? []} />
         </div>
 
-        <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: '#C8A848', marginBottom: '0.5rem', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--gold)', marginBottom: '0.5rem', textAlign: 'center' }}>
           Program
         </h1>
         <p style={{ textAlign: 'center', opacity: 0.5, fontSize: '0.85rem', marginBottom: '2.5rem' }}>

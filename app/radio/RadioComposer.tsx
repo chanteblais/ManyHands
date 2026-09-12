@@ -154,11 +154,11 @@ export function RadioComposer({ members = [], currentUserId = null }: {
           alignItems: 'center',
           padding: '0.65rem 0.65rem 0.65rem 1.1rem',
           borderRadius: '0.9rem',
-          border: '1px solid rgba(200,168,72,0.18)',
-          background: 'rgba(243,237,230,0.03)',
+          border: '1px solid rgb(var(--gold-rgb) / 0.18)',
+          background: 'rgb(var(--cream-rgb) / 0.03)',
         }}
       >
-        <span aria-hidden style={{ color: '#C8A848', opacity: 0.7, fontSize: '1.05rem' }}>🎙</span>
+        <span aria-hidden style={{ color: 'var(--gold)', opacity: 0.7, fontSize: '1.05rem' }}>🎙</span>
         <input
           id={INPUT_ID}
           ref={inputRef}
@@ -172,7 +172,7 @@ export function RadioComposer({ members = [], currentUserId = null }: {
             minWidth: 0,
             background: 'transparent',
             border: 'none',
-            color: '#F3EDE6',
+            color: 'var(--cream)',
             fontSize: '0.92rem',
             fontStyle: 'italic',
             fontFamily: 'inherit',
@@ -188,9 +188,9 @@ export function RadioComposer({ members = [], currentUserId = null }: {
             flexShrink: 0,
             padding: '0.55rem 1.25rem',
             borderRadius: '0.6rem',
-            border: '1px solid rgba(200,168,72,0.45)',
-            background: 'rgba(200,168,72,0.16)',
-            color: '#C8A848',
+            border: '1px solid rgb(var(--gold-rgb) / 0.45)',
+            background: 'rgb(var(--gold-rgb) / 0.16)',
+            color: 'var(--gold)',
             fontSize: '0.75rem',
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
@@ -216,7 +216,7 @@ export function RadioComposer({ members = [], currentUserId = null }: {
               maxHeight: '15rem',
               overflowY: 'auto',
               borderRadius: '0.6rem',
-              border: '1px solid rgba(200,168,72,0.3)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.3)',
               background: '#241033',
               boxShadow: '0 12px 30px rgba(0,0,0,0.45)',
               padding: '0.3rem',
@@ -238,8 +238,8 @@ export function RadioComposer({ members = [], currentUserId = null }: {
                   padding: '0.45rem 0.6rem',
                   borderRadius: '0.4rem',
                   border: 'none',
-                  background: i === mentionHighlight ? 'rgba(210,57,248,0.18)' : 'transparent',
-                  color: m.here ? '#F2D88A' : '#F3EDE6',
+                  background: i === mentionHighlight ? 'rgb(var(--purple-rgb) / 0.18)' : 'transparent',
+                  color: m.here ? '#F2D88A' : 'var(--cream)',
                   fontSize: '0.85rem',
                   fontFamily: 'inherit',
                   cursor: 'pointer',
@@ -263,19 +263,19 @@ export function RadioComposer({ members = [], currentUserId = null }: {
             margin: '0.6rem 0 0 1.1rem',
             padding: '0.6rem 0.8rem',
             borderRadius: '0.6rem',
-            border: '1px solid rgba(210,57,248,0.4)',
-            background: 'rgba(210,57,248,0.08)',
+            border: '1px solid rgb(var(--purple-rgb) / 0.4)',
+            background: 'rgb(var(--purple-rgb) / 0.08)',
           }}
         >
-          <span style={{ fontSize: '0.78rem', color: '#F3EDE6', opacity: 0.9 }}>
+          <span style={{ fontSize: '0.78rem', color: 'var(--cream)', opacity: 0.9 }}>
             📢 <strong>@here</strong> alerts <strong>every member</strong> by bell and email. Send anyway?
           </span>
           <button
             onClick={post}
             disabled={posting}
             style={{
-              padding: '0.4rem 0.9rem', borderRadius: '0.5rem', border: '1px solid rgba(210,57,248,0.5)',
-              background: 'rgba(210,57,248,0.2)', color: '#F8DBFF', fontSize: '0.72rem',
+              padding: '0.4rem 0.9rem', borderRadius: '0.5rem', border: '1px solid rgb(var(--purple-rgb) / 0.5)',
+              background: 'rgb(var(--purple-rgb) / 0.2)', color: '#F8DBFF', fontSize: '0.72rem',
               letterSpacing: '0.06em', cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
@@ -285,7 +285,7 @@ export function RadioComposer({ members = [], currentUserId = null }: {
             onClick={() => setConfirming(false)}
             style={{
               padding: '0.4rem 0.75rem', borderRadius: '0.5rem', border: 'none',
-              background: 'transparent', color: '#F3EDE6', opacity: 0.6, fontSize: '0.72rem',
+              background: 'transparent', color: 'var(--cream)', opacity: 0.6, fontSize: '0.72rem',
               cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
@@ -295,7 +295,7 @@ export function RadioComposer({ members = [], currentUserId = null }: {
       )}
 
       {error && (
-        <p style={{ margin: '0.4rem 0 0 1.1rem', fontSize: '0.72rem', color: '#ff8080', opacity: 0.85 }}>{error}</p>
+        <p style={{ margin: '0.4rem 0 0 1.1rem', fontSize: '0.72rem', color: 'var(--danger-strong)', opacity: 0.85 }}>{error}</p>
       )}
     </div>
   )
@@ -319,16 +319,16 @@ export function GoLiveBar() {
         marginTop: '2rem',
         padding: '1rem 1.4rem',
         borderRadius: '0.9rem',
-        border: '1px solid rgba(200,168,72,0.25)',
-        background: 'rgba(210,57,248,0.05)',
-        color: '#C8A848',
+        border: '1px solid rgb(var(--gold-rgb) / 0.25)',
+        background: 'rgb(var(--purple-rgb) / 0.05)',
+        color: 'var(--gold)',
         cursor: 'pointer',
         fontFamily: 'inherit',
       }}
     >
       <span aria-hidden style={{ fontSize: '0.95rem', opacity: 0.85 }}>((•))</span>
       <span style={{ fontSize: '0.78rem', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Go Live</span>
-      <span className="radio-golive-desc" style={{ fontSize: '0.85rem', color: '#F3EDE6', opacity: 0.55 }}>Share something with everyone.</span>
+      <span className="radio-golive-desc" style={{ fontSize: '0.85rem', color: 'var(--cream)', opacity: 0.55 }}>Share something with everyone.</span>
       <span aria-hidden style={{ marginLeft: 'auto', opacity: 0.6 }}>→</span>
     </button>
   )

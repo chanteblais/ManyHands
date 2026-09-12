@@ -34,7 +34,7 @@ export function SpotlightWidget({
     <div style={{
       position: 'relative',
       padding: '1.5rem',
-      border: '1px solid rgba(200,168,72,0.2)',
+      border: '1px solid rgb(var(--gold-rgb) / 0.2)',
       borderRadius: '1rem',
       background: 'rgba(10,0,20,0.6)',
       overflow: 'hidden',
@@ -44,18 +44,18 @@ export function SpotlightWidget({
       boxSizing: 'border-box',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-        <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, margin: 0 }}>Meet a Member</p>
+        <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>Meet a Member</p>
       </div>
 
       <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
-        <div style={{ flexShrink: 0, width: '110px', height: '110px', borderRadius: '50%', overflow: 'hidden', border: '2px solid #6F491F', boxShadow: '0 0 0 1px rgba(200,168,72,0.15)', background: 'rgba(200,168,72,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ flexShrink: 0, width: '110px', height: '110px', borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--bronze)', boxShadow: '0 0 0 1px rgb(var(--gold-rgb) / 0.15)', background: 'rgb(var(--gold-rgb) / 0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {member.avatar_url
             // eslint-disable-next-line @next/next/no-img-element
             ? <img src={supabaseResizedUrl(member.avatar_url, 220) ?? ''} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             : <span style={{ fontSize: '2rem', opacity: 0.2 }}>✦</span>}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.3rem', color: '#C8A848', margin: '0 0 0.1rem', lineHeight: 1.2 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--gold)', margin: '0 0 0.1rem', lineHeight: 1.2 }}>
             {member.preferred_name || member.first_name || 'Fellow Hand'}
           </p>
           {(member.role_name || member.dept_name) && (
@@ -66,8 +66,8 @@ export function SpotlightWidget({
           )}
           {member.find_at_camp && (
             <>
-              <div style={{ height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.2), transparent)', margin: '0.6rem 0' }} />
-              <p style={{ fontSize: '0.72rem', color: '#C8A848', opacity: 0.5, margin: '0 0 0.25rem', letterSpacing: '0.06em' }}>Currently exploring</p>
+              <div style={{ height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.2), transparent)', margin: '0.6rem 0' }} />
+              <p style={{ fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.5, margin: '0 0 0.25rem', letterSpacing: '0.06em' }}>Currently exploring</p>
               <p style={{ fontSize: '0.85rem', opacity: 0.7, lineHeight: 1.6, margin: 0 }}>{member.find_at_camp}</p>
             </>
           )}
@@ -86,8 +86,8 @@ export function SpotlightWidget({
                 aria-label={`View member ${memberIdx + 1}`}
                 style={{
                   width: '7px', height: '7px', borderRadius: '50%',
-                  border: '1px solid rgba(200,168,72,0.4)',
-                  background: isActive ? '#C8A848' : 'transparent',
+                  border: '1px solid rgb(var(--gold-rgb) / 0.4)',
+                  background: isActive ? 'var(--gold)' : 'transparent',
                   padding: 0, cursor: 'pointer',
                   transition: 'background 0.2s, transform 0.15s',
                   transform: isActive ? 'scale(1.3)' : 'scale(1)',
@@ -96,7 +96,7 @@ export function SpotlightWidget({
             )
           })}
         </div>
-        <a href={`/members/${member.clerk_user_id ?? member.id}`} style={{ fontSize: '0.75rem', letterSpacing: '0.1em', color: '#C8A848', textDecoration: 'none', opacity: 0.75 }}>
+        <a href={`/members/${member.clerk_user_id ?? member.id}`} style={{ fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--gold)', textDecoration: 'none', opacity: 0.75 }}>
           VIEW PROFILE →
         </a>
       </div>

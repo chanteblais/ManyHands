@@ -11,9 +11,9 @@ type BeforeInstallPromptEvent = Event & {
 
 const DISMISS_KEY = 'glaum-install-dismissed'
 
-const INK = '#1A0A24'
-const GOLD = '#C8A848'
-const CREAM = '#F3EDE6'
+const INK = 'var(--ink)'
+const GOLD = 'var(--gold)'
+const CREAM = 'var(--cream)'
 
 function isStandalone() {
   if (typeof window === 'undefined') return false

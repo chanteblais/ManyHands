@@ -56,9 +56,9 @@ export function RadioNowStrip({ welcome, todayEvents }: {
     <div
       className="radio-now"
       style={{
-        border: '1px solid rgba(200,168,72,0.25)',
+        border: '1px solid rgb(var(--gold-rgb) / 0.25)',
         borderRadius: '0.9rem',
-        background: 'rgba(200,168,72,0.06)',
+        background: 'rgb(var(--gold-rgb) / 0.06)',
         padding: '1rem 1.25rem',
         marginBottom: '2.25rem',
         display: 'flex',
@@ -67,18 +67,18 @@ export function RadioNowStrip({ welcome, todayEvents }: {
       }}
     >
       {welcome && (
-        <p className="radio-now-welcome" style={{ margin: 0, fontFamily: 'TokyoDreams, serif', color: '#C8A848', fontSize: '1.05rem', letterSpacing: '0.06em' }}>
+        <p className="radio-now-welcome" style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'var(--gold)', fontSize: '1.05rem', letterSpacing: '0.06em' }}>
           ✦ {welcome}
         </p>
       )}
       {nowLine && (
-        <p style={{ margin: 0, fontSize: '0.88rem', color: '#F3EDE6', opacity: 0.9 }}>
-          <span style={{ color: '#D239F8', marginRight: '0.5rem' }} aria-hidden>●</span>
+        <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--cream)', opacity: 0.9 }}>
+          <span style={{ color: 'var(--purple)', marginRight: '0.5rem' }} aria-hidden>●</span>
           {nowLine}
         </p>
       )}
       {nextLine && (
-        <p style={{ margin: 0, fontSize: '0.82rem', color: '#F3EDE6', opacity: 0.55 }}>
+        <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--cream)', opacity: 0.55 }}>
           {nextLine}
         </p>
       )}

@@ -327,11 +327,11 @@ let canManagePolls = false
             .dash-attune {
               display: flex; align-items: center; flex-wrap: wrap; gap: 1.25rem;
               padding: 1rem 1.4rem; border-radius: 0.9rem;
-              border: 1px solid rgba(200,168,72,0.45);
-              background: rgba(200,168,72,0.09);
+              border: 1px solid rgb(var(--gold-rgb) / 0.45);
+              background: rgb(var(--gold-rgb) / 0.09);
               transition: border-color 0.2s ease, background 0.2s ease;
             }
-            .dash-attune:hover { border-color: rgba(200,168,72,0.75); background: rgba(200,168,72,0.14); }
+            .dash-attune:hover { border-color: rgb(var(--gold-rgb) / 0.75); background: rgb(var(--gold-rgb) / 0.14); }
             .dash-attune-meta-mobile, .dash-attune-chev { display: none; }
             @media (max-width: 680px) {
               .dash-quote-card { display: none !important; }
@@ -376,15 +376,15 @@ let canManagePolls = false
               />
               <div style={{
                 position: 'absolute', inset: 0,
-                background: 'linear-gradient(90deg, rgba(26,10,36,0.95) 0%, rgba(26,10,36,0.65) 55%, rgba(26,10,36,0.15) 100%)',
+                background: 'linear-gradient(90deg, rgb(var(--ink-rgb) / 0.95) 0%, rgb(var(--ink-rgb) / 0.65) 55%, rgb(var(--ink-rgb) / 0.15) 100%)',
               }} />
               <div className="dash-hero-inner" style={{ position: 'relative', zIndex: 1 }}>
                 {/* Left: greeting + countdown */}
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: '0.68rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.65, marginBottom: '0.5rem' }}>
+                  <p style={{ fontSize: '0.68rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.65, marginBottom: '0.5rem' }}>
                     Good {greeting}
                   </p>
-                  <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.6rem, 4vw, 2.6rem)', color: '#C8A848', margin: '0 0 0.35rem', textShadow: '0 2px 20px rgba(0,0,0,0.9)', lineHeight: 1.15 }}>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 4vw, 2.6rem)', color: 'var(--gold)', margin: '0 0 0.35rem', textShadow: '0 2px 20px rgba(0,0,0,0.9)', lineHeight: 1.15 }}>
                     Welcome back, {displayName}.
                   </h1>
                   <p style={{ fontSize: '0.88rem', opacity: 0.5, marginBottom: '0.5rem' }}>
@@ -399,10 +399,10 @@ let canManagePolls = false
                     <div style={{
                       display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
                       padding: '0.4rem 1rem',
-                      border: '1px solid rgba(200,168,72,0.35)',
+                      border: '1px solid rgb(var(--gold-rgb) / 0.35)',
                       borderRadius: '9999px',
-                      background: 'rgba(200,168,72,0.07)',
-                      fontSize: '0.72rem', letterSpacing: '0.18em', color: '#C8A848',
+                      background: 'rgb(var(--gold-rgb) / 0.07)',
+                      fontSize: '0.72rem', letterSpacing: '0.18em', color: 'var(--gold)',
                     }}>
                       ✦ {daysUntil} DAYS UNTIL WHAT IF
                     </div>
@@ -416,14 +416,14 @@ let canManagePolls = false
             {isSuspended && (
               <a href="/profile" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.25rem', padding: '1rem 1.4rem', borderRadius: '0.9rem', border: '1px solid rgba(255,180,80,0.4)', background: 'rgba(255,180,80,0.08)', textDecoration: 'none' }}>
                 <div style={{ flex: 1, minWidth: '220px' }}>
-                  <p style={{ margin: '0 0 0.3rem', color: '#ffcf80' }}>
-                    <span style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.05rem', letterSpacing: '0.04em' }}>Attendance paused</span>
+                  <p style={{ margin: '0 0 0.3rem', color: 'var(--warning)' }}>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', letterSpacing: '0.04em' }}>Attendance paused</span>
                   </p>
-                  <p style={{ margin: 0, fontSize: '0.82rem', fontStyle: 'italic', color: '#F3EDE6', opacity: 0.75, lineHeight: 1.5 }}>
+                  <p style={{ margin: 0, fontSize: '0.82rem', fontStyle: 'italic', color: 'var(--cream)', opacity: 0.75, lineHeight: 1.5 }}>
                     Your commitments are on hold. Everything's still here to explore — resume anytime from your profile.
                   </p>
                 </div>
-                <span style={{ flexShrink: 0, padding: '0.45rem 1.1rem', border: '1px solid rgba(255,180,80,0.5)', borderRadius: '9999px', background: 'rgba(255,180,80,0.08)', fontSize: '0.7rem', letterSpacing: '0.16em', color: '#ffcf80' }}>
+                <span style={{ flexShrink: 0, padding: '0.45rem 1.1rem', border: '1px solid rgba(255,180,80,0.5)', borderRadius: '9999px', background: 'rgba(255,180,80,0.08)', fontSize: '0.7rem', letterSpacing: '0.16em', color: 'var(--warning)' }}>
                   MANAGE →
                 </span>
               </a>
@@ -440,8 +440,8 @@ let canManagePolls = false
                 <a href="/profile" className="dash-attune" style={{ marginBottom: '1.25rem', textDecoration: 'none' }}>
                   <IconImage src="/asset-library/icons/eye-in-triangle.webp" size={54} fill={0.85} />
                   <div className="dash-attune-body" style={{ flex: 1, minWidth: '220px' }}>
-                    <p className="dash-attune-title" style={{ margin: '0 0 0.3rem', color: '#C8A848' }}>
-                      <span style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.05rem', letterSpacing: '0.04em' }}>Attunement</span>
+                    <p className="dash-attune-title" style={{ margin: '0 0 0.3rem', color: 'var(--gold)' }}>
+                      <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', letterSpacing: '0.04em' }}>Attunement</span>
                       {!allAttuned && requiredTasks.length > 0 && (
                         <span style={{ fontSize: '0.72rem', letterSpacing: '0.14em', opacity: 0.6, marginLeft: '0.75rem' }}>
                           {doneCount} OF {requiredTasks.length}
@@ -453,12 +453,12 @@ let canManagePolls = false
                         </span>
                       )}
                     </p>
-                    <p className="dash-attune-detail" style={{ margin: 0, fontSize: '0.82rem', fontStyle: 'italic', color: '#F3EDE6', opacity: 0.75, lineHeight: 1.5 }}>
+                    <p className="dash-attune-detail" style={{ margin: 0, fontSize: '0.82rem', fontStyle: 'italic', color: 'var(--cream)', opacity: 0.75, lineHeight: 1.5 }}>
                       {!allAttuned
                         ? <>
                             {named.map((t, i) => (
                               <span key={t.id}>
-                                {i > 0 && <span style={{ color: '#C8A848', opacity: 0.6, margin: '0 0.5rem' }}>·</span>}
+                                {i > 0 && <span style={{ color: 'var(--gold)', opacity: 0.6, margin: '0 0.5rem' }}>·</span>}
                                 {t.label}
                               </span>
                             ))}
@@ -468,22 +468,22 @@ let canManagePolls = false
                         : <>Attuned — {commitmentsOutstanding} commitment{commitmentsOutstanding === 1 ? '' : 's'} still to fill.</>}
                     </p>
                     {!allAttuned && requiredTasks.length > 0 && (
-                      <div className="dash-attune-bar" style={{ marginTop: '0.55rem', height: '3px', borderRadius: '2px', background: 'rgba(200,168,72,0.18)', overflow: 'hidden' }}>
-                        <div style={{ width: `${Math.round((doneCount / requiredTasks.length) * 100)}%`, height: '100%', background: '#C8A848' }} />
+                      <div className="dash-attune-bar" style={{ marginTop: '0.55rem', height: '3px', borderRadius: '2px', background: 'rgb(var(--gold-rgb) / 0.18)', overflow: 'hidden' }}>
+                        <div style={{ width: `${Math.round((doneCount / requiredTasks.length) * 100)}%`, height: '100%', background: 'var(--gold)' }} />
                       </div>
                     )}
                   </div>
                   <span className="dash-attune-cta" style={{
                     flexShrink: 0,
                     padding: '0.45rem 1.1rem',
-                    border: '1px solid rgba(200,168,72,0.5)',
+                    border: '1px solid rgb(var(--gold-rgb) / 0.5)',
                     borderRadius: '9999px',
-                    background: 'rgba(200,168,72,0.08)',
-                    fontSize: '0.7rem', letterSpacing: '0.16em', color: '#C8A848',
+                    background: 'rgb(var(--gold-rgb) / 0.08)',
+                    fontSize: '0.7rem', letterSpacing: '0.16em', color: 'var(--gold)',
                   }}>
                     {allAttuned ? 'VIEW COMMITMENTS' : 'COMPLETE THE CHECKLIST'} →
                   </span>
-                  <span className="dash-attune-chev" aria-hidden style={{ flexShrink: 0, color: '#C8A848', opacity: 0.7, fontSize: '0.9rem' }}>→</span>
+                  <span className="dash-attune-chev" aria-hidden style={{ flexShrink: 0, color: 'var(--gold)', opacity: 0.7, fontSize: '0.9rem' }}>→</span>
                 </a>
               )
             })()}
@@ -511,9 +511,9 @@ let canManagePolls = false
                 : 'Nothing scheduled yet.'
 
               const EventList = ({ events, label, href }: { events: (typeof upcomingEvents[number] & { image_url?: string | null })[]; label: string; href: string }) => (
-                <div style={{ border: '1px solid rgba(200,168,72,0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
-                  <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid rgba(200,168,72,0.15)' }}>
-                    <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '0.7rem', letterSpacing: '0.18em', color: '#C8A848', margin: 0, textTransform: 'uppercase', opacity: 0.9 }}>
+                <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+                  <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.15)' }}>
+                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.18em', color: 'var(--gold)', margin: 0, textTransform: 'uppercase', opacity: 0.9 }}>
                       {label}
                     </p>
                   </div>
@@ -526,24 +526,24 @@ let canManagePolls = false
                       <div key={ev.id} style={{
                         display: 'flex', alignItems: 'center', gap: '1rem',
                         padding: '0.9rem 1.5rem',
-                        borderBottom: i < events.length - 1 ? '1px solid rgba(200,168,72,0.08)' : 'none',
+                        borderBottom: i < events.length - 1 ? '1px solid rgb(var(--gold-rgb) / 0.08)' : 'none',
                       }}>
                         <div style={{
                           flexShrink: 0, width: '64px', textAlign: 'center',
                           padding: '0.4rem 0.5rem',
-                          border: '1px solid rgba(200,168,72,0.2)',
+                          border: '1px solid rgb(var(--gold-rgb) / 0.2)',
                           borderRadius: '0.5rem',
-                          background: 'rgba(200,168,72,0.06)',
+                          background: 'rgb(var(--gold-rgb) / 0.06)',
                         }}>
-                          <p style={{ fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.65, margin: '0 0 0.1rem' }}>
+                          <p style={{ fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.65, margin: '0 0 0.1rem' }}>
                             {ev.day?.slice(0, 3)?.toUpperCase()}
                           </p>
-                          <p style={{ fontSize: '0.65rem', color: '#C8A848', margin: 0, letterSpacing: '0.04em' }}>
+                          <p style={{ fontSize: '0.65rem', color: 'var(--gold)', margin: 0, letterSpacing: '0.04em' }}>
                             {ev.time?.split(':').slice(0, 2).join(':') ?? ''}
                           </p>
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ fontSize: '0.85rem', color: '#EDE0C8', margin: '0 0 0.1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--parchment)', margin: '0 0 0.1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {ev.title}
                           </p>
                           {ev.subtitle && (
@@ -552,14 +552,14 @@ let canManagePolls = false
                         </div>
                         {ev.image_url && (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={supabaseResizedUrl(ev.image_url, 176) ?? ''} loading="lazy" decoding="async" alt="" style={{ width: '88px', height: '88px', objectFit: 'cover', borderRadius: '0.6rem', flexShrink: 0, border: '1px solid rgba(200,168,72,0.25)' }} />
+                          <img src={supabaseResizedUrl(ev.image_url, 176) ?? ''} loading="lazy" decoding="async" alt="" style={{ width: '88px', height: '88px', objectFit: 'cover', borderRadius: '0.6rem', flexShrink: 0, border: '1px solid rgb(var(--gold-rgb) / 0.25)' }} />
                         )}
-                        <span style={{ color: '#C8A848', opacity: 0.25, fontSize: '0.8rem', flexShrink: 0 }}>›</span>
+                        <span style={{ color: 'var(--gold)', opacity: 0.25, fontSize: '0.8rem', flexShrink: 0 }}>›</span>
                       </div>
                     ))}
                   </div>
-                  <div style={{ padding: '0.75rem 1.5rem', borderTop: '1px solid rgba(200,168,72,0.1)' }}>
-                    <a href={href} style={{ fontSize: '0.75rem', color: '#C8A848', opacity: 0.7, textDecoration: 'none' }}>
+                  <div style={{ padding: '0.75rem 1.5rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)' }}>
+                    <a href={href} style={{ fontSize: '0.75rem', color: 'var(--gold)', opacity: 0.7, textDecoration: 'none' }}>
                       View full schedule →
                     </a>
                   </div>
@@ -568,16 +568,16 @@ let canManagePolls = false
 
               const widgetMap: Record<string, React.ReactNode> = {
                 announcements: announcements.length > 0 ? (
-                  <div style={{ border: '1px solid rgba(200,168,72,0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgba(200,168,72,0.12)' }}>
-                      <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, margin: 0 }}>Announcements</p>
+                  <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
+                      <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>Announcements</p>
                     </div>
                     <div>
                       {announcements.map((a, i) => (
-                        <div key={a.id} style={{ padding: '1rem 1.5rem', borderBottom: i < announcements.length - 1 ? '1px solid rgba(200,168,72,0.08)' : 'none' }}>
+                        <div key={a.id} style={{ padding: '1rem 1.5rem', borderBottom: i < announcements.length - 1 ? '1px solid rgb(var(--gold-rgb) / 0.08)' : 'none' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: a.body ? '0.35rem' : 0 }}>
-                            {a.pinned && <span style={{ fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#D239F8', border: '1px solid rgba(210,57,248,0.3)', borderRadius: '9999px', padding: '0.1rem 0.45rem', flexShrink: 0 }}>Pinned</span>}
-                            <p style={{ fontSize: '0.9rem', color: '#C8A848', margin: 0, fontFamily: 'TokyoDreams, serif' }}>{a.title}</p>
+                            {a.pinned && <span style={{ fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--purple)', border: '1px solid rgb(var(--purple-rgb) / 0.3)', borderRadius: '9999px', padding: '0.1rem 0.45rem', flexShrink: 0 }}>Pinned</span>}
+                            <p style={{ fontSize: '0.9rem', color: 'var(--gold)', margin: 0, fontFamily: 'var(--font-display)' }}>{a.title}</p>
                           </div>
                           {a.body && <p style={{ fontSize: '0.83rem', opacity: 0.7, margin: 0, lineHeight: 1.65 }}>{a.body}</p>}
                           <p style={{ fontSize: '0.68rem', opacity: 0.3, margin: '0.4rem 0 0' }}>{timeAgo(a.created_at)}</p>
@@ -607,17 +607,17 @@ let canManagePolls = false
                   const rowStatus = (r: typeof w.lists[number]) =>
                     !r.hasTargets
                       ? r.contributions > 0
-                        ? { text: `${r.contributions} being brought`, color: '#F3EDE6', op: 0.4 }
-                        : { text: '✦ open call', color: '#C8A848', op: 0.75 }
+                        ? { text: `${r.contributions} being brought`, color: 'var(--cream)', op: 0.4 }
+                        : { text: '✦ open call', color: 'var(--gold)', op: 0.75 }
                       : r.allCovered
-                        ? { text: '✓ all covered', color: '#7dcf8e', op: 0.9 }
-                        : { text: `${r.remaining} still needed`, color: '#C8A848', op: 0.95 }
+                        ? { text: '✓ all covered', color: 'var(--success)', op: 0.9 }
+                        : { text: `${r.remaining} still needed`, color: 'var(--gold)', op: 0.95 }
                   return (
-                    <a href="/participate#bring" style={{ border: '1px solid rgba(200,168,72,0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', textDecoration: 'none' }}>
-                      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgba(200,168,72,0.12)' }}>
-                        <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, margin: 0 }}>Bring Something</p>
+                    <a href="/participate#bring" style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', textDecoration: 'none' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
+                        <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>Bring Something</p>
                         {w.hasAnyTargets && (
-                          <p style={{ fontSize: '0.66rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.8, margin: 0, flexShrink: 0 }}>{w.percentReady}% Ready</p>
+                          <p style={{ fontSize: '0.66rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.8, margin: 0, flexShrink: 0 }}>{w.percentReady}% Ready</p>
                         )}
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0.85rem 1.5rem 1.1rem' }}>
@@ -626,29 +626,29 @@ let canManagePolls = false
                           {shown.map((r, i) => {
                             const s = rowStatus(r)
                             return (
-                              <div key={i} style={{ padding: '0.4rem 0', borderTop: i > 0 ? '1px solid rgba(200,168,72,0.07)' : 'none' }}>
+                              <div key={i} style={{ padding: '0.4rem 0', borderTop: i > 0 ? '1px solid rgb(var(--gold-rgb) / 0.07)' : 'none' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
-                                  <span style={{ fontFamily: 'TokyoDreams, serif', fontSize: '0.92rem', color: '#C8A848', opacity: 0.9, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</span>
+                                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.92rem', color: 'var(--gold)', opacity: 0.9, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</span>
                                   <span style={{ fontSize: '0.72rem', color: s.color, opacity: s.op, flexShrink: 0, whiteSpace: 'nowrap' }}>{s.text}</span>
                                 </div>
                                 {/* The open-ended callout — the list's own words */}
                                 {!r.hasTargets && r.description && (
-                                  <p style={{ margin: '0.1rem 0 0', fontSize: '0.7rem', fontStyle: 'italic', color: '#F3EDE6', opacity: 0.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.description}</p>
+                                  <p style={{ margin: '0.1rem 0 0', fontSize: '0.7rem', fontStyle: 'italic', color: 'var(--cream)', opacity: 0.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.description}</p>
                                 )}
                               </div>
                             )
                           })}
                           {moreLists > 0 && (
-                            <p style={{ margin: '0.4rem 0 0', fontSize: '0.7rem', opacity: 0.4, fontStyle: 'italic', color: '#F3EDE6' }}>+{moreLists} more list{moreLists === 1 ? '' : 's'}</p>
+                            <p style={{ margin: '0.4rem 0 0', fontSize: '0.7rem', opacity: 0.4, fontStyle: 'italic', color: 'var(--cream)' }}>+{moreLists} more list{moreLists === 1 ? '' : 's'}</p>
                           )}
                         </div>
-                        <p style={{ fontSize: '0.75rem', margin: 'auto 0 0', paddingTop: '0.7rem', borderTop: '1px solid rgba(200,168,72,0.08)' }}>
+                        <p style={{ fontSize: '0.75rem', margin: 'auto 0 0', paddingTop: '0.7rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.08)' }}>
                           {w.myClaims.length > 0 ? (
-                            <span style={{ color: '#C8A848', opacity: 0.85 }}>You&apos;re bringing {bringing}{moreClaims > 0 ? ` +${moreClaims} more` : ''} — thank you ✦</span>
+                            <span style={{ color: 'var(--gold)', opacity: 0.85 }}>You&apos;re bringing {bringing}{moreClaims > 0 ? ` +${moreClaims} more` : ''} — thank you ✦</span>
                           ) : w.allCovered ? (
-                            <span style={{ color: '#F3EDE6', opacity: 0.45 }}>Everything&apos;s covered — the community has it in hand.</span>
+                            <span style={{ color: 'var(--cream)', opacity: 0.45 }}>Everything&apos;s covered — the community has it in hand.</span>
                           ) : (
-                            <span style={{ color: '#F3EDE6', opacity: 0.45 }}>You haven&apos;t committed anything yet — see what&apos;s needed →</span>
+                            <span style={{ color: 'var(--cream)', opacity: 0.45 }}>You haven&apos;t committed anything yet — see what&apos;s needed →</span>
                           )}
                         </p>
                       </div>
@@ -684,14 +684,14 @@ let canManagePolls = false
                 ) : null,
 
                 activity: recentActivity.length > 0 ? (
-                  <div style={{ border: '1px solid rgba(200,168,72,0.2)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgba(200,168,72,0.12)', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                      <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, margin: 0 }}>On the Air</p>
-                      <a href="/radio" style={{ fontSize: '0.68rem', color: '#C8A848', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.06em' }}>Tune in →</a>
+                  <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                      <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>On the Air</p>
+                      <a href="/radio" style={{ fontSize: '0.68rem', color: 'var(--gold)', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.06em' }}>Tune in →</a>
                     </div>
                     <div>
                       {recentActivity.map((item, i) => (
-                        <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '0.7rem 1.5rem', borderBottom: i < recentActivity.length - 1 ? '1px solid rgba(200,168,72,0.07)' : 'none' }}>
+                        <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '0.7rem 1.5rem', borderBottom: i < recentActivity.length - 1 ? '1px solid rgb(var(--gold-rgb) / 0.07)' : 'none' }}>
                           <span aria-hidden style={{ flexShrink: 0, width: '28px', display: 'flex', justifyContent: 'center', fontSize: '1.05rem' }}>
                             {item.icon && (item.icon.startsWith('/') || item.icon.startsWith('http'))
                               ? <IconImage src={item.icon} size="26px" fill={0.9} />
@@ -735,19 +735,19 @@ let canManagePolls = false
 
             {/* ── MANY HANDS LINK ── */}
             <div className="dash-quicklinks" style={{ marginTop: '1.25rem' }}>
-              <a href="/participate" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', border: '1px solid rgba(200,168,72,0.18)', borderRadius: '1rem', background: 'rgba(200,168,72,0.03)', textDecoration: 'none' }}>
+              <a href="/participate" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.18)', borderRadius: '1rem', background: 'rgb(var(--gold-rgb) / 0.03)', textDecoration: 'none' }}>
                 <div>
-                  <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: '#C8A848', margin: '0 0 0.2rem' }}>Role & Shift</p>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--gold)', margin: '0 0 0.2rem' }}>Role & Shift</p>
                   <p style={{ fontSize: '0.8rem', opacity: 0.45, margin: 0 }}>Choose your role and shift</p>
                 </div>
-                <span style={{ fontSize: '1rem', color: '#C8A848', opacity: 0.4 }}>→</span>
+                <span style={{ fontSize: '1rem', color: 'var(--gold)', opacity: 0.4 }}>→</span>
               </a>
-              <a href="/members" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', border: '1px solid rgba(200,168,72,0.18)', borderRadius: '1rem', background: 'rgba(200,168,72,0.03)', textDecoration: 'none' }}>
+              <a href="/members" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.18)', borderRadius: '1rem', background: 'rgb(var(--gold-rgb) / 0.03)', textDecoration: 'none' }}>
                 <div>
-                  <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: '#C8A848', margin: '0 0 0.2rem' }}>Many Hands</p>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--gold)', margin: '0 0 0.2rem' }}>Many Hands</p>
                   <p style={{ fontSize: '0.8rem', opacity: 0.45, margin: 0 }}>View your fellow camp members</p>
                 </div>
-                <span style={{ fontSize: '1rem', color: '#C8A848', opacity: 0.4 }}>→</span>
+                <span style={{ fontSize: '1rem', color: 'var(--gold)', opacity: 0.4 }}>→</span>
               </a>
             </div>
 
@@ -791,7 +791,7 @@ let canManagePolls = false
               borderRadius: '50%',
               // The gradient is the glow — a filter: blur() on top was visually
               // redundant and costs a huge offscreen paint on phones.
-              background: 'radial-gradient(ellipse, rgba(210,57,248,0.12) 0%, rgba(200,168,72,0.04) 50%, transparent 72%)',
+              background: 'radial-gradient(ellipse, rgb(var(--purple-rgb) / 0.12) 0%, rgb(var(--gold-rgb) / 0.04) 50%, transparent 72%)',
               pointerEvents: 'none',
             }}
           />
@@ -802,7 +802,7 @@ let canManagePolls = false
               fontSize: '0.68rem',
               letterSpacing: '0.32em',
               textTransform: 'uppercase',
-              color: '#D239F8',
+              color: 'var(--purple)',
               marginBottom: '1.25rem',
               opacity: 0.85,
             }}
@@ -813,12 +813,12 @@ let canManagePolls = false
           {/* Wordmark */}
           <h1
             style={{
-              fontFamily: 'TokyoDreams, serif',
+              fontFamily: 'var(--font-display)',
               fontSize: 'clamp(3.5rem, 12vw, 7rem)',
-              color: '#C8A848',
+              color: 'var(--gold)',
               margin: '0 0 0.25rem',
               lineHeight: 1,
-              textShadow: '0 0 40px rgba(210,57,248,0.5), 0 0 80px rgba(210,57,248,0.2), 0 4px 20px rgba(0,0,0,0.8)',
+              textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.5), 0 0 80px rgb(var(--purple-rgb) / 0.2), 0 4px 20px rgba(0,0,0,0.8)',
               letterSpacing: '-0.01em',
             }}
           >
@@ -838,8 +838,8 @@ let canManagePolls = false
               maxWidth: '900px',
               borderRadius: '1.25rem',
               overflow: 'hidden',
-              boxShadow: '0 0 60px rgba(210,57,248,0.2), 0 0 120px rgba(200,168,72,0.08), 0 32px 80px rgba(0,0,0,0.7)',
-              border: '1px solid rgba(200,168,72,0.18)',
+              boxShadow: '0 0 60px rgb(var(--purple-rgb) / 0.2), 0 0 120px rgb(var(--gold-rgb) / 0.08), 0 32px 80px rgba(0,0,0,0.7)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.18)',
             }}
           >
             <Image
@@ -856,7 +856,7 @@ let canManagePolls = false
               position: 'absolute',
               bottom: 0, left: 0, right: 0,
               height: '40%',
-              background: 'linear-gradient(to top, rgba(26,10,36,0.7), transparent)',
+              background: 'linear-gradient(to top, rgb(var(--ink-rgb) / 0.7), transparent)',
               pointerEvents: 'none',
             }} />
           </div>
@@ -885,13 +885,13 @@ let canManagePolls = false
                 display: 'inline-block',
                 padding: '0.85rem 2.5rem',
                 borderRadius: '9999px',
-                border: '1px solid rgba(200,168,72,0.6)',
-                background: 'rgba(200,168,72,0.1)',
-                color: '#FFFACD',
+                border: '1px solid rgb(var(--gold-rgb) / 0.6)',
+                background: 'rgb(var(--gold-rgb) / 0.1)',
+                color: 'var(--lemon)',
                 textDecoration: 'none',
                 letterSpacing: '0.14em',
                 fontSize: '0.8rem',
-                fontFamily: 'TokyoDreams, serif',
+                fontFamily: 'var(--font-display)',
               }}
             >
               Apply to Camp
@@ -902,13 +902,13 @@ let canManagePolls = false
                 display: 'inline-block',
                 padding: '0.85rem 2.5rem',
                 borderRadius: '9999px',
-                border: '1px solid rgba(243,237,230,0.15)',
+                border: '1px solid rgb(var(--cream-rgb) / 0.15)',
                 background: 'transparent',
-                color: '#F3EDE6',
+                color: 'var(--cream)',
                 textDecoration: 'none',
                 letterSpacing: '0.14em',
                 fontSize: '0.8rem',
-                fontFamily: 'TokyoDreams, serif',
+                fontFamily: 'var(--font-display)',
                 opacity: 0.65,
               }}
             >
@@ -917,16 +917,16 @@ let canManagePolls = false
           </div>
         </div>
 
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(210,57,248,0.35), transparent)' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--purple-rgb) / 0.35), transparent)' }} />
 
         {/* ─── ABOUT ────────────────────────────────────────── */}
         <Section id="about">
           <Kicker>What is this, exactly</Kicker>
-          <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2rem', lineHeight: 1.15, textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2rem', lineHeight: 1.15, textAlign: 'center' }}>
             {c('home_about_heading', 'A camp. A collective.')}
           </h2>
           <div style={{
-            border: '1px solid rgba(200,168,72,0.15)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.15)',
             borderRadius: '1.25rem',
             background: 'rgba(10,0,20,0.45)',
             padding: '2rem 2.5rem',
@@ -939,12 +939,12 @@ let canManagePolls = false
           </div>
         </Section>
 
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.15), transparent)' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.15), transparent)' }} />
 
         {/* ─── PRINCIPLES ───────────────────────────────────── */}
         <Section id="principles">
           <Kicker>How we show up</Kicker>
-          <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2.5rem', lineHeight: 1.15, textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2.5rem', lineHeight: 1.15, textAlign: 'center' }}>
             Our Principles
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
@@ -955,21 +955,21 @@ let canManagePolls = false
               { title: 'Communication', body: 'We strive to communicate honestly, directly, and in good faith.' },
             ].map(({ title, body }) => (
               <div key={title} style={{
-                border: '1px solid rgba(200,168,72,0.18)',
+                border: '1px solid rgb(var(--gold-rgb) / 0.18)',
                 borderRadius: '1.25rem',
                 background: 'rgba(10,0,20,0.45)',
                 padding: '1.75rem 2rem',
               }}>
                 <p style={{
-                  fontFamily: 'TokyoDreams, serif',
+                  fontFamily: 'var(--font-display)',
                   fontSize: '1.1rem',
-                  color: '#C8A848',
+                  color: 'var(--gold)',
                   margin: '0 0 0.75rem',
                   letterSpacing: '0.04em',
                 }}>
                   {title}
                 </p>
-                <div style={{ height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.3), transparent)', marginBottom: '0.9rem' }} />
+                <div style={{ height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.3), transparent)', marginBottom: '0.9rem' }} />
                 <p style={{
                   fontSize: '0.97rem',
                   lineHeight: 1.8,
@@ -984,16 +984,16 @@ let canManagePolls = false
           </div>
         </Section>
 
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.15), transparent)' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.15), transparent)' }} />
 
         {/* ─── PARTICIPATE ──────────────────────────────────── */}
         <Section id="participate">
           <Kicker>How to be in it</Kicker>
-          <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2rem', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2rem', textAlign: 'center' }}>
             {c('home_participate_heading', 'This Camp Runs on Participation')}
           </h2>
           <div style={{
-            border: '1px solid rgba(200,168,72,0.15)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.15)',
             borderRadius: '1.25rem',
             background: 'rgba(10,0,20,0.45)',
             padding: '2rem 2.5rem',
@@ -1010,13 +1010,13 @@ let canManagePolls = false
                 display: 'inline-block',
                 padding: '0.9rem 2.75rem',
                 borderRadius: '9999px',
-                border: '1px solid rgba(200,168,72,0.55)',
-                background: 'rgba(200,168,72,0.1)',
-                color: '#FFFACD',
+                border: '1px solid rgb(var(--gold-rgb) / 0.55)',
+                background: 'rgb(var(--gold-rgb) / 0.1)',
+                color: 'var(--lemon)',
                 textDecoration: 'none',
                 letterSpacing: '0.14em',
                 fontSize: '0.82rem',
-                fontFamily: 'TokyoDreams, serif',
+                fontFamily: 'var(--font-display)',
               }}
             >
               Apply to Camp
@@ -1024,12 +1024,12 @@ let canManagePolls = false
           </div>
         </Section>
 
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.15), transparent)' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.15), transparent)' }} />
 
         {/* ─── SCHEDULE ─────────────────────────────────────── */}
         <Section id="schedule">
           <Kicker>When things happen</Kicker>
-          <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '3rem', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '3rem', textAlign: 'center' }}>
             Schedule
           </h2>
           <ScheduleSection />

@@ -74,8 +74,8 @@ export function MessagesNavLink({ style }: { style?: React.CSSProperties }) {
         transition: 'opacity 0.2s, color 0.2s',
         ...style,
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.color = '#C8A848' }}
-      onMouseLeave={(e) => { e.currentTarget.style.opacity = String(style?.opacity ?? 0.8); e.currentTarget.style.color = String(style?.color ?? '#F3EDE6') }}
+      onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.color = 'var(--gold)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.opacity = String(style?.opacity ?? 0.8); e.currentTarget.style.color = String(style?.color ?? 'var(--cream)') }}
     >
       Messages
       {unread > 0 && (
@@ -86,7 +86,7 @@ export function MessagesNavLink({ style }: { style?: React.CSSProperties }) {
             minWidth: '16px',
             height: '16px',
             borderRadius: '9999px',
-            background: '#D239F8',
+            background: 'var(--purple)',
             color: '#fff',
             fontSize: '0.6rem',
             fontWeight: 700,
@@ -96,7 +96,7 @@ export function MessagesNavLink({ style }: { style?: React.CSSProperties }) {
             padding: '0 4px',
             lineHeight: 1,
             verticalAlign: 'middle',
-            boxShadow: '0 0 8px rgba(210,57,248,0.5)',
+            boxShadow: '0 0 8px rgb(var(--purple-rgb) / 0.5)',
           }}
         >
           {unread > 9 ? '9+' : unread}

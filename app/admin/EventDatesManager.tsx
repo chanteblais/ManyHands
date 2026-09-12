@@ -8,11 +8,11 @@ import { weekdayFromISO } from '@/lib/shift-hours'
 // this range (plus any event dates outside it), so the columns always carry
 // real, correct dates.
 
-const GOLD = '#C8A848'
+const GOLD = 'var(--gold)'
 
 const inputStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(200,168,72,0.2)',
-  borderRadius: '0.5rem', padding: '0.55rem 0.85rem', color: '#F3EDE6', fontSize: '0.875rem',
+  background: 'rgba(255,255,255,0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+  borderRadius: '0.5rem', padding: '0.55rem 0.85rem', color: 'var(--cream)', fontSize: '0.875rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif', outline: 'none', width: '180px',
 }
 const labelStyle: React.CSSProperties = {
@@ -93,7 +93,7 @@ export function EventDatesManager({ initialStart, initialEnd }: { initialStart: 
       </div>
 
       <div style={{ minHeight: '1.2rem', marginTop: '0.5rem' }}>
-        {error && <p style={{ fontSize: '0.78rem', color: '#ff8a8a', margin: 0 }}>{error}</p>}
+        {error && <p style={{ fontSize: '0.78rem', color: 'var(--danger)', margin: 0 }}>{error}</p>}
         {!error && saved && <p style={{ fontSize: '0.72rem', color: GOLD, opacity: 0.6, margin: 0 }}>Saved ✓</p>}
       </div>
     </div>

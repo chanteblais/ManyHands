@@ -22,14 +22,14 @@ export function UnreadCountBadge() {
         padding: '0 0.5rem',
         marginLeft: '0.75rem',
         borderRadius: '9999px',
-        background: '#D239F8',
+        background: 'var(--purple)',
         color: '#fff',
         fontSize: '0.8rem',
         fontWeight: 700,
         fontFamily: 'system-ui, sans-serif',
         lineHeight: 1,
         verticalAlign: 'middle',
-        boxShadow: '0 0 12px rgba(210,57,248,0.45)',
+        boxShadow: '0 0 12px rgb(var(--purple-rgb) / 0.45)',
       }}
     >
       {unread > 99 ? '99+' : unread}

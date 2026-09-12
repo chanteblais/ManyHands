@@ -10,11 +10,11 @@ import { useConfirm } from '../../components/ConfirmDialog'
 
 // ── Colors ────────────────────────────────────────────────────────────────────
 
-const INK    = '#1A0A24'
-const GOLD   = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM  = '#F3EDE6'
-const LAVENDER = '#D9B3FF'
+const INK    = 'var(--ink)'
+const GOLD   = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM  = 'var(--cream)'
+const LAVENDER = 'var(--lavender)'
 
 // Section numerals shown in the builder — mirror the applicant-facing wizard,
 // which numbers visible sections by position (ApplyWizard ROMAN).
@@ -111,8 +111,8 @@ function ElementRow({
   return (
     <div style={{
       borderRadius: '0.5rem',
-      background: 'rgba(210,57,248,0.04)',
-      border: '1px dashed rgba(210,57,248,0.2)',
+      background: 'rgb(var(--purple-rgb) / 0.04)',
+      border: '1px dashed rgb(var(--purple-rgb) / 0.2)',
       opacity: field.visible ? 1 : 0.4,
       display: 'flex', alignItems: 'flex-start', gap: '0.75rem', padding: '0.55rem 0.85rem',
     }}>
@@ -125,7 +125,7 @@ function ElementRow({
             value={field.label}
             onChange={e => onLabelChange(e.target.value)}
             placeholder="Optional caption (blank = plain line)"
-            style={{ width: '100%', boxSizing: 'border-box', background: 'transparent', border: 'none', borderBottom: '1px solid rgba(210,57,248,0.2)', color: CREAM, fontSize: '0.8rem', outline: 'none', padding: '0.1rem 0', fontFamily: 'inherit' }}
+            style={{ width: '100%', boxSizing: 'border-box', background: 'transparent', border: 'none', borderBottom: '1px solid rgb(var(--purple-rgb) / 0.2)', color: CREAM, fontSize: '0.8rem', outline: 'none', padding: '0.1rem 0', fontFamily: 'inherit' }}
           />
         ) : (
           <>
@@ -134,7 +134,7 @@ function ElementRow({
               onChange={e => onDescChange(e.target.value)}
               placeholder="Text shown to applicants…"
               rows={5}
-              style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(0,0,0,0.15)', border: '1px solid rgba(210,57,248,0.15)', borderRadius: '0.4rem', color: CREAM, fontSize: '0.8rem', outline: 'none', padding: '0.5rem 0.6rem', fontFamily: 'inherit', lineHeight: 1.6, resize: 'vertical' }}
+              style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(0,0,0,0.15)', border: '1px solid rgb(var(--purple-rgb) / 0.15)', borderRadius: '0.4rem', color: CREAM, fontSize: '0.8rem', outline: 'none', padding: '0.5rem 0.6rem', fontFamily: 'inherit', lineHeight: 1.6, resize: 'vertical' }}
             />
             <p style={{ fontSize: '0.62rem', opacity: 0.4, margin: '0.35rem 0 0', lineHeight: 1.5 }}>
               Blank line = new paragraph · lines starting with <code>*</code> or <code>✦</code> = bullets · <code>[text](url)</code> or a bare link = clickable · <code>**bold**</code>
@@ -151,7 +151,7 @@ function ElementRow({
           </div>
         )}
         {onDelete && (
-          <button onClick={onDelete} disabled={saving} title="Delete" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff8a8a', opacity: 0.5, padding: '0.1rem', fontSize: '0.85rem', lineHeight: 1 }}>✕</button>
+          <button onClick={onDelete} disabled={saving} title="Delete" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', opacity: 0.5, padding: '0.1rem', fontSize: '0.85rem', lineHeight: 1 }}>✕</button>
         )}
       </div>
     </div>
@@ -194,8 +194,8 @@ function FieldRow({
     return (
       <div style={{
         borderRadius: '0.5rem',
-        background: 'rgba(200,168,72,0.04)',
-        border: '1px solid rgba(200,168,72,0.12)',
+        background: 'rgb(var(--gold-rgb) / 0.04)',
+        border: '1px solid rgb(var(--gold-rgb) / 0.12)',
         display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.65rem 0.85rem',
       }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0, opacity: 0.55 }}>
@@ -217,16 +217,16 @@ function FieldRow({
               flexShrink: 0,
               padding: '0.2rem 0.55rem', borderRadius: '9999px',
               fontSize: '0.65rem', letterSpacing: '0.08em',
-              border: `1px solid ${field.required ? 'rgba(255,138,138,0.4)' : 'rgba(200,168,72,0.2)'}`,
-              color: field.required ? '#ff8a8a' : CREAM,
-              background: field.required ? 'rgba(255,138,138,0.08)' : 'transparent',
+              border: `1px solid ${field.required ? 'rgb(var(--danger-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
+              color: field.required ? 'var(--danger)' : CREAM,
+              background: field.required ? 'rgb(var(--danger-rgb) / 0.08)' : 'transparent',
               cursor: saving ? 'not-allowed' : 'pointer', transition: 'all 0.15s',
             }}
           >
             {field.required ? 'REQUIRED' : 'OPTIONAL'}
           </button>
         ) : (
-          <span style={{ flexShrink: 0, padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.65rem', letterSpacing: '0.08em', border: '1px solid rgba(255,138,138,0.2)', color: '#ff8a8a', opacity: 0.5 }}>REQUIRED</span>
+          <span style={{ flexShrink: 0, padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.65rem', letterSpacing: '0.08em', border: '1px solid rgb(var(--danger-rgb) / 0.2)', color: 'var(--danger)', opacity: 0.5 }}>REQUIRED</span>
         )}
       </div>
     )
@@ -235,8 +235,8 @@ function FieldRow({
   return (
     <div style={{
       borderRadius: '0.5rem',
-      background: field.visible ? 'rgba(200,168,72,0.03)' : 'rgba(0,0,0,0.15)',
-      border: '1px solid rgba(200,168,72,0.08)',
+      background: field.visible ? 'rgb(var(--gold-rgb) / 0.03)' : 'rgba(0,0,0,0.15)',
+      border: '1px solid rgb(var(--gold-rgb) / 0.08)',
       opacity: field.visible ? 1 : 0.45,
       transition: 'opacity 0.2s',
     }}>
@@ -253,7 +253,7 @@ function FieldRow({
               color: CREAM, fontSize: '0.85rem', outline: 'none', padding: '0 0 0.1rem',
               fontFamily: 'inherit',
             }}
-            onFocus={e => { e.currentTarget.style.borderBottomColor = 'rgba(210,57,248,0.4)' }}
+            onFocus={e => { e.currentTarget.style.borderBottomColor = 'rgb(var(--purple-rgb) / 0.4)' }}
             onBlur={e => { e.currentTarget.style.borderBottomColor = 'transparent' }}
           />
           <input
@@ -266,7 +266,7 @@ function FieldRow({
               color: CREAM, fontSize: '0.72rem', outline: 'none', padding: '0.1rem 0',
               opacity: 0.45, fontFamily: 'inherit', fontStyle: 'italic',
             }}
-            onFocus={e => { e.currentTarget.style.borderBottomColor = 'rgba(210,57,248,0.3)' }}
+            onFocus={e => { e.currentTarget.style.borderBottomColor = 'rgb(var(--purple-rgb) / 0.3)' }}
             onBlur={e => { e.currentTarget.style.borderBottomColor = 'transparent' }}
           />
           {field.isCustom && (
@@ -289,7 +289,7 @@ function FieldRow({
                   value={field.profileFieldKey ?? ''}
                   onChange={e => onBindProfileField(e.target.value || undefined)}
                   title="Save this answer to a member profile field (reusable across forms; usable in distinctions)"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${dangling ? 'rgba(255,180,50,0.5)' : 'rgba(200,168,72,0.2)'}`, borderRadius: '0.3rem', color: dangling ? '#ffb432' : CREAM, fontSize: '0.7rem', padding: '0.15rem 0.35rem', fontFamily: 'inherit', outline: 'none' }}
+                  style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${dangling ? 'rgba(255,180,50,0.5)' : 'rgb(var(--gold-rgb) / 0.2)'}`, borderRadius: '0.3rem', color: dangling ? 'var(--amber)' : CREAM, fontSize: '0.7rem', padding: '0.15rem 0.35rem', fontFamily: 'inherit', outline: 'none' }}
                 >
                   <option value="" style={{ background: INK }}>This application only</option>
                   {dangling && (
@@ -301,7 +301,7 @@ function FieldRow({
                 </select>
               </div>
               {dangling && (
-                <p style={{ margin: '0.3rem 0 0', fontSize: '0.66rem', color: '#ffb432', opacity: 0.85, lineHeight: 1.5 }}>
+                <p style={{ margin: '0.3rem 0 0', fontSize: '0.66rem', color: 'var(--amber)', opacity: 0.85, lineHeight: 1.5 }}>
                   This answer saves to a profile field that no longer exists, so it shows up nowhere.
                   Pick a current profile field (or &ldquo;This application only&rdquo;) to fix it.
                 </p>
@@ -320,9 +320,9 @@ function FieldRow({
               style={{
                 padding: '0.2rem 0.5rem', borderRadius: '0.4rem',
                 fontSize: '0.62rem', letterSpacing: '0.06em', fontWeight: 700,
-                border: `1px solid ${isHalf ? 'rgba(210,57,248,0.4)' : 'rgba(200,168,72,0.2)'}`,
+                border: `1px solid ${isHalf ? 'rgb(var(--purple-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
                 color: isHalf ? PURPLE : CREAM,
-                background: isHalf ? 'rgba(210,57,248,0.08)' : 'transparent',
+                background: isHalf ? 'rgb(var(--purple-rgb) / 0.08)' : 'transparent',
                 cursor: saving ? 'not-allowed' : 'pointer', opacity: isHalf ? 1 : 0.55,
               }}
             >{isHalf ? '½' : '▭'}</button>
@@ -349,9 +349,9 @@ function FieldRow({
             style={{
               padding: '0.2rem 0.55rem', borderRadius: '9999px',
               fontSize: '0.65rem', letterSpacing: '0.08em',
-              border: `1px solid ${field.required ? 'rgba(255,138,138,0.4)' : 'rgba(200,168,72,0.2)'}`,
-              color: field.required ? '#ff8a8a' : CREAM,
-              background: field.required ? 'rgba(255,138,138,0.08)' : 'transparent',
+              border: `1px solid ${field.required ? 'rgb(var(--danger-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
+              color: field.required ? 'var(--danger)' : CREAM,
+              background: field.required ? 'rgb(var(--danger-rgb) / 0.08)' : 'transparent',
               cursor: saving ? 'not-allowed' : 'pointer', transition: 'all 0.15s',
             }}
           >
@@ -364,7 +364,7 @@ function FieldRow({
               title="Delete field"
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: '#ff8a8a', opacity: 0.5, padding: '0.1rem',
+                color: 'var(--danger)', opacity: 0.5, padding: '0.1rem',
                 fontSize: '0.85rem', lineHeight: 1,
               }}
             >✕</button>
@@ -385,7 +385,7 @@ function FieldRow({
                   rows={2}
                   placeholder="Clause to acknowledge…"
                   style={{
-                    flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(200,168,72,0.15)',
+                    flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgb(var(--gold-rgb) / 0.15)',
                     borderRadius: '0.35rem', color: CREAM, fontSize: '0.78rem', outline: 'none',
                     padding: '0.35rem 0.5rem', fontFamily: 'inherit', lineHeight: 1.5, resize: 'vertical',
                   }}
@@ -396,7 +396,7 @@ function FieldRow({
                   onChange={e => { const next = [...(field.options ?? [])]; next[i] = e.target.value; onOptionsChange(next) }}
                   style={{
                     flex: 1, background: 'transparent', border: 'none',
-                    borderBottom: '1px solid rgba(200,168,72,0.15)',
+                    borderBottom: '1px solid rgb(var(--gold-rgb) / 0.15)',
                     color: CREAM, fontSize: '0.78rem', outline: 'none', padding: '0.05rem 0',
                     fontFamily: 'inherit',
                   }}
@@ -405,14 +405,14 @@ function FieldRow({
               <button
                 onClick={() => onOptionsChange((field.options ?? []).filter((_, j) => j !== i))}
                 title="Remove"
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff8a8a', opacity: 0.4, fontSize: '0.75rem', padding: 0, marginTop: isAgreement ? '0.35rem' : 0 }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', opacity: 0.4, fontSize: '0.75rem', padding: 0, marginTop: isAgreement ? '0.35rem' : 0 }}
               >✕</button>
             </div>
           ))}
           <button
             onClick={() => onOptionsChange([...(field.options ?? []), isAgreement ? 'I agree to…' : 'New option'])}
             style={{
-              marginTop: '0.2rem', background: 'none', border: '1px dashed rgba(200,168,72,0.2)',
+              marginTop: '0.2rem', background: 'none', border: '1px dashed rgb(var(--gold-rgb) / 0.2)',
               borderRadius: '0.3rem', color: GOLD, opacity: 0.55,
               fontSize: '0.68rem', padding: '0.2rem 0.5rem', cursor: 'pointer',
               alignSelf: 'flex-start',
@@ -516,9 +516,9 @@ function StepSection({
 
   return (
     <div style={{
-      border: '1px solid rgba(200,168,72,0.15)',
+      border: '1px solid rgb(var(--gold-rgb) / 0.15)',
       borderRadius: '0.75rem',
-      background: 'rgba(200,168,72,0.02)',
+      background: 'rgb(var(--gold-rgb) / 0.02)',
       marginBottom: '0.75rem',
       opacity: step.visible ? 1 : 0.5,
       transition: 'opacity 0.2s',
@@ -548,7 +548,7 @@ function StepSection({
             color: GOLD, fontSize: '0.82rem', letterSpacing: '0.1em', outline: 'none',
             fontFamily: 'inherit', fontWeight: 600, flex: 1, minWidth: 0,
           }}
-          onFocus={e => { e.currentTarget.style.borderBottomColor = 'rgba(200,168,72,0.4)' }}
+          onFocus={e => { e.currentTarget.style.borderBottomColor = 'rgb(var(--gold-rgb) / 0.4)' }}
           onBlur={e => { e.currentTarget.style.borderBottomColor = 'transparent' }}
         />
 
@@ -560,7 +560,7 @@ function StepSection({
             color: CREAM, fontSize: '0.72rem', outline: 'none',
             fontFamily: 'inherit', opacity: 0.45, width: '140px', flexShrink: 0,
           }}
-          onFocus={e => { e.currentTarget.style.borderBottomColor = 'rgba(200,168,72,0.3)' }}
+          onFocus={e => { e.currentTarget.style.borderBottomColor = 'rgb(var(--gold-rgb) / 0.3)' }}
           onBlur={e => { e.currentTarget.style.borderBottomColor = 'transparent' }}
         />
 
@@ -595,7 +595,7 @@ function StepSection({
               title="Delete section"
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: '#ff8a8a', opacity: 0.45, padding: '0.1rem 0.3rem',
+                color: 'var(--danger)', opacity: 0.45, padding: '0.1rem 0.3rem',
                 fontSize: '0.75rem', lineHeight: 1,
               }}
             >✕</button>
@@ -712,7 +712,7 @@ function StepSection({
                   disabled={saving}
                   style={{
                     padding: '0.3rem 0.75rem', borderRadius: '9999px',
-                    border: '1px dashed rgba(210,57,248,0.3)',
+                    border: '1px dashed rgb(var(--purple-rgb) / 0.3)',
                     background: 'transparent', color: PURPLE,
                     fontSize: '0.7rem', cursor: 'pointer', opacity: 0.65,
                     transition: 'opacity 0.15s',
@@ -726,7 +726,7 @@ function StepSection({
                   disabled={saving}
                   style={{
                     padding: '0.3rem 0.75rem', borderRadius: '9999px',
-                    border: '1px dashed rgba(200,168,72,0.3)',
+                    border: '1px dashed rgb(var(--gold-rgb) / 0.3)',
                     background: 'transparent', color: GOLD,
                     fontSize: '0.7rem', cursor: 'pointer', opacity: 0.6,
                     transition: 'opacity 0.15s',
@@ -749,21 +749,21 @@ function TrackCardEditor({ heading, title, desc, onTitleChange, onDescChange, sa
   onTitleChange: (v: string) => void; onDescChange: (v: string) => void; saving: boolean
 }) {
   return (
-    <div style={{ border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.75rem', background: 'rgba(200,168,72,0.02)', padding: '1rem', marginBottom: '1.5rem' }}>
+    <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.75rem', background: 'rgb(var(--gold-rgb) / 0.02)', padding: '1rem', marginBottom: '1.5rem' }}>
       <p style={{ fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: LAVENDER, opacity: 0.55, margin: '0 0 0.75rem' }}>{heading}</p>
       <input
         value={title}
         onChange={e => onTitleChange(e.target.value)}
         placeholder="Card title"
         disabled={saving}
-        style={{ width: '100%', boxSizing: 'border-box', background: 'transparent', border: 'none', borderBottom: '1px solid rgba(200,168,72,0.2)', color: GOLD, fontSize: '0.95rem', outline: 'none', padding: '0 0 0.3rem', marginBottom: '0.7rem', fontFamily: 'inherit' }}
+        style={{ width: '100%', boxSizing: 'border-box', background: 'transparent', border: 'none', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.2)', color: GOLD, fontSize: '0.95rem', outline: 'none', padding: '0 0 0.3rem', marginBottom: '0.7rem', fontFamily: 'inherit' }}
       />
       <textarea
         value={desc}
         onChange={e => onDescChange(e.target.value)}
         placeholder="Card description shown on the apply page"
         rows={2}
-        style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.4rem', color: CREAM, fontSize: '0.82rem', outline: 'none', padding: '0.45rem 0.6rem', fontFamily: 'inherit', lineHeight: 1.6, resize: 'vertical' }}
+        style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(255,255,255,0.03)', border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.4rem', color: CREAM, fontSize: '0.82rem', outline: 'none', padding: '0.45rem 0.6rem', fontFamily: 'inherit', lineHeight: 1.6, resize: 'vertical' }}
       />
     </div>
   )
@@ -773,19 +773,19 @@ function StatusBanner({ open, saving, onToggle }: { open: boolean; saving: boole
   return (
     <div style={{
       padding: '1rem 1.25rem', borderRadius: '0.65rem', marginBottom: '1.5rem',
-      border: `1px solid ${open ? 'rgba(200,168,72,0.3)' : 'rgba(255,80,80,0.3)'}`,
-      background: open ? 'rgba(200,168,72,0.05)' : 'rgba(255,80,80,0.05)',
+      border: `1px solid ${open ? 'rgb(var(--gold-rgb) / 0.3)' : 'rgba(255,80,80,0.3)'}`,
+      background: open ? 'rgb(var(--gold-rgb) / 0.05)' : 'rgba(255,80,80,0.05)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem',
     }}>
       <div>
-        <p style={{ margin: '0 0 0.15rem', fontSize: '0.88rem', fontWeight: 600, color: open ? GOLD : '#ff8080' }}>
+        <p style={{ margin: '0 0 0.15rem', fontSize: '0.88rem', fontWeight: 600, color: open ? GOLD : 'var(--danger-strong)' }}>
           Applications {open ? 'open' : 'closed'}
         </p>
         <p style={{ margin: 0, fontSize: '0.75rem', opacity: 0.5 }}>
           {open ? 'New submissions are being accepted.' : 'This form is hidden from new visitors.'}
         </p>
       </div>
-      <Toggle checked={open} disabled={saving} onChange={onToggle} color={open ? GOLD : '#ff8080'} />
+      <Toggle checked={open} disabled={saving} onChange={onToggle} color={open ? GOLD : 'var(--danger-strong)'} />
     </div>
   )
 }
@@ -1161,9 +1161,9 @@ export function ApplicationBuilder({
       padding: '0.45rem 1.1rem',
       borderRadius: '9999px',
       fontSize: '0.75rem', letterSpacing: '0.08em',
-      border: active ? '1px solid rgba(210,57,248,0.5)' : '1px solid rgba(200,168,72,0.2)',
+      border: active ? '1px solid rgb(var(--purple-rgb) / 0.5)' : '1px solid rgb(var(--gold-rgb) / 0.2)',
       color: active ? PURPLE : CREAM,
-      background: active ? 'rgba(210,57,248,0.08)' : 'transparent',
+      background: active ? 'rgb(var(--purple-rgb) / 0.08)' : 'transparent',
       cursor: 'pointer', opacity: active ? 1 : 0.55,
       transition: 'all 0.15s',
     }
@@ -1174,7 +1174,7 @@ export function ApplicationBuilder({
   return (
     <div style={{
       minHeight: '100vh',
-      background: `radial-gradient(ellipse at 50% 0%, rgba(93,43,122,0.35) 0%, ${INK} 70%)`,
+      background: `radial-gradient(ellipse at 50% 0%, rgb(var(--plum-rgb) / 0.35) 0%, ${INK} 70%)`,
       color: CREAM,
     }}>
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 1.5rem 6rem' }}>
@@ -1198,13 +1198,13 @@ export function ApplicationBuilder({
           borderRadius: '9999px',
           background: 'rgba(20,10,30,0.88)', backdropFilter: 'blur(6px)',
           border: `1px solid ${
-            saveStatus === 'error' ? 'rgba(255,138,138,0.4)'
-            : saveStatus === 'saving' ? 'rgba(200,168,72,0.35)'
-            : dirty ? 'rgba(200,168,72,0.55)'
-            : 'rgba(125,207,142,0.3)'
+            saveStatus === 'error' ? 'rgb(var(--danger-rgb) / 0.4)'
+            : saveStatus === 'saving' ? 'rgb(var(--gold-rgb) / 0.35)'
+            : dirty ? 'rgb(var(--gold-rgb) / 0.55)'
+            : 'rgb(var(--success-rgb) / 0.3)'
           }`,
           fontSize: '0.72rem', letterSpacing: '0.04em',
-          boxShadow: dirty ? '0 4px 20px rgba(200,168,72,0.18), 0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.4)',
+          boxShadow: dirty ? '0 4px 20px rgb(var(--gold-rgb) / 0.18), 0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.4)',
           transition: 'border-color 0.2s, box-shadow 0.2s',
         }}>
           {saveStatus === 'saving' ? (
@@ -1214,13 +1214,13 @@ export function ApplicationBuilder({
             </span>
           ) : saveStatus === 'error' ? (
             <>
-              <span style={{ color: '#ff8a8a' }}>⚠ Couldn&apos;t save{saveError ? ` — ${saveError}` : ''}</span>
+              <span style={{ color: 'var(--danger)' }}>⚠ Couldn&apos;t save{saveError ? ` — ${saveError}` : ''}</span>
               <button
                 onClick={handleSave}
                 disabled={saving}
                 style={{
                   padding: '0.3rem 0.9rem', borderRadius: '9999px', border: 'none',
-                  background: 'linear-gradient(135deg, #C8A848, #A8882A)', color: '#1A0A00',
+                  background: 'linear-gradient(135deg, var(--gold), var(--gold-deep))', color: '#1A0A00',
                   fontSize: '0.7rem', fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
                 }}
               >Retry</button>
@@ -1243,21 +1243,21 @@ export function ApplicationBuilder({
                 onClick={handleSave}
                 style={{
                   padding: '0.35rem 1.1rem', borderRadius: '9999px', border: 'none',
-                  background: 'linear-gradient(135deg, #C8A848, #A8882A)', color: '#1A0A00',
+                  background: 'linear-gradient(135deg, var(--gold), var(--gold-deep))', color: '#1A0A00',
                   fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.05em', cursor: 'pointer',
-                  boxShadow: '0 2px 8px rgba(200,168,72,0.35)',
+                  boxShadow: '0 2px 8px rgb(var(--gold-rgb) / 0.35)',
                 }}
               >Save</button>
             </>
           ) : (
-            <span style={{ color: '#7dcf8e', opacity: saveStatus === 'saved' ? 0.95 : 0.6, display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#7dcf8e', display: 'inline-block' }} />
+            <span style={{ color: 'var(--success)', opacity: saveStatus === 'saved' ? 0.95 : 0.6, display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--success)', display: 'inline-block' }} />
               All changes saved
             </span>
           )}
         </div>
 
-        <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', color: GOLD, textAlign: 'center', marginBottom: '2rem', letterSpacing: '0.08em' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', color: GOLD, textAlign: 'center', marginBottom: '2rem', letterSpacing: '0.08em' }}>
           APPLICATION BUILDER
         </h1>
 
@@ -1324,7 +1324,7 @@ export function ApplicationBuilder({
               disabled={saving}
               style={{
                 width: '100%', padding: '0.7rem',
-                border: '1px dashed rgba(210,57,248,0.25)',
+                border: '1px dashed rgb(var(--purple-rgb) / 0.25)',
                 borderRadius: '0.75rem', background: 'transparent',
                 color: PURPLE, fontSize: '0.8rem', letterSpacing: '0.08em',
                 cursor: 'pointer', opacity: 0.6, marginBottom: '1.5rem',
@@ -1339,7 +1339,7 @@ export function ApplicationBuilder({
                 rel="noopener noreferrer"
                 style={{
                   padding: '0.65rem 1.75rem', borderRadius: '9999px',
-                  border: '1px solid rgba(200,168,72,0.35)',
+                  border: '1px solid rgb(var(--gold-rgb) / 0.35)',
                   color: GOLD, textDecoration: 'none', fontSize: '0.82rem',
                   letterSpacing: '0.08em', opacity: 0.75,
                   display: 'inline-block',
@@ -1382,8 +1382,8 @@ export function ApplicationBuilder({
             />
 
             <div style={{
-              border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.75rem',
-              background: 'rgba(200,168,72,0.02)', padding: '1rem',
+              border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.75rem',
+              background: 'rgb(var(--gold-rgb) / 0.02)', padding: '1rem',
               display: 'flex', flexDirection: 'column', gap: '0.4rem',
             }}>
               <p style={{ fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: LAVENDER, opacity: 0.55, margin: '0 0 0.5rem' }}>
@@ -1409,7 +1409,7 @@ export function ApplicationBuilder({
                 rel="noopener noreferrer"
                 style={{
                   padding: '0.65rem 1.75rem', borderRadius: '9999px',
-                  border: '1px solid rgba(200,168,72,0.35)',
+                  border: '1px solid rgb(var(--gold-rgb) / 0.35)',
                   color: GOLD, textDecoration: 'none', fontSize: '0.82rem',
                   letterSpacing: '0.08em', opacity: 0.75,
                   display: 'inline-block',

@@ -16,7 +16,7 @@ export default function SignOutPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      color: '#F3EDE6',
+      color: 'var(--cream)',
       opacity: 0.4,
       fontSize: '0.85rem',
       letterSpacing: '0.1em',

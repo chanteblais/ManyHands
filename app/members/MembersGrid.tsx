@@ -81,9 +81,9 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
   const selectStyle: React.CSSProperties = {
     padding: '0.75rem 2rem 0.75rem 1rem',
     fontSize: '0.85rem',
-    color: '#F3EDE6',
+    color: 'var(--cream)',
     background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(200,168,72,0.25)',
+    border: '1px solid rgb(var(--gold-rgb) / 0.25)',
     borderRadius: '0.75rem',
     outline: 'none',
     letterSpacing: '0.03em',
@@ -107,7 +107,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
           margin: 0 auto 3rem;
         }
         .members-filter-bar .member-search-wrap { flex: 1 1 240px; min-width: 200px; }
-        .members-filter-bar select option { color: #1A0A24; }
+        .members-filter-bar select option { color: var(--ink); }
       ` }} />
 
       {/* Search + filter bar */}
@@ -127,9 +127,9 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
               width: '100%',
               padding: '0.75rem 1rem',
               fontSize: '0.9rem',
-              color: '#F3EDE6',
+              color: 'var(--cream)',
               background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(200,168,72,0.25)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.25)',
               borderRadius: '0.75rem',
               outline: 'none',
               letterSpacing: '0.03em',
@@ -174,9 +174,9 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
             style={{
               padding: '0.75rem 1rem',
               fontSize: '0.8rem',
-              color: '#C8A848',
+              color: 'var(--gold)',
               background: 'transparent',
-              border: '1px solid rgba(200,168,72,0.25)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.25)',
               borderRadius: '0.75rem',
               cursor: 'pointer',
               letterSpacing: '0.05em',
@@ -214,7 +214,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
               justifyContent: 'center',
               gap: '0.75rem',
               padding: '1.25rem 1rem',
-              border: '1px solid rgba(200,168,72,0.15)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.15)',
               borderRadius: '1rem',
               background: 'rgba(255,255,255,0.02)',
               cursor: 'pointer',
@@ -226,7 +226,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
                 width: '80px', height: '80px',
                 borderRadius: '50%',
                 border: '2px solid rgba(111,73,31,0.6)',
-                background: 'rgba(200,168,72,0.08)',
+                background: 'rgb(var(--gold-rgb) / 0.08)',
                 overflow: 'hidden',
                 flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -235,7 +235,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={supabaseResizedUrl(member.avatarUrl, 160) ?? ''} loading="lazy" decoding="async" alt="" aria-hidden="true" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
-                  <span aria-hidden="true" style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.5rem', color: '#C8A848', opacity: 0.85 }}>
+                  <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--gold)', opacity: 0.85 }}>
                     ✦
                   </span>
                 )}
@@ -244,7 +244,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
               {/* Name */}
               <p style={{
                 fontSize: '0.88rem',
-                color: '#EDE0C8',
+                color: 'var(--parchment)',
                 textAlign: 'center',
                 margin: 0,
                 lineHeight: 1.3,
@@ -256,7 +256,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
               {/* Role — always rendered so all cards have the same natural height */}
               <p aria-hidden={!roleShown} style={{
                 fontSize: '0.62rem',
-                color: '#C8A848',
+                color: 'var(--gold)',
                 opacity: roleShown ? 0.65 : 0,
                 textAlign: 'center',
                 margin: 0,
@@ -281,20 +281,20 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
       {filteredVolunteers.length > 0 && (
         <section aria-labelledby="volunteers-heading" style={{ marginTop: filtered.length > 0 ? '3.5rem' : '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '0.4rem' }}>
-            <span aria-hidden="true" style={{ flex: '0 1 120px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(210,57,248,0.4))' }} />
+            <span aria-hidden="true" style={{ flex: '0 1 120px', height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--purple-rgb) / 0.4))' }} />
             <h2 id="volunteers-heading" style={{
               fontSize: '0.8rem',
               fontWeight: 400,
-              color: '#D239F8',
+              color: 'var(--purple)',
               letterSpacing: '0.28em',
               textTransform: 'uppercase',
               margin: 0,
               whiteSpace: 'nowrap',
-              textShadow: '0 0 18px rgba(210,57,248,0.35)',
+              textShadow: '0 0 18px rgb(var(--purple-rgb) / 0.35)',
             }}>
               Volunteers
             </h2>
-            <span aria-hidden="true" style={{ flex: '0 1 120px', height: '1px', background: 'linear-gradient(90deg, rgba(210,57,248,0.4), transparent)' }} />
+            <span aria-hidden="true" style={{ flex: '0 1 120px', height: '1px', background: 'linear-gradient(90deg, rgb(var(--purple-rgb) / 0.4), transparent)' }} />
           </div>
           <p style={{ textAlign: 'center', fontSize: '0.72rem', opacity: 0.4, margin: '0 0 2rem', letterSpacing: '0.05em' }}>
             Helping hands lending support — not full camp members
@@ -324,7 +324,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
                     justifyContent: 'center',
                     gap: '0.75rem',
                     padding: '1.25rem 1rem',
-                    border: '1px solid rgba(200,168,72,0.15)',
+                    border: '1px solid rgb(var(--gold-rgb) / 0.15)',
                     borderRadius: '1rem',
                     background: 'rgba(255,255,255,0.02)',
                     cursor: 'pointer',
@@ -335,7 +335,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
                       width: '80px', height: '80px',
                       borderRadius: '50%',
                       border: '2px solid rgba(111,73,31,0.6)',
-                      background: 'rgba(200,168,72,0.08)',
+                      background: 'rgb(var(--gold-rgb) / 0.08)',
                       overflow: 'hidden',
                       flexShrink: 0,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -344,7 +344,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={supabaseResizedUrl(v.avatarUrl, 160) ?? ''} loading="lazy" decoding="async" alt="" aria-hidden="true" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
-                        <span aria-hidden="true" style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.5rem', color: '#C8A848', opacity: 0.85 }}>
+                        <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--gold)', opacity: 0.85 }}>
                           ✦
                         </span>
                       )}
@@ -353,7 +353,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
                     {/* Name */}
                     <p style={{
                       fontSize: '0.88rem',
-                      color: '#EDE0C8',
+                      color: 'var(--parchment)',
                       textAlign: 'center',
                       margin: 0,
                       lineHeight: 1.3,
@@ -365,7 +365,7 @@ export function MembersGrid({ members, volunteers }: { members: MemberCard[]; vo
                     {/* Register tag — sits where a member card's role sits */}
                     <p style={{
                       fontSize: '0.62rem',
-                      color: '#D239F8',
+                      color: 'var(--purple)',
                       opacity: 0.75,
                       textAlign: 'center',
                       margin: 0,

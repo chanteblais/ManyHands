@@ -48,11 +48,11 @@ type ResourcePulse = {
   latest: { name: string; itemName: string; coveredIt: boolean } | null
 }
 
-const GOLD = '#C8A848'
-const GREEN = '#7dcf8e'
-const PURPLE = '#D239F8'
+const GOLD = 'var(--gold)'
+const GREEN = 'var(--success)'
+const PURPLE = 'var(--purple)'
 const LAVENDER = '#D9B8E8'
-const CREAM = '#F3EDE6'
+const CREAM = 'var(--cream)'
 
 // Sentinel for the top-level "Contribute something" form (vs. a per-list
 // footer, keyed by list id).
@@ -383,7 +383,7 @@ export function ResourceCommitments({
 
   const stepBtn: React.CSSProperties = {
     width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
-    border: `1px solid rgba(210,57,248,0.45)`, background: 'rgba(210,57,248,0.1)',
+    border: `1px solid rgb(var(--purple-rgb) / 0.45)`, background: 'rgb(var(--purple-rgb) / 0.1)',
     color: PURPLE, cursor: 'pointer', fontSize: '0.9rem', lineHeight: 1,
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
   }
@@ -394,7 +394,7 @@ export function ResourceCommitments({
       style={{
         flexShrink: 0, fontSize: '0.72rem', letterSpacing: '0.06em', padding: '0.4rem 0.95rem',
         borderRadius: '9999px', whiteSpace: 'nowrap', cursor: busy ? 'wait' : 'pointer',
-        border: `1px solid rgba(200,168,72,0.45)`, color: '#FFFACD', background: 'rgba(200,168,72,0.08)',
+        border: `1px solid rgb(var(--gold-rgb) / 0.45)`, color: 'var(--lemon)', background: 'rgb(var(--gold-rgb) / 0.08)',
       }}
     >
       {label}
@@ -412,7 +412,7 @@ export function ResourceCommitments({
 
   const fieldStyle: React.CSSProperties = {
     width: '100%', boxSizing: 'border-box', background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(200,168,72,0.25)', borderRadius: '0.5rem',
+    border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '0.5rem',
     padding: '0.55rem 0.8rem', color: CREAM, fontSize: '0.85rem', outline: 'none',
     fontFamily: 'inherit', marginBottom: '0.5rem',
   }
@@ -422,8 +422,8 @@ export function ResourceCommitments({
       disabled={disabled}
       style={{
         padding: '0.4rem 0.9rem', borderRadius: '9999px', cursor: disabled ? 'default' : 'pointer',
-        border: `1px solid rgba(200,168,72,${primary ? 0.45 : 0.2})`, background: 'transparent',
-        color: primary ? '#FFFACD' : CREAM, fontSize: '0.75rem', letterSpacing: '0.05em',
+        border: `1px solid rgb(var(--gold-rgb) / ${primary ? 0.45 : 0.2})`, background: 'transparent',
+        color: primary ? 'var(--lemon)' : CREAM, fontSize: '0.75rem', letterSpacing: '0.05em',
         fontFamily: 'inherit', opacity: disabled ? 0.5 : primary ? 1 : 0.7,
       }}
     >
@@ -445,16 +445,16 @@ export function ResourceCommitments({
   const renderAddItemForm = (showPicker: boolean, fixedListId: string) => {
     const targetListId = showPicker ? formListId : fixedListId
     return (
-      <div style={{ padding: '1rem 1.25rem 1.1rem', background: 'rgba(200,168,72,0.03)' }}>
+      <div style={{ padding: '1rem 1.25rem 1.1rem', background: 'rgb(var(--gold-rgb) / 0.03)' }}>
         {showPicker && (
           <select
             value={formListId}
             onChange={e => setFormListId(e.target.value)}
-            style={{ ...fieldStyle, appearance: 'none', cursor: 'pointer', color: formListId ? CREAM : 'rgba(243,237,230,0.5)' }}
+            style={{ ...fieldStyle, appearance: 'none', cursor: 'pointer', color: formListId ? CREAM : 'rgb(var(--cream-rgb) / 0.5)' }}
           >
             <option value="" disabled>Which list is it for?</option>
             {lists.map(l => (
-              <option key={l.id} value={l.id} style={{ background: '#1A0A24', color: CREAM }}>{l.title}</option>
+              <option key={l.id} value={l.id} style={{ background: 'var(--ink)', color: CREAM }}>{l.title}</option>
             ))}
           </select>
         )}
@@ -471,7 +471,7 @@ export function ResourceCommitments({
           onChange={e => setFormNote(e.target.value)}
           placeholder="Details (optional)"
           maxLength={200}
-          style={{ ...fieldStyle, fontSize: '0.8rem', border: '1px solid rgba(200,168,72,0.2)' }}
+          style={{ ...fieldStyle, fontSize: '0.8rem', border: '1px solid rgb(var(--gold-rgb) / 0.2)' }}
         />
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8rem', opacity: 0.75, marginBottom: '0.65rem' }}>
           <span style={{ whiteSpace: 'nowrap' }}>How many needed?</span>
@@ -514,8 +514,8 @@ export function ResourceCommitments({
         key={item.id}
         id={`res-item-${item.id}`}
         style={{
-          borderTop: idx > 0 ? '1px solid rgba(200,168,72,0.1)' : 'none',
-          background: claimedByMe ? 'rgba(210,57,248,0.05)' : 'transparent',
+          borderTop: idx > 0 ? '1px solid rgb(var(--gold-rgb) / 0.1)' : 'none',
+          background: claimedByMe ? 'rgb(var(--purple-rgb) / 0.05)' : 'transparent',
           transition: 'background 0.15s', opacity: busy ? 0.6 : 1,
         }}
       >
@@ -560,7 +560,7 @@ export function ResourceCommitments({
 
         {/* Expanded detail — all the depth, only on demand */}
         {isOpen && (
-          <div style={{ padding: '0 1rem 0.95rem 3.4rem', borderTop: '1px solid rgba(200,168,72,0.08)' }}>
+          <div style={{ padding: '0 1rem 0.95rem 3.4rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.08)' }}>
             {isEditing ? (
               /* Inline item edit (wiki) */
               <div style={{ margin: '0.85rem 0 0' }}>
@@ -571,7 +571,7 @@ export function ResourceCommitments({
                 <input
                   value={editItemNote} onChange={e => setEditItemNote(e.target.value)}
                   placeholder="Details (optional)" maxLength={200}
-                  style={{ ...fieldStyle, fontSize: '0.8rem', border: '1px solid rgba(200,168,72,0.2)' }}
+                  style={{ ...fieldStyle, fontSize: '0.8rem', border: '1px solid rgb(var(--gold-rgb) / 0.2)' }}
                 />
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8rem', opacity: 0.75, marginBottom: '0.7rem' }}>
                   <span style={{ whiteSpace: 'nowrap' }}>How many needed?</span>
@@ -616,7 +616,7 @@ export function ResourceCommitments({
                       <button style={stepBtn} disabled={busy} onClick={() => setClaim(item, item.mine - 1)} aria-label="Bring one fewer">−</button>
                       <span style={{ fontSize: '0.85rem', color: PURPLE, minWidth: '1.2rem', textAlign: 'center' }}>{item.mine}</span>
                       <button style={stepBtn} disabled={busy} onClick={() => setClaim(item, item.mine + 1)} aria-label="Bring one more">+</button>
-                      {textLink('Remove', () => setClaim(item, 0), '#ff8a8a')}
+                      {textLink('Remove', () => setClaim(item, 0), 'var(--danger)')}
                     </>
                   ) : (
                     claimBtn(covered ? '＋ Bring an extra' : "＋ I'll bring one", () => setClaim(item, 1), busy)
@@ -625,9 +625,9 @@ export function ResourceCommitments({
 
                 {/* Wiki management — any approved member can edit/remove */}
                 {canManage && (
-                  <div style={{ margin: '0.85rem 0 0', display: 'flex', gap: '1rem', alignItems: 'center', borderTop: '1px solid rgba(200,168,72,0.08)', paddingTop: '0.7rem' }}>
+                  <div style={{ margin: '0.85rem 0 0', display: 'flex', gap: '1rem', alignItems: 'center', borderTop: '1px solid rgb(var(--gold-rgb) / 0.08)', paddingTop: '0.7rem' }}>
                     {textLink('Edit item', () => openEditItem(item))}
-                    {textLink('Remove item', () => deleteItem(item), '#ff8a8a')}
+                    {textLink('Remove item', () => deleteItem(item), 'var(--danger)')}
                   </div>
                 )}
               </>
@@ -670,8 +670,8 @@ export function ResourceCommitments({
         fontSize: '0.6rem', letterSpacing: '0.16em', textTransform: 'uppercase',
         padding: '0.25rem 0.7rem', borderRadius: '9999px', whiteSpace: 'nowrap',
         color: status === 'complete' ? GREEN : status === 'almost' ? GOLD : PURPLE,
-        border: `1px solid ${status === 'complete' ? 'rgba(125,207,142,0.45)' : status === 'almost' ? 'rgba(200,168,72,0.45)' : 'rgba(210,57,248,0.4)'}`,
-        background: status === 'complete' ? 'rgba(125,207,142,0.08)' : status === 'almost' ? 'rgba(200,168,72,0.07)' : 'rgba(210,57,248,0.07)',
+        border: `1px solid ${status === 'complete' ? 'rgb(var(--success-rgb) / 0.45)' : status === 'almost' ? 'rgb(var(--gold-rgb) / 0.45)' : 'rgb(var(--purple-rgb) / 0.4)'}`,
+        background: status === 'complete' ? 'rgb(var(--success-rgb) / 0.08)' : status === 'almost' ? 'rgb(var(--gold-rgb) / 0.07)' : 'rgb(var(--purple-rgb) / 0.07)',
       }}>
         {status === 'complete' ? 'Complete' : status === 'almost' ? 'Almost Ready' : 'Needs Attention'}
       </span>
@@ -681,7 +681,7 @@ export function ResourceCommitments({
       // One list = one collapsible card. Collapsed by default: a header row
       // (title + health + summary) so the board is a scannable index of every
       // list. Open it to see items + add. Empty lists read just as clearly.
-      <div key={list.id} style={{ border: '1px solid rgba(200,168,72,0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden' }}>
+      <div key={list.id} style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden' }}>
         {isEditingList ? (
           /* Inline list header edit (wiki) */
           <div style={{ padding: '1.1rem 1.25rem' }}>
@@ -692,7 +692,7 @@ export function ResourceCommitments({
             <input
               value={editListDesc} onChange={e => setEditListDesc(e.target.value)}
               placeholder="Description (optional)" maxLength={300}
-              style={{ ...fieldStyle, fontSize: '0.82rem', border: '1px solid rgba(200,168,72,0.2)' }}
+              style={{ ...fieldStyle, fontSize: '0.82rem', border: '1px solid rgb(var(--gold-rgb) / 0.2)' }}
             />
             {dashCheckbox(editListDash, setEditListDash)}
             <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'flex-end' }}>
@@ -708,7 +708,7 @@ export function ResourceCommitments({
               style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', padding: '1rem 1.25rem', cursor: 'pointer' }}
             >
               <span aria-hidden style={{ color: GOLD, opacity: 0.5, fontSize: '0.9rem', flexShrink: 0, transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s' }}>›</span>
-              <p style={{ margin: 0, flex: 1, minWidth: 0, fontSize: '1.2rem', letterSpacing: '0.05em', color: GOLD, opacity: 0.95, fontFamily: 'TokyoDreams, serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <p style={{ margin: 0, flex: 1, minWidth: 0, fontSize: '1.2rem', letterSpacing: '0.05em', color: GOLD, opacity: 0.95, fontFamily: 'var(--font-display)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {list.title}
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexShrink: 0 }}>
@@ -716,7 +716,7 @@ export function ResourceCommitments({
                 {isOpen ? (
                   <>
                     {canManage && textLink('Edit', () => openEditList(list))}
-                    {canDeleteLists && textLink('Delete', () => deleteList(list), '#ff8a8a')}
+                    {canDeleteLists && textLink('Delete', () => deleteList(list), 'var(--danger)')}
                   </>
                 ) : (
                   <span style={{ fontSize: '0.72rem', color: CREAM, opacity: 0.45, whiteSpace: 'nowrap' }}>{summary}</span>
@@ -725,7 +725,7 @@ export function ResourceCommitments({
             </div>
 
             {isOpen && (
-              <div style={{ borderTop: '1px solid rgba(200,168,72,0.12)' }}>
+              <div style={{ borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
                 {/* Description + health copy — the shared goal, on demand.
                     No tracked needs (status null) = an open call: an
                     invitation to contribute, not an inventory to fill. */}
@@ -764,7 +764,7 @@ export function ResourceCommitments({
                     {stillNeeded.length > 0 && (
                       <div>
                         <p style={{ ...groupLabelStyle, color: GOLD, opacity: 0.75 }}>Still Needed</p>
-                        <div style={{ border: '1px solid rgba(200,168,72,0.14)', borderRadius: '0.6rem', overflow: 'hidden' }}>
+                        <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.14)', borderRadius: '0.6rem', overflow: 'hidden' }}>
                           {stillNeeded.map(renderItem)}
                         </div>
                       </div>
@@ -772,7 +772,7 @@ export function ResourceCommitments({
                     {covered.length > 0 && (
                       <div>
                         <p style={{ ...groupLabelStyle, color: GREEN, opacity: 0.6 }}>Covered</p>
-                        <div style={{ border: '1px solid rgba(200,168,72,0.14)', borderRadius: '0.6rem', overflow: 'hidden', opacity: 0.8 }}>
+                        <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.14)', borderRadius: '0.6rem', overflow: 'hidden', opacity: 0.8 }}>
                           {covered.map(renderItem)}
                         </div>
                       </div>
@@ -780,7 +780,7 @@ export function ResourceCommitments({
                     {contributed.length > 0 && (
                       <div>
                         <p style={{ ...groupLabelStyle, color: LAVENDER, opacity: 0.65 }}>Member Contributions</p>
-                        <div style={{ border: '1px solid rgba(200,168,72,0.14)', borderRadius: '0.6rem', overflow: 'hidden' }}>
+                        <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.14)', borderRadius: '0.6rem', overflow: 'hidden' }}>
                           {contributed.map(renderItem)}
                         </div>
                       </div>
@@ -790,7 +790,7 @@ export function ResourceCommitments({
 
                 {/* Add an item to this list (wiki). A footer OF the card. */}
                 {canManage && (
-                  <div style={{ borderTop: '1px solid rgba(200,168,72,0.12)' }}>
+                  <div style={{ borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
                     {openForm === list.id ? (
                       renderAddItemForm(false, list.id)
                     ) : (
@@ -831,8 +831,8 @@ export function ResourceCommitments({
   const newListForm = (
     <div style={{
       borderRadius: '0.85rem', overflow: 'hidden',
-      border: `1px solid rgba(200,168,72,${newListOpen ? 0.35 : 0.22})`,
-      background: newListOpen ? 'rgba(200,168,72,0.04)' : 'transparent',
+      border: `1px solid rgb(var(--gold-rgb) / ${newListOpen ? 0.35 : 0.22})`,
+      background: newListOpen ? 'rgb(var(--gold-rgb) / 0.04)' : 'transparent',
     }}>
       {newListOpen ? (
         <div style={{ padding: '1rem 1.25rem 1.1rem' }}>
@@ -843,7 +843,7 @@ export function ResourceCommitments({
           <input
             value={newListDesc} onChange={e => setNewListDesc(e.target.value)}
             placeholder="What's it for? (optional)" maxLength={300}
-            style={{ ...fieldStyle, fontSize: '0.82rem', border: '1px solid rgba(200,168,72,0.2)' }}
+            style={{ ...fieldStyle, fontSize: '0.82rem', border: '1px solid rgb(var(--gold-rgb) / 0.2)' }}
           />
           {dashCheckbox(newListDash, setNewListDash)}
           <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'flex-end' }}>
@@ -857,7 +857,7 @@ export function ResourceCommitments({
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
             width: '100%', boxSizing: 'border-box', padding: '0.9rem 1.25rem', cursor: 'pointer',
-            border: 'none', background: 'rgba(200,168,72,0.06)', color: '#FFFACD',
+            border: 'none', background: 'rgb(var(--gold-rgb) / 0.06)', color: 'var(--lemon)',
             fontSize: '0.85rem', letterSpacing: '0.05em', fontFamily: 'inherit',
           }}
         >
@@ -871,7 +871,7 @@ export function ResourceCommitments({
   if (lists.length === 0) {
     return canManage ? (
       <div>
-        {error && <p style={{ color: '#ff8a8a', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{error}</p>}
+        {error && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{error}</p>}
         <p style={{ fontSize: '0.85rem', opacity: 0.55, margin: '0 0 1rem', lineHeight: 1.6 }}>
           No resource lists yet. Start one — a Shared Kitchen, Setup Gear, Decor — and add what the community will bring together.
         </p>
@@ -886,7 +886,7 @@ export function ResourceCommitments({
 
   return (
     <div>
-      {error && <p style={{ color: '#ff8a8a', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{error}</p>}
+      {error && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{error}</p>}
 
       {pulseLine && (
         <p style={{ margin: '0 0 1.25rem', fontSize: '0.8rem', color: GOLD, opacity: 0.7, fontStyle: 'italic' }}>{pulseLine}</p>
@@ -905,8 +905,8 @@ export function ResourceCommitments({
           {newListForm}
           <div style={{
             borderRadius: '0.85rem', overflow: 'hidden',
-            border: `1px solid rgba(200,168,72,${openForm === TOP_FORM ? 0.35 : 0.22})`,
-            background: openForm === TOP_FORM ? 'rgba(200,168,72,0.04)' : 'transparent',
+            border: `1px solid rgb(var(--gold-rgb) / ${openForm === TOP_FORM ? 0.35 : 0.22})`,
+            background: openForm === TOP_FORM ? 'rgb(var(--gold-rgb) / 0.04)' : 'transparent',
             gridColumn: openForm === TOP_FORM ? '1 / -1' : 'auto',
           }}>
             {openForm === TOP_FORM ? (
@@ -917,7 +917,7 @@ export function ResourceCommitments({
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                   width: '100%', height: '100%', boxSizing: 'border-box', padding: '0.9rem 1.25rem', cursor: 'pointer',
-                  border: 'none', background: 'rgba(200,168,72,0.06)', color: '#FFFACD',
+                  border: 'none', background: 'rgb(var(--gold-rgb) / 0.06)', color: 'var(--lemon)',
                   fontSize: '0.85rem', letterSpacing: '0.05em', fontFamily: 'inherit',
                 }}
               >
@@ -932,9 +932,9 @@ export function ResourceCommitments({
       {myCommitments.length > 0 && (
         <div style={{
           marginBottom: '2rem', borderRadius: '0.85rem', overflow: 'hidden',
-          border: '1px solid rgba(210,57,248,0.35)', background: 'rgba(210,57,248,0.05)',
+          border: '1px solid rgb(var(--purple-rgb) / 0.35)', background: 'rgb(var(--purple-rgb) / 0.05)',
         }}>
-          <div style={{ padding: '0.8rem 1.25rem 0.6rem', borderBottom: '1px solid rgba(210,57,248,0.15)' }}>
+          <div style={{ padding: '0.8rem 1.25rem 0.6rem', borderBottom: '1px solid rgb(var(--purple-rgb) / 0.15)' }}>
             <p style={{ margin: 0, fontSize: '0.66rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: PURPLE, opacity: 0.85 }}>
               I&rsquo;m Bringing
             </p>
