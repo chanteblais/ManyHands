@@ -58,10 +58,13 @@ Then, in this order:
    propagation — Clerk warns of possible downtime in between.
 2. Clerk issues a **new publishable key**: put it in Vercel as
    `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and redeploy. (The secret key is unchanged.)
-3. **Allowed Subdomains** (Dashboard → Domains): enable the allowlist and add
-   `www.withmanyhands.ca`, `glaum.withmanyhands.ca`, `demo.withmanyhands.ca` (and each future
-   community host). The primary is always allowed. Without the allowlist every subdomain is
-   allowed — it works, but the docs recommend allowlisting.
+3. **Allowed Subdomains** — the instance ENFORCES this list (found the hard way 2026-09-12:
+   `www.withmanyhands.ca` was missing and its sign-in card rendered blank with the console error
+   "The request origin subdomain is not in the allowed subdomains list"). The page is
+   `https://dashboard.clerk.com/~/domains/allowed-subdomains` (Domains → Allowed subdomains).
+   Every host that serves a sign-in card must be listed: `www.withmanyhands.ca` (the apex
+   redirects to it), `glaum.withmanyhands.ca`, `demo.withmanyhands.ca`, and each future
+   community host. The primary itself is always allowed.
 4. If the dashboard lists social-connection redirect URLs or a JWT issuer used elsewhere,
    update them (none are known to be in use here).
 5. Expect every member to sign in again once — sessions are bound to the primary domain.
