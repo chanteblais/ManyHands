@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
-import { getCommunity, listCommunitiesForUser } from '@/lib/community'
+import { getCommunity, listCommunitiesForUser, isPlatformCommunity } from '@/lib/community'
 import { appOrigin } from '@/lib/send-email'
 
 export const dynamic = 'force-dynamic'
@@ -40,7 +40,7 @@ export default async function CommunitiesPage() {
           ) : (
             <ul style={{ listStyle: 'none', padding: 0, margin: '2rem 0 0', display: 'grid', gap: '0.75rem' }}>
               {visible.map(({ community, status, role }) => {
-                const isCurrent = community.id === current.id
+                const isCurrent = !isPlatformCommunity(current) && community.id === current.id
                 return (
                   <li key={community.id}>
                     <a

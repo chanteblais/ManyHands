@@ -12,7 +12,10 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 /** What an email needs to know about the community it speaks for. */
 export type EmailBrand = { name: string; origin: string; from: string }
 
-const PLATFORM_FROM = process.env.RESEND_FROM || 'Many Hands <onboarding@resend.dev>'
+// Platform default sender: PLATFORM_EMAIL_FROM (the platform's verified
+// domain), else the legacy RESEND_FROM, else Resend's sandbox. A community
+// with its own verified sender sets communities.email_from.
+const PLATFORM_FROM = process.env.PLATFORM_EMAIL_FROM || process.env.RESEND_FROM || 'Many Hands <onboarding@resend.dev>'
 const ENV_ORIGIN = (process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '')
 
 /** Absolute origin for links in this community's emails. */

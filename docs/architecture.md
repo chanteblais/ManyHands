@@ -292,9 +292,14 @@ Every identity/config/notification helper takes the community first:
 
 `SITE_NAME` / `EVENT_NAME` / `SITE_DESCRIPTION` survive only as the synthetic-fallback values in `lib/community.ts` (pre-migration safety net) and inside `DEFAULT_TRACK_COPY`. Feature code reads `community.name` / `community.eventName` / `community.description` from `getCommunity()` (server) or `useCommunity()` (client). Never hardcode `"Glåüm"`; never import the SITE_* constants in new code.
 
-### Still single-community (after 1d)
+### Platform host, Clerk satellites, sender (2026-09-12 — `docs/domains.md`)
 
-- **Platform root host** — an unresolved host still falls back to `DEFAULT_COMMUNITY_SLUG`; the picker is reachable at `/communities` on any host. Routing the platform root to the picker lands with the second tenant (needs the domain).
+- **Platform host** (`PLATFORM_HOSTS`, e.g. `withmanyhands.ca`): resolves to the pseudo-community `platform` (`lib/community.ts`); `proxy.ts` rewrites `/` to `/communities` and redirects every community page there; only the picker, the auth pages, `/api/nav-auth`, `/api/me/*` and the manifest answer. Unset → no platform host (an unknown host still falls back to `DEFAULT_COMMUNITY_SLUG`).
+- **Clerk**: communities are **subdomains of the platform domain** (decision 2026-09-12), which share Clerk's session with no extra setup beyond the dashboard's Allowed Subdomains list. Dormant, for a future client on its own root domain: multi-domain (`CLERK_PRIMARY_HOST`; unset today): `lib/platform.ts` `clerkDomainConfig(host)` — the primary and any local host run Clerk normally; every other host is a **satellite** (paid Clerk plan) (`proxy.ts` options callback + `ClerkProvider` props), so sign-in bounces to the primary's `/sign-in` and returns. The sign-in/sign-up pages accept `redirect_url` targets on the current origin or any **known** origin (`isKnownOrigin`: platform hosts + every `communities.hosts` entry) and nothing else.
+- **Origins**: `resolveSiteOrigin` now prefers the **request host**; `NEXT_PUBLIC_SITE_URL` is only the local/preview fallback (one deployment, many hosts).
+- **Sender**: `PLATFORM_EMAIL_FROM` → `RESEND_FROM` → sandbox; a community overrides with `communities.email_from`.
+
+### Still single-community
 - **Direct `page_content` reads** in a few files (`app/admin/page.tsx`, `app/admin/[id]/page.tsx`, `app/api/admin/schedule/[id]/route.ts`, `lib/attunement-nudge.ts`) go through `db` (scoped) but bypass the cached reader — genlog row 2026-09-11.
 - **RLS** (1e) is built; it is live only once `SUPABASE_JWT_SECRET` is set in Vercel (after 076 + the leak test).
 - **Theme tokens** (1f) are built: every UI colour is a `:root` custom property (`lib/theme.ts` ↔ `app/globals.css`), and `communities.theme.colors` / `.fonts.display` override them via a `<style>` the root layout injects. Not yet themeable: email HTML, the badge art/font (those come from `theme.badge`), the manifest/theme-color meta, Clerk's auth cards, and the schedule palette.

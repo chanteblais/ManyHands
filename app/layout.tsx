@@ -6,6 +6,7 @@ import { clerkFallbackHome, resolveSiteOrigin } from '@/lib/site-origin'
 import { getCommunity, toPublicCommunity } from '@/lib/community'
 import { CommunityProvider } from '@/components/CommunityProvider'
 import { themeOverrideCss, THEME_COLORS } from '@/lib/theme'
+import { clerkDomainConfig } from '@/lib/platform'
 import ServiceWorkerRegister from './ServiceWorkerRegister'
 import InstallPrompt from './InstallPrompt'
 import './globals.css'
@@ -73,6 +74,13 @@ function clerkFrontendOriginFromKey(): string | null {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const headerList = await headers()
   const appHome = clerkFallbackHome(resolveSiteOrigin(headerList))
+  // Clerk multi-domain (docs/domains.md): a community host that isn't the
+  // Clerk primary runs as a satellite — sign-in happens on the primary.
+  const requestHost = (headerList.get('x-forwarded-host')?.split(',')[0]?.trim() || headerList.get('host') || '').toLowerCase()
+  const clerkDomain = clerkDomainConfig(requestHost)
+  const clerkMultiDomain = clerkDomain.isSatellite
+    ? ({ isSatellite: true, domain: clerkDomain.domain, signInUrl: clerkDomain.signInUrl, signUpUrl: clerkDomain.signUpUrl } as const)
+    : ({ signInUrl: '/sign-in', signUpUrl: '/sign-up' } as const)
   // Tenant resolution happens once per request, here; pages and routes call
   // getCommunity() themselves (cached) and pass community.id into tenantDb().
   const community = toPublicCommunity(await getCommunity())
@@ -85,7 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <ClerkProvider
       afterSignOutUrl={appHome}
       signInFallbackRedirectUrl={appHome}
-      signInUrl="/sign-in"
+      {...clerkMultiDomain}
       telemetry={{ disabled: true }}
     >
       <html lang="en">

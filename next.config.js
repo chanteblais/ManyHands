@@ -7,7 +7,7 @@ const nextConfig = {
   // community on 127.0.0.1 / lantern.localhost (communities.hosts) while
   // localhost stays Glåüm. Dev-only — Next blocks its own chunk requests from
   // any origin not listed here, which renders as blank client pages.
-  allowedDevOrigins: ['127.0.0.1', 'lantern.localhost'],
+  allowedDevOrigins: ['127.0.0.1', 'lantern.localhost', 'platform.localhost'],
   images: {
     // Non-default `quality` values must be allow-listed in Next 16.
     qualities: [50, 65, 75],
