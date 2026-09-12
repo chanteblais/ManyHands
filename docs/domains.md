@@ -32,7 +32,7 @@ no deploy, no satellite.
 | `PLATFORM_EMAIL_FROM` | `Many Hands <hello@withmanyhands.ca>` — **only after Resend verifies the domain** | falls back to `RESEND_FROM` (Glåüm's sender) |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | the **new** key Clerk issues when the primary domain changes (step 3) | Clerk fails to load |
 | `NEXT_PUBLIC_SITE_URL` | `https://glaum.withmanyhands.ca` after cutover | only the local/preview fallback since 2026-09-12 — the request host wins |
-| `CLERK_PRIMARY_HOST` | **leave unset** (option 1 has no satellites) | — |
+| `CLERK_PRIMARY_HOST` | **leave unset** (option 1 has no satellites). It has no default on purpose — setting it turns every host that isn't it or a subdomain of it into a satellite, which loads clerk-js from a non-existent `clerk.<host>` and breaks sign-in (this bit production for a few minutes on 2026-09-12). | no satellites |
 
 ## Order of operations
 

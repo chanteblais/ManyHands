@@ -5,11 +5,17 @@
 //                         community — e.g. "withmanyhands.ca,www.withmanyhands.ca".
 //                         Requests there get the community picker, never a
 //                         community's pages.
-//   CLERK_PRIMARY_HOST    the host Clerk's production instance is bound to (its
-//                         primary domain). Every other non-local host is served as
-//                         a Clerk SATELLITE: sign-in happens on the primary and
-//                         returns to the satellite. Defaults to the first
-//                         PLATFORM_HOSTS entry.
+//   CLERK_PRIMARY_HOST    ONLY for option 2 (docs/domains.md): the host Clerk's
+//                         production instance is bound to. When set, every host
+//                         that is neither it, a subdomain of it, nor local is
+//                         served as a Clerk SATELLITE (paid plan): sign-in
+//                         happens on the primary and returns to the satellite.
+//                         Unset (option 1, the live config): no satellites —
+//                         subdomains of the primary share Clerk's session on
+//                         their own, and clerk-js loads from the primary's
+//                         frontend API. It deliberately has NO default: an
+//                         accidental satellite loads clerk-js from a
+//                         `clerk.<host>` that doesn't exist and breaks sign-in.
 //   PLATFORM_NAME         display name of the platform (default "Many Hands").
 //
 // Unset → single-host behaviour exactly as before (no satellites, no picker
@@ -28,7 +34,7 @@ export function platformHosts(): string[] {
 }
 
 export function clerkPrimaryHost(): string | null {
-  return process.env.CLERK_PRIMARY_HOST?.trim().toLowerCase() || platformHosts()[0] || null
+  return process.env.CLERK_PRIMARY_HOST?.trim().toLowerCase() || null
 }
 
 /** Is this request host the platform root (picker) rather than a community? */
@@ -54,7 +60,10 @@ export type ClerkDomainConfig =
 export function clerkDomainConfig(host: string): ClerkDomainConfig {
   const primary = clerkPrimaryHost()
   const h = host.toLowerCase()
-  if (!primary || isLocalHost(h) || h === primary || h.split(':')[0] === primary) return { isSatellite: false }
+  const bare = h.split(':')[0]
+  // The primary, any subdomain of it (Clerk shares the session there), and
+  // local hosts are never satellites.
+  if (!primary || isLocalHost(h) || bare === primary || bare.endsWith(`.${primary}`)) return { isSatellite: false }
   return {
     isSatellite: true,
     domain: h.split(':')[0],
