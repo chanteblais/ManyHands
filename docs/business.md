@@ -474,9 +474,36 @@ door through which each community reaches its own site. Assessment (Claude, this
   Beta App Review, still no store page. *App Store listing* = the searchable public product page
   (name, description, screenshots, privacy labels, full App Review) — the first moment the app
   has a public identity. Glåüm members never need to wait for the listing.
-- **Chanté's call (pending):** ship Glåüm-only on TestFlight as a stepping stone vs. wait for
-  tenant 2. Recommendation on record: TestFlight Glåüm-only early; hold the public listing for
-  the multi-community version.
+- **Chanté's call:** resolved the same day — see the "(later)" entry below. Listing as Many
+  Hands with Glåüm as tenant 1; tenancy first; no early Glåüm-only TestFlight.
 - Consequence for open question #5: the App Store path pulls **privacy policy, legal entity
   name, account deletion** forward from "first paid customer" to "before first TestFlight/
   listing" — noted there.
+
+### 2026-09-11 (later) — DECIDED: list as Many Hands with Glåüm as tenant 1; tenancy first
+
+Follow-up to the entry above. Chanté asked whether Many Hands could go up as the App Store
+listing with Glåüm as one of its tenants — yes, nothing requires more than one tenant; the
+earlier "hold the listing for tenant 2" gate was about the store page's *identity*, not tenant
+count. **Decided:**
+
+- **The listing is Many Hands. Glåüm is tenant 1** and may be the only community in the app on
+  day one. The store page describes the platform ("a home for your community"), never a Glåüm
+  app; screenshots from staged data only.
+- **Tenancy first, then the shell (option 1).** Ship v1 with real multi-tenant code and a
+  community picker showing one community — not single-tenant code under the platform name with
+  the picker retrofitted later. Reason: the log-in-and-land-in-your-community model gets baked
+  into the shell, push tokens and deep links; building those scoped is cheaper than retrofitting.
+- **No rush for Glåüm.** Chanté is explicitly not trying to get anything out to the Glåüm
+  community on this track, so the "TestFlight Glåüm-only early as a stepping stone"
+  recommendation is withdrawn. TestFlight still comes before the listing, but as a normal
+  release step on the multi-tenant build, not an early Glåüm delivery.
+- **Two prerequisites added by the single-tenant-listing shape:** (1) a **seeded demo
+  community** — App Review needs credentials that land in a reviewable community, and Glåüm's
+  real data is not the reviewer's playground; the showcase-ladder seed script (rung 4) becomes a
+  *submission requirement*. (2) A **no-community empty state** — anyone who installs from the
+  store without an invite (App Review included) must see something sensible: "ask your
+  organizer for an invite" or a join-by-code screen.
+- Revised sequence: **web multi-tenancy (Glåüm → community 1, zero visible change) → shell →
+  store hygiene + demo community + empty state → TestFlight → listing.** Tenant 2 onboards
+  whenever the interested community is ready; it is no longer a gate.

@@ -88,9 +88,17 @@ the parts that bind this doc:
   blocks OAuth inside embedded webviews → in-app system browser or Clerk native SDK);
   community-scoped `push_tokens`/notifications; app-name uniqueness + the Many Hands nav-label
   collision resolved.
-- **Sequence:** web multi-tenancy first (the web is the app's content) → shell in parallel →
-  store hygiene → **TestFlight internal with Glåüm members** (no review, no store page) →
-  **public listing once a second tenant is live**, so the listing is Many Hands, not Glåüm.
+- **DECIDED 2026-09-11 (later): the listing is Many Hands; Glåüm is tenant 1** and may be the
+  only community on day one. Tenancy is built *before* the shell (v1 ships real multi-tenant
+  code with a one-community picker — never single-tenant code under the platform name with a
+  picker retrofitted). No rush to get this into Glåüm members' hands; the early Glåüm-only
+  TestFlight idea is withdrawn. Two extra prerequisites this shape adds: a **seeded demo
+  community** for App Review credentials (never real Glåüm data) and a **no-community empty
+  state** ("ask your organizer for an invite" / join-by-code) for store installs without an
+  invite.
+- **Sequence:** web multi-tenancy (Glåüm → community 1, zero visible change) → shell → store
+  hygiene + demo community + empty state → TestFlight → **public listing as Many Hands**.
+  Tenant 2 onboards whenever ready; it is not a gate.
 - **Custom domains vs deep links:** each per-community custom domain would need its own
   `apple-app-site-association` for universal links. Recommended posture: the app talks to one
   canonical platform domain; custom domains are web-only vanity (Phase 2 in
