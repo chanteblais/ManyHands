@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { tenantDb } from '@/lib/tenant-db'
+import { tenantDb, objectPath } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { normalizeIconImage } from '@/lib/icon-image'
 import { requireAdmin } from '@/lib/admin-auth'
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
 
   // Path includes the distinction id so re-uploading the same medal overwrites in
   // place. The id comes from the JSON config and is URL-safe (kebab/`distinction-<ts>`).
-  const path = `distinctions/${params.id}/badge.png`
+  const path = objectPath(community.id, `distinctions/${params.id}/badge.png`)
 
   const { error: uploadError } = await db.storage
     .from(BUCKET)

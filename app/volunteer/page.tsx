@@ -1,4 +1,5 @@
-import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server'
+import { hasCommunityAdminRole } from '@/lib/admin-auth'
 import { redirect } from 'next/navigation'
 import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
@@ -22,9 +23,7 @@ export default async function VolunteerPage(props: { searchParams: Promise<{ adm
 
   let isAdmin = false
   if (isAdminPreview) {
-    const client = await clerkClient()
-    const clerkUser = await client.users.getUser(userId)
-    isAdmin = clerkUser.publicMetadata?.role === 'admin'
+    isAdmin = await hasCommunityAdminRole(community.id, userId)
   }
 
   const [{ data: existing }, { data: application }, volunteerFormValue] = await Promise.all([

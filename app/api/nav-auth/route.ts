@@ -34,6 +34,7 @@ export async function GET() {
         firstName: memberRow.preferred_name ?? memberRow.first_name ?? null,
         email: memberRow.email ?? null,
         avatarUrl: memberRow.avatar_url ?? null,
+        isAdmin: memberRow.role === 'admin',
       },
       { headers: { 'Cache-Control': 'no-store' } }
     )
@@ -83,6 +84,7 @@ export async function GET() {
       firstName: user.firstName ?? null,
       email,
       avatarUrl,
+      isAdmin: false,
     },
     { headers: { 'Cache-Control': 'no-store' } }
   )

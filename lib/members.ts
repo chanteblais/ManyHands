@@ -36,10 +36,14 @@ export type MemberRecord = {
   dues_paid_by: string | null
   dues_note: string | null
   dues_reported_at: string | null
+  // Community-scoped permissions (migration 074, read since branch 1d):
+  // 'admin' administers this community; can_manage_polls grants the poll manager.
+  role: 'member' | 'admin'
+  can_manage_polls: boolean
 }
 
 const MEMBER_COLUMNS =
-  'id, clerk_user_id, email, first_name, last_name, preferred_name, pronouns, phone, avatar_url, status, application_id, suspended_at, suspended_by, suspension_note, dues_paid_at, dues_paid_by, dues_note, dues_reported_at'
+  'id, clerk_user_id, email, first_name, last_name, preferred_name, pronouns, phone, avatar_url, status, application_id, suspended_at, suspended_by, suspension_note, dues_paid_at, dues_paid_by, dues_note, dues_reported_at, role, can_manage_polls'
 
 export type MemberIdentity = Partial<Omit<MemberRecord, 'id' | 'clerk_user_id'>>
 

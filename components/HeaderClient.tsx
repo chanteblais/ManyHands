@@ -27,6 +27,9 @@ export type NavAuthState = {
   firstName?: string | null
   email?: string | null
   avatarUrl?: string | null
+  // Admin of the current community (members.role) — server-resolved; the
+  // client never reads Clerk publicMetadata for this (branch 1d).
+  isAdmin?: boolean
 }
 
 const publicNavLinks = [
@@ -81,7 +84,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
   const userEmail = user?.primaryEmailAddress?.emailAddress ?? serverAuth?.email ?? rememberedEmail
   const avatarUrl = serverAuth?.avatarUrl ?? null
   const initials = userFirstName?.[0] ?? '✦'
-  const isAdmin = user?.publicMetadata?.role === 'admin'
+  const isAdmin = Boolean(serverAuth?.isAdmin)
   const activeNavLinks = signedIn && isApproved ? memberNavLinks : publicNavLinks
   // On phones, approved members get the bottom tab bar instead of page links
   // in the hamburger — the menu shrinks to overflow (name, About, Admin, sign

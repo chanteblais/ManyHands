@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { tenantDb } from '@/lib/tenant-db'
+import { tenantDb, objectPath } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ext = file.type === 'image/svg+xml' ? 'svg' : file.type.split('/')[1].replace('jpeg', 'jpg')
-  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+  const path = objectPath(community.id, `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`)
   const buffer = Buffer.from(await file.arrayBuffer())
 
   const { error: uploadError } = await db.storage

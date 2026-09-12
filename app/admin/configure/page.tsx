@@ -1,5 +1,5 @@
 import { HandsBackdrop } from '@/components/HandsBackdrop'
-import { auth, clerkClient } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { tenantDb } from '@/lib/tenant-db'
 import { requireAdmin } from '@/lib/admin-auth'
@@ -24,6 +24,7 @@ import { parseDistinctions } from '@/lib/distinctions'
 import { parseProfileFields, distinctionCatalog } from '@/lib/profile-fields'
 import { getAdminRunway } from '@/lib/admin-attention'
 import { getCommunity } from '@/lib/community'
+import { settingHour, zoneLabel, DEFAULT_NUDGE_HOUR_LOCAL } from '@/lib/community-time'
 
 // "3 groups" / "1 group" — the panel status chips speak in counted nouns.
 const counted = (n: number, singular: string, plural = `${singular}s`) =>
@@ -97,22 +98,23 @@ export default async function ConfigurePage() {
   const shiftTypeOptions = (shiftTypeRows ?? []).map(s => ({ id: s.id as string, name: s.name as string }))
 
   const approvedWithClerk = (applications ?? []).filter(a => a.clerk_user_id)
-  // One batched Clerk read for everyone (vs. one API call per member).
-  const client = await clerkClient()
-  const { data: clerkUsers } = approvedWithClerk.length > 0
-    ? await client.users.getUserList({ userId: approvedWithClerk.map(a => a.clerk_user_id!), limit: 500 })
-    : { data: [] }
-  const clerkById = new Map(clerkUsers.map(u => [u.id, u]))
+  // Permissions are columns on the member row (branch 1d) — one scoped query,
+  // no Clerk round-trip.
+  const { data: permRows } = await db
+    .from('members')
+    .select('clerk_user_id, role, can_manage_polls')
+    .in('clerk_user_id', approvedWithClerk.map(a => a.clerk_user_id!))
+  const permById = new Map((permRows ?? []).map(r => [r.clerk_user_id as string, r]))
   const adminMembers = approvedWithClerk.map(a => {
-    const u = clerkById.get(a.clerk_user_id!)
+    const p = permById.get(a.clerk_user_id!)
     return {
       clerk_user_id: a.clerk_user_id!,
       first_name: a.first_name,
       last_name: a.last_name,
       preferred_name: a.preferred_name ?? null,
       email: a.email,
-      isAdmin: u?.publicMetadata?.role === 'admin',
-      canManagePolls: u?.publicMetadata?.canManagePolls === true,
+      isAdmin: p?.role === 'admin',
+      canManagePolls: p?.can_manage_polls === true,
     }
   })
 
@@ -226,7 +228,7 @@ export default async function ConfigurePage() {
           summary="The checklist each member completes on their profile"
           status={counted(activeTasks, 'task')}
         >
-          <AttunementTasksManager initialTasks={attunementTasks} collections={attunementCollections} totalGroupCount={totalGroupCount} shiftTypes={shiftTypeOptions} initialNudgeDays={parseAttunementNudgeDays(configMap['config_attunement_nudge_days'])} />
+          <AttunementTasksManager sendHour={settingHour(community.settings, 'nudge_hour_local', DEFAULT_NUDGE_HOUR_LOCAL)} timezoneLabel={zoneLabel(community.timezone)} initialTasks={attunementTasks} collections={attunementCollections} totalGroupCount={totalGroupCount} shiftTypes={shiftTypeOptions} initialNudgeDays={parseAttunementNudgeDays(configMap['config_attunement_nudge_days'])} />
         </CollapsibleSection>
 
         {/* ═══════════════ STRUCTURE ═══════════════ */}

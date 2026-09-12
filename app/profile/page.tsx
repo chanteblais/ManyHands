@@ -231,7 +231,9 @@ export default async function ProfilePage() {
       .is('clerk_user_id', null)
   }
 
-  const isAdmin = user?.publicMetadata?.role === 'admin'
+  // Community-scoped permission on the member row (branch 1d).
+  const { data: permRow } = await db.from('members').select('role').eq('clerk_user_id', userId).maybeSingle()
+  const isAdmin = permRow?.role === 'admin'
 
   const displayName =
     volunteer?.preferred_name || volunteer?.first_name ||
