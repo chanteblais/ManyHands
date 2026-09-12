@@ -1,4 +1,3 @@
-import { clerkClient } from '@clerk/nextjs/server'
 import type { Community } from '@/lib/community'
 import { tenantDb } from '@/lib/tenant-db'
 import { sendAdminEmail } from '@/lib/send-email'
@@ -28,14 +27,16 @@ export async function notifyAdmin(community: Community, input: NotifyAdminInput)
     ? Object.entries(input.details).map(([k, v]) => `<p style="margin:4px 0"><b>${k}:</b> ${v}</p>`).join('')
     : ''
 
-  // Recipients are still the Clerk-instance-wide admins (publicMetadata.role);
-  // branch 1d switches this to `members.role = 'admin'` in this community.
+  // Recipients: this community's admins (members.role — branch 1d; the
+  // Clerk-instance-wide publicMetadata scan is gone).
   try {
-    const client = await clerkClient()
-    const { data: users } = await client.users.getUserList({ limit: 100 })
-    const adminEmails = users
-      .filter(u => u.publicMetadata?.role === 'admin')
-      .flatMap(u => u.emailAddresses.map(e => e.emailAddress))
+    const { data: admins, error: adminError } = await tenantDb(community.id)
+      .from('members')
+      .select('email')
+      .eq('role', 'admin')
+      .not('email', 'is', null)
+    if (adminError) throw adminError
+    const adminEmails = Array.from(new Set((admins ?? []).map(a => String(a.email).trim()).filter(Boolean)))
 
     for (const email of adminEmails) {
       await sendAdminEmail(community, email, `${community.name}: ${input.message}`, `<p>${input.message}</p>${detailLines}`)

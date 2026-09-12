@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     .from('camp_signups')
     .upsert(
       { clerk_user_id: userId, role_id: next_role_id, role_approval_status, updated_at: now },
-      { onConflict: 'clerk_user_id' } // still the unique constraint until migration 075 (community_id, clerk_user_id)
+      { onConflict: 'community_id,clerk_user_id' } // composite unique since migration 075; community_id stamped by tenantDb // still the unique constraint until migration 075 (community_id, clerk_user_id)
     )
     .select()
     .single()

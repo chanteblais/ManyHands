@@ -80,8 +80,11 @@ let canManagePolls = false
     ])
     const email = user?.emailAddresses[0]?.emailAddress
     userFirstName = user?.firstName ?? null
-    isAdmin = user?.publicMetadata?.role === 'admin'
-    canManagePolls = user?.publicMetadata?.canManagePolls === true
+    // Permissions are community-scoped columns on the member row (branch 1d).
+    const { data: perm } = await db
+      .from('members').select('role, can_manage_polls').eq('clerk_user_id', userId).maybeSingle()
+    isAdmin = perm?.role === 'admin'
+    canManagePolls = perm?.can_manage_polls === true
 
     let appRaw = appByIdRes.data
     if (!appRaw && email) {

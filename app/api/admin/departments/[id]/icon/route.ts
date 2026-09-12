@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { tenantDb } from '@/lib/tenant-db'
+import { tenantDb, objectPath } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { normalizeIconImage } from '@/lib/icon-image'
 import { requireAdmin } from '@/lib/admin-auth'
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     console.error('[department icon normalize]', err)
   }
 
-  const path = `departments/${params.id}/icon.png`
+  const path = objectPath(community.id, `departments/${params.id}/icon.png`)
 
   const { error: uploadError } = await db.storage
     .from(BUCKET)

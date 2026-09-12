@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import sharp from 'sharp'
 import { getCommunity } from '@/lib/community'
-import { tenantDb } from '@/lib/tenant-db'
+import { tenantDb, objectPath } from '@/lib/tenant-db'
 import { upsertMember } from '@/lib/members'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'That file could not be read as an image' }, { status: 400 })
     }
   }
-  const path = `${userId}/avatar.${ext}`
+  const path = objectPath(community.id, `${userId}/avatar.${ext}`)
 
   // Upload (upsert so re-uploads overwrite cleanly)
   const { error: uploadError } = await db.storage
@@ -64,7 +64,11 @@ export async function POST(req: NextRequest) {
 
   // Re-uploads that change extension (e.g. old avatar.jpg → avatar.webp) would
   // otherwise strand the previous object; remove() ignores missing paths.
-  const stale = ['jpg', 'png', 'webp', 'gif'].filter((e) => e !== ext).map((e) => `${userId}/avatar.${e}`)
+  // …including the pre-tenancy unprefixed path this member may still have.
+  const stale = ['jpg', 'png', 'webp', 'gif'].flatMap((e) => [
+    ...(e !== ext ? [objectPath(community.id, `${userId}/avatar.${e}`)] : []),
+    `${userId}/avatar.${e}`,
+  ])
   await db.storage.from('avatars').remove(stale)
 
   const { data: { publicUrl } } = db.storage

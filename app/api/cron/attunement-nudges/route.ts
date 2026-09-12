@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth, clerkClient } from '@clerk/nextjs/server'
+import { requireAdmin } from '@/lib/admin-auth'
 import { tenantDb } from '@/lib/tenant-db'
-import { getCommunity } from '@/lib/community'
+import { getCommunity, listCommunities, type Community } from '@/lib/community'
+import { localHour, settingHour, DEFAULT_NUDGE_HOUR_LOCAL } from '@/lib/community-time'
 import { collectOutstandingAttunement } from '@/lib/attunement-nudge'
 import { sendAttunementNudgeEmail } from '@/lib/send-email'
+import { getPageContent } from '@/lib/page-content'
 import { parseAttunementNudgeDays } from '@/lib/site-config'
 import { daysUntilEvent } from '@/lib/camp-event'
 
@@ -12,8 +14,10 @@ export const dynamic = 'force-dynamic'
 // give the function room beyond the default 10s.
 export const maxDuration = 60
 
-// Per-member cadence comes from `config_attunement_nudge_days` (set in the
-// Attunement Tasks manager; 0 = off). The cron still fires daily — each member
+// Fires HOURLY (vercel.json) and sweeps every active community, sending only
+// in the hour that matches the community's local nudge hour
+// (communities.settings.nudge_hour_local, default 9). Per-member cadence comes
+// from that community's `config_attunement_nudge_days` (0 = off) — each member
 // is only emailed once their cooldown has lapsed. 4h of slack keeps drift in
 // Vercel's fire time from silently pushing everyone a day late.
 const cooldownHours = (nudgeDays: number) => nudgeDays * 24 - 4
@@ -23,30 +27,22 @@ const SEND_SPACING_MS = 600
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
 // Two callers may run the sweep:
-//   'cron'  — Vercel Cron with `Authorization: Bearer ${CRON_SECRET}` (sends by default)
-//   'admin' — a logged-in admin hitting the URL in a browser (dry-runs by default,
-//             add ?send=1 to actually send). Dry-run reports who would get what
-//             without emailing or touching the ledger.
+//   'cron'  — Vercel Cron with `Authorization: Bearer ${CRON_SECRET}`: every
+//             active community, gated on its local hour (sends by default).
+//   'admin' — an admin of the request's community hitting the URL in a
+//             browser: THAT community only, hour gate bypassed (dry-runs by
+//             default, add ?send=1 to actually send). Dry-run reports who would
+//             get what without emailing or touching the ledger.
 async function authorize(req: NextRequest): Promise<'cron' | 'admin' | null> {
   const secret = process.env.CRON_SECRET
   if (secret && req.headers.get('authorization') === `Bearer ${secret}`) return 'cron'
-  const { userId } = await auth()
-  if (!userId) return null
-  const client = await clerkClient()
-  const user = await client.users.getUser(userId)
-  return user.publicMetadata?.role === 'admin' ? 'admin' : null
+  return (await requireAdmin()) ? 'admin' : null
 }
 
-export async function GET(req: NextRequest) {
-  const caller = await authorize(req)
-  if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  // Resolved once from the host (the per-community loop is a later branch).
-  const community = await getCommunity()
+type Entry = { name: string; email: string | null; required: string[]; commitments: string[]; status: string }
+
+async function sweepCommunity(community: Community, dryRun: boolean) {
   const db = tenantDb(community.id)
-
-  const params = req.nextUrl.searchParams
-  const dryRun = caller === 'admin' ? params.get('send') !== '1' : params.get('dryRun') === '1'
-
   const outstanding = await collectOutstandingAttunement(community.id)
 
   // Opt-outs + ledger in two batch queries.
@@ -67,26 +63,22 @@ export async function GET(req: NextRequest) {
     // Fail CLOSED on a broken opt-out read: without it we can't tell who opted
     // out, and "email everyone anyway" is the wrong default.
     if (prefError) {
-      console.error('[attunement-nudges] preference lookup failed, aborting sweep:', prefError)
-      return NextResponse.json({ error: `preference lookup failed: ${prefError.message}` }, { status: 500 })
+      console.error(`[attunement-nudges] ${community.slug}: preference lookup failed, skipping:`, prefError)
+      return { community: community.slug, error: `preference lookup failed: ${prefError.message}`, sent: 0, report: [] as Entry[] }
     }
     for (const p of prefRows ?? []) if (p.email_attunement_nudges === false) optedOut.add(p.clerk_user_id)
     for (const l of ledgerRows ?? []) ledger.set(l.clerk_user_id, l)
   }
 
-  const { data: cfgRows } = await db
-    .from('page_content')
-    .select('key, value')
-    .in('key', ['config_event_start_date', 'config_attunement_nudge_days'])
-  const cfg = Object.fromEntries((cfgRows ?? []).map(r => [r.key, r.value]))
+  const cfg = await getPageContent(community.id, ['config_event_start_date', 'config_attunement_nudge_days'])
   const daysUntil = daysUntilEvent(cfg['config_event_start_date'])
   const nudgeDays = parseAttunementNudgeDays(cfg['config_attunement_nudge_days'])
   const cooldownFloor = Date.now() - cooldownHours(nudgeDays) * 60 * 60 * 1000
 
-  const report: { name: string; email: string | null; required: string[]; commitments: string[]; status: string }[] = []
+  const report: Entry[] = []
   let sent = 0
   for (const m of outstanding) {
-    const entry = {
+    const entry: Entry = {
       name: m.name,
       email: m.email,
       required: m.outstandingRequired.map(t => t.label),
@@ -120,7 +112,9 @@ export async function GET(req: NextRequest) {
         .from('attunement_nudges')
         .upsert(
           { clerk_user_id: m.clerkUserId, last_sent_at: new Date().toISOString(), outstanding_count: outstandingCount, nudge_count: 1 },
-          { onConflict: 'clerk_user_id', ignoreDuplicates: true } // unique on clerk_user_id alone until migration 075
+          // PK is (community_id, clerk_user_id) since migration 075; the
+          // wrapper stamps community_id on the row.
+          { onConflict: 'community_id,clerk_user_id', ignoreDuplicates: true }
         )
         .select('clerk_user_id')
       claimed = !error && (rows?.length ?? 0) > 0
@@ -152,20 +146,45 @@ export async function GET(req: NextRequest) {
       }
     } catch (err) {
       // Best-effort: one bad address must never stop the sweep.
-      console.error('[attunement-nudges] send failed:', err)
+      console.error(`[attunement-nudges] ${community.slug}: send failed:`, err)
       entry.status = 'failed'
       await releaseClaim()
     }
     await sleep(SEND_SPACING_MS)
   }
 
+  return { community: community.slug, nudgeDays, daysUntil, membersWithOutstanding: outstanding.length, sent, report }
+}
+
+export async function GET(req: NextRequest) {
+  const caller = await authorize(req)
+  if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const params = req.nextUrl.searchParams
+  const dryRun = caller === 'admin' ? params.get('send') !== '1' : params.get('dryRun') === '1'
+  const now = new Date()
+
+  // Which communities, and whether the local-hour gate applies.
+  let targets: Community[]
+  if (caller === 'admin') {
+    targets = [await getCommunity()]
+  } else {
+    const force = params.get('force') === '1'
+    targets = (await listCommunities()).filter(c => c.status === 'active').filter(c =>
+      force || localHour(c.timezone, now) === settingHour(c.settings, 'nudge_hour_local', DEFAULT_NUDGE_HOUR_LOCAL))
+  }
+
+  const results = []
+  for (const community of targets) {
+    results.push(await sweepCommunity(community, dryRun))
+  }
+
   return NextResponse.json({
     dryRun,
     caller,
-    nudgeDays,
-    daysUntil,
-    membersWithOutstanding: outstanding.length,
-    sent,
-    report,
+    at: now.toISOString(),
+    communities: results.map(r => r.community),
+    sent: results.reduce((n, r) => n + r.sent, 0),
+    results,
   })
 }

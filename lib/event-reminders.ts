@@ -2,22 +2,10 @@ import { tenantDb } from '@/lib/tenant-db'
 import type { ReminderItem } from '@/lib/send-email'
 
 // Collects who should get a gathering/shift reminder for a given calendar date,
-// batched per member. Shared by the twice-daily reminder cron
-// (app/api/cron/event-reminders). "A date" is a local YYYY-MM-DD; the cron
-// resolves "today"/"tomorrow" in the camp's timezone (see pacificDate below).
-//
-// Glåüm-specific: the camp runs on Pacific time. Logged in the generalizability
-// log — a multi-tenant build would read this from tenant config.
-const CAMP_TZ = 'America/Vancouver'
-
-/** YYYY-MM-DD for `today + offsetDays` in the camp's timezone. */
-export function campDate(offsetDays = 0, now: Date = new Date()): string {
-  const shifted = new Date(now.getTime() + offsetDays * 86_400_000)
-  // en-CA formats as YYYY-MM-DD; the timeZone makes it the camp-local date.
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: CAMP_TZ, year: 'numeric', month: '2-digit', day: '2-digit',
-  }).format(shifted)
-}
+// batched per member. Shared by the hourly reminder cron
+// (app/api/cron/event-reminders). "A date" is a community-local YYYY-MM-DD;
+// the cron resolves "today"/"tomorrow" in the community's timezone
+// (lib/community-time.ts localDate — communities.timezone, since branch 1d).
 
 /** "Sat, Jul 22" from a YYYY-MM-DD (parsed at noon UTC to avoid TZ off-by-one). */
 function prettyDate(ymd: string): string {

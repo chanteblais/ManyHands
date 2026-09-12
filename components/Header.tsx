@@ -26,6 +26,7 @@ export async function Header() {
         firstName: member?.preferred_name ?? member?.first_name ?? null,
         email: member?.email ?? null,
         avatarUrl: member?.avatar_url ?? null,
+        isAdmin: member?.role === 'admin',
       }
     }
   } catch {

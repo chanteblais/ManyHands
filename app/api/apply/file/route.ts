@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { getCommunity } from '@/lib/community'
-import { tenantDb } from '@/lib/tenant-db'
+import { tenantDb, objectPath } from '@/lib/tenant-db'
 import { requireAdmin } from '@/lib/admin-auth'
 import { APPLICATION_FILES_BUCKET, APPLICATION_FILE_ROUTE } from '@/lib/application-files'
 import { bytesMatchType } from '@/lib/file-sniff'
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
   // Quota check against what this user already has in their folder.
   const { data: existing, error: listError } = await db.storage
     .from(APPLICATION_FILES_BUCKET)
-    .list(userId, { limit: MAX_FILES_PER_USER + 1 })
+    .list(objectPath(community.id, userId), { limit: MAX_FILES_PER_USER + 1 })
   if (listError) {
     console.error('[application file upload] quota list failed:', listError)
     return NextResponse.json({ error: 'Upload failed. Please try again.' }, { status: 500 })
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
   // Preserve a readable name, but sanitise and prefix with a timestamp so
   // re-uploads don't collide.
   const safeName = (file.name || 'file').replace(/[^a-zA-Z0-9._-]/g, '_').slice(-80)
-  const path = `${userId}/${Date.now()}-${safeName}`
+  const path = objectPath(community.id, `${userId}/${Date.now()}-${safeName}`)
   const buffer = Buffer.from(await file.arrayBuffer())
 
   // The declared type is client-controlled — verify the bytes match it before
@@ -83,8 +83,9 @@ export async function POST(req: NextRequest) {
   })
 }
 
-// GET ?path=<userId>/<file> — the read gate for the private bucket. The
-// uploader may read their own folder; admins may read anything (they review
+// GET ?path=<communityId>/<userId>/<file> (or the pre-tenancy <userId>/<file>)
+// — the read gate for the private bucket. The uploader may read their own
+// folder; admins of THIS community may read anything in it (they review
 // applications). Everyone else gets nothing, URL or no URL.
 export async function GET(req: NextRequest) {
   const { userId } = await auth()
@@ -95,11 +96,17 @@ export async function GET(req: NextRequest) {
 
   const path = req.nextUrl.searchParams.get('path') ?? ''
   const segments = path.split('/')
-  if (segments.length !== 2 || segments.some(s => !s || s === '.' || s === '..' || !/^[A-Za-z0-9._-]+$/.test(s))) {
+  if (![2, 3].includes(segments.length) || segments.some(s => !s || s === '.' || s === '..' || !/^[A-Za-z0-9._-]+$/.test(s))) {
     return NextResponse.json({ error: 'Invalid path' }, { status: 400 })
   }
+  // Prefixed objects belong to exactly one community; a different community's
+  // admin never sees them. Legacy two-segment paths are Glåüm's (pre-074).
+  if (segments.length === 3 && segments[0] !== community.id) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+  const ownerId = segments.length === 3 ? segments[1] : segments[0]
 
-  if (!path.startsWith(`${userId}/`) && !(await requireAdmin())) {
+  if (ownerId !== userId && !(await requireAdmin())) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 

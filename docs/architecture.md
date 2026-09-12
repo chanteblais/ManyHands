@@ -239,7 +239,21 @@ See [database.md → Storage Buckets](database.md#storage-buckets) for the canon
 
 > Roadmap: [multi-community.md](multi-community.md). Phase 1 design + branch sequence: [tenancy-design.md](tenancy-design.md).
 
-The platform serves many communities from one codebase, one database, one deployment. Glåüm is community 1. **Branches 1a–1c (2026-09-11) put every query in the app behind `tenantDb`** — no feature code imports the raw client any more (the allowlist is empty; the guard now simply forbids it). What remains before a second community can exist is branch 1d: DB-backed admin roles, per-community crons, storage path prefixes, badge assets, the `/api/me/communities` picker, and migration 075 (drop the transitional default; community-scoped unique constraints).
+The platform serves many communities from one codebase, one database, one deployment. Glåüm is community 1. **Branches 1a–1d (2026-09-11) completed Phase 1 tenancy**: every query behind `tenantDb`, community-scoped admin roles, hourly per-community crons, prefixed storage paths, per-community badge assets, the `/api/me/communities` picker, and migration 075 (community-scoped unique constraints). Still ahead: RLS as a second belt (1e), theme tokens (1f), and the second tenant's host/Clerk/sender setup.
+
+### Roles (since 1d)
+
+- **Community admin** = `members.role = 'admin'` in that community (`lib/admin-auth.ts`). `requireAdmin()` resolves the request's community itself (cached) and checks the caller's member row, so /api/admin routes and /admin pages call it unchanged; `requireCommunityAdmin(communityId)` when the caller already has it. Poll managers: `members.can_manage_polls` (`lib/poll-auth.ts`). Both set via `POST /api/admin/set-admin` / `set-poll-manager` (members row, not Clerk).
+- **Platform owner** = Clerk `publicMetadata.platformRole === 'owner'` (Chanté): admin in every community, the only identity that may create communities; `requirePlatformOwner()`. Read from the session-token `metadata` claim when present, else the backend API.
+- **`proxy.ts`** is a sign-in wall only for `/admin` + `/api/admin` (401 / sign-in redirect); the admin check happens in the handlers (every /api/admin route's gate is asserted by `scripts/check-route-auth.mjs`; every /admin page calls `requireAdmin()`).
+- The nav's Admin link and the home/profile admin flags come from the member row (`NavAuthState.isAdmin`); the client never reads Clerk metadata for roles.
+
+### Crons, storage, badge (since 1d)
+
+- **Crons** fire **hourly** (`vercel.json`) and sweep every active community, sending only when the community's local hour (`communities.timezone`, `lib/community-time.ts`) matches its `settings` hour (nudges 9, reminders 8 / 19 by default). An admin hitting a cron URL in the browser runs their own community only, hour gate bypassed, dry-run unless `?send=1`. Vercel's `?force=1` bypasses the gate for all communities.
+- **Storage**: new uploads are prefixed `<community_id>/` (`objectPath()`); see database.md → Storage Buckets.
+- **Badge**: `/api/badge?c=<slug>&role=&dept=` — assets from `communities.theme.badge` (`base_url`, `font_url`, `width`, `height`) or the repo's Glåüm defaults; asset + render caches keyed by slug.
+- **Picker**: `GET /api/me/communities` (the person's memberships × communities, with each community's origin) and `/communities` (list, or the no-community empty state).
 
 ### Community resolution — `lib/community.ts`
 
@@ -275,11 +289,8 @@ Every identity/config/notification helper takes the community first:
 
 `SITE_NAME` / `EVENT_NAME` / `SITE_DESCRIPTION` survive only as the synthetic-fallback values in `lib/community.ts` (pre-migration safety net) and inside `DEFAULT_TRACK_COPY`. Feature code reads `community.name` / `community.eventName` / `community.description` from `getCommunity()` (server) or `useCommunity()` (client). Never hardcode `"Glåüm"`; never import the SITE_* constants in new code.
 
-### Not yet community-scoped (branch 1d — see tenancy-design.md §8)
+### Still single-community (after 1d)
 
-- **Unique constraints + transitional default** — rows are still pinned to Glåüm by the `074` column default and the per-person unique constraints are still global; **a second tenant must not be created until migration `075` is applied.**
-- **Admin roles** — still Clerk `publicMetadata.role`; `members.role` exists but is unread.
-- **Crons** — resolve one community from the request host; the per-community, per-timezone loop is 1d.
-- **Storage object paths, badge assets, `/api/me/communities` + picker + empty state** — 1d.
-- **Direct `page_content` reads** in a few files (`app/admin/page.tsx`, `app/admin/[id]/page.tsx`, `app/api/admin/schedule/[id]/route.ts`, both crons, `lib/attunement-nudge.ts`) go through `db` (scoped) but bypass the cached reader — genlog row 2026-09-11.
-- **Branding** — no colour tokens yet (branch 1f).
+- **Platform root host** — an unresolved host still falls back to `DEFAULT_COMMUNITY_SLUG`; the picker is reachable at `/communities` on any host. Routing the platform root to the picker lands with the second tenant (needs the domain).
+- **Direct `page_content` reads** in a few files (`app/admin/page.tsx`, `app/admin/[id]/page.tsx`, `app/api/admin/schedule/[id]/route.ts`, `lib/attunement-nudge.ts`) go through `db` (scoped) but bypass the cached reader — genlog row 2026-09-11.
+- **RLS** (1e) and **colour tokens** (1f) — not started.

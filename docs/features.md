@@ -643,3 +643,7 @@ Both support:
 - Per-item mark-as-read
 - Mark all as read
 - Delete all (admin only)
+
+## Communities picker (`/communities`, branch 1d — 2026-09-11)
+
+Multi-tenancy surface for people who belong to more than one community (and the shared app's switcher): `/communities` lists every community the signed-in person has a membership in (status + role, current one marked "here"; each links to that community's own host), or shows the no-community empty state ("ask your organizer for an invite"). Data: `GET /api/me/communities` (`lib/community.ts` `listCommunitiesForUser`). Reachable by path on any community host; it becomes the landing surface of the platform root host once that exists. Not linked from the nav yet — Glåüm is the only community.

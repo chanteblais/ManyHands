@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth, clerkClient } from '@clerk/nextjs/server'
+import { requireAdmin } from '@/lib/admin-auth'
 import { tenantDb } from '@/lib/tenant-db'
-import { getCommunity } from '@/lib/community'
-import { collectEventReminders, campDate } from '@/lib/event-reminders'
+import { getCommunity, listCommunities, type Community } from '@/lib/community'
+import {
+  localDate, localHour, settingHour,
+  DEFAULT_REMINDER_MORNING_HOUR_LOCAL, DEFAULT_REMINDER_EVENING_HOUR_LOCAL,
+} from '@/lib/community-time'
+import { collectEventReminders } from '@/lib/event-reminders'
 import { sendEventReminderEmail } from '@/lib/send-email'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-// Gathering/shift reminders. Two Vercel Cron entries hit this route (vercel.json):
-//   • ?phase=morning_of  — fires in the camp morning; reminds about items TODAY
-//   • ?phase=day_before  — fires the evening before; reminds about items TOMORROW
-// With no ?phase, both run (a safe default if the query string is ever dropped).
+// Gathering/shift reminders. One HOURLY Vercel Cron entry hits this route
+// (vercel.json); for every active community it decides, from the community's
+// local hour (communities.timezone + settings), which phase is due:
+//   • morning_of  — at reminder_morning_hour_local (default 8): items TODAY
+//   • day_before  — at reminder_evening_hour_local (default 19): items TOMORROW
 // Reminders are batched (one email per member per phase per day) and deduped via
 // the event_reminders_sent ledger, so a re-fire or overlap never double-sends.
 
@@ -19,40 +24,32 @@ const SEND_SPACING_MS = 600 // Resend allows ~2 req/s
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 type Phase = 'day_before' | 'morning_of'
 
-// 'cron'  — Vercel Cron with Authorization: Bearer ${CRON_SECRET} (sends)
-// 'admin' — a logged-in admin hitting the URL (dry-runs unless ?send=1)
+// 'cron'  — Vercel Cron with Authorization: Bearer ${CRON_SECRET} (sends; all
+//           communities, phase chosen by local hour)
+// 'admin' — an admin of the request's community hitting the URL (that
+//           community only; dry-runs unless ?send=1; ?phase= picks the phase,
+//           default both; ?date=YYYY-MM-DD previews a specific date)
 async function authorize(req: NextRequest): Promise<'cron' | 'admin' | null> {
   const secret = process.env.CRON_SECRET
   if (secret && req.headers.get('authorization') === `Bearer ${secret}`) return 'cron'
-  const { userId } = await auth()
-  if (!userId) return null
-  const client = await clerkClient()
-  const user = await client.users.getUser(userId)
-  return user.publicMetadata?.role === 'admin' ? 'admin' : null
+  return (await requireAdmin()) ? 'admin' : null
 }
 
-export async function GET(req: NextRequest) {
-  const caller = await authorize(req)
-  if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  // Resolved once from the host (the per-community loop is a later branch).
-  const community = await getCommunity()
+function duePhases(community: Community, now: Date): Phase[] {
+  const hour = localHour(community.timezone, now)
+  const phases: Phase[] = []
+  if (hour === settingHour(community.settings, 'reminder_morning_hour_local', DEFAULT_REMINDER_MORNING_HOUR_LOCAL)) phases.push('morning_of')
+  if (hour === settingHour(community.settings, 'reminder_evening_hour_local', DEFAULT_REMINDER_EVENING_HOUR_LOCAL)) phases.push('day_before')
+  return phases
+}
+
+async function sweepCommunity(community: Community, phases: Phase[], dryRun: boolean, dateOverride: string | null, now: Date) {
   const db = tenantDb(community.id)
-
-  const params = req.nextUrl.searchParams
-  const dryRun = caller === 'admin' ? params.get('send') !== '1' : params.get('dryRun') === '1'
-  const requested = params.get('phase') as Phase | null
-  const phases: Phase[] = requested ? [requested] : ['morning_of', 'day_before']
-
   const report: Record<string, unknown>[] = []
   let sent = 0
 
-  // Testing aid: ?date=YYYY-MM-DD overrides the computed today/tomorrow so a
-  // dry-run can preview a date that actually has items. Safe in prod — the cron
-  // never passes it, and the ledger dedupes any manual re-send by (member, date, phase).
-  const dateOverride = params.get('date')
-
   for (const phase of phases) {
-    const targetDate = dateOverride ?? campDate(phase === 'day_before' ? 1 : 0)
+    const targetDate = dateOverride ?? localDate(community.timezone, phase === 'day_before' ? 1 : 0, now)
     const recipients = await collectEventReminders(community.id, targetDate)
 
     // Opt-outs + already-sent ledger for this (date, phase), in two batch queries.
@@ -68,9 +65,9 @@ export async function GET(req: NextRequest) {
       ])
       // Fail CLOSED on a broken opt-out read: without it we can't tell who
       // opted out, and "email everyone anyway" is the wrong default. (A ledger
-      // read failure is tolerable — the pre-send claim below still dedupes.)
+      // read failure only risks a duplicate, which the unique claim below blocks.)
       if (prefError) {
-        console.error('[event-reminders] preference lookup failed, skipping phase:', prefError)
+        console.error(`[event-reminders] ${community.slug}: preference lookup failed, skipping phase:`, prefError)
         report.push({ phase, targetDate, status: `phase skipped: preference lookup failed (${prefError.message})` })
         continue
       }
@@ -120,7 +117,7 @@ export async function GET(req: NextRequest) {
           await releaseClaim()
         }
       } catch (err) {
-        console.error('[event-reminders] send failed:', err)
+        console.error(`[event-reminders] ${community.slug}: send failed:`, err)
         entry.status = 'failed'
         await releaseClaim()
       }
@@ -128,5 +125,44 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ dryRun, caller, phases, sent, recipients: report.length, report })
+  return { community: community.slug, phases, sent, recipients: report.length, report }
+}
+
+export async function GET(req: NextRequest) {
+  const caller = await authorize(req)
+  if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const params = req.nextUrl.searchParams
+  const dryRun = caller === 'admin' ? params.get('send') !== '1' : params.get('dryRun') === '1'
+  const now = new Date()
+  // Testing aid (admin): ?date=YYYY-MM-DD overrides the computed today/tomorrow
+  // so a dry-run can preview a date that actually has items. The ledger dedupes
+  // any manual re-send by (member, date, phase).
+  const dateOverride = caller === 'admin' ? params.get('date') : null
+
+  const jobs: Array<{ community: Community; phases: Phase[] }> = []
+  if (caller === 'admin') {
+    const requested = params.get('phase') as Phase | null
+    jobs.push({ community: await getCommunity(), phases: requested ? [requested] : ['morning_of', 'day_before'] })
+  } else {
+    const force = params.get('force') === '1'
+    for (const community of (await listCommunities()).filter(c => c.status === 'active')) {
+      const phases = force ? (['morning_of', 'day_before'] as Phase[]) : duePhases(community, now)
+      if (phases.length) jobs.push({ community, phases })
+    }
+  }
+
+  const results = []
+  for (const job of jobs) {
+    results.push(await sweepCommunity(job.community, job.phases, dryRun, dateOverride, now))
+  }
+
+  return NextResponse.json({
+    dryRun,
+    caller,
+    at: now.toISOString(),
+    communities: results.map(r => r.community),
+    sent: results.reduce((n, r) => n + r.sent, 0),
+    results,
+  })
 }

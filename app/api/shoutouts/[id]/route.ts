@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
+import { hasCommunityAdminRole } from '@/lib/admin-auth'
 import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 
@@ -22,8 +23,7 @@ export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: s
   const isOwner = shoutout.clerk_user_id === userId
   let isAdmin = false
   if (!isOwner) {
-    const user = await currentUser()
-    isAdmin = user?.publicMetadata?.role === 'admin'
+    isAdmin = await hasCommunityAdminRole(community.id, userId)
   }
   if (!isOwner && !isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 

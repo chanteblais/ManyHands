@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest) {
   const { error } = await db
     .from('page_content')
     // PK is still `key` (not `(community_id, key)`) until migration 075 — keep onConflict on it.
-    .upsert(rows, { onConflict: 'key' })
+    .upsert(rows, { onConflict: 'community_id,key' })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
