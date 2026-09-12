@@ -272,6 +272,8 @@ await db.from('shoutouts').insert({ body, clerk_user_id })         // community_
 ```
 `select`/`update`/`delete` on a scoped table are filtered by `community_id`; `insert`/`upsert` rows are stamped (and refused if they carry a different community). `GLOBAL_TABLES` (`communities`, `push_tokens`, `notification_preferences`) pass through. `rpc` and `storage` are exposed unscoped — pass the community explicitly; new uploads use `objectPath(communityId, relativePath)` (`${communityId}/…`; existing objects keep their paths).
 
+**Second belt — RLS (1e, migration 076).** With `SUPABASE_JWT_SECRET` set, `tenantDb` talks to Postgres as the `authenticated` role using a per-community JWT minted in `lib/tenant-token.ts` (HS256 with the project JWT secret, or RS256/ES256 with an imported PEM key + `SUPABASE_JWT_KID`; 1h TTL, one cached client per community, re-minted 5 min before expiry). Row-level policies admit only rows whose `community_id` equals the token's claim, so a query that escaped the wrapper's filter returns nothing rather than another community's data. Unset → the service-role client, warned once (the pre-1e behaviour). Storage and `lib/community.ts` keep the service key. Leak test: `scripts/verify-tenant-isolation.mjs` (stranger token must read zero rows on every scoped table; anon reads nothing; the RPC is callable).
+
 **Guard:** `npm run check` runs `scripts/check-tenant-scope.mjs`, which fails on any file under `app/`, `lib/`, `components/` importing `@/lib/supabase` (alias or relative). The allowlist (`scripts/tenant-scope-allowlist.txt`) emptied with branch 1c and must stay empty. Exempt by design: `lib/supabase.ts`, `lib/tenant-db.ts`, `lib/community.ts`.
 
 **Lib convention (since 1c):** every exported lib function that queries takes `communityId: string` FIRST (`getMemberGroups(communityId, clerkUserId)`, `getInboxConversations(communityId, userId)`, `getRadioFeed(communityId, limit)`, …); pure helpers keep their shape. Pages and route handlers resolve `const community = await getCommunity()` once, right after the auth gate, and pass `community.id` down (or `community` itself to email/notify).
@@ -293,4 +295,4 @@ Every identity/config/notification helper takes the community first:
 
 - **Platform root host** — an unresolved host still falls back to `DEFAULT_COMMUNITY_SLUG`; the picker is reachable at `/communities` on any host. Routing the platform root to the picker lands with the second tenant (needs the domain).
 - **Direct `page_content` reads** in a few files (`app/admin/page.tsx`, `app/admin/[id]/page.tsx`, `app/api/admin/schedule/[id]/route.ts`, `lib/attunement-nudge.ts`) go through `db` (scoped) but bypass the cached reader — genlog row 2026-09-11.
-- **RLS** (1e) and **colour tokens** (1f) — not started.
+- **RLS** (1e) is built; it is live only once `SUPABASE_JWT_SECRET` is set in Vercel (after 076 + the leak test). **Colour tokens** (1f) — not started.
