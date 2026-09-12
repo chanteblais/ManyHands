@@ -1,5 +1,6 @@
-import type { PostgrestFilterBuilder, SupabaseClient } from '@supabase/supabase-js'
+import { createClient, type PostgrestFilterBuilder, type SupabaseClient } from '@supabase/supabase-js'
 import { supabaseAdmin } from '@/lib/supabase'
+import { mintTenantToken } from '@/lib/tenant-token'
 
 // The community-scoped database client (docs/tenancy-design.md §3).
 //
@@ -11,9 +12,15 @@ import { supabaseAdmin } from '@/lib/supabase'
 // Every select/update/delete on a scoped table is filtered by community_id;
 // every insert/upsert row is stamped with it (and refused if it carries a
 // different one). Person-level tables (GLOBAL_TABLES) pass through unscoped.
-// Raw `supabaseAdmin` is being retired from feature code — the scope guard
+// Raw `supabaseAdmin` is banned from feature code — the scope guard
 // (scripts/check-tenant-scope.mjs, part of `npm run check`) fails on any file
-// that still imports it and isn't on the shrinking allowlist.
+// that imports it.
+//
+// Second belt (1e, migration 076): when SUPABASE_JWT_SECRET is set, the scoped
+// client talks to Postgres as the `authenticated` role with a per-community
+// JWT (lib/tenant-token.ts), and RLS admits only that community's rows — so
+// even a query that escaped the wrapper's filter could not cross tenants.
+// Unset → the service-role client (RLS bypassed), warned once.
 
 export const GLOBAL_TABLES: ReadonlySet<string> = new Set([
   'communities',
@@ -89,13 +96,47 @@ export type TenantDb = {
   storage: SupabaseClient['storage']
 }
 
+// One RLS-scoped client per community, re-minted before its token expires.
+const scopedClients = new Map<string, { client: SupabaseClient; expiresAt: number }>()
+const REMINT_MARGIN_MS = 5 * 60 * 1000
+let warnedFallback = false
+
+function clientFor(communityId: string): SupabaseClient {
+  const cached = scopedClients.get(communityId)
+  if (cached && Date.now() < cached.expiresAt - REMINT_MARGIN_MS) return cached.client
+
+  const minted = mintTenantToken(communityId)
+  if (!minted) {
+    if (!warnedFallback) {
+      warnedFallback = true
+      console.warn('[tenant-db] SUPABASE_JWT_SECRET is not set — scoped queries use the service-role client (RLS bypassed).')
+    }
+    return supabaseAdmin
+  }
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !anonKey) throw new Error('[tenant-db] NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY are required for the scoped client')
+  const client = createClient(url, anonKey, {
+    global: { headers: { Authorization: `Bearer ${minted.token}` } },
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+  scopedClients.set(communityId, { client, expiresAt: minted.expiresAt })
+  return client
+}
+
 export function tenantDb(communityId: string): TenantDb {
   if (!communityId) throw new Error('[tenant-db] communityId is required')
+  const client = clientFor(communityId)
   return {
     communityId,
-    from: (table: string) => scopedTable(supabaseAdmin.from(table), GLOBAL_TABLES.has(table) ? null : communityId),
-    rpc: supabaseAdmin.rpc.bind(supabaseAdmin),
-    storage: supabaseAdmin.storage,
+    from: (table: string) => scopedTable(client.from(table), GLOBAL_TABLES.has(table) ? null : communityId),
+    rpc: client.rpc.bind(client),
+    // Storage stays on the service client: bucket policies are their own
+    // layer, and object paths carry the community prefix (objectPath).
+    // Lazy so the RLS path never touches the service key until storage is used.
+    get storage() {
+      return supabaseAdmin.storage
+    },
   }
 }
 
