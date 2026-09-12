@@ -17,6 +17,13 @@ export function resolveSiteOrigin(headerList: Headers): string {
     return `${protocol}://${rawHost.split(':')[0]}`
   }
 
+  // A local host is its own origin (keeps dev sign-out / returns on the tenant
+  // being served — localhost is Glåüm, 127.0.0.1 the demo). The env fallbacks
+  // below only apply when there is no host at all (build-time rendering).
+  if (hostOnly) {
+    return `${forwardedProto || 'http'}://${rawHost}`
+  }
+
   const configured =
     typeof process.env.NEXT_PUBLIC_SITE_URL === 'string'
       ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')

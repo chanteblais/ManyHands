@@ -7,6 +7,7 @@ import { Section, Kicker, GoldDivider } from '@/components/Section'
 import { ScheduleSection } from '@/components/ScheduleSection'
 import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
+import { themeBrand } from '@/lib/theme'
 import { getAllPageContent, getPageContent } from '@/lib/page-content'
 import { getMemberGroups } from '@/lib/groups'
 import { getResourceWidgetState } from '@/lib/resources'
@@ -40,6 +41,7 @@ function timeAgo(ts: string): string {
 export default async function Home() {
   const { userId } = await auth()
   const community = await getCommunity()
+  const brand = themeBrand(community.theme)
   const db = tenantDb(community.id)
 
   // ── Fetch member data when signed in ─────────────────────────
@@ -363,8 +365,8 @@ let canManagePolls = false
               display: 'flex',
               alignItems: 'stretch',
             }}>
-              <Image
-                src="/glaum-camp.jpg"
+              {brand.heroImage && <Image
+                src={brand.heroImage}
                 alt=""
                 fill
                 priority
@@ -373,7 +375,7 @@ let canManagePolls = false
                 quality={50}
                 sizes="(max-width: 1100px) 100vw, 1100px"
                 style={{ objectFit: 'cover', objectPosition: 'center 40%', filter: 'brightness(0.38) saturate(1.2)' }}
-              />
+              />}
               <div style={{
                 position: 'absolute', inset: 0,
                 background: 'linear-gradient(90deg, rgb(var(--ink-rgb) / 0.95) 0%, rgb(var(--ink-rgb) / 0.65) 55%, rgb(var(--ink-rgb) / 0.15) 100%)',
@@ -807,7 +809,7 @@ let canManagePolls = false
               opacity: 0.85,
             }}
           >
-            {community.eventName} · Theme Camp
+            {[community.eventName, brand.kicker].filter(Boolean).join(' · ')}
           </p>
 
           {/* Wordmark */}
@@ -825,13 +827,13 @@ let canManagePolls = false
             {community.name}
           </h1>
 
-          {/* Sponsored by */}
+          {/* Brand tagline (communities.theme.brand.tagline) */}
           <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', opacity: 0.3, marginBottom: '2.5rem' }}>
-            Sponsored by Shrimp™
+            {brand.tagline ?? ''}
           </p>
 
-          {/* Hero image */}
-          <div
+          {/* Hero image (communities.theme.brand.hero_image; hidden when unset) */}
+          {brand.heroImage && <div
             style={{
               position: 'relative',
               width: '100%',
@@ -843,8 +845,8 @@ let canManagePolls = false
             }}
           >
             <Image
-              src="/glaum-camp.jpg"
-              alt={`${community.name} Camp — Gather, Connect, Attune.`}
+              src={brand.heroImage}
+              alt={community.name}
               width={1200}
               height={675}
               priority
@@ -859,7 +861,7 @@ let canManagePolls = false
               background: 'linear-gradient(to top, rgb(var(--ink-rgb) / 0.7), transparent)',
               pointerEvents: 'none',
             }} />
-          </div>
+          </div>}
 
           {/* Tagline */}
           <p

@@ -1,4 +1,9 @@
-export function Footer() {
+import { getCommunity } from '@/lib/community'
+import { themeBrand } from '@/lib/theme'
+
+export async function Footer() {
+  const community = await getCommunity()
+  const brand = themeBrand(community.theme)
   return (
     <footer
       style={{
@@ -18,21 +23,27 @@ export function Footer() {
           marginBottom: '0.5rem',
         }}
       >
-        Glåüm
+        {community.name}
       </p>
-      <p style={{ fontSize: '0.75rem', opacity: 0.4, letterSpacing: '0.12em', marginBottom: '1.5rem' }}>
-        SPONSORED BY SHRIMP™
-      </p>
+      {brand.tagline && (
+        <p style={{ fontSize: '0.75rem', opacity: 0.4, letterSpacing: '0.12em', marginBottom: '1.5rem', textTransform: 'uppercase' }}>
+          {brand.tagline}
+        </p>
+      )}
       <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)', marginBottom: '1.5rem' }} />
-      <p style={{ fontSize: '0.8rem', opacity: 0.4, fontStyle: 'italic' }}>
-        What If 2026 · A camp of attunement · Gently satirical, deeply sincere
-      </p>
-      <p style={{ fontSize: '0.75rem', opacity: 0.3, marginTop: '0.5rem' }}>
-        Part of the{' '}
-        <a href="https://glaum.ca" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>
-          Glåüm collective
-        </a>
-      </p>
+      {brand.footerLine && (
+        <p style={{ fontSize: '0.8rem', opacity: 0.4, fontStyle: 'italic' }}>
+          {brand.footerLine}
+        </p>
+      )}
+      {brand.footerLink && (
+        <p style={{ fontSize: '0.75rem', opacity: 0.3, marginTop: '0.5rem' }}>
+          Part of the{' '}
+          <a href={brand.footerLink.href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>
+            {brand.footerLink.label}
+          </a>
+        </p>
+      )}
     </footer>
   )
 }
