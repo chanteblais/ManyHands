@@ -18,7 +18,7 @@ The tenant row (`074`). One per community; Glåüm is seeded as `slug = 'glaum'`
 | `slug` | TEXT UNIQUE | URL-safe identifier, immutable (`glaum`) |
 | `name` | TEXT | Display name (`Glåüm`) |
 | `description` | TEXT | Meta description |
-| `hosts` | TEXT[] | Request hosts that resolve to this community (`{camp.glaum.ca}`); GIN index. Matched with port first, then bare hostname. Unknown host → `DEFAULT_COMMUNITY_SLUG` env (default `glaum`) |
+| `hosts` | TEXT[] | Request hosts that resolve to this community (`{glaum.withmanyhands.ca}` — every community is `<slug>.withmanyhands.ca`, see `docs/domains.md`); GIN index. Matched with port first, then bare hostname. Unknown host → `DEFAULT_COMMUNITY_SLUG` env (default `glaum`) |
 | `timezone` | TEXT | IANA name (`America/Vancouver`); crons + "today" (branch 1d) |
 | `event_name` | TEXT | Interim until Event is a first-class object (`What If 2026`) |
 | `email_from` | TEXT | `Name <addr>`; NULL → deployment `RESEND_FROM` (branch 1b moves sending here) |

@@ -14,7 +14,7 @@ Glåüm speaks in two registers, and both are canon:
 
 - **The daylight face** (glaum.ca): violet kitsch, retro-suburbia sincerity, deadpan
   cult-parody — "Trust is the first step toward attunement." The wink.
-- **The night face** (camp.glaum.ca): ink and antique gold, engraved ceremony, the registry.
+- **The night face** (glaum.withmanyhands.ca, formerly camp.glaum.ca): ink and antique gold, engraved ceremony, the registry.
   The candlelight.
 
 They are not in conflict; the joke *is* the sincerity. Under the shrimp-jello surrealism sit
