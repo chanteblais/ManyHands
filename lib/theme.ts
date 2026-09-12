@@ -94,3 +94,35 @@ export function themeOverrideCss(theme: Record<string, unknown>): string | null 
   }
   return decl.length ? `:root{${decl.join('')}}` : null
 }
+
+// ── Brand strings ────────────────────────────────────────────────────────────
+// `communities.theme.brand` holds the per-community copy that used to be
+// hardcoded Glåüm branding (the header sub-line, the hero image, the kicker
+// under the event name, the footer). Every field is optional; absent = hidden.
+//   { tagline: "sponsored by Shrimp™", kicker: "Theme Camp",
+//     hero_image: "/glaum-camp.jpg" | "https://…", footer_line: "…",
+//     footer_link: { label: "Glåüm collective", href: "https://glaum.ca" } }
+export type ThemeBrand = {
+  tagline: string | null
+  kicker: string | null
+  heroImage: string | null
+  footerLine: string | null
+  footerLink: { label: string; href: string } | null
+}
+
+const text = (v: unknown, max = 160): string | null =>
+  typeof v === 'string' && v.trim() && v.trim().length <= max ? v.trim() : null
+
+export function themeBrand(theme: Record<string, unknown> | undefined): ThemeBrand {
+  const b = (theme?.brand && typeof theme.brand === 'object' ? theme.brand : {}) as Record<string, unknown>
+  const hero = text(b.hero_image, 500)
+  const link = b.footer_link && typeof b.footer_link === 'object' ? (b.footer_link as Record<string, unknown>) : null
+  const href = link ? text(link.href, 500) : null
+  return {
+    tagline: text(b.tagline),
+    kicker: text(b.kicker, 60),
+    heroImage: hero && (hero.startsWith('/') || hero.startsWith('https://')) ? hero : null,
+    footerLine: text(b.footer_line, 200),
+    footerLink: link && href && href.startsWith('https://') && text(link.label) ? { label: text(link.label)!, href } : null,
+  }
+}

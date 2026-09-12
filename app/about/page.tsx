@@ -5,12 +5,14 @@ import { Section, Kicker } from '@/components/Section'
 import { getAllPageContent } from '@/lib/page-content'
 import { resolveMemberForUser } from '@/lib/members'
 import { getCommunity } from '@/lib/community'
+import { themeBrand } from '@/lib/theme'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AboutPage() {
   const { userId } = await auth()
   const community = await getCommunity()
+  const brand = themeBrand(community.theme)
 
   // Member lookup and page content are independent — one round-trip.
   const [member, pageContent] = await Promise.all([
@@ -43,7 +45,7 @@ export default async function AboutPage() {
             }}
           />
           <p style={{ fontSize: '0.68rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '1rem', opacity: 0.85 }}>
-            {community.eventName} · Theme Camp
+            {[community.eventName, brand.kicker].filter(Boolean).join(' · ')}
           </p>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 8vw, 5rem)', color: 'var(--gold)', margin: '0 0 0.75rem', lineHeight: 1, textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.4), 0 4px 20px rgba(0,0,0,0.8)' }}>
             About {community.name}

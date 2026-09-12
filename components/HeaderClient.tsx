@@ -16,6 +16,8 @@ const NotificationBell = dynamicImport(
 )
 import { MessagesNavLink } from './MessagesNavLink'
 import { MobileTabBar, type TabBarLink } from './MobileTabBar'
+import { useCommunity } from './CommunityProvider'
+import { themeBrand } from '@/lib/theme'
 
 const AUTH_MEMORY_KEY = 'glaum-auth-signed-in'
 const AUTH_NAME_KEY = 'glaum-auth-first-name'
@@ -70,6 +72,8 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
   const [rememberedFirstName, setRememberedFirstName] = useState<string | null>(null)
   const [rememberedEmail, setRememberedEmail] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const community = useCommunity()
+  const brand = themeBrand(community.theme)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -315,7 +319,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
             </div>
           )}
           {[
-            { href: '/about', label: 'About Glåüm' },
+            { href: '/about', label: `About ${community.name}` },
             ...(isAdmin ? [{ href: '/admin', label: 'Admin' }] : []),
           ].map(({ href, label }) => (
             <Link
@@ -435,7 +439,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
         {/* Logo */}
         <Link
           href="/"
-          aria-label="Glåüm Camp home"
+          aria-label={`${community.name} home`}
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: '1.4rem',
@@ -446,10 +450,12 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
             flexShrink: 0,
           }}
         >
-          Glåüm
-          <span style={{ color: 'var(--cream)', fontSize: '0.65rem', letterSpacing: '0.15em', marginLeft: '0.5rem', fontFamily: 'var(--font-libre-baskerville)', opacity: 0.6 }}>
-            sponsored by Shrimp™
-          </span>
+          {community.name}
+          {brand.tagline && (
+            <span style={{ color: 'var(--cream)', fontSize: '0.65rem', letterSpacing: '0.15em', marginLeft: '0.5rem', fontFamily: 'var(--font-libre-baskerville)', opacity: 0.6 }}>
+              {brand.tagline}
+            </span>
+          )}
         </Link>
 
         {/* Desktop nav */}
