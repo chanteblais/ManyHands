@@ -254,6 +254,7 @@ The platform serves many communities from one codebase, one database, one deploy
 - **Storage**: new uploads are prefixed `<community_id>/` (`objectPath()`); see database.md → Storage Buckets.
 - **Badge**: `/api/badge?c=<slug>&role=&dept=` — assets from `communities.theme.badge` (`base_url`, `font_url`, `width`, `height`) or the repo's Glåüm defaults; asset + render caches keyed by slug.
 - **Picker**: `GET /api/me/communities` (the person's memberships × communities, with each community's origin) and `/communities` (list, or the no-community empty state).
+- **Demo community**: `scripts/seed-demo-community.mjs` (content: `scripts/seed-demo/content.mjs`) seeds *Lantern Hollow* as a second community by rows alone — the showcase/App Review tenant and the rehearsal for onboarding a real one. Service-role writes, every row stamped with the demo `community_id`; `--reset` wipes only that community's rows and avatar objects.
 
 ### Community resolution — `lib/community.ts`
 

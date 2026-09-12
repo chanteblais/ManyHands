@@ -201,6 +201,21 @@ A `seed-demo` script that fabricates a convincing community is the piece everyth
 walkthroughs, video footage, landing-page screenshots, the live demo instance, local testing, and
 eventually new-tenant starter templates. If anything gets built early, it's this.
 
+**Built 2026-09-12 — `scripts/seed-demo-community.mjs` + `scripts/seed-demo/content.mjs`.** With
+multi-tenancy in place the demo is not a second deployment but a **second community in the same
+database**: *Lantern Hollow*, a fictional theme camp at the "Solstice Gathering 2027" — 6
+departments, 12 roles (one restricted, with a pending request), 4 shift types, 9 shifts (four
+nightly), 6 groups in two collections (with threads + welcome notes), 30 invented members with
+generated portraits (approved / pending / suspended, dues paid / reported / owing), filled shifts,
+3 gatherings with RSVPs, 3 resource lists with claims, a poll, announcements, shoutouts, radio
+chatter, two distinction rules and a manual grant, its own copy, event dates, teal/brass theme and
+timezone. `--dry-run` validates; `--reset` wipes and reseeds (the nightly "graffiti wipe");
+`--organizer=<clerk id>` gives a real Clerk user an approved admin member row (the "explore as the
+organizer" account). Locally the same dev server answers `127.0.0.1:<port>` /
+`lantern.localhost:<port>` as Lantern Hollow and `localhost:<port>` as Glåüm; production needs a
+host row (`communities.hosts`) once the demo has a domain. This was also the first end-to-end
+run of standing up tenant 2: no code changed — rows only.
+
 ### Sequencing (decided direction, not yet scheduled)
 
 - **Pre–What-If: build nothing that touches the app.** The event is the priority. The IC friend
