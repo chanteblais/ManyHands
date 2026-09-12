@@ -4,6 +4,8 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { headers } from 'next/headers'
 import { clerkFallbackHome, resolveSiteOrigin } from '@/lib/site-origin'
 import { SITE_NAME, EVENT_NAME, SITE_DESCRIPTION } from '@/lib/site-config'
+import { getCommunity, toPublicCommunity } from '@/lib/community'
+import { CommunityProvider } from '@/components/CommunityProvider'
 import ServiceWorkerRegister from './ServiceWorkerRegister'
 import InstallPrompt from './InstallPrompt'
 import './globals.css'
@@ -64,6 +66,9 @@ function clerkFrontendOriginFromKey(): string | null {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const headerList = await headers()
   const appHome = clerkFallbackHome(resolveSiteOrigin(headerList))
+  // Tenant resolution happens once per request, here; pages and routes call
+  // getCommunity() themselves (cached) and pass community.id into tenantDb().
+  const community = toPublicCommunity(await getCommunity())
   const clerkFrontendOrigin = clerkFrontendOriginFromKey()
 
   return (
@@ -94,7 +99,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           className={`${libreBaskerville.variable} ${cormorantGaramond.variable}`}
           style={{ fontFamily: 'var(--font-libre-baskerville), Georgia, serif' }}
         >
-          <div className="site-shell">{children}</div>
+          <CommunityProvider community={community}>
+            <div className="site-shell">{children}</div>
+          </CommunityProvider>
           <ServiceWorkerRegister />
           <InstallPrompt />
         </body>

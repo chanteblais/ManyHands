@@ -6,6 +6,28 @@ All tables live in a Supabase (Postgres) project. The base schema is in `supabas
 
 ## Tables
 
+> **Tenancy (migration `074`, branch 1a of [tenancy-design.md](tenancy-design.md)):** every table below except `push_tokens` and `notification_preferences` carries `community_id UUID NOT NULL REFERENCES communities(id)` (indexed `<table>_community_idx`). It is not repeated in each table's column list. Until migration `075` lands (end of the code sweep) the column has a **transitional default** `platform_default_community_id()` (= the `glaum` row) so un-swept inserts keep working, and the per-person unique constraints (`members.clerk_user_id`, `camp_signups.clerk_user_id`, `page_content.key` PK, `attunement_nudges` PK, `event_reminders_sent` unique, `conversations.direct_key`, `shift_types.backfill_key`) are still global. Code reaches scoped tables through `tenantDb(community.id)` (`lib/tenant-db.ts`).
+
+### `communities`
+
+The tenant row (`074`). One per community; Glåüm is seeded as `slug = 'glaum'`. Read through `lib/community.ts` (`getCommunity()` resolves the request host against `hosts`; cached, tag `communities`, 5-min revalidate) — never queried from feature code.
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | UUID PK | |
+| `slug` | TEXT UNIQUE | URL-safe identifier, immutable (`glaum`) |
+| `name` | TEXT | Display name (`Glåüm`) |
+| `description` | TEXT | Meta description |
+| `hosts` | TEXT[] | Request hosts that resolve to this community (`{camp.glaum.ca}`); GIN index. Matched with port first, then bare hostname. Unknown host → `DEFAULT_COMMUNITY_SLUG` env (default `glaum`) |
+| `timezone` | TEXT | IANA name (`America/Vancouver`); crons + "today" (branch 1d) |
+| `event_name` | TEXT | Interim until Event is a first-class object (`What If 2026`) |
+| `email_from` | TEXT | `Name <addr>`; NULL → deployment `RESEND_FROM` (branch 1b moves sending here) |
+| `theme` | JSONB | Colour/font tokens (branch 1f); `{}` |
+| `settings` | JSONB | Small platform-level knobs; `{}` |
+| `status` | TEXT | `active` / `paused` / `archived` |
+| `created_at` | TIMESTAMPTZ | |
+
+
 ### `applications`
 
 One row per person who has submitted a camp application.
@@ -63,6 +85,8 @@ One row per person who has submitted a camp application.
 ---
 
 ### `members`
+
+Also (`074`, unread until branch 1d): `role` TEXT NOT NULL DEFAULT `'member'` (`member` / `admin` — community-scoped admin, replacing Clerk `publicMetadata.role`) and `can_manage_polls` BOOL NOT NULL DEFAULT false (replacing `publicMetadata.canManagePolls`). Backfilled from Clerk by script in 1d.
 
 Canonical identity — **one row per person** (migration `037`, Phase 1 of profile-as-source-of-truth; see [profile-architecture.md](profile-architecture.md)). Splits the two roles `applications` played: `applications` stays the submission/review artifact, `members` becomes the canonical identity + membership record the app reads. Backfilled one member per distinct person (by `clerk_user_id`, else `lower(email)`) from the most recent application; additive & idempotent. Reads resolve via `lib/members.ts` (`resolveMember`).
 
@@ -620,6 +644,7 @@ Member-submitted suggestions for new departments or roles. Added in migration `0
 | `070_resource_list_dashboard.sql` | **Member-owned resources: dashboard opt-in.** Adds `resource_lists.show_on_dashboard` (BOOL NOT NULL DEFAULT false). The home "Bring Something" widget renders a compact row per list, but only for lists a member has opted in (default off, toggled in the list editor on `/participate`). Distinct from `visible` (participate board). Additive + idempotent, non-destructive. *(Numbered 070 — next free after main's 066–069; `065` stays reserved by the in-flight shifts-legacy-drop branch.)* |
 | `071_group_welcome.sql` | **Per-member group welcome notes.** Adds `messages.visible_to` (TEXT, NULL = normal message; set = private system note only that member sees) + partial index; inserts any missing group conversations; **backfills one private welcome note per existing group membership** so every current member gets the "you're in this group" unread nudge retroactively. System notes use `sender_clerk_id = 'system'`. Additive + idempotent, non-destructive. **Two-part apply** (file is sectioned): Part A (schema) *before* deploy — the new readers filter on the column; Part B (backfill) *after* deploy — the old code doesn't filter `visible_to`, so earlier backfill would briefly show everyone's welcomes publicly. **Both parts applied in prod 2026-07-11.** |
 | `072_application_files_private.sql` | **Security review 2026-08-27.** Makes the `application-files` bucket **private** + drops the public-read policy — applicant attachments were readable by anyone holding the object URL. Reads now go through GET `/api/apply/file?path=` (owner-or-admin → 60s signed URL); pre-`072` public URLs stored in old answers are rewritten to that route at render time (`lib/application-files.ts`). **Apply WITH/AFTER the code deploy** (applying first breaks existing file links until the new code is live). Non-destructive (no objects touched), idempotent. **Applied in prod 2026-08-27.** |
+| `074_communities.sql` | **Multi-tenancy step 1a** ([tenancy-design.md](tenancy-design.md)). `communities` table + Glåüm seed row; `community_id` (NOT NULL, FK, indexed) on all 34 community-scoped tables, backfilled to Glåüm, with the **transitional default** `platform_default_community_id()` (dropped in `075`); `members.role` + `members.can_manage_polls`; `claim_shift_signup()` re-created to stamp `community_id` from the event (same signature). Unique constraints untouched until `075`. **Either deploy order is safe** (old code: defaults fill the column; new code: `lib/community.ts` falls back to a synthetic default community and warns until the table exists). Apply before branch 1b starts. Non-destructive, idempotent. |
 | `073_claim_shift_signup.sql` | **Security review 2026-08-27.** `claim_shift_signup()` function — capacity count + signup insert in one advisory-locked transaction, replacing the route's racy read-then-insert (two concurrent signups could both take the last slot). Execute revoked from `public`/`anon`/`authenticated`, granted to `service_role` only. **Apply BEFORE/WITH the code deploy** — `/api/shift-signups` POST now calls it and 500s without it. Non-destructive, idempotent. **Applied in prod 2026-08-27.** |
 
 ---
