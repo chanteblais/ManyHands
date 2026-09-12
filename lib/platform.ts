@@ -79,7 +79,6 @@ export function isPlatformPath(pathname: string): boolean {
   return (
     pathname === '/communities' ||
     pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up') || pathname === '/sign-out' ||
-    pathname === '/api/sign-out' || pathname === '/api/nav-auth' || pathname.startsWith('/api/me/') || pathname === '/api/communities' ||
-    pathname === '/manifest.webmanifest'
+    pathname === '/api/sign-out' || pathname === '/api/nav-auth' || pathname.startsWith('/api/me/') || pathname === '/api/communities'
   )
 }

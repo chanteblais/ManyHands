@@ -7,8 +7,7 @@ import { getCommunity, toPublicCommunity } from '@/lib/community'
 import { CommunityProvider } from '@/components/CommunityProvider'
 import { themeOverrideCss, THEME_COLORS } from '@/lib/theme'
 import { clerkDomainConfig } from '@/lib/platform'
-import ServiceWorkerRegister from './ServiceWorkerRegister'
-import InstallPrompt from './InstallPrompt'
+import ServiceWorkerCleanup from './ServiceWorkerCleanup'
 import './globals.css'
 
 const libreBaskerville = Libre_Baskerville({
@@ -37,12 +36,6 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
       shortcut: ['/favicon/favicon.ico'],
       apple: '/favicon/apple-touch-icon.png',
-    },
-    // Manifest is generated dynamically by app/manifest.ts (auto-linked by Next).
-    appleWebApp: {
-      capable: true,
-      title: name,
-      statusBarStyle: 'black',
     },
   }
 }
@@ -120,10 +113,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           <CommunityProvider community={community}>
             <div className="site-shell">{children}</div>
-            {/* Inside the provider: InstallPrompt reads useCommunity() for the name. */}
-            <InstallPrompt />
           </CommunityProvider>
-          <ServiceWorkerRegister />
+          <ServiceWorkerCleanup />
         </body>
       </html>
     </ClerkProvider>
