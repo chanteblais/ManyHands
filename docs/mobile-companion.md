@@ -67,6 +67,35 @@ same app:
   Many Hands as Glåüm's member-registry nav surface — resolve deliberately if the platform name
   sticks (business.md open question #4).
 
+### App Store path (assessed 2026-09-11, nothing started)
+
+Chanté wants to publish the app on the App Store, with a couple of communities interested in
+sites. The full assessment lives in [`business.md`](./business.md) → discussion log 2026-09-11;
+the parts that bind this doc:
+
+- **One shared app is what Apple wants too.** App Review guideline 4.3 pushes template/aggregator
+  providers toward a single container app rather than many near-identical branded ones — the
+  "one published Many Hands app" direction above is the compliant shape, not just the
+  preferred one.
+- **Client technology leans Capacitor under the service model.** A wrapped-web shell carries
+  web-only bespoke content (level C) into the app for free, which a native-UI client cannot.
+  Still needs enough native value (push, camera, haptics, safe areas, native community
+  switcher) to clear guideline 4.2's "more than a repackaged website" bar. Not formally decided
+  — see Deliberately undecided.
+- **Prerequisites that don't exist yet:** tenant scoping (none in code); the shell project; a
+  member-facing **account deletion** path (only admin removal exists; guideline 5.1.1(v));
+  **Sign in with Apple** if any third-party login is offered; a webview-safe login flow (Google
+  blocks OAuth inside embedded webviews → in-app system browser or Clerk native SDK);
+  community-scoped `push_tokens`/notifications; app-name uniqueness + the Many Hands nav-label
+  collision resolved.
+- **Sequence:** web multi-tenancy first (the web is the app's content) → shell in parallel →
+  store hygiene → **TestFlight internal with Glåüm members** (no review, no store page) →
+  **public listing once a second tenant is live**, so the listing is Many Hands, not Glåüm.
+- **Custom domains vs deep links:** each per-community custom domain would need its own
+  `apple-app-site-association` for universal links. Recommended posture: the app talks to one
+  canonical platform domain; custom domains are web-only vanity (Phase 2 in
+  `multi-community.md`).
+
 ---
 
 ## Mobile-specific improvements
