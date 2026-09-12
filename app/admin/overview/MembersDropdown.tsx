@@ -33,7 +33,7 @@ export function MembersDropdown({ members }: { members: Member[] }) {
           border: 'none',
           cursor: 'pointer',
           padding: 0,
-          color: '#C8A848',
+          color: 'var(--gold)',
           fontSize: '0.78rem',
           letterSpacing: '0.08em',
           opacity: 0.8,
@@ -47,7 +47,7 @@ export function MembersDropdown({ members }: { members: Member[] }) {
             borderRadius: '9999px',
             background: 'rgba(255,180,50,0.15)',
             border: '1px solid rgba(255,180,50,0.3)',
-            color: '#ffb432',
+            color: 'var(--amber)',
             fontSize: '0.7rem',
           }}>
             {incomplete} incomplete
@@ -66,9 +66,9 @@ export function MembersDropdown({ members }: { members: Member[] }) {
                 style={{
                   padding: '0.25rem 0.75rem',
                   borderRadius: '9999px',
-                  border: filter === f ? '1px solid rgba(210,57,248,0.4)' : '1px solid rgba(200,168,72,0.15)',
-                  background: filter === f ? 'rgba(210,57,248,0.08)' : 'transparent',
-                  color: filter === f ? '#D239F8' : '#F3EDE6',
+                  border: filter === f ? '1px solid rgb(var(--purple-rgb) / 0.4)' : '1px solid rgb(var(--gold-rgb) / 0.15)',
+                  background: filter === f ? 'rgb(var(--purple-rgb) / 0.08)' : 'transparent',
+                  color: filter === f ? 'var(--purple)' : 'var(--cream)',
                   fontSize: '0.72rem',
                   cursor: 'pointer',
                   opacity: filter === f ? 1 : 0.5,
@@ -106,7 +106,7 @@ export function MembersDropdown({ members }: { members: Member[] }) {
                   }}
                 >
                   <div>
-                    <a href={`/admin/${m.id}`} style={{ fontSize: '0.85rem', margin: 0, color: '#C8A848', opacity: 0.85, textDecoration: 'none', display: 'block' }}>{m.displayName}</a>
+                    <a href={`/admin/${m.id}`} style={{ fontSize: '0.85rem', margin: 0, color: 'var(--gold)', opacity: 0.85, textDecoration: 'none', display: 'block' }}>{m.displayName}</a>
                     <p style={{ fontSize: '0.72rem', margin: 0, opacity: 0.4 }}>{m.email}</p>
                   </div>
                   <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0 }}>
@@ -124,7 +124,7 @@ export function MembersDropdown({ members }: { members: Member[] }) {
 }
 
 function Tag({ label, done, pending }: { label: string; done: boolean; pending?: boolean }) {
-  const color = pending ? '#ffb432' : done ? '#7dcf8e' : 'rgba(243,237,230,0.3)'
+  const color = pending ? 'var(--amber)' : done ? 'var(--success)' : 'rgb(var(--cream-rgb) / 0.3)'
   const bg = pending ? 'rgba(255,180,50,0.1)' : done ? 'rgba(100,200,120,0.1)' : 'rgba(255,255,255,0.04)'
   const border = pending ? 'rgba(255,180,50,0.3)' : done ? 'rgba(100,200,120,0.25)' : 'rgba(255,255,255,0.1)'
   const symbol = pending ? '⏳' : done ? '✓' : '–'

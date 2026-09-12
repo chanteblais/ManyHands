@@ -15,13 +15,13 @@ type Announcement = {
 }
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(200,168,72,0.2)',
-  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: '#F3EDE6', fontSize: '0.875rem',
+  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: 'var(--cream)', fontSize: '0.875rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif', outline: 'none',
 }
 const labelStyle: React.CSSProperties = {
   fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase',
-  color: '#C8A848', opacity: 0.65, display: 'block', marginBottom: '0.35rem',
+  color: 'var(--gold)', opacity: 0.65, display: 'block', marginBottom: '0.35rem',
 }
 
 function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
@@ -31,15 +31,15 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
         onClick={() => onChange(!checked)}
         style={{
           display: 'inline-block', width: '36px', height: '20px', borderRadius: '9999px', flexShrink: 0,
-          background: checked ? '#C8A848' : 'rgba(255,255,255,0.1)',
-          border: `1px solid ${checked ? '#C8A848' : 'rgba(200,168,72,0.2)'}`,
+          background: checked ? 'var(--gold)' : 'rgba(255,255,255,0.1)',
+          border: `1px solid ${checked ? 'var(--gold)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
           position: 'relative', transition: 'background 0.2s', cursor: 'pointer',
         }}
       >
         <span style={{
           position: 'absolute', top: '2px', left: checked ? '17px' : '2px',
           width: '14px', height: '14px', borderRadius: '50%',
-          background: '#F3EDE6', transition: 'left 0.2s',
+          background: 'var(--cream)', transition: 'left 0.2s',
         }} />
       </span>
       <span style={{ opacity: 0.75 }}>{label}</span>
@@ -69,15 +69,15 @@ function AnnouncementModal({
       <div style={{
         position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
         width: 'min(95vw, 520px)', maxHeight: '88vh', overflowY: 'auto',
-        background: '#1A0A24', border: '1px solid rgba(200,168,72,0.25)',
+        background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.25)',
         borderRadius: '1rem', padding: '1.5rem', zIndex: 50,
         boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <h3 style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.15rem', color: '#C8A848', margin: 0 }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', color: 'var(--gold)', margin: 0 }}>
             {initial.title ? 'Edit announcement' : 'New announcement'}
           </h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#C8A848', fontSize: '1.4rem', cursor: 'pointer', opacity: 0.7 }}>×</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '1.4rem', cursor: 'pointer', opacity: 0.7 }}>×</button>
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
@@ -111,13 +111,13 @@ function AnnouncementModal({
           <Toggle checked={form.visible} onChange={v => set('visible', v)} label="Visible" />
         </div>
 
-        {error && <p style={{ color: '#ff8a8a', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
+        {error && <p style={{ color: 'var(--danger)', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
 
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>
+          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>
             Cancel
           </button>
-          <button onClick={() => onSave(form)} disabled={saving || !form.title} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.45)', background: 'transparent', color: '#FFFACD', cursor: 'pointer', fontSize: '0.82rem', opacity: saving ? 0.5 : 1 }}>
+          <button onClick={() => onSave(form)} disabled={saving || !form.title} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.45)', background: 'transparent', color: 'var(--lemon)', cursor: 'pointer', fontSize: '0.82rem', opacity: saving ? 0.5 : 1 }}>
             {saving ? 'Saving…' : 'Save'}
           </button>
         </div>
@@ -222,18 +222,18 @@ export function AnnouncementsManager() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-        <p style={{ fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, margin: 0 }}>
+        <p style={{ fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>
           Announcements — {items.length}
         </p>
         <button
           onClick={() => { setModal({ mode: 'add' }); setModalError(null) }}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.25)', background: 'transparent', color: '#C8A848', cursor: 'pointer', fontSize: '0.78rem', letterSpacing: '0.06em', opacity: 0.75 }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.25)', background: 'transparent', color: 'var(--gold)', cursor: 'pointer', fontSize: '0.78rem', letterSpacing: '0.06em', opacity: 0.75 }}
         >
           + New announcement
         </button>
       </div>
 
-      {actionError && <p style={{ color: '#ff8a8a', fontSize: '0.8rem', margin: '0 0 0.6rem' }}>{actionError}</p>}
+      {actionError && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', margin: '0 0 0.6rem' }}>{actionError}</p>}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {items.length === 0 && <p style={{ opacity: 0.35, fontStyle: 'italic', fontSize: '0.82rem' }}>No announcements yet.</p>}
@@ -241,14 +241,14 @@ export function AnnouncementsManager() {
           <div key={item.id} style={{
             display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
             padding: '0.85rem 1rem', borderRadius: '0.65rem',
-            border: '1px solid rgba(200,168,72,0.12)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.12)',
             background: item.visible ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.005)',
             opacity: item.visible ? 1 : 0.5,
           }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                {item.pinned && <span style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#D239F8', border: '1px solid rgba(210,57,248,0.3)', borderRadius: '9999px', padding: '0.1rem 0.5rem' }}>Pinned</span>}
-                <p style={{ fontSize: '0.9rem', color: '#F3EDE6', margin: 0, fontWeight: 600 }}>{item.title}</p>
+                {item.pinned && <span style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--purple)', border: '1px solid rgb(var(--purple-rgb) / 0.3)', borderRadius: '9999px', padding: '0.1rem 0.5rem' }}>Pinned</span>}
+                <p style={{ fontSize: '0.9rem', color: 'var(--cream)', margin: 0, fontWeight: 600 }}>{item.title}</p>
               </div>
               {item.body && <p style={{ fontSize: '0.8rem', opacity: 0.55, margin: '0.2rem 0 0', lineHeight: 1.5 }}>{item.body}</p>}
               <p style={{ fontSize: '0.68rem', opacity: 0.35, margin: '0.35rem 0 0' }}>
@@ -256,13 +256,13 @@ export function AnnouncementsManager() {
               </p>
             </div>
             <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
-              <button onClick={() => handleToggleVisible(item)} title={item.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'} aria-label={item.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: '#C8A848', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
+              <button onClick={() => handleToggleVisible(item)} title={item.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'} aria-label={item.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: 'var(--gold)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
                 {item.visible ? '●' : '○'}
               </button>
-              <button onClick={() => { setModal({ mode: 'edit', item }); setModalError(null) }} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: '#C8A848', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
+              <button onClick={() => { setModal({ mode: 'edit', item }); setModalError(null) }} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: 'var(--gold)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
                 Edit
               </button>
-              <button onClick={() => handleDelete(item.id)} style={{ background: 'none', border: '1px solid rgba(255,100,100,0.2)', borderRadius: '0.4rem', color: '#ff8a8a', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>
+              <button onClick={() => handleDelete(item.id)} style={{ background: 'none', border: '1px solid rgba(255,100,100,0.2)', borderRadius: '0.4rem', color: 'var(--danger)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>
                 ✕
               </button>
             </div>

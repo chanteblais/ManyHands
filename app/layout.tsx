@@ -5,6 +5,7 @@ import { headers } from 'next/headers'
 import { clerkFallbackHome, resolveSiteOrigin } from '@/lib/site-origin'
 import { getCommunity, toPublicCommunity } from '@/lib/community'
 import { CommunityProvider } from '@/components/CommunityProvider'
+import { themeOverrideCss, THEME_COLORS } from '@/lib/theme'
 import ServiceWorkerRegister from './ServiceWorkerRegister'
 import InstallPrompt from './InstallPrompt'
 import './globals.css'
@@ -46,7 +47,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#1A0A24',
+  // Browser chrome colour = the default ink token. Meta tags can't resolve
+  // CSS variables, and a per-community value here would need an async
+  // generateViewport(), which changes how Next streams the <head> — logged in
+  // the generalizability log as a later item.
+  themeColor: THEME_COLORS.ink.hex,
   width: 'device-width',
   initialScale: 1,
 }
@@ -71,6 +76,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Tenant resolution happens once per request, here; pages and routes call
   // getCommunity() themselves (cached) and pass community.id into tenantDb().
   const community = toPublicCommunity(await getCommunity())
+  // A community's theme re-skins the site by overriding the :root tokens
+  // declared in globals.css (lib/theme.ts); null when it sets none.
+  const themeCss = themeOverrideCss(community.theme)
   const clerkFrontendOrigin = clerkFrontendOriginFromKey()
 
   return (
@@ -96,6 +104,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               only after CSS parse (guaranteed FOUT). Both faces total ~47KB. */}
           <link rel="preload" href="/fonts/TokyoDreams.v1.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
           <link rel="preload" href="/fonts/TokyoDreamsPlain.v1.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+          {themeCss && <style id="community-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />}
         </head>
         <body
           className={`${libreBaskerville.variable} ${cormorantGaramond.variable}`}

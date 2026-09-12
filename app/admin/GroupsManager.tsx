@@ -54,16 +54,16 @@ export type AssignableMember = {
 type GroupForm = { name: string; description: string; icon: string; icon_image: string; join_policy: string; visibility: string; collection_id: string; required_shift_type_id: string; required_shift_hours: string }
 
 const selectStyle: React.CSSProperties = {
-  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(200,168,72,0.2)',
-  borderRadius: '0.5rem', padding: '0.55rem 0.85rem', color: '#F3EDE6', fontSize: '0.85rem',
+  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+  borderRadius: '0.5rem', padding: '0.55rem 0.85rem', color: 'var(--cream)', fontSize: '0.85rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif', outline: 'none', boxSizing: 'border-box',
 }
 
-const GOLD = '#C8A848'
+const GOLD = 'var(--gold)'
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(200,168,72,0.2)',
-  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: '#F3EDE6', fontSize: '0.875rem',
+  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: 'var(--cream)', fontSize: '0.875rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif', outline: 'none', boxSizing: 'border-box',
 }
 const labelStyle: React.CSSProperties = {
@@ -106,8 +106,8 @@ function GroupModal({
   return (
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 50 }} />
-      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 51, background: '#1a1410', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '1rem', padding: '2rem', width: '90%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto' }}>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: GOLD, marginBottom: '1.5rem' }}>
+      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 51, background: '#1a1410', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', padding: '2rem', width: '90%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto' }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: GOLD, marginBottom: '1.5rem' }}>
           {isNew ? 'New Group' : 'Edit Group'}
         </p>
         <Field label="Name">
@@ -160,10 +160,10 @@ function GroupModal({
         <p style={{ fontSize: '0.72rem', opacity: 0.4, lineHeight: 1.5, marginBottom: '1.25rem' }}>
           Whether members can self-join is set on the <strong style={{ opacity: 0.8 }}>collection</strong> (edit the collection to toggle Self-join). To let <em>applicants</em> opt in during the application, add a <strong style={{ opacity: 0.8 }}>Group selection</strong> field in the Application Builder.
         </p>
-        {error && <p style={{ color: '#ff8a8a', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
+        {error && <p style={{ color: 'var(--danger)', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>Cancel</button>
-          <button onClick={() => onSave(form)} disabled={saving || !form.name} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.45)', background: 'transparent', color: '#FFFACD', cursor: 'pointer', fontSize: '0.82rem', opacity: saving || !form.name ? 0.4 : 1 }}>
+          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>Cancel</button>
+          <button onClick={() => onSave(form)} disabled={saving || !form.name} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.45)', background: 'transparent', color: 'var(--lemon)', cursor: 'pointer', fontSize: '0.82rem', opacity: saving || !form.name ? 0.4 : 1 }}>
             {saving ? 'Saving…' : 'Save group'}
           </button>
         </div>
@@ -230,7 +230,7 @@ function Roster({ groupId, members }: { groupId: string; members: AssignableMemb
           {roster.map(m => {
             const name = m.preferred_name || m.first_name || m.email || m.clerk_user_id
             return (
-              <div key={m.clerk_user_id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(200,168,72,0.08)' }}>
+              <div key={m.clerk_user_id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgb(var(--gold-rgb) / 0.08)' }}>
                 <div style={{ minWidth: 0 }}>
                   {m.application_id ? (
                     <a
@@ -245,9 +245,9 @@ function Roster({ groupId, members }: { groupId: string; members: AssignableMemb
                   {m.email && <p style={{ fontSize: '0.7rem', opacity: 0.4, margin: 0 }}>{m.email}</p>}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-                  {m.source === 'application' && <span style={{ fontSize: '0.6rem', color: GOLD, opacity: 0.55, border: '1px solid rgba(200,168,72,0.2)', borderRadius: '9999px', padding: '0.1rem 0.4rem' }} title="Opted in on their application">opted in</span>}
-                  {m.status && m.status !== 'approved' && <span style={{ fontSize: '0.6rem', color: '#ffb432', opacity: 0.8 }}>{m.status}</span>}
-                  <button onClick={() => remove(m.clerk_user_id)} disabled={busy} style={{ background: 'none', border: '1px solid rgba(255,80,80,0.2)', borderRadius: '0.4rem', color: '#ff8a8a', cursor: 'pointer', padding: '0.15rem 0.45rem', fontSize: '0.65rem', opacity: 0.7 }}>Remove</button>
+                  {m.source === 'application' && <span style={{ fontSize: '0.6rem', color: GOLD, opacity: 0.55, border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '9999px', padding: '0.1rem 0.4rem' }} title="Opted in on their application">opted in</span>}
+                  {m.status && m.status !== 'approved' && <span style={{ fontSize: '0.6rem', color: 'var(--amber)', opacity: 0.8 }}>{m.status}</span>}
+                  <button onClick={() => remove(m.clerk_user_id)} disabled={busy} style={{ background: 'none', border: '1px solid rgba(255,80,80,0.2)', borderRadius: '0.4rem', color: 'var(--danger)', cursor: 'pointer', padding: '0.15rem 0.45rem', fontSize: '0.65rem', opacity: 0.7 }}>Remove</button>
                 </div>
               </div>
             )
@@ -267,7 +267,7 @@ function Roster({ groupId, members }: { groupId: string; members: AssignableMemb
           {candidates.length === 0 ? (
             <p style={{ fontSize: '0.75rem', opacity: 0.35, fontStyle: 'italic', padding: '0.25rem 0' }}>No matching approved members.</p>
           ) : candidates.map(m => (
-            <button key={m.clerk_user_id} onClick={() => add(m)} disabled={busy} style={{ textAlign: 'left', background: 'rgba(200,168,72,0.04)', border: '1px solid rgba(200,168,72,0.12)', borderRadius: '0.4rem', color: '#F3EDE6', cursor: 'pointer', padding: '0.4rem 0.6rem', fontSize: '0.8rem' }}>
+            <button key={m.clerk_user_id} onClick={() => add(m)} disabled={busy} style={{ textAlign: 'left', background: 'rgb(var(--gold-rgb) / 0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.12)', borderRadius: '0.4rem', color: 'var(--cream)', cursor: 'pointer', padding: '0.4rem 0.6rem', fontSize: '0.8rem' }}>
               + {m.displayName} <span style={{ opacity: 0.4 }}>· {m.email}</span>
             </button>
           ))}
@@ -303,16 +303,16 @@ function GroupRow({
       onDragEnd={onDragEnd}
       style={{
         borderRadius: '0.75rem',
-        border: isDragOver ? '1px solid rgba(200,168,72,0.5)' : '1px solid rgba(200,168,72,0.18)',
-        background: isDragOver ? 'rgba(200,168,72,0.05)' : 'rgba(255,255,255,0.02)',
+        border: isDragOver ? '1px solid rgb(var(--gold-rgb) / 0.5)' : '1px solid rgb(var(--gold-rgb) / 0.18)',
+        background: isDragOver ? 'rgb(var(--gold-rgb) / 0.05)' : 'rgba(255,255,255,0.02)',
         transition: 'border-color 0.15s, background 0.15s', overflow: 'hidden',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.9rem 1rem', cursor: 'grab', background: 'rgba(200,168,72,0.06)', borderBottom: open ? '1px solid rgba(200,168,72,0.12)' : 'none' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.9rem 1rem', cursor: 'grab', background: 'rgb(var(--gold-rgb) / 0.06)', borderBottom: open ? '1px solid rgb(var(--gold-rgb) / 0.12)' : 'none' }}>
         <span style={{ color: GOLD, opacity: 0.25, fontSize: '1rem', userSelect: 'none', flexShrink: 0 }}>⠿</span>
         {group.icon && <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{group.icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: '0.92rem', color: '#F3EDE6', margin: 0, fontWeight: 600 }}>{group.name}</p>
+          <p style={{ fontSize: '0.92rem', color: 'var(--cream)', margin: 0, fontWeight: 600 }}>{group.name}</p>
           {group.description && (
             <p style={{ fontSize: '0.77rem', opacity: 0.45, margin: '0.15rem 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{group.description}</p>
           )}
@@ -321,15 +321,15 @@ function GroupRow({
           <span title="Members can self-join" style={{ fontSize: '0.6rem', color: '#7fd1a0', opacity: 0.85, border: '1px solid rgba(127,209,160,0.3)', borderRadius: '9999px', padding: '0.1rem 0.45rem', flexShrink: 0, letterSpacing: '0.05em' }}>OPEN</span>
         )}
         {group.visibility === 'hidden' && (
-          <span title="Not discoverable" style={{ fontSize: '0.6rem', color: GOLD, opacity: 0.5, border: '1px solid rgba(200,168,72,0.25)', borderRadius: '9999px', padding: '0.1rem 0.45rem', flexShrink: 0, letterSpacing: '0.05em' }}>HIDDEN</span>
+          <span title="Not discoverable" style={{ fontSize: '0.6rem', color: GOLD, opacity: 0.5, border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '9999px', padding: '0.1rem 0.45rem', flexShrink: 0, letterSpacing: '0.05em' }}>HIDDEN</span>
         )}
         <span style={{ fontSize: '0.72rem', color: GOLD, opacity: 0.5, flexShrink: 0 }}>
           {group.member_count} member{group.member_count !== 1 ? 's' : ''}
         </span>
         <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
-          <button onClick={onEdit} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: GOLD, cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.7 }}>Edit</button>
-          <button onClick={onDelete} style={{ background: 'none', border: '1px solid rgba(255,80,80,0.2)', borderRadius: '0.4rem', color: '#ff8a8a', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.7 }}>Del</button>
-          <button onClick={() => setOpen(o => !o)} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.4rem', color: GOLD, cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>
+          <button onClick={onEdit} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: GOLD, cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.7 }}>Edit</button>
+          <button onClick={onDelete} style={{ background: 'none', border: '1px solid rgba(255,80,80,0.2)', borderRadius: '0.4rem', color: 'var(--danger)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.7 }}>Del</button>
+          <button onClick={() => setOpen(o => !o)} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.4rem', color: GOLD, cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>
             {open ? '▲' : '▼'}
           </button>
         </div>
@@ -363,8 +363,8 @@ function CollectionModal({
   return (
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 50 }} />
-      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 51, background: '#1a1410', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '1rem', padding: '2rem', width: '90%', maxWidth: '480px' }}>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: GOLD, marginBottom: '0.4rem' }}>
+      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 51, background: '#1a1410', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', padding: '2rem', width: '90%', maxWidth: '480px' }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: GOLD, marginBottom: '0.4rem' }}>
           {isNew ? 'New Group Collection' : 'Edit Group Collection'}
         </p>
         <p style={{ fontSize: '0.75rem', opacity: 0.45, lineHeight: 1.5, marginBottom: '1.5rem' }}>
@@ -383,21 +383,21 @@ function CollectionModal({
           </select>
         </Field>
         <Field label="Visible on profile" hint="When on, a member's groups in this collection appear on their profile (/profile + public /members/[id]). Turn off for operational collections you don't want shown there. Display only — does not affect self-join.">
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', fontSize: '0.85rem', color: '#F3EDE6' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--cream)' }}>
             <input type="checkbox" checked={form.show_on_profile} onChange={e => setForm(f => ({ ...f, show_on_profile: e.target.checked }))} style={{ width: 16, height: 16, accentColor: GOLD, cursor: 'pointer' }} />
             Visible on member profiles
           </label>
         </Field>
         <Field label="Self-join" hint="When on, members can join/leave this collection's groups themselves on the Participate page (/participate → Your Groups). Independent of profile visibility. Turn off for admin-assigned-only collections.">
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', fontSize: '0.85rem', color: '#F3EDE6' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--cream)' }}>
             <input type="checkbox" checked={form.self_join} onChange={e => setForm(f => ({ ...f, self_join: e.target.checked }))} style={{ width: 16, height: 16, accentColor: GOLD, cursor: 'pointer' }} />
             Members can self-join on Participate
           </label>
         </Field>
-        {error && <p style={{ color: '#ff8a8a', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
+        {error && <p style={{ color: 'var(--danger)', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>Cancel</button>
-          <button onClick={() => onSave(form)} disabled={saving || !form.name} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.45)', background: 'transparent', color: '#FFFACD', cursor: 'pointer', fontSize: '0.82rem', opacity: saving || !form.name ? 0.4 : 1 }}>
+          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>Cancel</button>
+          <button onClick={() => onSave(form)} disabled={saving || !form.name} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.45)', background: 'transparent', color: 'var(--lemon)', cursor: 'pointer', fontSize: '0.82rem', opacity: saving || !form.name ? 0.4 : 1 }}>
             {saving ? 'Saving…' : 'Save collection'}
           </button>
         </div>
@@ -441,26 +441,26 @@ function CollectionSection({
   }
 
   return (
-    <div style={{ border: '1px solid rgba(200,168,72,0.15)', borderRadius: '1rem', padding: '1rem 1.1rem 1.2rem', background: 'rgba(200,168,72,0.02)' }}>
+    <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '1rem', padding: '1rem 1.1rem 1.2rem', background: 'rgb(var(--gold-rgb) / 0.02)' }}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.65rem', marginBottom: '0.9rem' }}>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1rem', color: GOLD, margin: 0 }}>{collection.name}</p>
-        <span style={{ fontSize: '0.6rem', color: GOLD, opacity: 0.55, border: '1px solid rgba(200,168,72,0.25)', borderRadius: '9999px', padding: '0.1rem 0.45rem', letterSpacing: '0.05em' }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: GOLD, margin: 0 }}>{collection.name}</p>
+        <span style={{ fontSize: '0.6rem', color: GOLD, opacity: 0.55, border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '9999px', padding: '0.1rem 0.45rem', letterSpacing: '0.05em' }}>
           {collection.selection === 'single' ? 'PICK ONE' : 'PICK MANY'}
         </span>
         {!collection.show_on_profile && (
-          <span title="Members' groups here are hidden from their profile" style={{ fontSize: '0.6rem', color: GOLD, opacity: 0.5, border: '1px solid rgba(200,168,72,0.25)', borderRadius: '9999px', padding: '0.1rem 0.45rem', letterSpacing: '0.05em' }}>
+          <span title="Members' groups here are hidden from their profile" style={{ fontSize: '0.6rem', color: GOLD, opacity: 0.5, border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '9999px', padding: '0.1rem 0.45rem', letterSpacing: '0.05em' }}>
             OFF PROFILE
           </span>
         )}
         {collection.self_join && (
-          <span title="Members can self-join these groups on the Participate page" style={{ fontSize: '0.6rem', color: '#D239F8', opacity: 0.7, border: '1px solid rgba(210,57,248,0.35)', borderRadius: '9999px', padding: '0.1rem 0.45rem', letterSpacing: '0.05em' }}>
+          <span title="Members can self-join these groups on the Participate page" style={{ fontSize: '0.6rem', color: 'var(--purple)', opacity: 0.7, border: '1px solid rgb(var(--purple-rgb) / 0.35)', borderRadius: '9999px', padding: '0.1rem 0.45rem', letterSpacing: '0.05em' }}>
             SELF-JOIN
           </span>
         )}
         <span style={{ fontSize: '0.72rem', opacity: 0.4 }}>{groups.length} group{groups.length !== 1 ? 's' : ''}</span>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.4rem' }}>
-          <button onClick={onEditCollection} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: GOLD, cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.7 }}>Edit</button>
-          <button onClick={onDeleteCollection} style={{ background: 'none', border: '1px solid rgba(255,80,80,0.2)', borderRadius: '0.4rem', color: '#ff8a8a', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.7 }}>Del</button>
+          <button onClick={onEditCollection} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: GOLD, cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.7 }}>Edit</button>
+          <button onClick={onDeleteCollection} style={{ background: 'none', border: '1px solid rgba(255,80,80,0.2)', borderRadius: '0.4rem', color: 'var(--danger)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.7 }}>Del</button>
         </div>
       </div>
       {collection.description && (
@@ -486,7 +486,7 @@ function CollectionSection({
         ))}
       </div>
 
-      <button onClick={onAddGroup} style={{ padding: '0.45rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.25)', background: 'transparent', color: '#FFFACD', cursor: 'pointer', fontSize: '0.78rem', letterSpacing: '0.03em', opacity: 0.85 }}>
+      <button onClick={onAddGroup} style={{ padding: '0.45rem 1.1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.25)', background: 'transparent', color: 'var(--lemon)', cursor: 'pointer', fontSize: '0.78rem', letterSpacing: '0.03em', opacity: 0.85 }}>
         + Add group to {collection.name}
       </button>
     </div>
@@ -680,7 +680,7 @@ export function GroupsManager({ members }: { members: AssignableMember[] }) {
         )}
       </div>
 
-      <button onClick={() => { setCreatingCol(true); setColError(null) }} style={{ padding: '0.6rem 1.4rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.3)', background: 'transparent', color: '#FFFACD', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.05em' }}>
+      <button onClick={() => { setCreatingCol(true); setColError(null) }} style={{ padding: '0.6rem 1.4rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.3)', background: 'transparent', color: 'var(--lemon)', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.05em' }}>
         + New Group Collection
       </button>
 

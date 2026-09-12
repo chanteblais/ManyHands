@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useConfirm } from '../components/ConfirmDialog'
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
 
 // Per-member camp-dues control on /admin/[id]. Keyed by member id (matches the
 // dues tracker). Mark paid captures an optional note (amount/method); undo clears
@@ -71,7 +71,7 @@ export function DuesMemberControl({
         <button
           onClick={() => submit(false)}
           disabled={loading}
-          style={{ padding: '0.35rem 0.9rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.3)', background: 'transparent', color: CREAM, fontSize: '0.72rem', letterSpacing: '0.06em', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 0.7 }}
+          style={{ padding: '0.35rem 0.9rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.3)', background: 'transparent', color: CREAM, fontSize: '0.72rem', letterSpacing: '0.06em', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 0.7 }}
         >
           {loading ? '…' : 'Mark unpaid'}
         </button>
@@ -91,12 +91,12 @@ export function DuesMemberControl({
         value={note}
         onChange={e => setNote(e.target.value)}
         placeholder="Optional note — e.g. $50 e-transfer"
-        style={{ width: '100%', boxSizing: 'border-box', padding: '0.5rem 0.7rem', borderRadius: '0.5rem', border: '1px solid rgba(200,168,72,0.2)', background: 'rgba(255,255,255,0.03)', color: CREAM, fontSize: '0.82rem', fontFamily: 'inherit', outline: 'none' }}
+        style={{ width: '100%', boxSizing: 'border-box', padding: '0.5rem 0.7rem', borderRadius: '0.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'rgba(255,255,255,0.03)', color: CREAM, fontSize: '0.82rem', fontFamily: 'inherit', outline: 'none' }}
       />
       <button
         onClick={() => submit(true)}
         disabled={loading}
-        style={{ padding: '0.4rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.4)', background: 'rgba(200,168,72,0.12)', color: GOLD, fontSize: '0.75rem', letterSpacing: '0.08em', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
+        style={{ padding: '0.4rem 1.1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.4)', background: 'rgb(var(--gold-rgb) / 0.12)', color: GOLD, fontSize: '0.75rem', letterSpacing: '0.08em', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
       >
         {loading ? '…' : reported ? 'Confirm dues paid' : 'Mark dues paid'}
       </button>

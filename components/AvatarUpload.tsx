@@ -105,9 +105,9 @@ export function AvatarUpload({
           width: `${size}px`,
           height: `${size}px`,
           borderRadius: '50%',
-          border: '3px solid #6F491F',
+          border: '3px solid var(--bronze)',
           boxShadow: '0 0 0 1px rgba(60,35,10,0.6), 0 0 20px rgba(111,73,31,0.25), 0 8px 32px rgba(0,0,0,0.55)',
-          background: 'rgba(200,168,72,0.08)',
+          background: 'rgb(var(--gold-rgb) / 0.08)',
           cursor: uploading ? 'wait' : 'pointer',
           overflow: 'hidden',
           padding: 0,
@@ -124,9 +124,9 @@ export function AvatarUpload({
           />
         ) : (
           <span style={{
-            fontFamily: 'TokyoDreams, serif',
+            fontFamily: 'var(--font-display)',
             fontSize: '1.6rem',
-            color: '#C8A848',
+            color: 'var(--gold)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -153,7 +153,7 @@ export function AvatarUpload({
             transition: 'opacity 0.2s',
             fontSize: '0.6rem',
             letterSpacing: '0.1em',
-            color: '#F3EDE6',
+            color: 'var(--cream)',
           }}
           className="avatar-overlay"
         >
@@ -169,7 +169,7 @@ export function AvatarUpload({
                   width: '120px',
                   height: '5px',
                   borderRadius: '9999px',
-                  background: 'rgba(243,237,230,0.18)',
+                  background: 'rgb(var(--cream-rgb) / 0.18)',
                   overflow: 'hidden',
                   marginTop: '0.1rem',
                 }}
@@ -179,7 +179,7 @@ export function AvatarUpload({
                     display: 'block',
                     height: '100%',
                     width: `${progress}%`,
-                    background: 'linear-gradient(90deg, #C8A848, #D239F8)',
+                    background: 'linear-gradient(90deg, var(--gold), var(--purple))',
                     borderRadius: '9999px',
                     transition: 'width 0.2s ease',
                   }}
@@ -199,7 +199,7 @@ export function AvatarUpload({
       </button>
 
       {error && (
-        <p style={{ fontSize: '0.72rem', color: '#ff8a8a', textAlign: 'center', maxWidth: '160px' }}>{error}</p>
+        <p style={{ fontSize: '0.72rem', color: 'var(--danger)', textAlign: 'center', maxWidth: '160px' }}>{error}</p>
       )}
 
       <input

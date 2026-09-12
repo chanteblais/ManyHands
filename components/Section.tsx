@@ -32,7 +32,7 @@ export function Kicker({ children }: { children: ReactNode }) {
         fontSize: '0.7rem',
         letterSpacing: '0.2em',
         textTransform: 'uppercase',
-        color: '#D239F8',
+        color: 'var(--purple)',
         marginBottom: '0.75rem',
         fontFamily: 'var(--font-libre-baskerville)',
         opacity: 0.9,
@@ -49,7 +49,7 @@ export function GoldDivider() {
     <div
       style={{
         height: '1px',
-        background: 'linear-gradient(90deg, transparent, #C8A848, transparent)',
+        background: 'linear-gradient(90deg, transparent, var(--gold), transparent)',
         opacity: 0.3,
         margin: '3rem 0',
       }}

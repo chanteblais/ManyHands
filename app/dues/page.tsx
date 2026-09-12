@@ -9,8 +9,8 @@ import { RichText } from '@/lib/markdown-lite'
 import { Header } from '@/components/Header'
 import { DuesReportButton } from './DuesReportButton'
 
-const GOLD = '#C8A848'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const CREAM = 'var(--cream)'
 
 export const dynamic = 'force-dynamic'
 
@@ -41,7 +41,7 @@ export default async function DuesPage() {
           <a href="/profile" style={{ fontSize: '0.75rem', color: GOLD, opacity: 0.6, textDecoration: 'none', letterSpacing: '0.08em', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '2rem' }}>
             ← Back to profile
           </a>
-          <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', color: GOLD, margin: '0 0 0.75rem', letterSpacing: '0.06em' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', color: GOLD, margin: '0 0 0.75rem', letterSpacing: '0.06em' }}>
             Camp Dues
           </h1>
           <p style={{ fontSize: '0.9rem', opacity: 0.6, lineHeight: 1.7 }}>
@@ -73,7 +73,7 @@ export default async function DuesPage() {
         </a>
 
         <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', color: GOLD, margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', color: GOLD, margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
             Camp Dues
           </h1>
           <p style={{ fontSize: '0.9rem', opacity: 0.55, margin: 0, lineHeight: 1.6 }}>
@@ -84,9 +84,9 @@ export default async function DuesPage() {
         {/* Status card — paid / awaiting confirmation / owed */}
         <div
           style={{
-            border: `1px solid ${paid || reported ? 'rgba(200,168,72,0.35)' : 'rgba(255,255,255,0.12)'}`,
+            border: `1px solid ${paid || reported ? 'rgb(var(--gold-rgb) / 0.35)' : 'rgba(255,255,255,0.12)'}`,
             borderRadius: '1rem',
-            background: paid || reported ? 'rgba(200,168,72,0.06)' : 'rgba(255,255,255,0.02)',
+            background: paid || reported ? 'rgb(var(--gold-rgb) / 0.06)' : 'rgba(255,255,255,0.02)',
             padding: '1.25rem 1.5rem',
             marginBottom: '2rem',
             display: 'flex',
@@ -131,9 +131,9 @@ export default async function DuesPage() {
         {owed && (
           <div
             style={{
-              border: '1px solid rgba(200,168,72,0.35)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.35)',
               borderRadius: '1rem',
-              background: 'rgba(200,168,72,0.035)',
+              background: 'rgb(var(--gold-rgb) / 0.035)',
               padding: '1.5rem 1.5rem 1.6rem',
             }}
           >
@@ -148,7 +148,7 @@ export default async function DuesPage() {
                     <p style={{ margin: 0, fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45 }}>
                       {cfg.mode === 'sliding' ? 'Sliding scale' : 'Amount'}
                     </p>
-                    <p style={{ margin: '0.25rem 0 0', fontSize: '1.6rem', color: GOLD, fontFamily: 'TokyoDreams, serif', letterSpacing: '0.04em' }}>
+                    <p style={{ margin: '0.25rem 0 0', fontSize: '1.6rem', color: GOLD, fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}>
                       {amount}
                     </p>
                     {cfg.mode === 'sliding' && (
@@ -166,7 +166,7 @@ export default async function DuesPage() {
                     </p>
                     <a
                       href={`mailto:${cfg.paymentEmail}`}
-                      style={{ display: 'inline-block', margin: '0.25rem 0 0', fontSize: '1rem', color: GOLD, textDecoration: 'none', borderBottom: '1px solid rgba(200,168,72,0.4)', paddingBottom: '1px' }}
+                      style={{ display: 'inline-block', margin: '0.25rem 0 0', fontSize: '1rem', color: GOLD, textDecoration: 'none', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.4)', paddingBottom: '1px' }}
                     >
                       {cfg.paymentEmail}
                     </a>
@@ -187,7 +187,7 @@ export default async function DuesPage() {
             )}
 
             {/* Divider + self-report button, inside the card */}
-            <div style={{ height: '1px', background: 'rgba(200,168,72,0.18)', margin: '1.5rem 0 1.25rem' }} />
+            <div style={{ height: '1px', background: 'rgb(var(--gold-rgb) / 0.18)', margin: '1.5rem 0 1.25rem' }} />
             <DuesReportButton reported={false} />
           </div>
         )}

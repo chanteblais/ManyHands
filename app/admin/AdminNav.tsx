@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { AdminCategory } from './admin-sections'
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
 
 const TABS = [
   { label: 'Overview', href: '/admin/overview' },
@@ -46,10 +46,10 @@ export function AdminNav({ sections, runway }: { sections?: AdminCategory[]; run
         top: 0,
         zIndex: 30,
         marginBottom: '2.5rem',
-        background: 'rgba(26,10,36,0.88)',
+        background: 'rgb(var(--ink-rgb) / 0.88)',
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(200,168,72,0.12)',
+        borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)',
         // bleed to the full viewport width even inside a max-width column
         marginLeft: 'calc(50% - 50vw)',
         marginRight: 'calc(50% - 50vw)',
@@ -80,9 +80,9 @@ export function AdminNav({ sections, runway }: { sections?: AdminCategory[]; run
                     letterSpacing: '0.1em',
                     textDecoration: 'none',
                     transition: 'all 0.15s',
-                    border: active ? `1px solid rgba(210,57,248,0.5)` : '1px solid rgba(200,168,72,0.2)',
+                    border: active ? `1px solid rgb(var(--purple-rgb) / 0.5)` : '1px solid rgb(var(--gold-rgb) / 0.2)',
                     color: active ? PURPLE : CREAM,
-                    background: active ? 'rgba(210,57,248,0.08)' : 'transparent',
+                    background: active ? 'rgb(var(--purple-rgb) / 0.08)' : 'transparent',
                     opacity: active ? 1 : 0.55,
                   }}
                 >
@@ -106,7 +106,7 @@ export function AdminNav({ sections, runway }: { sections?: AdminCategory[]; run
               justifyContent: 'center',
               marginTop: '0.6rem',
               paddingTop: '0.55rem',
-              borderTop: '1px solid rgba(200,168,72,0.08)',
+              borderTop: '1px solid rgb(var(--gold-rgb) / 0.08)',
             }}
           >
             {sections.map(c => (
@@ -139,7 +139,7 @@ export function AdminNav({ sections, runway }: { sections?: AdminCategory[]; run
               justifyContent: 'center',
               marginTop: '0.55rem',
               paddingTop: '0.5rem',
-              borderTop: '1px solid rgba(200,168,72,0.08)',
+              borderTop: '1px solid rgb(var(--gold-rgb) / 0.08)',
               fontSize: '0.66rem',
               letterSpacing: '0.06em',
             }}

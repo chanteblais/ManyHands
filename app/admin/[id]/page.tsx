@@ -243,7 +243,7 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
 
         {/* Contextual back link */}
         <div style={{ marginBottom: '2.5rem' }}>
-          <a href="/admin#people" style={{ fontSize: '0.8rem', letterSpacing: '0.1em', color: '#C8A848', textDecoration: 'none', opacity: 0.6 }}>
+          <a href="/admin#people" style={{ fontSize: '0.8rem', letterSpacing: '0.1em', color: 'var(--gold)', textDecoration: 'none', opacity: 0.6 }}>
             ← Back to registry
           </a>
         </div>
@@ -256,21 +256,21 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
               src={supabaseResizedUrl(app.avatar_url, 520) ?? app.avatar_url}
               alt={`${app.preferred_name || app.first_name} ${app.last_name}`}
               fetchPriority="high"
-              style={{ width: '260px', height: '260px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #6F491F', boxShadow: '0 0 0 1px rgba(200,168,72,0.2), 0 4px 24px rgba(0,0,0,0.5)', marginBottom: '1.5rem' }}
+              style={{ width: '260px', height: '260px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--bronze)', boxShadow: '0 0 0 1px rgb(var(--gold-rgb) / 0.2), 0 4px 24px rgba(0,0,0,0.5)', marginBottom: '1.5rem' }}
             />
           ) : (
-            <div style={{ width: '260px', height: '260px', borderRadius: '50%', border: '2px solid rgba(200,168,72,0.15)', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'rgba(200,168,72,0.2)', fontSize: '4rem' }}>
+            <div style={{ width: '260px', height: '260px', borderRadius: '50%', border: '2px solid rgb(var(--gold-rgb) / 0.15)', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'rgb(var(--gold-rgb) / 0.2)', fontSize: '4rem' }}>
               ✦
             </div>
           )}
 
           {/* Kicker */}
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '0.3rem', opacity: 0.85 }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '0.3rem', opacity: 0.85 }}>
             Application
           </p>
 
           {/* Name */}
-          <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 6vw, 3rem)', color: '#C8A848', marginBottom: '0.15rem', textShadow: '0 0 40px rgba(210,57,248,0.4)' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 6vw, 3rem)', color: 'var(--gold)', marginBottom: '0.15rem', textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.4)' }}>
             {app.preferred_name || app.first_name} {app.last_name}
           </h1>
 
@@ -283,9 +283,9 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
           <span style={{
             display: 'inline-block', padding: '0.3rem 1.1rem', borderRadius: '9999px',
             fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase',
-            backgroundColor: app.status === 'approved' ? 'rgba(210,57,248,0.15)' : app.status === 'rejected' ? 'rgba(255,255,255,0.06)' : app.status === 'cancelled' ? 'rgba(255,100,100,0.1)' : 'rgba(200,168,72,0.1)',
-            border: `1px solid ${app.status === 'approved' ? 'rgba(210,57,248,0.3)' : app.status === 'rejected' ? 'rgba(255,255,255,0.15)' : app.status === 'cancelled' ? 'rgba(255,100,100,0.25)' : 'rgba(200,168,72,0.3)'}`,
-            color: app.status === 'approved' ? '#D239F8' : app.status === 'rejected' ? 'rgba(243,237,230,0.45)' : app.status === 'cancelled' ? '#ffb4b4' : '#C8A848',
+            backgroundColor: app.status === 'approved' ? 'rgb(var(--purple-rgb) / 0.15)' : app.status === 'rejected' ? 'rgba(255,255,255,0.06)' : app.status === 'cancelled' ? 'rgba(255,100,100,0.1)' : 'rgb(var(--gold-rgb) / 0.1)',
+            border: `1px solid ${app.status === 'approved' ? 'rgb(var(--purple-rgb) / 0.3)' : app.status === 'rejected' ? 'rgba(255,255,255,0.15)' : app.status === 'cancelled' ? 'rgba(255,100,100,0.25)' : 'rgb(var(--gold-rgb) / 0.3)'}`,
+            color: app.status === 'approved' ? 'var(--purple)' : app.status === 'rejected' ? 'rgb(var(--cream-rgb) / 0.45)' : app.status === 'cancelled' ? 'var(--danger-soft)' : 'var(--gold)',
           }}>
             {app.status === 'pending' ? '○ Pending Review' : app.status === 'approved' ? '✦ Approved' : app.status === 'rejected' ? 'Rejected' : 'Cancelled'}
           </span>
@@ -294,7 +294,7 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
             <span style={{
               display: 'inline-block', marginLeft: '0.5rem', padding: '0.3rem 1.1rem', borderRadius: '9999px',
               fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase',
-              backgroundColor: 'rgba(255,180,80,0.12)', border: '1px solid rgba(255,180,80,0.35)', color: '#ffcf80',
+              backgroundColor: 'rgba(255,180,80,0.12)', border: '1px solid rgba(255,180,80,0.35)', color: 'var(--warning)',
             }}>
               ❙❙ Suspended
             </span>
@@ -333,7 +333,7 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
 
         {app.status === 'cancelled' && app.cancel_reason && (
           <div style={{ marginBottom: '2.5rem', padding: '1.25rem 1.5rem', border: '1px solid rgba(255,120,120,0.25)', borderRadius: '0.75rem', background: 'rgba(255,0,0,0.04)' }}>
-            <p style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#ffb4b4', marginBottom: '0.5rem' }}>
+            <p style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--danger-soft)', marginBottom: '0.5rem' }}>
               Cancellation reason
             </p>
             <p style={{ fontSize: '0.9rem', lineHeight: 1.7, opacity: 0.75, fontStyle: 'italic' }}>{app.cancel_reason}</p>
@@ -345,7 +345,7 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
           </div>
         )}
 
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', marginBottom: '2.5rem' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', marginBottom: '2.5rem' }} />
 
         {/* Role & Shift */}
         {app.clerk_user_id && (
@@ -425,7 +425,7 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
             <Divider />
             {isSuspended && member?.suspension_note && (
               <div style={{ maxWidth: '480px', margin: '0 auto 1.25rem', padding: '1rem 1.25rem', border: '1px solid rgba(255,180,80,0.3)', borderRadius: '0.75rem', background: 'rgba(255,180,80,0.05)' }}>
-                <p style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#ffcf80', marginBottom: '0.5rem' }}>
+                <p style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--warning)', marginBottom: '0.5rem' }}>
                   Suspension note
                 </p>
                 <p style={{ fontSize: '0.9rem', lineHeight: 1.7, opacity: 0.75, fontStyle: 'italic' }}>{member.suspension_note}</p>
@@ -487,10 +487,10 @@ function FieldList({ fields }: { fields: RenderField[] }) {
 function FullAnswer({ f }: { f: RenderField }) {
   const { label, value, isFile, isAgreement, other } = f
   return (
-    <div style={{ padding: '1rem 1.25rem', border: '1px solid rgba(200,168,72,0.1)', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)', marginBottom: '1rem' }}>
-      {label && <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, marginBottom: '0.5rem' }}>{label}</p>}
+    <div style={{ padding: '1rem 1.25rem', border: '1px solid rgb(var(--gold-rgb) / 0.1)', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)', marginBottom: '1rem' }}>
+      {label && <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, marginBottom: '0.5rem' }}>{label}</p>}
       {isFile && typeof value === 'string' ? (
-        <a href={applicationFileHref(value)} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#C8A848', fontSize: '0.9rem', textDecoration: 'none' }}>
+        <a href={applicationFileHref(value)} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--gold)', fontSize: '0.9rem', textDecoration: 'none' }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
           </svg>
@@ -503,7 +503,7 @@ function FullAnswer({ f }: { f: RenderField }) {
       ) : Array.isArray(value) ? (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
           {value.map(v => (
-            <span key={v} style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', fontSize: '0.8rem', opacity: 0.8 }}>{v}</span>
+            <span key={v} style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', fontSize: '0.8rem', opacity: 0.8 }}>{v}</span>
           ))}
         </div>
       ) : (
@@ -511,7 +511,7 @@ function FullAnswer({ f }: { f: RenderField }) {
       )}
       {other && (
         <p style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: '0.5rem' }}>
-          <span style={{ color: '#C8A848', opacity: 0.7 }}>Other:</span> {other}
+          <span style={{ color: 'var(--gold)', opacity: 0.7 }}>Other:</span> {other}
         </p>
       )}
     </div>
@@ -521,7 +521,7 @@ function FullAnswer({ f }: { f: RenderField }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: '0.5rem' }}>
-      <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '1.25rem', opacity: 0.7 }}>
+      <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '1.25rem', opacity: 0.7 }}>
         {title}
       </p>
       {children}
@@ -540,15 +540,15 @@ function Grid({ children }: { children: React.ReactNode }) {
 function Field({ label, value }: { label: string; value: string | null }) {
   if (!value) return null
   return (
-    <div style={{ padding: '0.75rem 1rem', border: '1px solid rgba(200,168,72,0.1)', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
-      <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, marginBottom: '0.3rem' }}>{label}</p>
+    <div style={{ padding: '0.75rem 1rem', border: '1px solid rgb(var(--gold-rgb) / 0.1)', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
+      <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, marginBottom: '0.3rem' }}>{label}</p>
       <p style={{ fontSize: '0.9rem', opacity: 0.85 }}>{value}</p>
     </div>
   )
 }
 
 function Divider() {
-  return <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.15), transparent)', margin: '2.5rem 0' }} />
+  return <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.15), transparent)', margin: '2.5rem 0' }} />
 }
 
 // Cross-reference chip (A5): a small linked capsule for one related entity.
@@ -562,8 +562,8 @@ function chipStyle(accent: 'gold' | 'purple'): React.CSSProperties {
     letterSpacing: '0.05em',
     textDecoration: 'none',
     whiteSpace: 'nowrap',
-    border: `1px solid ${gold ? 'rgba(200,168,72,0.3)' : 'rgba(210,57,248,0.35)'}`,
-    color: gold ? '#C8A848' : '#D239F8',
-    background: gold ? 'rgba(200,168,72,0.06)' : 'rgba(210,57,248,0.07)',
+    border: `1px solid ${gold ? 'rgb(var(--gold-rgb) / 0.3)' : 'rgb(var(--purple-rgb) / 0.35)'}`,
+    color: gold ? 'var(--gold)' : 'var(--purple)',
+    background: gold ? 'rgb(var(--gold-rgb) / 0.06)' : 'rgb(var(--purple-rgb) / 0.07)',
   }
 }

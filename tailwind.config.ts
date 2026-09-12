@@ -9,14 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Theme tokens (app/globals.css :root / lib/theme.ts). The rgb() form
+        // keeps Tailwind's opacity modifiers (bg-brand-gold/20) working.
         brand: {
-          purple: '#D239F8',
-          gold: '#C8A848',
-          'dark-gold': '#634D0B',
-          cream: '#FFFACD',
-          ink: '#1A0A24',
-          plum: '#5D2B7A',
-          lavender: '#D9B3FF',
+          purple: 'rgb(var(--purple-rgb) / <alpha-value>)',
+          gold: 'rgb(var(--gold-rgb) / <alpha-value>)',
+          'dark-gold': 'var(--gold-dark)',
+          cream: 'var(--lemon)',
+          ink: 'rgb(var(--ink-rgb) / <alpha-value>)',
+          plum: 'rgb(var(--plum-rgb) / <alpha-value>)',
+          lavender: 'var(--lavender)',
         },
       },
       textColor: {

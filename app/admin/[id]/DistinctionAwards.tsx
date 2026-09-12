@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { IconImage } from '@/components/IconImage'
 
-const GOLD = '#C8A848'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const CREAM = 'var(--cream)'
 
 export type AwardRule = { id: string; label: string; glyph?: string; image?: string; manualOnly: boolean }
 
@@ -69,7 +69,7 @@ export function DistinctionAwards({ memberId, rules, initialAwards }: {
         {rules.map(rule => {
           const on = awards.has(rule.id)
           return (
-            <div key={rule.id} style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.5rem 0.7rem', borderRadius: '0.5rem', border: '1px solid rgba(200,168,72,0.12)', background: on ? 'rgba(200,168,72,0.06)' : 'transparent' }}>
+            <div key={rule.id} style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.5rem 0.7rem', borderRadius: '0.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.12)', background: on ? 'rgb(var(--gold-rgb) / 0.06)' : 'transparent' }}>
               <span style={{ width: 22, textAlign: 'center', flexShrink: 0 }}>
                 {rule.image
                   ? /* eslint-disable-next-line @next/next/no-img-element */ <IconImage src={rule.image} size={20} fill={0.9} />
@@ -87,9 +87,9 @@ export function DistinctionAwards({ memberId, rules, initialAwards }: {
                 style={{
                   flexShrink: 0, padding: '0.25rem 0.85rem', borderRadius: '9999px',
                   fontSize: '0.72rem', letterSpacing: '0.05em', cursor: busy === rule.id ? 'wait' : 'pointer',
-                  border: `1px solid ${on ? 'rgba(255,138,138,0.4)' : 'rgba(200,168,72,0.4)'}`,
-                  background: on ? 'rgba(255,138,138,0.08)' : 'transparent',
-                  color: on ? '#ff8a8a' : GOLD,
+                  border: `1px solid ${on ? 'rgb(var(--danger-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.4)'}`,
+                  background: on ? 'rgb(var(--danger-rgb) / 0.08)' : 'transparent',
+                  color: on ? 'var(--danger)' : GOLD,
                 }}
               >
                 {busy === rule.id ? '…' : on ? 'Revoke' : 'Grant'}
@@ -99,7 +99,7 @@ export function DistinctionAwards({ memberId, rules, initialAwards }: {
         })}
       </div>
 
-      {error && <p style={{ fontSize: '0.75rem', color: '#ff8a8a', marginTop: '0.6rem' }}>{error}</p>}
+      {error && <p style={{ fontSize: '0.75rem', color: 'var(--danger)', marginTop: '0.6rem' }}>{error}</p>}
     </div>
   )
 }

@@ -54,14 +54,14 @@ export function AdminsManager({ members }: { members: Member[] }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {error && (
-        <p style={{ fontSize: '0.8rem', color: '#ff8080', padding: '0.5rem 1rem', background: 'rgba(255,0,0,0.05)', borderRadius: '0.5rem', border: '1px solid rgba(255,80,80,0.3)' }}>
+        <p style={{ fontSize: '0.8rem', color: 'var(--danger-strong)', padding: '0.5rem 1rem', background: 'rgba(255,0,0,0.05)', borderRadius: '0.5rem', border: '1px solid rgba(255,80,80,0.3)' }}>
           {error}
         </p>
       )}
 
       {admins.length > 0 && (
         <div>
-          <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '0.75rem' }}>
+          <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '0.75rem' }}>
             Current Admins
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -73,7 +73,7 @@ export function AdminsManager({ members }: { members: Member[] }) {
       )}
 
       <div>
-        <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', marginBottom: '0.75rem', opacity: 0.6 }}>
+        <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: '0.75rem', opacity: 0.6 }}>
           Grant Admin Access
         </p>
         <input
@@ -85,9 +85,9 @@ export function AdminsManager({ members }: { members: Member[] }) {
             width: '100%', boxSizing: 'border-box',
             padding: '0.6rem 0.9rem',
             borderRadius: '0.5rem',
-            border: '1px solid rgba(200,168,72,0.25)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.25)',
             background: 'rgba(255,255,255,0.04)',
-            color: '#F3EDE6',
+            color: 'var(--cream)',
             fontSize: '0.85rem',
             marginBottom: '0.75rem',
             outline: 'none',
@@ -124,12 +124,12 @@ function AdminRow({ member, loading, onToggle }: {
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       padding: '0.6rem 1rem',
       borderRadius: '0.5rem',
-      border: `1px solid ${member.isAdmin ? 'rgba(210,57,248,0.25)' : 'rgba(200,168,72,0.15)'}`,
-      background: member.isAdmin ? 'rgba(210,57,248,0.05)' : 'rgba(255,255,255,0.02)',
+      border: `1px solid ${member.isAdmin ? 'rgb(var(--purple-rgb) / 0.25)' : 'rgb(var(--gold-rgb) / 0.15)'}`,
+      background: member.isAdmin ? 'rgb(var(--purple-rgb) / 0.05)' : 'rgba(255,255,255,0.02)',
     }}>
       <div>
-        <span style={{ fontSize: '0.88rem', color: '#F3EDE6' }}>{displayName}</span>
-        <span style={{ fontSize: '0.75rem', color: '#F3EDE6', opacity: 0.4, marginLeft: '0.6rem' }}>{member.email}</span>
+        <span style={{ fontSize: '0.88rem', color: 'var(--cream)' }}>{displayName}</span>
+        <span style={{ fontSize: '0.75rem', color: 'var(--cream)', opacity: 0.4, marginLeft: '0.6rem' }}>{member.email}</span>
       </div>
       <button
         onClick={() => onToggle(member)}
@@ -137,9 +137,9 @@ function AdminRow({ member, loading, onToggle }: {
         style={{
           padding: '0.3rem 0.85rem',
           borderRadius: '0.4rem',
-          border: `1px solid ${member.isAdmin ? 'rgba(255,100,100,0.4)' : 'rgba(210,57,248,0.4)'}`,
+          border: `1px solid ${member.isAdmin ? 'rgba(255,100,100,0.4)' : 'rgb(var(--purple-rgb) / 0.4)'}`,
           background: 'transparent',
-          color: member.isAdmin ? '#ff9999' : '#D239F8',
+          color: member.isAdmin ? '#ff9999' : 'var(--purple)',
           fontSize: '0.75rem',
           cursor: loading ? 'wait' : 'pointer',
           opacity: loading ? 0.5 : 1,

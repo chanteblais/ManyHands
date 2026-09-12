@@ -5,7 +5,7 @@
 // components (home teaser) and client ones (the /radio feed). Not markdown —
 // just the one highlight convention.
 
-export function RadioMessage({ text, href, gold = '#C8A848' }: {
+export function RadioMessage({ text, href, gold = 'var(--gold)' }: {
   text: string
   href?: string | null
   gold?: string
@@ -27,7 +27,7 @@ export function RadioMessage({ text, href, gold = '#C8A848' }: {
               style={{
                 color: gold,
                 textDecoration: 'underline',
-                textDecorationColor: 'rgba(200,168,72,0.35)',
+                textDecorationColor: 'rgb(var(--gold-rgb) / 0.35)',
                 textUnderlineOffset: '3px',
               }}
             >

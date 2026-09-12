@@ -43,7 +43,7 @@ type WeekViewEvent = {
 type RosterEntry = { role: 'member' | 'lead'; occurrence_date: string | null }
 
 const PX_PER_HOUR = 56
-const GOLD = '#C8A848'
+const GOLD = 'var(--gold)'
 const HEADER_H = 46 // day-column header height — the hour grid starts below it
 const DRAG_SNAP_MIN = 15
 
@@ -286,7 +286,7 @@ export function ScheduleWeekView({ events, days, shiftTypes, rosters, onEdit, on
           // Blocks own their touches — otherwise the page scrolls instead of dragging.
           touchAction: ghost ? undefined : 'none',
           padding: '0.2rem 0.3rem',
-          boxShadow: ev.highlight ? '0 0 10px rgba(200,168,72,0.35)' : undefined,
+          boxShadow: ev.highlight ? '0 0 10px rgb(var(--gold-rgb) / 0.35)' : undefined,
         }}
       >
         <div
@@ -297,7 +297,7 @@ export function ScheduleWeekView({ events, days, shiftTypes, rosters, onEdit, on
           <p style={{ fontSize: '0.6rem', color: h.accent, margin: 0, opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {ev.time}
           </p>
-          <p style={{ fontSize: '0.66rem', color: '#F3EDE6', margin: '0.1rem 0 0', lineHeight: 1.25, fontWeight: 600, overflow: 'hidden' }}>
+          <p style={{ fontSize: '0.66rem', color: 'var(--cream)', margin: '0.1rem 0 0', lineHeight: 1.25, fontWeight: 600, overflow: 'hidden' }}>
             {ev.title}
           </p>
           {ev.participation_type === 'shift' && (
@@ -339,25 +339,25 @@ export function ScheduleWeekView({ events, days, shiftTypes, rosters, onEdit, on
                 <div key={day.iso}>
                   <div style={{
                     height: '46px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                    borderRadius: '0.5rem 0.5rem 0 0', background: 'rgba(200,168,72,0.07)',
-                    border: '1px solid rgba(200,168,72,0.2)', borderBottom: 'none',
+                    borderRadius: '0.5rem 0.5rem 0 0', background: 'rgb(var(--gold-rgb) / 0.07)',
+                    border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderBottom: 'none',
                   }}>
                     <p style={{ fontSize: '0.56rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: GOLD, opacity: 0.6, margin: 0 }}>{day.short} · {day.month}</p>
-                    <p style={{ fontSize: '0.92rem', color: '#F3EDE6', margin: '0.05rem 0 0', fontFamily: 'TokyoDreams, serif' }}>{day.date}</p>
+                    <p style={{ fontSize: '0.92rem', color: 'var(--cream)', margin: '0.05rem 0 0', fontFamily: 'var(--font-display)' }}>{day.date}</p>
                   </div>
                   <div
                     onClick={slotClick(day.iso)}
                     title="Click an empty slot to add an event here"
                     style={{
                       position: 'relative', height: TOTAL_HEIGHT,
-                      border: '1px solid rgba(200,168,72,0.12)', borderRadius: '0 0 0.5rem 0.5rem',
+                      border: '1px solid rgb(var(--gold-rgb) / 0.12)', borderRadius: '0 0 0.5rem 0.5rem',
                       background: 'rgba(255,255,255,0.01)', cursor: 'copy',
                     }}
                   >
                     {HOUR_LABELS.map(({ hour, label }) => (
                       <div key={hour} style={{
                         position: 'absolute', top: (hour - START_HOUR) * PX_PER_HOUR, left: 0, right: 0,
-                        borderTop: `1px solid rgba(200,168,72,${label === 'Midnight' || label === 'Noon' ? '0.15' : '0.06'})`,
+                        borderTop: `1px solid rgb(var(--gold-rgb) / ${label === 'Midnight' || label === 'Noon' ? '0.15' : '0.06'})`,
                         pointerEvents: 'none',
                       }} />
                     ))}
@@ -386,7 +386,7 @@ export function ScheduleWeekView({ events, days, shiftTypes, rosters, onEdit, on
                           <p style={{ fontSize: '0.6rem', color: h.accent, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                             {formatShiftRange(toHHMM(drag.startMin), drag.durMin != null ? toHHMM(drag.startMin + drag.durMin) : null)}
                           </p>
-                          <p style={{ fontSize: '0.66rem', color: '#F3EDE6', margin: '0.1rem 0 0', lineHeight: 1.25, fontWeight: 600, overflow: 'hidden' }}>
+                          <p style={{ fontSize: '0.66rem', color: 'var(--cream)', margin: '0.1rem 0 0', lineHeight: 1.25, fontWeight: 600, overflow: 'hidden' }}>
                             {ev.title}
                           </p>
                         </div>
@@ -403,14 +403,14 @@ export function ScheduleWeekView({ events, days, shiftTypes, rosters, onEdit, on
       {/* Dated but untimed — can't sit on the grid until they get a time */}
       {untimed.length > 0 && (
         <div style={{ marginTop: '0.75rem' }}>
-          <p style={{ fontSize: '0.62rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#ff8a8a', opacity: 0.7, margin: '0 0 0.5rem' }}>
+          <p style={{ fontSize: '0.62rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--danger)', opacity: 0.7, margin: '0 0 0.5rem' }}>
             No time yet — edit to place on the grid
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
             {untimed.map(ev => (
               <button key={ev.id} onClick={() => onEdit(ev.id)} style={{
-                padding: '0.3rem 0.7rem', border: '1px dashed rgba(255,138,138,0.4)', borderRadius: '0.5rem',
-                background: 'none', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.72rem', opacity: 0.8,
+                padding: '0.3rem 0.7rem', border: '1px dashed rgb(var(--danger-rgb) / 0.4)', borderRadius: '0.5rem',
+                background: 'none', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.72rem', opacity: 0.8,
               }}>
                 {ev.event_date} · {ev.title}
               </button>

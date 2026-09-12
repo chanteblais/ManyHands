@@ -26,8 +26,8 @@ export function ClaimRoleButton({
       <span style={{
         display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
         fontSize: '0.72rem', letterSpacing: '0.08em', textTransform: 'uppercase',
-        color: isPendingApproval ? '#D239F8' : '#7dcf8e',
-        border: `1px solid ${isPendingApproval ? 'rgba(210,57,248,0.35)' : 'rgba(100,200,120,0.35)'}`,
+        color: isPendingApproval ? 'var(--purple)' : 'var(--success)',
+        border: `1px solid ${isPendingApproval ? 'rgb(var(--purple-rgb) / 0.35)' : 'rgba(100,200,120,0.35)'}`,
         borderRadius: '9999px', padding: '0.35rem 0.9rem',
       }}>
         {isPendingApproval ? 'Requested — pending approval' : '✦ Your role'}
@@ -37,7 +37,7 @@ export function ClaimRoleButton({
 
   if (isFull) {
     return (
-      <span style={{ fontSize: '0.72rem', color: '#ff8a8a', opacity: 0.7, letterSpacing: '0.06em' }}>
+      <span style={{ fontSize: '0.72rem', color: 'var(--danger)', opacity: 0.7, letterSpacing: '0.06em' }}>
         Full
       </span>
     )
@@ -69,8 +69,8 @@ export function ClaimRoleButton({
           onClick={() => setConfirming(true)}
           style={{
             padding: '0.4rem 1.05rem', borderRadius: '9999px',
-            border: '1px solid rgba(200,168,72,0.4)', background: 'rgba(200,168,72,0.07)',
-            color: '#C8A848', cursor: 'pointer', fontSize: '0.75rem', letterSpacing: '0.06em',
+            border: '1px solid rgb(var(--gold-rgb) / 0.4)', background: 'rgb(var(--gold-rgb) / 0.07)',
+            color: 'var(--gold)', cursor: 'pointer', fontSize: '0.75rem', letterSpacing: '0.06em',
           }}
         >
           {requiresApproval ? 'Request this role' : 'Claim this role'}
@@ -87,8 +87,8 @@ export function ClaimRoleButton({
             disabled={saving}
             style={{
               padding: '0.35rem 1rem', borderRadius: '9999px',
-              border: '1px solid rgba(200,168,72,0.55)', background: 'rgba(200,168,72,0.12)',
-              color: '#FFFACD', cursor: saving ? 'not-allowed' : 'pointer',
+              border: '1px solid rgb(var(--gold-rgb) / 0.55)', background: 'rgb(var(--gold-rgb) / 0.12)',
+              color: 'var(--lemon)', cursor: saving ? 'not-allowed' : 'pointer',
               fontSize: '0.75rem', letterSpacing: '0.06em', opacity: saving ? 0.5 : 1,
             }}
           >
@@ -96,13 +96,13 @@ export function ClaimRoleButton({
           </button>
           <button
             onClick={() => { setConfirming(false); setError(null) }}
-            style={{ background: 'none', border: 'none', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.72rem', opacity: 0.4, padding: 0 }}
+            style={{ background: 'none', border: 'none', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.72rem', opacity: 0.4, padding: 0 }}
           >
             Never mind
           </button>
         </>
       )}
-      {error && <span style={{ fontSize: '0.72rem', color: '#ff8a8a' }}>{error}</span>}
+      {error && <span style={{ fontSize: '0.72rem', color: 'var(--danger)' }}>{error}</span>}
     </span>
   )
 }

@@ -126,7 +126,7 @@ export default async function AdminPage() {
           <NotificationBell initialNotifications={notifications ?? []} />
         </div>
 
-        <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: '#C8A848', marginBottom: '0.5rem', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--gold)', marginBottom: '0.5rem', textAlign: 'center' }}>
           Community
         </h1>
         <p style={{ textAlign: 'center', opacity: 0.5, fontSize: '0.85rem', marginBottom: '2.5rem' }}>
@@ -135,8 +135,8 @@ export default async function AdminPage() {
 
         {dbError && (
           <div style={{ padding: '1rem 1.5rem', border: '1px solid rgba(255,80,80,0.4)', borderRadius: '0.75rem', background: 'rgba(255,0,0,0.05)', marginBottom: '2rem' }}>
-            <p style={{ fontSize: '0.8rem', color: '#ff8080', marginBottom: '0.25rem', fontWeight: 700 }}>Database error</p>
-            <p style={{ fontSize: '0.75rem', color: '#F3EDE6', opacity: 0.6, fontFamily: 'monospace' }}>{dbError.message}</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--danger-strong)', marginBottom: '0.25rem', fontWeight: 700 }}>Database error</p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--cream)', opacity: 0.6, fontFamily: 'monospace' }}>{dbError.message}</p>
           </div>
         )}
 
@@ -180,7 +180,7 @@ export default async function AdminPage() {
             <>
               {pendingQueue.length > 0 && (
                 <div style={{ marginBottom: '2rem' }}>
-                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '1rem' }}>
+                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '1rem' }}>
                     Pending Review
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -193,8 +193,8 @@ export default async function AdminPage() {
 
               {rejected.length > 0 && (
                 <div>
-                  {pendingQueue.length > 0 && <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', marginBottom: '2rem' }} />}
-                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#F3EDE6', marginBottom: '1rem', opacity: 0.3 }}>
+                  {pendingQueue.length > 0 && <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', marginBottom: '2rem' }} />}
+                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--cream)', marginBottom: '1rem', opacity: 0.3 }}>
                     Not Approved
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -205,8 +205,8 @@ export default async function AdminPage() {
 
               {cancelled.length > 0 && (
                 <div>
-                  <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)', marginBottom: '2rem' }} />
-                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#ffb4b4', marginBottom: '1rem', opacity: 0.6 }}>
+                  <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)', marginBottom: '2rem' }} />
+                  <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--danger-soft)', marginBottom: '1rem', opacity: 0.6 }}>
                     Cancelled
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

@@ -13,7 +13,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { parseHHMM, formatClock } from '@/lib/shift-hours'
 
-const GOLD = '#C8A848'
+const GOLD = 'var(--gold)'
 
 function toHHMM(mins: number): string {
   const m = ((mins % 1440) + 1440) % 1440
@@ -99,11 +99,11 @@ export function TimeField({ value, onChange, durationFrom, placeholder = 'e.g. 7
 
   return (
     <div style={{ position: 'relative' }}>
-      <style dangerouslySetInnerHTML={{ __html: '.timefield-opt:hover{background:rgba(200,168,72,0.12)}' }} />
+      <style dangerouslySetInnerHTML={{ __html: '.timefield-opt:hover{background:rgb(var(--gold-rgb) / 0.12)}' }} />
       <input
         style={{
-          width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(200,168,72,0.2)',
-          borderRadius: '0.5rem', padding: '0.6rem 1.6rem 0.6rem 0.85rem', color: '#F3EDE6', fontSize: '0.875rem',
+          width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+          borderRadius: '0.5rem', padding: '0.6rem 1.6rem 0.6rem 0.85rem', color: 'var(--cream)', fontSize: '0.875rem',
           fontFamily: 'var(--font-libre-baskerville), Georgia, serif', outline: 'none',
         }}
         value={display}
@@ -128,7 +128,7 @@ export function TimeField({ value, onChange, durationFrom, placeholder = 'e.g. 7
           style={{
             position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, zIndex: 60,
             maxHeight: '228px', overflowY: 'auto',
-            background: '#241031', border: '1px solid rgba(200,168,72,0.3)', borderRadius: '0.5rem',
+            background: '#241031', border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '0.5rem',
             boxShadow: '0 12px 32px rgba(0,0,0,0.55)',
           }}
         >
@@ -143,8 +143,8 @@ export function TimeField({ value, onChange, durationFrom, placeholder = 'e.g. 7
                 style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '0.75rem',
                   width: '100%', textAlign: 'left', padding: '0.42rem 0.85rem',
-                  background: selected ? 'rgba(200,168,72,0.14)' : 'none', border: 'none', cursor: 'pointer',
-                  color: selected ? GOLD : '#F3EDE6', fontSize: '0.82rem',
+                  background: selected ? 'rgb(var(--gold-rgb) / 0.14)' : 'none', border: 'none', cursor: 'pointer',
+                  color: selected ? GOLD : 'var(--cream)', fontSize: '0.82rem',
                   fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
                   fontWeight: selected ? 700 : 400, whiteSpace: 'nowrap',
                 }}

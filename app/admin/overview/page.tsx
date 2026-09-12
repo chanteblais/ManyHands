@@ -16,7 +16,7 @@ import { getCommunity } from '@/lib/community'
 
 const divider: React.CSSProperties = {
   height: '1px',
-  background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.2), transparent)',
+  background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.2), transparent)',
   margin: '2.5rem 0',
 }
 
@@ -24,26 +24,26 @@ const card = (accent = 'gold'): React.CSSProperties => ({
   padding: '1.5rem',
   borderRadius: '1rem',
   border: accent === 'purple'
-    ? '1px solid rgba(210,57,248,0.2)'
-    : '1px solid rgba(200,168,72,0.15)',
+    ? '1px solid rgb(var(--purple-rgb) / 0.2)'
+    : '1px solid rgb(var(--gold-rgb) / 0.15)',
   background: accent === 'purple'
-    ? 'rgba(210,57,248,0.04)'
-    : 'rgba(200,168,72,0.03)',
+    ? 'rgb(var(--purple-rgb) / 0.04)'
+    : 'rgb(var(--gold-rgb) / 0.03)',
 })
 
 const statLabel: React.CSSProperties = {
   fontSize: '0.65rem',
   letterSpacing: '0.15em',
   textTransform: 'uppercase',
-  color: '#C8A848',
+  color: 'var(--gold)',
   opacity: 0.65,
   marginBottom: '0.35rem',
 }
 
 const statValue: React.CSSProperties = {
-  fontFamily: 'TokyoDreams, serif',
+  fontFamily: 'var(--font-display)',
   fontSize: '2.2rem',
-  color: '#C8A848',
+  color: 'var(--gold)',
   lineHeight: 1,
   marginBottom: '0.25rem',
 }
@@ -205,7 +205,7 @@ export default async function OverviewPage() {
           <NotificationBell initialNotifications={notifications ?? []} />
         </div>
 
-        <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: '#C8A848', marginBottom: '0.5rem', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--gold)', marginBottom: '0.5rem', textAlign: 'center' }}>
           Overview
         </h1>
         <p style={{ textAlign: 'center', opacity: 0.4, fontSize: '0.85rem', marginBottom: '2.5rem' }}>
@@ -217,10 +217,10 @@ export default async function OverviewPage() {
           <div style={{
             padding: '1.25rem 1.5rem',
             borderRadius: '0.85rem',
-            border: attention.length > 0 ? '1px solid rgba(210,57,248,0.3)' : '1px solid rgba(200,168,72,0.15)',
-            background: attention.length > 0 ? 'rgba(210,57,248,0.05)' : 'rgba(200,168,72,0.03)',
+            border: attention.length > 0 ? '1px solid rgb(var(--purple-rgb) / 0.3)' : '1px solid rgb(var(--gold-rgb) / 0.15)',
+            background: attention.length > 0 ? 'rgb(var(--purple-rgb) / 0.05)' : 'rgb(var(--gold-rgb) / 0.03)',
           }}>
-            <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: attention.length > 0 ? '#D239F8' : '#C8A848', opacity: 0.8, margin: '0 0 0.9rem' }}>
+            <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: attention.length > 0 ? 'var(--purple)' : 'var(--gold)', opacity: 0.8, margin: '0 0 0.9rem' }}>
               Needs attention
             </p>
             {attention.length === 0 ? (
@@ -235,11 +235,11 @@ export default async function OverviewPage() {
                     href={item.href}
                     style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
-                      textDecoration: 'none', padding: '0.35rem 0', borderBottom: '1px solid rgba(200,168,72,0.07)',
+                      textDecoration: 'none', padding: '0.35rem 0', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.07)',
                     }}
                   >
-                    <span style={{ fontSize: '0.9rem', color: '#F3EDE6', opacity: 0.85 }}>{item.text}</span>
-                    <span style={{ fontSize: '0.78rem', color: '#D239F8', letterSpacing: '0.06em', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                    <span style={{ fontSize: '0.9rem', color: 'var(--cream)', opacity: 0.85 }}>{item.text}</span>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--purple)', letterSpacing: '0.06em', whiteSpace: 'nowrap', flexShrink: 0 }}>
                       {item.verb} →
                     </span>
                   </a>
@@ -251,7 +251,7 @@ export default async function OverviewPage() {
 
         {/* ── PARTICIPATION OVERVIEW ── */}
         <section style={{ marginBottom: '2.5rem' }}>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, marginBottom: '1.25rem' }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, marginBottom: '1.25rem' }}>
             Participation
           </p>
 
@@ -260,7 +260,7 @@ export default async function OverviewPage() {
               <p style={statLabel}>Approved Campers</p>
               <p style={statValue}>{approved.length}</p>
               {pending.length > 0 ? (
-                <a href="/admin#people" style={{ ...statSub, display: 'inline-block', color: '#D239F8', opacity: 0.8, textDecoration: 'none' }}>
+                <a href="/admin#people" style={{ ...statSub, display: 'inline-block', color: 'var(--purple)', opacity: 0.8, textDecoration: 'none' }}>
                   Review {pending.length} pending →
                 </a>
               ) : (
@@ -269,25 +269,25 @@ export default async function OverviewPage() {
             </div>
             <div style={card()}>
               <p style={statLabel}>Signup Complete</p>
-              <p style={{ ...statValue, color: complete > 0 ? '#7dcf8e' : '#C8A848' }}>{complete}</p>
+              <p style={{ ...statValue, color: complete > 0 ? 'var(--success)' : 'var(--gold)' }}>{complete}</p>
               <p style={statSub}>{incomplete} still to complete</p>
             </div>
             <div style={card('purple')}>
-              <p style={{ ...statLabel, color: '#D239F8' }}>Active Volunteers</p>
-              <p style={{ ...statValue, color: '#D239F8' }}>{activeVolunteers.length}</p>
+              <p style={{ ...statLabel, color: 'var(--purple)' }}>Active Volunteers</p>
+              <p style={{ ...statValue, color: 'var(--purple)' }}>{activeVolunteers.length}</p>
               <p style={statSub}>outside volunteers</p>
             </div>
             {suspendedCount > 0 && (
               <div style={{ ...card(), borderColor: 'rgba(255,180,80,0.3)', background: 'rgba(255,180,80,0.05)' }}>
-                <p style={{ ...statLabel, color: '#ffcf80' }}>Suspended</p>
-                <p style={{ ...statValue, color: '#ffcf80' }}>{suspendedCount}</p>
+                <p style={{ ...statLabel, color: 'var(--warning)' }}>Suspended</p>
+                <p style={{ ...statValue, color: 'var(--warning)' }}>{suspendedCount}</p>
                 <p style={statSub}>paused — not counted above</p>
               </div>
             )}
           </div>
 
           {/* Member list */}
-          <div style={{ padding: '1.25rem 1.5rem', borderRadius: '0.85rem', border: '1px solid rgba(200,168,72,0.12)', background: 'rgba(255,255,255,0.02)' }}>
+          <div style={{ padding: '1.25rem 1.5rem', borderRadius: '0.85rem', border: '1px solid rgb(var(--gold-rgb) / 0.12)', background: 'rgba(255,255,255,0.02)' }}>
             <MembersDropdown members={members} />
           </div>
         </section>
@@ -296,7 +296,7 @@ export default async function OverviewPage() {
 
         {/* ── SHIFT HOURS ── */}
         <section style={{ marginBottom: '2.5rem' }}>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, marginBottom: '1.25rem' }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, marginBottom: '1.25rem' }}>
             Shift Hours
           </p>
 
@@ -325,12 +325,12 @@ export default async function OverviewPage() {
                 </div>
                 <div style={card()}>
                   <p style={statLabel}>Hours Filled</p>
-                  <p style={{ ...statValue, color: shiftHours.totalFilledHours > 0 ? '#7dcf8e' : '#C8A848' }}>{fmtH(shiftHours.totalFilledHours)}</p>
+                  <p style={{ ...statValue, color: shiftHours.totalFilledHours > 0 ? 'var(--success)' : 'var(--gold)' }}>{fmtH(shiftHours.totalFilledHours)}</p>
                   <p style={statSub}>{shiftHours.totalSignups} signup{shiftHours.totalSignups === 1 ? '' : 's'} by {shiftHours.memberCount} member{shiftHours.memberCount === 1 ? '' : 's'}</p>
                 </div>
                 <div style={card()}>
                   <p style={statLabel}>Empty Shifts</p>
-                  <p style={{ ...statValue, color: shiftHours.emptySlots > 0 ? '#ffb432' : '#7dcf8e' }}>{shiftHours.emptySlots}</p>
+                  <p style={{ ...statValue, color: shiftHours.emptySlots > 0 ? 'var(--amber)' : 'var(--success)' }}>{shiftHours.emptySlots}</p>
                   <p style={statSub}>{shiftHours.emptySlots > 0 ? 'shifts with no signups yet' : 'every shift has someone'}</p>
                 </div>
               </div>
@@ -340,7 +340,7 @@ export default async function OverviewPage() {
                   completion bars/percentages here. */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                 {shiftHours.types.map(t => {
-                  const hue = t.paletteIndex >= 0 ? shiftHue(t.paletteIndex) : { rgb: '200,168,72', accent: '#C8A848' }
+                  const hue = t.paletteIndex >= 0 ? shiftHue(t.paletteIndex) : { rgb: '200,168,72', accent: 'var(--gold)' }
                   const uncapped = t.slotCount - t.cappedSlots
                   return (
                     <div key={t.id ?? 'untyped'} style={{ ...card(), borderColor: `rgba(${hue.rgb},0.25)`, background: `rgba(${hue.rgb},0.04)` }}>
@@ -360,7 +360,7 @@ export default async function OverviewPage() {
                         {fmtH(t.filledHours)} filled · {t.signupCount} signup{t.signupCount === 1 ? '' : 's'}
                       </p>
                       {t.slotCount > 0 && (
-                        <p style={{ ...statSub, margin: '0.15rem 0 0', color: t.emptySlots > 0 ? '#ffb432' : undefined, opacity: t.emptySlots > 0 ? 0.75 : 0.45 }}>
+                        <p style={{ ...statSub, margin: '0.15rem 0 0', color: t.emptySlots > 0 ? 'var(--amber)' : undefined, opacity: t.emptySlots > 0 ? 0.75 : 0.45 }}>
                           {t.emptySlots > 0
                             ? `${t.emptySlots} of ${t.slotCount} shift${t.slotCount === 1 ? '' : 's'} empty`
                             : 'every shift has someone'}
@@ -378,7 +378,7 @@ export default async function OverviewPage() {
 
         {/* ── GROUPS ── */}
         <section>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, marginBottom: '1.25rem' }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, marginBottom: '1.25rem' }}>
             Groups
           </p>
 
@@ -402,7 +402,7 @@ export default async function OverviewPage() {
                 <p style={statLabel}>In no group</p>
                 <p style={{ ...statValue, fontSize: '1.5rem' }}>{unassigned.length}</p>
                 <MemberPills members={unassigned} />
-                <a href="/admin/configure#structure" style={{ display: 'inline-block', marginTop: '0.6rem', fontSize: '0.75rem', color: '#C8A848', opacity: 0.75, textDecoration: 'none' }}>
+                <a href="/admin/configure#structure" style={{ display: 'inline-block', marginTop: '0.6rem', fontSize: '0.75rem', color: 'var(--gold)', opacity: 0.75, textDecoration: 'none' }}>
                   Assign in Groups →
                 </a>
               </div>
@@ -414,7 +414,7 @@ export default async function OverviewPage() {
 
         {/* ── RIDESHARE ── */}
         <section>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, marginBottom: '1.25rem' }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, marginBottom: '1.25rem' }}>
             Rideshare
           </p>
 
@@ -423,12 +423,12 @@ export default async function OverviewPage() {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
               {rideshareGroups.map(({ label, members }) => {
-                const accent = label === 'I need a ride' ? 'rgba(210,57,248,0.2)'
+                const accent = label === 'I need a ride' ? 'rgb(var(--purple-rgb) / 0.2)'
                   : label === 'I can offer a ride' ? 'rgba(80,200,160,0.2)'
-                  : 'rgba(200,168,72,0.15)'
-                const color = label === 'I need a ride' ? '#D239F8'
+                  : 'rgb(var(--gold-rgb) / 0.15)'
+                const color = label === 'I need a ride' ? 'var(--purple)'
                   : label === 'I can offer a ride' ? '#50c8a0'
-                  : '#C8A848'
+                  : 'var(--gold)'
                 return (
                   <div key={label} style={{ ...card(), borderColor: accent }}>
                     <p style={{ ...statLabel, color }}>{label}</p>
@@ -446,7 +446,7 @@ export default async function OverviewPage() {
           <>
             <div style={divider} />
             <section>
-              <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, marginBottom: '1.25rem' }}>
+              <p style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, marginBottom: '1.25rem' }}>
                 Poll Results
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -456,7 +456,7 @@ export default async function OverviewPage() {
                   return (
                     <div key={poll.id} style={{ ...card(), padding: '1.25rem 1.5rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
-                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#EDE0C8', lineHeight: 1.45, flex: 1 }}>
+                        <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--parchment)', lineHeight: 1.45, flex: 1 }}>
                           {poll.question}
                         </p>
                         <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
@@ -466,11 +466,11 @@ export default async function OverviewPage() {
                             </span>
                           )}
                           {expired && (
-                            <span style={{ fontSize: '0.62rem', letterSpacing: '0.08em', color: '#ffb432', border: '1px solid rgba(255,180,50,0.25)', borderRadius: '9999px', padding: '0.1rem 0.5rem' }}>
+                            <span style={{ fontSize: '0.62rem', letterSpacing: '0.08em', color: 'var(--amber)', border: '1px solid rgba(255,180,50,0.25)', borderRadius: '9999px', padding: '0.1rem 0.5rem' }}>
                               Closed
                             </span>
                           )}
-                          <span style={{ fontSize: '0.68rem', color: '#C8A848', opacity: 0.5, alignSelf: 'center' }}>
+                          <span style={{ fontSize: '0.68rem', color: 'var(--gold)', opacity: 0.5, alignSelf: 'center' }}>
                             {poll.totalVoters} {poll.totalVoters === 1 ? 'voter' : 'voters'}
                           </span>
                         </div>
@@ -484,10 +484,10 @@ export default async function OverviewPage() {
                           return (
                             <div key={i}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
-                                <span style={{ fontSize: '0.8rem', color: isTop ? '#C8A848' : '#F3EDE6', opacity: isTop ? 1 : 0.7 }}>
+                                <span style={{ fontSize: '0.8rem', color: isTop ? 'var(--gold)' : 'var(--cream)', opacity: isTop ? 1 : 0.7 }}>
                                   {isTop && '✦ '}{opt}
                                 </span>
-                                <span style={{ fontSize: '0.75rem', color: '#C8A848', opacity: 0.6, flexShrink: 0, marginLeft: '1rem' }}>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--gold)', opacity: 0.6, flexShrink: 0, marginLeft: '1rem' }}>
                                   {count} · {pct}%
                                 </span>
                               </div>
@@ -497,8 +497,8 @@ export default async function OverviewPage() {
                                   width: `${pct}%`,
                                   borderRadius: '9999px',
                                   background: isTop
-                                    ? 'linear-gradient(90deg, #C8A848, #e8c868)'
-                                    : 'rgba(200,168,72,0.35)',
+                                    ? 'linear-gradient(90deg, var(--gold), #e8c868)'
+                                    : 'rgb(var(--gold-rgb) / 0.35)',
                                   transition: 'width 0.4s ease',
                                 }} />
                               </div>
@@ -530,7 +530,7 @@ function MemberPills({ members }: { members: Array<{ id?: unknown; preferred_nam
       {members.map((m, i) => {
         const name = (m.preferred_name || m.first_name || '?') as string
         const id = m.id as string | undefined
-        const pillStyle: React.CSSProperties = { padding: '0.2rem 0.6rem', borderRadius: '9999px', background: 'rgba(200,168,72,0.08)', border: '1px solid rgba(200,168,72,0.15)', fontSize: '0.72rem', opacity: 0.8, textDecoration: 'none', color: 'inherit' }
+        const pillStyle: React.CSSProperties = { padding: '0.2rem 0.6rem', borderRadius: '9999px', background: 'rgb(var(--gold-rgb) / 0.08)', border: '1px solid rgb(var(--gold-rgb) / 0.15)', fontSize: '0.72rem', opacity: 0.8, textDecoration: 'none', color: 'inherit' }
         return id ? (
           <a key={i} href={`/admin/${id}`} style={pillStyle}>
             {name}

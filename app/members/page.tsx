@@ -75,10 +75,10 @@ export default async function MembersPage() {
       <main aria-labelledby="members-heading" style={{ maxWidth: '960px', margin: '0 auto', padding: '6rem 1.5rem 6rem', position: 'relative', zIndex: 1 }}>
 
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.7, marginBottom: '0.5rem' }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.7, marginBottom: '0.5rem' }}>
             <span aria-hidden="true">✦ &nbsp;</span>{community.name} Camp 2026<span aria-hidden="true">&nbsp; ✦</span>
           </p>
-          <h1 id="members-heading" style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 6vw, 3rem)', color: '#C8A848', marginBottom: '0.25rem', textShadow: '0 0 40px rgba(210,57,248,0.4)' }}>
+          <h1 id="members-heading" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 6vw, 3rem)', color: 'var(--gold)', marginBottom: '0.25rem', textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.4)' }}>
             Many Hands
           </h1>
           <p style={{ fontSize: '0.85rem', opacity: 0.4 }}>
@@ -87,7 +87,7 @@ export default async function MembersPage() {
           </p>
         </div>
 
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.3), transparent)', marginBottom: '3rem' }} aria-hidden="true" />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.3), transparent)', marginBottom: '3rem' }} aria-hidden="true" />
 
         <MembersGrid members={all} volunteers={volunteers} />
 

@@ -163,7 +163,7 @@ export default async function ConfigurePage() {
           <NotificationBell initialNotifications={notifications ?? []} />
         </div>
 
-        <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: '#C8A848', marginBottom: '0.5rem', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--gold)', marginBottom: '0.5rem', textAlign: 'center' }}>
           Configure
         </h1>
         <p style={{ textAlign: 'center', opacity: 0.5, fontSize: '0.85rem', marginBottom: '2.5rem' }}>
@@ -183,20 +183,20 @@ export default async function ConfigurePage() {
             padding: '1.1rem 1.3rem',
             marginBottom: '1.1rem',
             borderRadius: '0.9rem',
-            border: '1px solid rgba(200,168,72,0.14)',
-            background: 'rgba(243,237,230,0.03)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.14)',
+            background: 'rgb(var(--cream-rgb) / 0.03)',
             textDecoration: 'none',
           }}
         >
           <span style={{ flex: '1 1 16rem', minWidth: 0 }}>
-            <span style={{ display: 'block', fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#C8A848' }}>
+            <span style={{ display: 'block', fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)' }}>
               Application Form
             </span>
-            <span style={{ display: 'block', marginTop: '0.4rem', fontSize: '0.8rem', lineHeight: 1.5, color: '#F3EDE6', opacity: 0.5 }}>
+            <span style={{ display: 'block', marginTop: '0.4rem', fontSize: '0.8rem', lineHeight: 1.5, color: 'var(--cream)', opacity: 0.5 }}>
               Design the member application — sections, fields, and copy
             </span>
           </span>
-          <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: '#C8A848', opacity: 0.6, whiteSpace: 'nowrap', paddingTop: '0.05rem' }}>
+          <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'var(--gold)', opacity: 0.6, whiteSpace: 'nowrap', paddingTop: '0.05rem' }}>
             open the builder →
           </span>
         </a>

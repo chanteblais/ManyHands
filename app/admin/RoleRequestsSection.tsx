@@ -59,13 +59,13 @@ export function RoleRequestsSection() {
         <div key={req.clerk_user_id} style={{
           display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap',
           padding: '1rem 1.25rem',
-          border: '1px solid rgba(210,57,248,0.2)',
+          border: '1px solid rgb(var(--purple-rgb) / 0.2)',
           borderRadius: '0.75rem',
-          background: 'rgba(210,57,248,0.03)',
+          background: 'rgb(var(--purple-rgb) / 0.03)',
         }}>
           {/* Camper info */}
           <div style={{ flex: 1, minWidth: '160px' }}>
-            <p style={{ fontSize: '0.9rem', color: '#F3EDE6', margin: 0 }}>{req.applicant_name}</p>
+            <p style={{ fontSize: '0.9rem', color: 'var(--cream)', margin: 0 }}>{req.applicant_name}</p>
             {req.applicant_full_name !== req.applicant_name && (
               <p style={{ fontSize: '0.75rem', opacity: 0.45, margin: '0.15rem 0 0' }}>{req.applicant_full_name}</p>
             )}
@@ -74,7 +74,7 @@ export function RoleRequestsSection() {
           {/* Role */}
           <div style={{ flex: 1, minWidth: '140px' }}>
             {req.department_name && (
-              <p style={{ fontSize: '0.68rem', color: '#C8A848', opacity: 0.55, margin: '0 0 0.15rem', letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+              <p style={{ fontSize: '0.68rem', color: 'var(--gold)', opacity: 0.55, margin: '0 0 0.15rem', letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                 {req.department_icon && (
                   isImageIcon(req.department_icon)
                     ? <IconImage src={req.department_icon} size="0.8rem" fill={0.92} />
@@ -83,7 +83,7 @@ export function RoleRequestsSection() {
                 {req.department_name}
               </p>
             )}
-            <p style={{ fontSize: '0.88rem', color: '#D239F8', margin: 0 }}>{req.role_name}</p>
+            <p style={{ fontSize: '0.88rem', color: 'var(--purple)', margin: 0 }}>{req.role_name}</p>
           </div>
 
           {/* Actions */}
@@ -95,7 +95,7 @@ export function RoleRequestsSection() {
                 padding: '0.4rem 1rem', borderRadius: '9999px',
                 border: '1px solid rgba(100,200,120,0.4)',
                 background: 'rgba(100,200,120,0.08)',
-                color: '#7dcf8e', cursor: 'pointer', fontSize: '0.8rem',
+                color: 'var(--success)', cursor: 'pointer', fontSize: '0.8rem',
                 opacity: deciding === req.clerk_user_id ? 0.5 : 1,
               }}
             >
@@ -108,7 +108,7 @@ export function RoleRequestsSection() {
                 padding: '0.4rem 1rem', borderRadius: '9999px',
                 border: '1px solid rgba(255,80,80,0.25)',
                 background: 'transparent',
-                color: '#ff8a8a', cursor: 'pointer', fontSize: '0.8rem',
+                color: 'var(--danger)', cursor: 'pointer', fontSize: '0.8rem',
                 opacity: deciding === req.clerk_user_id ? 0.5 : 1,
               }}
             >

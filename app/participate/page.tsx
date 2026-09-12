@@ -47,7 +47,7 @@ export default async function SignupPage() {
         <main style={{ maxWidth: '860px', margin: '0 auto', padding: '6rem 1.5rem 6rem' }}>
           <a
             href="/profile"
-            style={{ fontSize: '0.75rem', color: '#C8A848', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.08em', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '2rem' }}
+            style={{ fontSize: '0.75rem', color: 'var(--gold)', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.08em', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '2rem' }}
           >
             ← Back to profile
           </a>
@@ -56,7 +56,7 @@ export default async function SignupPage() {
             {/* Not "Your Shifts" — the shift plaque right below carries that
                 kicker already, and on this shifts-only page the echo was bare
                 (UX 2026-07-20 #30). Hands-language instead. */}
-            <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', color: '#C8A848', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', color: 'var(--gold)', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
               Lend a Hand
             </h1>
             <p style={{ fontSize: '0.9rem', opacity: 0.55, margin: 0, lineHeight: 1.6 }}>
@@ -64,7 +64,7 @@ export default async function SignupPage() {
             </p>
           </div>
 
-          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.25), transparent)', marginBottom: '2rem' }} />
+          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.25), transparent)', marginBottom: '2rem' }} />
 
           <SignupSection initialData={volunteerInitialData} hideRole />
         </main>
@@ -91,14 +91,14 @@ export default async function SignupPage() {
         {/* Back link */}
         <a
           href="/profile"
-          style={{ fontSize: '0.75rem', color: '#C8A848', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.08em', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '2rem' }}
+          style={{ fontSize: '0.75rem', color: 'var(--gold)', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.08em', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '2rem' }}
         >
           ← Back to profile
         </a>
 
         {/* Heading */}
         <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', color: '#C8A848', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', color: 'var(--gold)', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
             Your Role & Shift
           </h1>
           <p style={{ fontSize: '0.9rem', opacity: 0.55, margin: 0, lineHeight: 1.6 }}>
@@ -106,16 +106,16 @@ export default async function SignupPage() {
           </p>
         </div>
 
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.25), transparent)', marginBottom: '2rem' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.25), transparent)', marginBottom: '2rem' }} />
 
         <SignupSection initialData={signupInitialData} />
 
         {/* Shared resources — claim the gear you'll bring. Above groups: needs
             are live and time-sensitive; group membership is a set-once choice. */}
-        <div id="bring" style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.25), transparent)', margin: '3rem 0 2rem' }} />
+        <div id="bring" style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.25), transparent)', margin: '3rem 0 2rem' }} />
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: '#C8A848', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: 'var(--gold)', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
             Bring Something
           </h2>
           <p style={{ fontSize: '0.9rem', opacity: 0.55, margin: 0, lineHeight: 1.6 }}>
@@ -131,10 +131,10 @@ export default async function SignupPage() {
         />
 
         {/* Self-join groups, grouped by collection (Contributions, Skills, …) */}
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.25), transparent)', margin: '3rem 0 2rem' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.25), transparent)', margin: '3rem 0 2rem' }} />
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: '#C8A848', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: 'var(--gold)', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
             Your Groups
           </h2>
           <p style={{ fontSize: '0.9rem', opacity: 0.55, margin: 0, lineHeight: 1.6 }}>

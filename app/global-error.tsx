@@ -23,15 +23,15 @@ export default function GlobalError({
         alignItems: 'center',
         justifyContent: 'center',
         padding: '2rem',
-        backgroundColor: '#1A0A24',
-        color: '#F3EDE6',
+        backgroundColor: 'var(--ink)',
+        color: 'var(--cream)',
         fontFamily: 'Georgia, serif',
         textAlign: 'center',
       }}>
-        <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '1rem', opacity: 0.85 }}>
+        <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--purple)', marginBottom: '1rem', opacity: 0.85 }}>
           ✦ &nbsp;Something went wrong&nbsp; ✦
         </p>
-        <h2 style={{ fontSize: '2rem', color: '#C8A848', marginBottom: '1.5rem' }}>
+        <h2 style={{ fontSize: '2rem', color: 'var(--gold)', marginBottom: '1.5rem' }}>
           Glåüm encountered an error
         </h2>
         <p style={{ fontSize: '0.9rem', opacity: 0.5, marginBottom: '2rem', maxWidth: '400px', lineHeight: 1.7 }}>
@@ -42,9 +42,9 @@ export default function GlobalError({
           style={{
             padding: '0.6rem 1.75rem',
             borderRadius: '9999px',
-            border: '1px solid rgba(200,168,72,0.5)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.5)',
             background: 'transparent',
-            color: '#FFFACD',
+            color: 'var(--lemon)',
             fontSize: '0.82rem',
             letterSpacing: '0.1em',
             cursor: 'pointer',

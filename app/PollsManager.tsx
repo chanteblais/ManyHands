@@ -14,13 +14,13 @@ type Poll = {
 }
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(200,168,72,0.2)',
-  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: '#F3EDE6', fontSize: '0.875rem',
+  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: 'var(--cream)', fontSize: '0.875rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif', outline: 'none', boxSizing: 'border-box',
 }
 const labelStyle: React.CSSProperties = {
   fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase',
-  color: '#C8A848', opacity: 0.65, display: 'block', marginBottom: '0.35rem',
+  color: 'var(--gold)', opacity: 0.65, display: 'block', marginBottom: '0.35rem',
 }
 
 function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
@@ -30,15 +30,15 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
         onClick={() => onChange(!checked)}
         style={{
           display: 'inline-block', width: '36px', height: '20px', borderRadius: '9999px', flexShrink: 0,
-          background: checked ? '#C8A848' : 'rgba(255,255,255,0.1)',
-          border: `1px solid ${checked ? '#C8A848' : 'rgba(200,168,72,0.2)'}`,
+          background: checked ? 'var(--gold)' : 'rgba(255,255,255,0.1)',
+          border: `1px solid ${checked ? 'var(--gold)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
           position: 'relative', transition: 'background 0.2s', cursor: 'pointer',
         }}
       >
         <span style={{
           position: 'absolute', top: '2px', left: checked ? '17px' : '2px',
           width: '14px', height: '14px', borderRadius: '50%',
-          background: '#F3EDE6', transition: 'left 0.2s',
+          background: 'var(--cream)', transition: 'left 0.2s',
         }} />
       </span>
       <span style={{ opacity: 0.75 }}>{label}</span>
@@ -99,10 +99,10 @@ function PollModal({
       display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem',
     }} onClick={onClose}>
       <div style={{
-        background: '#1A0A24', border: '1px solid rgba(200,168,72,0.3)', borderRadius: '1rem',
+        background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '1rem',
         padding: '2rem', maxWidth: '540px', width: '100%', maxHeight: '90vh', overflowY: 'auto',
       }} onClick={e => e.stopPropagation()}>
-        <h2 style={{ fontFamily: 'TokyoDreams, serif', color: '#C8A848', fontSize: '1.2rem', margin: '0 0 1.5rem' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--gold)', fontSize: '1.2rem', margin: '0 0 1.5rem' }}>
           {initial.question ? 'Edit Poll' : 'New Poll'}
         </h2>
 
@@ -131,7 +131,7 @@ function PollModal({
                 {form.options.length > 2 && (
                   <button
                     onClick={() => removeOption(i)}
-                    style={{ background: 'none', border: 'none', color: '#ff8080', cursor: 'pointer', fontSize: '1rem', padding: '0.2rem 0.4rem', opacity: 0.7 }}
+                    style={{ background: 'none', border: 'none', color: 'var(--danger-strong)', cursor: 'pointer', fontSize: '1rem', padding: '0.2rem 0.4rem', opacity: 0.7 }}
                   >×</button>
                 )}
               </div>
@@ -139,7 +139,7 @@ function PollModal({
             {form.options.length < 10 && (
               <button
                 onClick={addOption}
-                style={{ background: 'none', border: '1px dashed rgba(200,168,72,0.25)', borderRadius: '0.5rem', color: '#C8A848', opacity: 0.6, cursor: 'pointer', padding: '0.45rem', fontSize: '0.78rem' }}
+                style={{ background: 'none', border: '1px dashed rgb(var(--gold-rgb) / 0.25)', borderRadius: '0.5rem', color: 'var(--gold)', opacity: 0.6, cursor: 'pointer', padding: '0.45rem', fontSize: '0.78rem' }}
               >
                 + Add option
               </button>
@@ -162,16 +162,16 @@ function PollModal({
           />
         </div>
 
-        {error && <p style={{ fontSize: '0.8rem', color: '#ff8080', marginBottom: '1rem' }}>{error}</p>}
+        {error && <p style={{ fontSize: '0.8rem', color: 'var(--danger-strong)', marginBottom: '1rem' }}>{error}</p>}
 
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.5rem', color: '#F3EDE6', padding: '0.55rem 1.25rem', cursor: 'pointer', fontSize: '0.85rem', opacity: 0.7 }}>
+          <button onClick={onClose} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.5rem', color: 'var(--cream)', padding: '0.55rem 1.25rem', cursor: 'pointer', fontSize: '0.85rem', opacity: 0.7 }}>
             Cancel
           </button>
           <button
             onClick={() => valid && onSave(form)}
             disabled={saving || !valid}
-            style={{ background: valid ? 'rgba(200,168,72,0.15)' : 'rgba(200,168,72,0.05)', border: '1px solid rgba(200,168,72,0.35)', borderRadius: '0.5rem', color: '#C8A848', padding: '0.55rem 1.25rem', cursor: valid ? 'pointer' : 'not-allowed', fontSize: '0.85rem', opacity: saving ? 0.5 : 1 }}
+            style={{ background: valid ? 'rgb(var(--gold-rgb) / 0.15)' : 'rgb(var(--gold-rgb) / 0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.35)', borderRadius: '0.5rem', color: 'var(--gold)', padding: '0.55rem 1.25rem', cursor: valid ? 'pointer' : 'not-allowed', fontSize: '0.85rem', opacity: saving ? 0.5 : 1 }}
           >
             {saving ? 'Saving…' : 'Save'}
           </button>
@@ -261,7 +261,7 @@ export function PollsManager() {
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
         <button
           onClick={() => { setSaveError(null); setModal({ mode: 'create' }) }}
-          style={{ background: 'rgba(200,168,72,0.1)', border: '1px solid rgba(200,168,72,0.3)', borderRadius: '0.5rem', color: '#C8A848', padding: '0.5rem 1.1rem', cursor: 'pointer', fontSize: '0.8rem', letterSpacing: '0.06em' }}
+          style={{ background: 'rgb(var(--gold-rgb) / 0.1)', border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '0.5rem', color: 'var(--gold)', padding: '0.5rem 1.1rem', cursor: 'pointer', fontSize: '0.8rem', letterSpacing: '0.06em' }}
         >
           + New Poll
         </button>
@@ -276,29 +276,29 @@ export function PollsManager() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {polls.map(poll => (
           <div key={poll.id} style={{
-            border: '1px solid rgba(200,168,72,0.18)', borderRadius: '0.75rem',
+            border: '1px solid rgb(var(--gold-rgb) / 0.18)', borderRadius: '0.75rem',
             background: 'rgba(255,255,255,0.02)', padding: '1rem 1.25rem',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.5rem' }}>
-              <p style={{ margin: 0, fontSize: '0.88rem', color: '#EDE0C8', lineHeight: 1.45, flex: 1 }}>{poll.question}</p>
+              <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--parchment)', lineHeight: 1.45, flex: 1 }}>{poll.question}</p>
               <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
                 <button
                   onClick={() => toggleVisible(poll)}
                   title={poll.visible ? 'Hide from members' : 'Show to members'}
-                  style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: poll.visible ? '#C8A848' : '#888', padding: '0.2rem 0.55rem', cursor: 'pointer', fontSize: '0.7rem' }}
+                  style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: poll.visible ? 'var(--gold)' : '#888', padding: '0.2rem 0.55rem', cursor: 'pointer', fontSize: '0.7rem' }}
                 >
                   {poll.visible ? 'Visible' : 'Hidden'}
                 </button>
                 <button
                   onClick={() => { setSaveError(null); setModal({ mode: 'edit', poll }) }}
-                  style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: '#C8A848', padding: '0.2rem 0.55rem', cursor: 'pointer', fontSize: '0.7rem' }}
+                  style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: 'var(--gold)', padding: '0.2rem 0.55rem', cursor: 'pointer', fontSize: '0.7rem' }}
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(poll.id)}
                   disabled={deleting === poll.id}
-                  style={{ background: 'none', border: '1px solid rgba(255,80,80,0.25)', borderRadius: '0.4rem', color: '#ff8080', padding: '0.2rem 0.55rem', cursor: 'pointer', fontSize: '0.7rem', opacity: deleting === poll.id ? 0.5 : 1 }}
+                  style={{ background: 'none', border: '1px solid rgba(255,80,80,0.25)', borderRadius: '0.4rem', color: 'var(--danger-strong)', padding: '0.2rem 0.55rem', cursor: 'pointer', fontSize: '0.7rem', opacity: deleting === poll.id ? 0.5 : 1 }}
                 >
                   Delete
                 </button>
@@ -307,7 +307,7 @@ export function PollsManager() {
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
               {poll.options.map((opt, i) => (
-                <span key={i} style={{ fontSize: '0.72rem', background: 'rgba(200,168,72,0.07)', border: '1px solid rgba(200,168,72,0.15)', borderRadius: '9999px', padding: '0.15rem 0.6rem', color: '#C8A848', opacity: 0.75 }}>
+                <span key={i} style={{ fontSize: '0.72rem', background: 'rgb(var(--gold-rgb) / 0.07)', border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '9999px', padding: '0.15rem 0.6rem', color: 'var(--gold)', opacity: 0.75 }}>
                   {opt}
                 </span>
               ))}

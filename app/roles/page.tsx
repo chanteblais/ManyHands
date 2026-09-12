@@ -32,14 +32,14 @@ type RoleRow = {
 
 // Commitment-level accents (same scale as the signup picker).
 const COMMITMENT_TEXT: Record<string, string> = {
-  'Low': '#7dcf8e',
+  'Low': 'var(--success)',
   'Low–Medium': '#a8cf6e',
-  'Medium': '#c8a848',
+  'Medium': 'var(--gold)',
   'Medium–High': '#d48c3c',
   'High': '#dc5050',
 }
 
-function Pill({ label, color = '#C8A848', borderAlpha = 0.35 }: { label: string; color?: string; borderAlpha?: number }) {
+function Pill({ label, color = 'var(--gold)', borderAlpha = 0.35 }: { label: string; color?: string; borderAlpha?: number }) {
   return (
     <span style={{
       display: 'inline-block', padding: '0.18rem 0.6rem', borderRadius: '9999px',
@@ -55,13 +55,13 @@ function Pill({ label, color = '#C8A848', borderAlpha = 0.35 }: { label: string;
 function ChargeList({ heading, text }: { heading: string; text: string }) {
   return (
     <div>
-      <p style={{ fontSize: '0.63rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, margin: '0 0 0.4rem' }}>
+      <p style={{ fontSize: '0.63rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: '0 0 0.4rem' }}>
         {heading}
       </p>
       <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
         {text.split('\n').filter(Boolean).map((line, i) => (
           <li key={i} style={{ fontSize: '0.84rem', lineHeight: 1.7, opacity: 0.72, display: 'flex', gap: '0.5rem' }}>
-            <span aria-hidden style={{ color: '#C8A848', opacity: 0.6, fontSize: '0.6rem', lineHeight: '1.9rem', flexShrink: 0 }}>✦</span>
+            <span aria-hidden style={{ color: 'var(--gold)', opacity: 0.6, fontSize: '0.6rem', lineHeight: '1.9rem', flexShrink: 0 }}>✦</span>
             <span>{line}</span>
           </li>
         ))}
@@ -106,17 +106,17 @@ export default async function RolesRegistryPage() {
       <main style={{ maxWidth: '860px', margin: '0 auto', padding: '4.5rem 1.5rem 6rem' }}>
 
         <div style={{ marginBottom: '2rem' }}>
-          <a href="/participate" style={{ fontSize: '0.75rem', color: '#C8A848', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.08em' }}>
+          <a href="/participate" style={{ fontSize: '0.75rem', color: 'var(--gold)', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.08em' }}>
             ← Back to Participate
           </a>
         </div>
 
         {/* Page heading */}
         <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.34em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.85, margin: '0 0 0.5rem' }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.34em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.85, margin: '0 0 0.5rem' }}>
             The Registry
           </p>
-          <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#C8A848', margin: 0, letterSpacing: '0.05em', textShadow: '0 0 40px rgba(210,57,248,0.35)' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'var(--gold)', margin: 0, letterSpacing: '0.05em', textShadow: '0 0 40px rgb(var(--purple-rgb) / 0.35)' }}>
             Registry of Roles
           </h1>
           <p style={{ fontSize: '0.9rem', opacity: 0.55, margin: '0.75rem auto 0', maxWidth: '34rem', lineHeight: 1.65 }}>
@@ -134,8 +134,8 @@ export default async function RolesRegistryPage() {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                 padding: '0.35rem 0.85rem', borderRadius: '9999px',
-                border: '1px solid rgba(200,168,72,0.25)', background: 'rgba(200,168,72,0.04)',
-                color: '#C8A848', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.05em',
+                border: '1px solid rgb(var(--gold-rgb) / 0.25)', background: 'rgb(var(--gold-rgb) / 0.04)',
+                color: 'var(--gold)', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.05em',
               }}
             >
               {d.icon && (isImageIcon(d.icon)
@@ -168,17 +168,17 @@ export default async function RolesRegistryPage() {
             <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
               <div style={{
                 width: '64px', height: '64px', borderRadius: '50%', margin: '0 auto 0.7rem',
-                border: '1.5px solid #C8A848',
-                background: 'radial-gradient(circle at 42% 38%, rgba(200,168,72,0.16), rgba(8,0,18,0.85))',
+                border: '1.5px solid var(--gold)',
+                background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.16), rgba(8,0,18,0.85))',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 0 18px rgba(200,168,72,0.18)',
+                boxShadow: '0 0 18px rgb(var(--gold-rgb) / 0.18)',
               }}>
                 {dept.icon && (isImageIcon(dept.icon)
                   // eslint-disable-next-line @next/next/no-img-element
                   ? <IconImage src={dept.icon} size="100%" fill={ROUND_FILL} opacity={0.92} />
                   : <span style={{ fontSize: '1.7rem', lineHeight: 1 }}>{dept.icon ?? '✦'}</span>)}
               </div>
-              <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', color: '#C8A848', margin: 0, letterSpacing: '0.05em' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', color: 'var(--gold)', margin: 0, letterSpacing: '0.05em' }}>
                 {dept.name}
               </h2>
               {dept.description && (
@@ -187,9 +187,9 @@ export default async function RolesRegistryPage() {
                 </p>
               )}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', width: '38%', margin: '1rem auto 0' }}>
-                <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.5))' }} />
-                <span aria-hidden style={{ color: '#C8A848', fontSize: '0.55rem', opacity: 0.85, lineHeight: 1 }}>✦</span>
-                <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.5), transparent)' }} />
+                <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.5))' }} />
+                <span aria-hidden style={{ color: 'var(--gold)', fontSize: '0.55rem', opacity: 0.85, lineHeight: 1 }}>✦</span>
+                <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.5), transparent)' }} />
               </div>
             </div>
 
@@ -208,25 +208,25 @@ export default async function RolesRegistryPage() {
                     id={roleSlug(role.name)}
                     style={{
                       scrollMarginTop: '84px',
-                      border: `1px solid rgba(200,168,72,${isCurrent ? 0.4 : 0.15})`,
+                      border: `1px solid rgb(var(--gold-rgb) / ${isCurrent ? 0.4 : 0.15})`,
                       borderRadius: '0.85rem',
-                      background: isCurrent ? 'rgba(200,168,72,0.04)' : 'rgba(255,255,255,0.015)',
+                      background: isCurrent ? 'rgb(var(--gold-rgb) / 0.04)' : 'rgba(255,255,255,0.015)',
                       padding: '1.4rem 1.5rem',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.35rem' }}>
-                      <h3 style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.25rem', color: '#EDE0C8', margin: 0, letterSpacing: '0.04em' }}>
+                      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: 'var(--parchment)', margin: 0, letterSpacing: '0.04em' }}>
                         {role.name}
                       </h3>
                       <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                         {(role.commitment || role.commitment_period) && (
                           <Pill
                             label={[role.commitment, role.commitment_period].filter(Boolean).join(' · ')}
-                            color={role.commitment ? COMMITMENT_TEXT[role.commitment] ?? '#C8A848' : '#C8A848'}
+                            color={role.commitment ? COMMITMENT_TEXT[role.commitment] ?? 'var(--gold)' : 'var(--gold)'}
                           />
                         )}
-                        <Pill label={isFull ? 'Full' : `${openSpots} of ${role.capacity} open`} color={isFull ? '#ff8a8a' : '#C8A848'} borderAlpha={0.25} />
-                        {role.requires_approval && <Pill label="Approval required" color="#D239F8" borderAlpha={0.3} />}
+                        <Pill label={isFull ? 'Full' : `${openSpots} of ${role.capacity} open`} color={isFull ? 'var(--danger)' : 'var(--gold)'} borderAlpha={0.25} />
+                        {role.requires_approval && <Pill label="Approval required" color="var(--purple)" borderAlpha={0.3} />}
                       </div>
                     </div>
 
@@ -245,7 +245,7 @@ export default async function RolesRegistryPage() {
 
                     {role.ideal_for && (
                       <div style={{ marginTop: '1.1rem' }}>
-                        <p style={{ fontSize: '0.63rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, margin: '0 0 0.3rem' }}>
+                        <p style={{ fontSize: '0.63rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: '0 0 0.3rem' }}>
                           Ideal for
                         </p>
                         <p style={{ fontSize: '0.9rem', lineHeight: 1.65, margin: 0, color: '#C9B68F', opacity: 0.9, fontStyle: 'italic', fontFamily: 'var(--font-cormorant-garamond), serif' }}>
@@ -254,7 +254,7 @@ export default async function RolesRegistryPage() {
                       </div>
                     )}
 
-                    <div style={{ marginTop: '1.2rem', paddingTop: '1rem', borderTop: '1px solid rgba(200,168,72,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                    <div style={{ marginTop: '1.2rem', paddingTop: '1rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                       <ClaimRoleButton
                         roleId={role.id}
                         roleName={role.name}
@@ -274,7 +274,7 @@ export default async function RolesRegistryPage() {
         {/* Suggest-a-role pointer */}
         <p style={{ textAlign: 'center', fontSize: '0.8rem', opacity: 0.5, margin: '3rem 0 0', lineHeight: 1.7 }}>
           Don&rsquo;t see a charge that fits?{' '}
-          <a href="/participate" style={{ color: '#C8A848', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+          <a href="/participate" style={{ color: 'var(--gold)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
             Suggest a role
           </a>{' '}
           from the Participate page.

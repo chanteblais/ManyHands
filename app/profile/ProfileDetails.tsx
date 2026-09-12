@@ -3,14 +3,14 @@
 import { useEffect, useState } from 'react'
 import { profileGaps, type ProfileField } from '@/lib/profile-fields'
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
-const INK = '#1A0A24'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
+const INK = 'var(--ink)'
 
 const fieldInput: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box',
-  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+  background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
   borderRadius: '0.4rem', color: CREAM, fontSize: '0.88rem',
   padding: '0.5rem 0.65rem', outline: 'none', fontFamily: 'inherit',
 }
@@ -40,7 +40,7 @@ function FieldEditor({ field, value, onChange }: {
         <button
           type="button"
           onClick={() => onChange(!value)}
-          style={{ ...fieldInput, width: 'auto', cursor: 'pointer', color: value ? GOLD : 'rgba(243,237,230,0.6)' }}
+          style={{ ...fieldInput, width: 'auto', cursor: 'pointer', color: value ? GOLD : 'rgb(var(--cream-rgb) / 0.6)' }}
         >
           {value ? 'Yes' : 'No'}
         </button>
@@ -66,9 +66,9 @@ function FieldEditor({ field, value, onChange }: {
                 style={{
                   padding: '0.3rem 0.8rem', borderRadius: '9999px', cursor: 'pointer',
                   fontSize: '0.8rem', fontFamily: 'inherit',
-                  border: `1px solid ${on ? GOLD : 'rgba(200,168,72,0.25)'}`,
-                  background: on ? 'rgba(200,168,72,0.15)' : 'transparent',
-                  color: on ? GOLD : 'rgba(243,237,230,0.6)',
+                  border: `1px solid ${on ? GOLD : 'rgb(var(--gold-rgb) / 0.25)'}`,
+                  background: on ? 'rgb(var(--gold-rgb) / 0.15)' : 'transparent',
+                  color: on ? GOLD : 'rgb(var(--cream-rgb) / 0.6)',
                 }}
               >
                 {o}
@@ -147,8 +147,8 @@ export function ProfileDetails({ title = 'Profile Details', initialFields, initi
   }
 
   return (
-    <div style={{ padding: '1.75rem 2rem', border: '1px solid rgba(200,168,72,0.18)', borderRadius: '1rem', background: 'rgba(200,168,72,0.03)' }}>
-      <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.1rem', color: GOLD, margin: '0 0 0.35rem' }}>
+    <div style={{ padding: '1.75rem 2rem', border: '1px solid rgb(var(--gold-rgb) / 0.18)', borderRadius: '1rem', background: 'rgb(var(--gold-rgb) / 0.03)' }}>
+      <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: GOLD, margin: '0 0 0.35rem' }}>
         {title}
       </p>
       <p style={{ fontSize: '0.8rem', opacity: 0.45, margin: '0 0 1.5rem', lineHeight: 1.6 }}>
@@ -159,13 +159,13 @@ export function ProfileDetails({ title = 'Profile Details', initialFields, initi
         {fields.map(field => {
           const isGap = gapKeys.has(field.key)
           return (
-            <div key={field.key} style={isGap ? { borderLeft: `2px solid rgba(210,57,248,0.5)`, paddingLeft: '0.85rem', marginLeft: '-0.85rem' } : undefined}>
+            <div key={field.key} style={isGap ? { borderLeft: `2px solid rgb(var(--purple-rgb) / 0.5)`, paddingLeft: '0.85rem', marginLeft: '-0.85rem' } : undefined}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
                 <label style={{ fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: GOLD, opacity: 0.7 }}>
                   {field.label}
                 </label>
                 {isGap && (
-                  <span style={{ fontSize: '0.56rem', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0.12rem 0.5rem', borderRadius: '9999px', border: '1px solid rgba(210,57,248,0.4)', color: PURPLE }}>
+                  <span style={{ fontSize: '0.56rem', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0.12rem 0.5rem', borderRadius: '9999px', border: '1px solid rgb(var(--purple-rgb) / 0.4)', color: PURPLE }}>
                     {field.required ? 'Required' : 'Optional'}
                   </span>
                 )}
@@ -189,15 +189,15 @@ export function ProfileDetails({ title = 'Profile Details', initialFields, initi
             style={{
               padding: '0.55rem 1.5rem', borderRadius: '9999px', border: 'none',
               cursor: (!dirty || saving) ? 'default' : 'pointer',
-              background: (!dirty || saving) ? 'rgba(200,168,72,0.15)' : GOLD,
-              color: (!dirty || saving) ? 'rgba(243,237,230,0.5)' : INK,
+              background: (!dirty || saving) ? 'rgb(var(--gold-rgb) / 0.15)' : GOLD,
+              color: (!dirty || saving) ? 'rgb(var(--cream-rgb) / 0.5)' : INK,
               fontSize: '0.8rem', letterSpacing: '0.06em', fontWeight: 600, transition: 'all 0.15s',
             }}
           >
             {saving ? 'Saving…' : 'Save'}
           </button>
           <span style={{ fontSize: '0.75rem' }}>
-            {error ? <span style={{ color: '#ff8a8a' }}>{error}</span>
+            {error ? <span style={{ color: 'var(--danger)' }}>{error}</span>
               : saving ? null
               : dirty ? <span style={{ color: PURPLE, opacity: 0.85 }}>Unsaved changes</span>
               : saved ? <span style={{ color: GOLD, opacity: 0.7 }}>Saved ✓</span>

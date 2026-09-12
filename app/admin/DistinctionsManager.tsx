@@ -12,9 +12,9 @@ import { AssetImagePicker, type GroupIconOption } from './AssetImagePicker'
 import type { DistinctionCatalogEntry, DistinctionValueType } from '@/lib/profile-fields'
 import { useConfirm } from '../components/ConfirmDialog'
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
 
 export type { GroupIconOption }
 
@@ -26,12 +26,12 @@ const isCountOp = (op: DistinctionOp) => op === 'count_gte'
 
 const inputStyle: React.CSSProperties = {
   background: 'transparent', border: 'none',
-  borderBottom: '1px solid rgba(200,168,72,0.2)',
+  borderBottom: '1px solid rgb(var(--gold-rgb) / 0.2)',
   color: CREAM, fontSize: '0.85rem', outline: 'none',
   padding: '0 0 0.15rem', fontFamily: 'inherit', boxSizing: 'border-box',
 }
 const selectStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+  background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
   borderRadius: '0.3rem', color: CREAM, fontSize: '0.75rem',
   padding: '0.2rem 0.4rem', outline: 'none', fontFamily: 'inherit',
 }
@@ -135,8 +135,8 @@ export function DistinctionsManager({
           <div
             key={rule.id}
             style={{
-              border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.75rem',
-              background: 'rgba(200,168,72,0.02)', padding: '0.95rem 1rem',
+              border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.75rem',
+              background: 'rgb(var(--gold-rgb) / 0.02)', padding: '0.95rem 1rem',
               display: 'flex', gap: '0.75rem', alignItems: 'flex-start',
               opacity: rule.enabled ? 1 : 0.55,
             }}
@@ -156,7 +156,7 @@ export function DistinctionsManager({
               <div style={{
                 position: 'absolute', top: '3px', left: rule.enabled ? '21px' : '3px',
                 width: '16px', height: '16px', borderRadius: '50%',
-                background: rule.enabled ? '#1A0A24' : 'rgba(255,255,255,0.5)',
+                background: rule.enabled ? 'var(--ink)' : 'rgba(255,255,255,0.5)',
                 transition: 'left 0.2s',
               }} />
             </button>
@@ -188,20 +188,20 @@ export function DistinctionsManager({
               />
 
               {/* Conditions */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', borderLeft: '1px solid rgba(200,168,72,0.18)', paddingLeft: '0.7rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', borderLeft: '1px solid rgb(var(--gold-rgb) / 0.18)', paddingLeft: '0.7rem' }}>
                 {/* How it's earned — segmented toggle between automatic (conditions) and by hand. */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                   <span style={{ ...tinyLabel, opacity: 0.5 }}>How it&rsquo;s earned</span>
-                  <div style={{ display: 'inline-flex', border: '1px solid rgba(200,168,72,0.3)', borderRadius: '9999px', overflow: 'hidden' }}>
+                  <div style={{ display: 'inline-flex', border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '9999px', overflow: 'hidden' }}>
                     <button
                       onClick={() => { if (rule.conditions.length === 0) patch(idx, { conditions: [defaultCondition()] }) }}
                       title="Earned automatically when the member's facts meet conditions"
-                      style={{ border: 'none', cursor: 'pointer', padding: '0.3rem 0.9rem', fontSize: '0.7rem', letterSpacing: '0.04em', background: rule.conditions.length > 0 ? GOLD : 'transparent', color: rule.conditions.length > 0 ? '#1A0A24' : CREAM, fontWeight: rule.conditions.length > 0 ? 600 : 400, opacity: rule.conditions.length > 0 ? 1 : 0.6 }}
+                      style={{ border: 'none', cursor: 'pointer', padding: '0.3rem 0.9rem', fontSize: '0.7rem', letterSpacing: '0.04em', background: rule.conditions.length > 0 ? GOLD : 'transparent', color: rule.conditions.length > 0 ? 'var(--ink)' : CREAM, fontWeight: rule.conditions.length > 0 ? 600 : 400, opacity: rule.conditions.length > 0 ? 1 : 0.6 }}
                     >Automatically</button>
                     <button
                       onClick={() => { if (rule.conditions.length > 0) patch(idx, { conditions: [], match: undefined }) }}
                       title="Granted by hand, per-member, from the member's admin page"
-                      style={{ border: 'none', borderLeft: '1px solid rgba(200,168,72,0.3)', cursor: 'pointer', padding: '0.3rem 0.9rem', fontSize: '0.7rem', letterSpacing: '0.04em', background: rule.conditions.length === 0 ? PURPLE : 'transparent', color: rule.conditions.length === 0 ? '#fff' : CREAM, fontWeight: rule.conditions.length === 0 ? 600 : 400, opacity: rule.conditions.length === 0 ? 1 : 0.6 }}
+                      style={{ border: 'none', borderLeft: '1px solid rgb(var(--gold-rgb) / 0.3)', cursor: 'pointer', padding: '0.3rem 0.9rem', fontSize: '0.7rem', letterSpacing: '0.04em', background: rule.conditions.length === 0 ? PURPLE : 'transparent', color: rule.conditions.length === 0 ? '#fff' : CREAM, fontWeight: rule.conditions.length === 0 ? 600 : 400, opacity: rule.conditions.length === 0 ? 1 : 0.6 }}
                     >By hand</button>
                   </div>
                 </div>
@@ -220,8 +220,8 @@ export function DistinctionsManager({
                         style={{ ...selectStyle, padding: '0.1rem 0.3rem' }}
                         title="ALL = every condition (AND) · ANY = at least one (OR)"
                       >
-                        <option value="all" style={{ background: '#1A0A24' }}>ALL</option>
-                        <option value="any" style={{ background: '#1A0A24' }}>ANY</option>
+                        <option value="all" style={{ background: 'var(--ink)' }}>ALL</option>
+                        <option value="any" style={{ background: 'var(--ink)' }}>ANY</option>
                       </select>
                     ) : (
                       <span style={{ ...tinyLabel, opacity: 0.45 }}>{(rule.match ?? 'all') === 'any' ? 'ANY' : 'ALL'}</span>
@@ -244,7 +244,7 @@ export function DistinctionsManager({
                         style={selectStyle}
                       >
                         {factCatalog.map(f => (
-                          <option key={f.key} value={f.key} style={{ background: '#1A0A24' }}>{f.label}</option>
+                          <option key={f.key} value={f.key} style={{ background: 'var(--ink)' }}>{f.label}</option>
                         ))}
                       </select>
                       <select
@@ -260,7 +260,7 @@ export function DistinctionsManager({
                         style={selectStyle}
                       >
                         {ops.map(o => (
-                          <option key={o.value} value={o.value} style={{ background: '#1A0A24' }}>{o.label}</option>
+                          <option key={o.value} value={o.value} style={{ background: 'var(--ink)' }}>{o.label}</option>
                         ))}
                       </select>
                       {!isBoolOp(c.op) && (() => {
@@ -282,7 +282,7 @@ export function DistinctionsManager({
                       <button
                         onClick={() => patch(idx, { conditions: rule.conditions.filter((_, i) => i !== ci) })}
                         title="Remove condition"
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff8a8a', opacity: 0.45, fontSize: '0.8rem', padding: '0 0.1rem' }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', opacity: 0.45, fontSize: '0.8rem', padding: '0 0.1rem' }}
                       >✕</button>
                     </div>
                   )
@@ -319,9 +319,9 @@ export function DistinctionsManager({
                   onChange={e => patch(idx, { yearFact: e.target.value || undefined })}
                   style={selectStyle}
                 >
-                  <option value="" style={{ background: '#1A0A24' }}>— none —</option>
+                  <option value="" style={{ background: 'var(--ink)' }}>— none —</option>
                   {yearFacts.map(f => (
-                    <option key={f.key} value={f.key} style={{ background: '#1A0A24' }}>{f.label}</option>
+                    <option key={f.key} value={f.key} style={{ background: 'var(--ink)' }}>{f.label}</option>
                   ))}
                 </select>
               </div>
@@ -361,7 +361,7 @@ export function DistinctionsManager({
                   if (ok) update(rules.filter((_, i) => i !== idx))
                 }}
                 title="Remove"
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff8a8a', opacity: 0.45, fontSize: '0.8rem', padding: '0.1rem', marginTop: '0.15rem' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', opacity: 0.45, fontSize: '0.8rem', padding: '0.1rem', marginTop: '0.15rem' }}
               >✕</button>
             </div>
           </div>
@@ -375,7 +375,7 @@ export function DistinctionsManager({
         ])}
         style={{
           width: '100%', padding: '0.65rem',
-          border: '1px dashed rgba(210,57,248,0.25)',
+          border: '1px dashed rgb(var(--purple-rgb) / 0.25)',
           borderRadius: '0.75rem', background: 'transparent',
           color: PURPLE, fontSize: '0.8rem', letterSpacing: '0.08em',
           cursor: 'pointer', opacity: 0.6,
@@ -384,7 +384,7 @@ export function DistinctionsManager({
 
       <div style={{ minHeight: '1.2rem', marginTop: '0.9rem' }}>
         {error
-          ? <p style={{ fontSize: '0.75rem', color: '#ff8a8a', margin: 0 }}>{error}</p>
+          ? <p style={{ fontSize: '0.75rem', color: 'var(--danger)', margin: 0 }}>{error}</p>
           : saved ? <p style={{ fontSize: '0.72rem', color: GOLD, opacity: 0.6, margin: 0 }}>Saved ✓</p>
           : null}
       </div>

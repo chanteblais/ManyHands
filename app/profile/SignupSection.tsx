@@ -159,8 +159,8 @@ function CurrentSignupCards({
           hairlines. A different species from the single-hairline list cards
           below — distinct by construction, not by glow. */}
       {!hideRole && <div style={{
-        border: '1px solid rgba(200,168,72,0.35)', borderRadius: '0.85rem',
-        outline: '1px solid rgba(200,168,72,0.14)', outlineOffset: '-5px',
+        border: '1px solid rgb(var(--gold-rgb) / 0.35)', borderRadius: '0.85rem',
+        outline: '1px solid rgb(var(--gold-rgb) / 0.14)', outlineOffset: '-5px',
         background: '#231132',
         boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
         overflow: 'hidden',
@@ -170,13 +170,13 @@ function CurrentSignupCards({
           style={{ width: '100%', textAlign: 'left', padding: '1.1rem 1.35rem', background: 'none', border: 'none', cursor: role ? 'pointer' : 'default', display: 'block' }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', margin: '0 0 0.9rem', position: 'relative' }}>
-            <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.4))' }} />
-            <p style={{ fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.9, margin: 0, whiteSpace: 'nowrap' }}>
+            <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.4))' }} />
+            <p style={{ fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.9, margin: 0, whiteSpace: 'nowrap' }}>
               ✦ Your Role ✦
             </p>
-            <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.4), transparent)' }} />
+            <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.4), transparent)' }} />
             {role && (
-              <span style={{ position: 'absolute', right: 0, top: '-0.15rem', fontSize: '0.6rem', color: '#C8A848', opacity: 0.45 }}>
+              <span style={{ position: 'absolute', right: 0, top: '-0.15rem', fontSize: '0.6rem', color: 'var(--gold)', opacity: 0.45 }}>
                 {roleExpanded ? '▲' : '▼'}
               </span>
             )}
@@ -186,8 +186,8 @@ function CurrentSignupCards({
               {/* Department emblem in a brass ring (matches the profile designation) */}
               <div style={{
                 width: '46px', height: '46px', borderRadius: '50%', flexShrink: 0,
-                border: '1.5px solid #C8A848',
-                background: 'radial-gradient(circle at 42% 38%, rgba(200,168,72,0.18), rgba(8,0,18,0.85))',
+                border: '1.5px solid var(--gold)',
+                background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgba(8,0,18,0.85))',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {dept?.icon && (isImageIcon(dept.icon)
@@ -196,11 +196,11 @@ function CurrentSignupCards({
               </div>
               <div style={{ minWidth: 0 }}>
                 {dept && (
-                  <p style={{ fontSize: '0.66rem', color: '#C8A848', opacity: 0.7, margin: '0 0 0.15rem', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+                  <p style={{ fontSize: '0.66rem', color: 'var(--gold)', opacity: 0.7, margin: '0 0 0.15rem', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
                     {dept.name}
                   </p>
                 )}
-                <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.2rem', color: '#F3EDE6', margin: 0, lineHeight: 1.2 }}>{role.name}</p>
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--cream)', margin: 0, lineHeight: 1.2 }}>{role.name}</p>
                 {(role.commitment || role.commitment_period) && (
                   <div style={{ marginTop: '0.4rem' }}><CommitmentPill commitment={role.commitment} period={role.commitment_period} /></div>
                 )}
@@ -212,20 +212,20 @@ function CurrentSignupCards({
         </button>
 
         {role && roleExpanded && (
-          <div style={{ borderTop: '1px solid rgba(200,168,72,0.1)' }}>
+          <div style={{ borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)' }}>
             {hasRoleDetail && (
               <div style={{ padding: '0.85rem 1.25rem' }}>
-                {role.purpose && <div style={{ marginBottom: '0.75rem' }}><p style={{ fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>Purpose</p><p style={{ fontSize: '0.8rem', lineHeight: 1.65, opacity: 0.7, margin: 0 }}>{role.purpose}</p></div>}
-                {role.responsibilities_before && <div style={{ marginBottom: '0.75rem' }}><p style={{ fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>Before Event</p><ul style={{ margin: 0, paddingLeft: '1.1rem' }}>{role.responsibilities_before.split('\n').filter(Boolean).map((l, i) => <li key={i} style={{ fontSize: '0.8rem', lineHeight: 1.65, opacity: 0.7 }}>{l}</li>)}</ul></div>}
-                {role.responsibilities_during && <div style={{ marginBottom: '0.75rem' }}><p style={{ fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>During Event</p><ul style={{ margin: 0, paddingLeft: '1.1rem' }}>{role.responsibilities_during.split('\n').filter(Boolean).map((l, i) => <li key={i} style={{ fontSize: '0.8rem', lineHeight: 1.65, opacity: 0.7 }}>{l}</li>)}</ul></div>}
-                {role.ideal_for && <div><p style={{ fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>Ideal For</p><p style={{ fontSize: '0.8rem', lineHeight: 1.65, opacity: 0.7, fontStyle: 'italic', margin: 0 }}>{role.ideal_for}</p></div>}
+                {role.purpose && <div style={{ marginBottom: '0.75rem' }}><p style={{ fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>Purpose</p><p style={{ fontSize: '0.8rem', lineHeight: 1.65, opacity: 0.7, margin: 0 }}>{role.purpose}</p></div>}
+                {role.responsibilities_before && <div style={{ marginBottom: '0.75rem' }}><p style={{ fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>Before Event</p><ul style={{ margin: 0, paddingLeft: '1.1rem' }}>{role.responsibilities_before.split('\n').filter(Boolean).map((l, i) => <li key={i} style={{ fontSize: '0.8rem', lineHeight: 1.65, opacity: 0.7 }}>{l}</li>)}</ul></div>}
+                {role.responsibilities_during && <div style={{ marginBottom: '0.75rem' }}><p style={{ fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>During Event</p><ul style={{ margin: 0, paddingLeft: '1.1rem' }}>{role.responsibilities_during.split('\n').filter(Boolean).map((l, i) => <li key={i} style={{ fontSize: '0.8rem', lineHeight: 1.65, opacity: 0.7 }}>{l}</li>)}</ul></div>}
+                {role.ideal_for && <div><p style={{ fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>Ideal For</p><p style={{ fontSize: '0.8rem', lineHeight: 1.65, opacity: 0.7, fontStyle: 'italic', margin: 0 }}>{role.ideal_for}</p></div>}
               </div>
             )}
-            <div style={{ padding: '0.75rem 1.25rem', borderTop: hasRoleDetail ? '1px solid rgba(200,168,72,0.08)' : undefined, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <button onClick={handleOptOut} disabled={optingOut} style={{ background: 'none', border: '1px solid rgba(255,80,80,0.25)', borderRadius: '9999px', color: '#ff8a8a', cursor: 'pointer', padding: '0.35rem 0.85rem', fontSize: '0.75rem', opacity: optingOut ? 0.4 : 0.75 }}>
+            <div style={{ padding: '0.75rem 1.25rem', borderTop: hasRoleDetail ? '1px solid rgb(var(--gold-rgb) / 0.08)' : undefined, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <button onClick={handleOptOut} disabled={optingOut} style={{ background: 'none', border: '1px solid rgba(255,80,80,0.25)', borderRadius: '9999px', color: 'var(--danger)', cursor: 'pointer', padding: '0.35rem 0.85rem', fontSize: '0.75rem', opacity: optingOut ? 0.4 : 0.75 }}>
                 {optingOut ? 'Removing…' : 'Opt out of this role'}
               </button>
-              <a href={`/roles#${roleSlug(role.name)}`} style={{ fontSize: '0.72rem', color: '#C8A848', opacity: 0.6, letterSpacing: '0.04em', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+              <a href={`/roles#${roleSlug(role.name)}`} style={{ fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.6, letterSpacing: '0.04em', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                 View in the Registry →
               </a>
             </div>
@@ -236,19 +236,19 @@ function CurrentSignupCards({
       {/* Shifts card — the matching plaque in the shift accent; every held
           shift listed, each cancellable. */}
       <div style={{
-        border: '1px solid rgba(210,57,248,0.3)', borderRadius: '0.85rem',
-        outline: '1px solid rgba(210,57,248,0.12)', outlineOffset: '-5px',
+        border: '1px solid rgb(var(--purple-rgb) / 0.3)', borderRadius: '0.85rem',
+        outline: '1px solid rgb(var(--purple-rgb) / 0.12)', outlineOffset: '-5px',
         background: '#231132',
         boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
         overflow: 'hidden',
       }}>
         <div style={{ padding: '1.1rem 1.35rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', margin: '0 0 0.9rem' }}>
-            <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(210,57,248,0.4))' }} />
-            <p style={{ fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.9, margin: 0, whiteSpace: 'nowrap' }}>
+            <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--purple-rgb) / 0.4))' }} />
+            <p style={{ fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.9, margin: 0, whiteSpace: 'nowrap' }}>
               ✦ Your Shifts ✦
             </p>
-            <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgba(210,57,248,0.4), transparent)' }} />
+            <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgb(var(--purple-rgb) / 0.4), transparent)' }} />
           </div>
           {heldShifts.length === 0 ? (
             <p style={{ fontSize: '0.85rem', opacity: 0.35, fontStyle: 'italic', margin: 0 }}>None yet</p>
@@ -257,21 +257,21 @@ function CurrentSignupCards({
               {heldShifts.map(s => (
                 <div key={s.id} style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem' }}>
                   <div style={{ minWidth: 0 }}>
-                    <p style={{ fontSize: '0.88rem', color: '#F3EDE6', margin: 0 }}>
+                    <p style={{ fontSize: '0.88rem', color: 'var(--cream)', margin: 0 }}>
                       {s.shift_type_icon && <span style={{ marginRight: '0.3rem' }}>{s.shift_type_icon}</span>}
                       {s.title}
                       {s.held_role === 'lead' && (
                         <span style={{
                           marginLeft: '0.45rem', fontSize: '0.62rem', letterSpacing: '0.08em',
-                          textTransform: 'uppercase', color: '#C8A848',
-                          border: '1px solid rgba(200,168,72,0.4)', borderRadius: '9999px',
+                          textTransform: 'uppercase', color: 'var(--gold)',
+                          border: '1px solid rgb(var(--gold-rgb) / 0.4)', borderRadius: '9999px',
                           padding: '0.08rem 0.45rem', verticalAlign: 'middle',
                         }}>
                           ✦ Lead
                         </span>
                       )}
                     </p>
-                    <p style={{ fontSize: '0.72rem', color: '#D239F8', opacity: 0.75, margin: '0.15rem 0 0', letterSpacing: '0.04em' }}>
+                    <p style={{ fontSize: '0.72rem', color: 'var(--purple)', opacity: 0.75, margin: '0.15rem 0 0', letterSpacing: '0.04em' }}>
                       {shiftDateLabel(s)}{s.time ? ` · ${s.time}` : ''}{s.duration_hours > 0 ? ` · ${s.duration_hours}h` : ''}
                     </p>
                     {/* Lead affordance only where the organizer asked for a lead
@@ -283,7 +283,7 @@ function CurrentSignupCards({
                       style={{
                         background: 'none', border: 'none', cursor: 'pointer', padding: 0,
                         marginTop: '0.25rem', fontSize: '0.68rem', letterSpacing: '0.04em',
-                        color: '#C8A848', opacity: leadingId === s.id ? 0.35 : 0.55,
+                        color: 'var(--gold)', opacity: leadingId === s.id ? 0.35 : 0.55,
                         textDecoration: 'underline', textUnderlineOffset: '3px',
                       }}
                     >
@@ -296,7 +296,7 @@ function CurrentSignupCards({
                     disabled={cancellingId === s.id}
                     style={{
                       background: 'none', border: '1px solid rgba(255,80,80,0.25)', borderRadius: '9999px',
-                      color: '#ff8a8a', cursor: 'pointer', padding: '0.2rem 0.6rem',
+                      color: 'var(--danger)', cursor: 'pointer', padding: '0.2rem 0.6rem',
                       fontSize: '0.68rem', opacity: cancellingId === s.id ? 0.4 : 0.65,
                       transition: 'opacity 0.15s', flexShrink: 0,
                     }}
@@ -338,9 +338,9 @@ const COMMITMENT_COLORS: Record<string, string> = {
   'High':        'rgba(220,80,80,0.15)',
 }
 const COMMITMENT_TEXT: Record<string, string> = {
-  'Low':         '#7dcf8e',
+  'Low':         'var(--success)',
   'Low–Medium':  '#a8cf6e',
-  'Medium':      '#c8a848',
+  'Medium':      'var(--gold)',
   'Medium–High': '#d48c3c',
   'High':        '#dc5050',
 }
@@ -348,8 +348,8 @@ const COMMITMENT_TEXT: Record<string, string> = {
 function CommitmentPill({ commitment, period }: { commitment: string | null; period: string | null }) {
   if (!commitment && !period) return null
   const label = [commitment, period].filter(Boolean).join(' · ')
-  const bg = commitment ? COMMITMENT_COLORS[commitment] ?? 'rgba(200,168,72,0.1)' : 'rgba(200,168,72,0.1)'
-  const color = commitment ? COMMITMENT_TEXT[commitment] ?? '#C8A848' : '#C8A848'
+  const bg = commitment ? COMMITMENT_COLORS[commitment] ?? 'rgb(var(--gold-rgb) / 0.1)' : 'rgb(var(--gold-rgb) / 0.1)'
+  const color = commitment ? COMMITMENT_TEXT[commitment] ?? 'var(--gold)' : 'var(--gold)'
   return (
     <span style={{
       display: 'inline-block', padding: '0.15rem 0.55rem', borderRadius: '9999px',
@@ -380,20 +380,20 @@ function RoleCard({ role, isCurrent, isPending, onOpen }: {
       onClick={() => onOpen(role.id)}
       style={{
         textAlign: 'left', padding: '0.75rem 0.9rem', borderRadius: '0.6rem',
-        border: `1px solid rgba(200,168,72,${isCurrent ? 0.45 : 0.12})`,
-        background: isCurrent ? 'rgba(200,168,72,0.06)' : full ? 'transparent' : 'rgba(255,255,255,0.02)',
+        border: `1px solid rgb(var(--gold-rgb) / ${isCurrent ? 0.45 : 0.12})`,
+        background: isCurrent ? 'rgb(var(--gold-rgb) / 0.06)' : full ? 'transparent' : 'rgba(255,255,255,0.02)',
         cursor: 'pointer', opacity: full ? 0.5 : 1, display: 'block', width: '100%',
         transition: 'border-color 0.15s, background 0.15s',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '0.5rem' }}>
-        <p style={{ fontSize: '0.87rem', color: '#F3EDE6', margin: 0, minWidth: 0 }}>
-          {isCurrent && <span aria-hidden style={{ color: '#C8A848', marginRight: '0.35rem' }}>✦</span>}
+        <p style={{ fontSize: '0.87rem', color: 'var(--cream)', margin: 0, minWidth: 0 }}>
+          {isCurrent && <span aria-hidden style={{ color: 'var(--gold)', marginRight: '0.35rem' }}>✦</span>}
           {role.name}
         </p>
         <span style={{
           fontSize: '0.65rem', whiteSpace: 'nowrap', flexShrink: 0,
-          color: isPending ? '#D239F8' : isCurrent ? '#7dcf8e' : full ? '#ff8a8a' : '#C8A848',
+          color: isPending ? 'var(--purple)' : isCurrent ? 'var(--success)' : full ? 'var(--danger)' : 'var(--gold)',
           opacity: isCurrent || isPending ? 0.9 : full ? 0.8 : 0.55,
         }}>
           {isPending ? 'pending approval' : isCurrent ? 'your role' : full ? 'Full' : `${role.capacity - role.signed_up} open`}
@@ -444,14 +444,14 @@ function RoleDetailModal({ role, dept, signup, saving, error, onConfirm, onClose
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 60 }} />
       <div style={{
         position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 61,
-        background: '#1A0A24', border: '1px solid rgba(200,168,72,0.4)', borderRadius: '1rem',
+        background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.4)', borderRadius: '1rem',
         width: '92%', maxWidth: '540px', maxHeight: '82vh', display: 'flex', flexDirection: 'column',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(200,168,72,0.1)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgb(var(--gold-rgb) / 0.1)',
       }}>
         {/* Header */}
-        <div style={{ padding: '1.4rem 1.6rem 0.9rem', borderBottom: '1px solid rgba(200,168,72,0.12)' }}>
+        <div style={{ padding: '1.4rem 1.6rem 0.9rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
           {dept && (
-            <p style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.7, margin: '0 0 0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <p style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.7, margin: '0 0 0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               {dept.icon && (isImageIcon(dept.icon)
                 ? <IconImage src={dept.icon} size="1rem" fill={0.92} />
                 : <span style={{ fontSize: '0.9rem' }}>{dept.icon}</span>)}
@@ -459,10 +459,10 @@ function RoleDetailModal({ role, dept, signup, saving, error, onConfirm, onClose
             </p>
           )}
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.35rem', color: '#F3EDE6', margin: 0, lineHeight: 1.25 }}>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', color: 'var(--cream)', margin: 0, lineHeight: 1.25 }}>
               {role.name}
             </p>
-            <span style={{ fontSize: '0.7rem', whiteSpace: 'nowrap', color: isPending ? '#D239F8' : isCurrent ? '#7dcf8e' : full ? '#ff8a8a' : '#C8A848', opacity: 0.85 }}>
+            <span style={{ fontSize: '0.7rem', whiteSpace: 'nowrap', color: isPending ? 'var(--purple)' : isCurrent ? 'var(--success)' : full ? 'var(--danger)' : 'var(--gold)', opacity: 0.85 }}>
               {isPending ? 'pending approval' : isCurrent ? '✦ your role' : full ? 'Full' : `${role.capacity - role.signed_up} of ${role.capacity} open`}
             </span>
           </div>
@@ -470,7 +470,7 @@ function RoleDetailModal({ role, dept, signup, saving, error, onConfirm, onClose
             <CommitmentPill commitment={role.commitment} period={role.commitment_period} />
             <a
               href={`/roles#${roleSlug(role.name)}`}
-              style={{ fontSize: '0.68rem', color: '#C8A848', opacity: 0.6, letterSpacing: '0.04em', textDecoration: 'underline', textUnderlineOffset: '3px' }}
+              style={{ fontSize: '0.68rem', color: 'var(--gold)', opacity: 0.6, letterSpacing: '0.04em', textDecoration: 'underline', textUnderlineOffset: '3px' }}
             >
               View in the Registry →
             </a>
@@ -479,11 +479,11 @@ function RoleDetailModal({ role, dept, signup, saving, error, onConfirm, onClose
 
         {/* Scrollable charge */}
         <div style={{ padding: '1rem 1.6rem', overflowY: 'auto', flex: 1 }}>
-          {role.purpose && <div style={{ marginBottom: '0.9rem' }}><p style={{ fontSize: '0.63rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>Purpose</p><p style={{ fontSize: '0.84rem', lineHeight: 1.7, opacity: 0.75, margin: 0 }}>{role.purpose}</p></div>}
+          {role.purpose && <div style={{ marginBottom: '0.9rem' }}><p style={{ fontSize: '0.63rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>Purpose</p><p style={{ fontSize: '0.84rem', lineHeight: 1.7, opacity: 0.75, margin: 0 }}>{role.purpose}</p></div>}
           {!role.purpose && role.description && <p style={{ fontSize: '0.84rem', lineHeight: 1.7, opacity: 0.75, margin: '0 0 0.9rem' }}>{role.description}</p>}
           {role.responsibilities_before && (
             <div style={{ marginBottom: '0.9rem' }}>
-              <p style={{ fontSize: '0.63rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>Before Event</p>
+              <p style={{ fontSize: '0.63rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>Before Event</p>
               <ul style={{ margin: 0, paddingLeft: '1.2rem' }}>
                 {role.responsibilities_before.split('\n').filter(Boolean).map((line, i) => (
                   <li key={i} style={{ fontSize: '0.82rem', lineHeight: 1.7, opacity: 0.72 }}>{line}</li>
@@ -493,7 +493,7 @@ function RoleDetailModal({ role, dept, signup, saving, error, onConfirm, onClose
           )}
           {role.responsibilities_during && (
             <div style={{ marginBottom: '0.9rem' }}>
-              <p style={{ fontSize: '0.63rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>During Event</p>
+              <p style={{ fontSize: '0.63rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>During Event</p>
               <ul style={{ margin: 0, paddingLeft: '1.2rem' }}>
                 {role.responsibilities_during.split('\n').filter(Boolean).map((line, i) => (
                   <li key={i} style={{ fontSize: '0.82rem', lineHeight: 1.7, opacity: 0.72 }}>{line}</li>
@@ -503,24 +503,24 @@ function RoleDetailModal({ role, dept, signup, saving, error, onConfirm, onClose
           )}
           {role.ideal_for && (
             <div>
-              <p style={{ fontSize: '0.63rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>Ideal For</p>
+              <p style={{ fontSize: '0.63rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>Ideal For</p>
               <p style={{ fontSize: '0.82rem', lineHeight: 1.7, opacity: 0.72, fontStyle: 'italic', margin: 0 }}>{role.ideal_for}</p>
             </div>
           )}
         </div>
 
         {/* Footer — confirm / status */}
-        <div style={{ padding: '0.9rem 1.6rem 1.2rem', borderTop: '1px solid rgba(200,168,72,0.12)', background: 'rgba(200,168,72,0.03)', borderRadius: '0 0 1rem 1rem' }}>
+        <div style={{ padding: '0.9rem 1.6rem 1.2rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)', background: 'rgb(var(--gold-rgb) / 0.03)', borderRadius: '0 0 1rem 1rem' }}>
           {role.requires_approval && !isCurrent && !full && (
-            <p style={{ fontSize: '0.75rem', color: '#D239F8', opacity: 0.85, margin: '0 0 0.7rem', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.75rem', color: 'var(--purple)', opacity: 0.85, margin: '0 0 0.7rem', lineHeight: 1.5 }}>
               This role requires admin approval — your request will be reviewed before it&rsquo;s confirmed.
             </p>
           )}
-          {error && <p style={{ color: '#ff8a8a', fontSize: '0.75rem', margin: '0 0 0.7rem' }}>{error}</p>}
+          {error && <p style={{ color: 'var(--danger)', fontSize: '0.75rem', margin: '0 0 0.7rem' }}>{error}</p>}
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', alignItems: 'center' }}>
             <button
               onClick={onClose}
-              style={{ padding: '0.5rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
+              style={{ padding: '0.5rem 1.1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
             >
               {isCurrent || full ? 'Close' : 'Never mind'}
             </button>
@@ -530,8 +530,8 @@ function RoleDetailModal({ role, dept, signup, saving, error, onConfirm, onClose
                 disabled={saving}
                 style={{
                   padding: '0.5rem 1.25rem', borderRadius: '9999px',
-                  border: '1px solid rgba(200,168,72,0.5)', background: 'rgba(200,168,72,0.1)',
-                  color: '#FFFACD', cursor: saving ? 'not-allowed' : 'pointer',
+                  border: '1px solid rgb(var(--gold-rgb) / 0.5)', background: 'rgb(var(--gold-rgb) / 0.1)',
+                  color: 'var(--lemon)', cursor: saving ? 'not-allowed' : 'pointer',
                   fontSize: '0.8rem', letterSpacing: '0.05em', opacity: saving ? 0.5 : 1,
                 }}
               >
@@ -631,7 +631,7 @@ function RolePicker({
           <style dangerouslySetInnerHTML={{ __html: `
             .role-seal-strip { --cols: var(--cols-m); display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 1.1rem; margin: 0 auto 1.4rem; max-width: calc(var(--cols) * 90px + (var(--cols) - 1) * 1.1rem); }
             .role-seal { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: calc((100% - (var(--cols) - 1) * 1.1rem) / var(--cols)); max-width: 90px; }
-            .role-seal-ring { width: 100%; max-width: 56px; aspect-ratio: 1; border-radius: 50%; border: 1.5px solid #C8A848; background: radial-gradient(circle at 42% 38%, rgba(200,168,72,0.18), rgba(8,0,18,0.85)); display: flex; align-items: center; justify-content: center; }
+            .role-seal-ring { width: 100%; max-width: 56px; aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--gold); background: radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgba(8,0,18,0.85)); display: flex; align-items: center; justify-content: center; }
             .role-seal-ring .role-seal-emoji { font-size: 1.5rem; line-height: 1; }
             @media (min-width: 560px) {
               .role-seal-strip { --cols: var(--cols-d); max-width: calc(var(--cols) * 108px + (var(--cols) - 1) * 1.1rem); }
@@ -648,7 +648,7 @@ function RolePicker({
                     ? <IconImage src={dept.icon} size="100%" fill={ROUND_FILL} opacity={0.92} />
                     : <span className="role-seal-emoji">{dept.icon ?? '✦'}</span>}
                 </span>
-                <span style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.6, lineHeight: 1.3 }}>
+                <span style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.6, lineHeight: 1.3 }}>
                   {dept.name}
                 </span>
               </span>
@@ -656,8 +656,8 @@ function RolePicker({
           </div>
           <span style={{
             display: 'inline-block', padding: '0.5rem 1.3rem', borderRadius: '9999px',
-            border: '1px solid rgba(200,168,72,0.5)', background: 'rgba(200,168,72,0.1)',
-            color: '#FFFACD', fontSize: '0.8rem', letterSpacing: '0.05em',
+            border: '1px solid rgb(var(--gold-rgb) / 0.5)', background: 'rgb(var(--gold-rgb) / 0.1)',
+            color: 'var(--lemon)', fontSize: '0.8rem', letterSpacing: '0.05em',
           }}>
             Browse all {allRoles.length} roles ▾
           </span>
@@ -669,7 +669,7 @@ function RolePicker({
         <button
           onClick={() => setExpanded(false)}
           aria-expanded={true}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.72rem', color: '#C8A848', opacity: 0.55, letterSpacing: '0.06em', textDecoration: 'underline', textUnderlineOffset: '3px' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.55, letterSpacing: '0.06em', textDecoration: 'underline', textUnderlineOffset: '3px' }}
         >
           Fold the registry away ▴
         </button>
@@ -689,12 +689,12 @@ function RolePicker({
               {dept.icon && (isImageIcon(dept.icon)
                 ? <IconImage src={dept.icon} size="1.7rem" fill={0.85} />
                 : <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{dept.icon}</span>)}
-              <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.2rem', color: '#C8A848', margin: 0, letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--gold)', margin: 0, letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
                 {dept.name}
               </p>
               <span aria-hidden style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                <span style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.35), transparent)' }} />
-                <span style={{ color: '#C8A848', fontSize: '0.5rem', opacity: 0.6, lineHeight: 1 }}>✦</span>
+                <span style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.35), transparent)' }} />
+                <span style={{ color: 'var(--gold)', fontSize: '0.5rem', opacity: 0.6, lineHeight: 1 }}>✦</span>
               </span>
             </div>
             {dept.description && (
@@ -742,7 +742,7 @@ function RolePicker({
 
 type ShiftTypeInfo = { id: string; name: string; icon: string | null; color_index: number }
 
-const UNTYPED_HUE = { rgb: '210,57,248', accent: '#D239F8' }
+const UNTYPED_HUE = { rgb: '210,57,248', accent: 'var(--purple)' }
 
 function hueFor(s: ShiftSlot, typesById: Map<string, ShiftTypeInfo>) {
   const t = s.shift_type_id ? typesById.get(s.shift_type_id) : undefined
@@ -829,14 +829,14 @@ function RosterCluster({ roster, hue, max = 4 }: {
           // Lead: gold disc + a ✦ crown badge at the corner so the lead reads at
           // a glance, not just by the ring colour.
           <span key={i} style={{ position: 'relative', display: 'inline-flex', flexShrink: 0 }}>
-            <span style={disc('rgba(200,168,72,0.22)', 'rgba(200,168,72,0.85)', '#F3EDE6')}>{initialOf(r.name)}</span>
-            <span aria-hidden style={{ position: 'absolute', top: '-5px', right: '-4px', fontSize: '0.5rem', lineHeight: 1, color: '#C8A848', textShadow: '0 0 2px #1A0A24, 0 0 2px #1A0A24' }}>✦</span>
+            <span style={disc('rgb(var(--gold-rgb) / 0.22)', 'rgb(var(--gold-rgb) / 0.85)', 'var(--cream)')}>{initialOf(r.name)}</span>
+            <span aria-hidden style={{ position: 'absolute', top: '-5px', right: '-4px', fontSize: '0.5rem', lineHeight: 1, color: 'var(--gold)', textShadow: '0 0 2px var(--ink), 0 0 2px var(--ink)' }}>✦</span>
           </span>
         )
-        : <span key={i} style={disc(`rgba(${hue.rgb},0.2)`, `rgba(${hue.rgb},0.5)`, '#F3EDE6')}>{initialOf(r.name)}</span>,
+        : <span key={i} style={disc(`rgba(${hue.rgb},0.2)`, `rgba(${hue.rgb},0.5)`, 'var(--cream)')}>{initialOf(r.name)}</span>,
       )}
       {extra > 0 && (
-        <span style={disc('rgba(255,255,255,0.06)', 'rgba(255,255,255,0.15)', 'rgba(243,237,230,0.75)')}>+{extra}</span>
+        <span style={disc('rgba(255,255,255,0.06)', 'rgba(255,255,255,0.15)', 'rgb(var(--cream-rgb) / 0.75)')}>+{extra}</span>
       )}
     </div>
   )
@@ -887,10 +887,10 @@ function ShiftCard({
           {compactTime(slot.time)}{slot.duration_hours > 0 ? ` · ${slot.duration_hours}h` : ''}
         </p>
       )}
-      <p lang="en" style={{ fontSize: '0.73rem', color: full ? 'rgba(243,237,230,0.4)' : '#F3EDE6', margin: 0, lineHeight: 1.3, overflowWrap: 'break-word', hyphens: 'auto' }}>
+      <p lang="en" style={{ fontSize: '0.73rem', color: full ? 'rgb(var(--cream-rgb) / 0.4)' : 'var(--cream)', margin: 0, lineHeight: 1.3, overflowWrap: 'break-word', hyphens: 'auto' }}>
         {slot.title}
       </p>
-      <p style={{ fontSize: '0.65rem', margin: '0.25rem 0 0', lineHeight: 1.35, overflowWrap: 'break-word', color: slot.held ? '#7dcf8e' : full ? '#ff8a8a' : hue.accent, opacity: slot.held ? 0.95 : full ? 0.8 : 0.7 }}>
+      <p style={{ fontSize: '0.65rem', margin: '0.25rem 0 0', lineHeight: 1.35, overflowWrap: 'break-word', color: slot.held ? 'var(--success)' : full ? 'var(--danger)' : hue.accent, opacity: slot.held ? 0.95 : full ? 0.8 : 0.7 }}>
         {busy
           ? 'Saving…'
           : slot.held
@@ -902,11 +902,11 @@ function ShiftCard({
                 : 'Open'}
       </p>
       {slot.lead_names.length > 0 ? (
-        <p style={{ fontSize: '0.6rem', margin: '0.2rem 0 0', lineHeight: 1.35, overflowWrap: 'break-word', color: '#C8A848', opacity: 0.65 }}>
+        <p style={{ fontSize: '0.6rem', margin: '0.2rem 0 0', lineHeight: 1.35, overflowWrap: 'break-word', color: 'var(--gold)', opacity: 0.65 }}>
           ✦ Led by {slot.lead_names.join(' & ')}
         </p>
       ) : slot.needs_lead && !full ? (
-        <p style={{ fontSize: '0.6rem', margin: '0.2rem 0 0', lineHeight: 1.35, color: '#C8A848', opacity: 0.55, fontStyle: 'italic' }}>
+        <p style={{ fontSize: '0.6rem', margin: '0.2rem 0 0', lineHeight: 1.35, color: 'var(--gold)', opacity: 0.55, fontStyle: 'italic' }}>
           ✦ needs a lead
         </p>
       ) : null}
@@ -937,7 +937,7 @@ function ShiftConfirmModal({
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 60 }} />
       <div style={{
         position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 61,
-        background: '#1A0A24', border: `1px solid rgba(${hue.rgb},0.45)`, borderRadius: '1rem',
+        background: 'var(--ink)', border: `1px solid rgba(${hue.rgb},0.45)`, borderRadius: '1rem',
         padding: '1.6rem 1.75rem', width: '90%', maxWidth: '380px',
         boxShadow: `0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(${hue.rgb},0.12)`,
       }}>
@@ -945,7 +945,7 @@ function ShiftConfirmModal({
           {slot.shift_type_icon && <span style={{ marginRight: '0.35rem' }}>{slot.shift_type_icon}</span>}
           {isCancel ? `Cancel ${typeName} shift?` : `${typeName} shift`}
         </p>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.2rem', color: '#F3EDE6', margin: '0 0 0.35rem', lineHeight: 1.3 }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--cream)', margin: '0 0 0.35rem', lineHeight: 1.3 }}>
           {slot.title}
         </p>
         <p style={{ fontSize: '0.8rem', color: hue.accent, opacity: 0.85, margin: 0, letterSpacing: '0.03em' }}>
@@ -962,16 +962,16 @@ function ShiftConfirmModal({
           <label style={{
             display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer',
             marginTop: '1rem', padding: '0.7rem 0.85rem', borderRadius: '0.6rem',
-            border: '1px solid rgba(200,168,72,0.3)', background: 'rgba(200,168,72,0.06)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.3)', background: 'rgb(var(--gold-rgb) / 0.06)',
             userSelect: 'none',
           }}>
             <input
               type="checkbox"
               checked={wantsLead}
               onChange={e => setWantsLead(e.target.checked)}
-              style={{ marginTop: '0.15rem', accentColor: '#C8A848', cursor: 'pointer' }}
+              style={{ marginTop: '0.15rem', accentColor: 'var(--gold)', cursor: 'pointer' }}
             />
-            <span style={{ fontSize: '0.82rem', color: '#F3EDE6', opacity: 0.85, lineHeight: 1.5 }}>
+            <span style={{ fontSize: '0.82rem', color: 'var(--cream)', opacity: 0.85, lineHeight: 1.5 }}>
               I&rsquo;d like to be the shift lead ✦
               <span style={{ display: 'block', fontSize: '0.7rem', opacity: 0.55, marginTop: '0.15rem' }}>
                 This shift is looking for someone to steer it.
@@ -988,12 +988,12 @@ function ShiftConfirmModal({
             </p>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.3rem', maxHeight: '148px', overflowY: 'auto' }}>
               {slot.roster.map((r, i) => (
-                <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem', color: '#F3EDE6', opacity: r.isLead ? 0.95 : 0.8 }}>
-                  <span aria-hidden style={{ color: r.isLead ? '#C8A848' : hue.accent, opacity: r.isLead ? 0.95 : 0.5, fontSize: '0.7rem', width: '0.8rem', flexShrink: 0 }}>
+                <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem', color: 'var(--cream)', opacity: r.isLead ? 0.95 : 0.8 }}>
+                  <span aria-hidden style={{ color: r.isLead ? 'var(--gold)' : hue.accent, opacity: r.isLead ? 0.95 : 0.5, fontSize: '0.7rem', width: '0.8rem', flexShrink: 0 }}>
                     {r.isLead ? '✦' : '·'}
                   </span>
                   <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.name}</span>
-                  {r.isLead && <span style={{ fontSize: '0.6rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.7 }}>lead</span>}
+                  {r.isLead && <span style={{ fontSize: '0.6rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.7 }}>lead</span>}
                   {r.isSelf && <span style={{ fontSize: '0.6rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: hue.accent, opacity: 0.7 }}>you</span>}
                 </li>
               ))}
@@ -1003,7 +1003,7 @@ function ShiftConfirmModal({
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1.4rem' }}>
           <button
             onClick={onClose}
-            style={{ padding: '0.5rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
+            style={{ padding: '0.5rem 1.1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
           >
             Never mind
           </button>
@@ -1011,7 +1011,7 @@ function ShiftConfirmModal({
             onClick={() => onConfirm(wantsLead)}
             style={{
               padding: '0.5rem 1.25rem', borderRadius: '9999px', cursor: 'pointer',
-              fontSize: '0.8rem', letterSpacing: '0.05em', color: '#F3EDE6',
+              fontSize: '0.8rem', letterSpacing: '0.05em', color: 'var(--cream)',
               border: isCancel ? '1px solid rgba(255,80,80,0.45)' : `1px solid rgba(${hue.rgb},0.55)`,
               background: isCancel ? 'rgba(255,80,80,0.1)' : `rgba(${hue.rgb},0.14)`,
             }}
@@ -1067,7 +1067,7 @@ function ShiftsPicker({
     <div>
       <OwedChips owed={owed} shiftTypes={shiftTypes} />
 
-      {error && <p style={{ color: '#ff8a8a', fontSize: '0.78rem', textAlign: 'center', margin: '0 0 1rem' }}>{error}</p>}
+      {error && <p style={{ color: 'var(--danger)', fontSize: '0.78rem', textAlign: 'center', margin: '0 0 1rem' }}>{error}</p>}
 
       {/* Mobile-first: days stack vertically with a compact inline date bar and
           full-width cards. From 640px up, the days sit side by side in ONE row
@@ -1075,10 +1075,10 @@ function ShiftsPicker({
       <style dangerouslySetInnerHTML={{ __html: `
         .shift-cal { display: flex; flex-direction: column; gap: 0.75rem; }
         .shift-cal-day { display: flex; flex-direction: column; min-width: 0; }
-        .shift-cal-head { display: flex; align-items: baseline; gap: 0.45rem; padding: 0.5rem 0.8rem; border-radius: 0.6rem 0.6rem 0 0; background: rgba(210,57,248,0.08); border: 1px solid rgba(210,57,248,0.18); border-bottom: none; }
-        .shift-cal-head-num { font-size: 1rem; color: #F3EDE6; margin: 0; font-family: TokyoDreams, serif; }
-        .shift-cal-head-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #D239F8; opacity: 0.7; margin: 0; }
-        .shift-cal-body { flex: 1; padding: 0.6rem; border: 1px solid rgba(210,57,248,0.12); border-radius: 0 0 0.6rem 0.6rem; background: rgba(255,255,255,0.01); display: flex; flex-direction: column; gap: 0.4rem; }
+        .shift-cal-head { display: flex; align-items: baseline; gap: 0.45rem; padding: 0.5rem 0.8rem; border-radius: 0.6rem 0.6rem 0 0; background: rgb(var(--purple-rgb) / 0.08); border: 1px solid rgb(var(--purple-rgb) / 0.18); border-bottom: none; }
+        .shift-cal-head-num { font-size: 1rem; color: var(--cream); margin: 0; font-family: TokyoDreams, serif; }
+        .shift-cal-head-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); opacity: 0.7; margin: 0; }
+        .shift-cal-body { flex: 1; padding: 0.6rem; border: 1px solid rgb(var(--purple-rgb) / 0.12); border-radius: 0 0 0.6rem 0.6rem; background: rgba(255,255,255,0.01); display: flex; flex-direction: column; gap: 0.4rem; }
         @media (min-width: 640px) {
           .shift-cal { display: grid; grid-template-columns: repeat(${columns.length}, minmax(0, 1fr)); gap: 0.5rem; }
           .shift-cal-head { display: block; text-align: center; padding: 0.55rem 0.4rem; }
@@ -1326,7 +1326,7 @@ export function SignupSection({ showPickers = true, initialData, hideRole = fals
   }
 
   if (loading) return (
-    <div id="role-signup" style={{ padding: '1.5rem', border: '1px solid rgba(200,168,72,0.1)', borderRadius: '1rem', background: 'rgba(255,255,255,0.01)', marginBottom: '2.5rem' }}>
+    <div id="role-signup" style={{ padding: '1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.1)', borderRadius: '1rem', background: 'rgba(255,255,255,0.01)', marginBottom: '2.5rem' }}>
       <p style={{ opacity: 0.35, fontSize: '0.85rem', textAlign: 'center', margin: 0 }}>Loading…</p>
     </div>
   )
@@ -1345,21 +1345,21 @@ export function SignupSection({ showPickers = true, initialData, hideRole = fals
             Something below, so the folded registry can't be scrolled past. */}
         {hasRoles && (
           <>
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.25), transparent)', margin: '3rem 0 2rem' }} />
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.25), transparent)', margin: '3rem 0 2rem' }} />
             <div style={{ marginBottom: '1.5rem' }}>
-              <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: '#C8A848', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: 'var(--gold)', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
                 Choose a Role
               </h2>
               <p style={{ fontSize: '0.9rem', opacity: 0.55, margin: 0, lineHeight: 1.6 }}>
                 Tap a role to read its full charge and claim it. Or browse the{' '}
-                <a href="/roles" style={{ color: '#C8A848', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <a href="/roles" style={{ color: 'var(--gold)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                   Registry of Roles
                 </a>{' '}
                 for the complete record.
               </p>
             </div>
 
-            <div style={{ padding: '1.5rem', border: '1px solid rgba(200,168,72,0.15)', borderRadius: '1rem', background: 'rgba(255,255,255,0.01)' }}>
+            <div style={{ padding: '1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '1rem', background: 'rgba(255,255,255,0.01)' }}>
               <RolePicker
                 departments={departments}
                 signup={signup}
@@ -1375,7 +1375,7 @@ export function SignupSection({ showPickers = true, initialData, hideRole = fals
             <div style={{ textAlign: 'center', padding: '0.5rem 0', marginTop: '1.25rem' }}>
               <button
                 onClick={() => setShowSuggest(true)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.78rem', color: '#C8A848', opacity: 0.5, letterSpacing: '0.04em', textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--gold)', opacity: 0.5, letterSpacing: '0.04em', textDecoration: 'underline', textUnderlineOffset: '3px' }}
               >
                 Don't see a role that fits? Suggest one →
               </button>
@@ -1388,9 +1388,9 @@ export function SignupSection({ showPickers = true, initialData, hideRole = fals
             purple shift accent stays on the calendar panel itself. */}
         {shifts.length > 0 && (
           <>
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.25), transparent)', margin: '3rem 0 2rem' }} />
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.25), transparent)', margin: '3rem 0 2rem' }} />
             <div style={{ marginBottom: '1.5rem' }}>
-              <h2 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: '#C8A848', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: 'var(--gold)', margin: '0 0 0.5rem', letterSpacing: '0.06em' }}>
                 Shifts
               </h2>
               <p style={{ fontSize: '0.9rem', opacity: 0.55, margin: 0, lineHeight: 1.6 }}>
@@ -1405,7 +1405,7 @@ export function SignupSection({ showPickers = true, initialData, hideRole = fals
             </div>
 
             {shiftSignupOpen && (
-              <div className="shift-panel-breakout" style={{ padding: '1.5rem', border: '1px solid rgba(210,57,248,0.15)', borderRadius: '1rem', background: 'rgba(210,57,248,0.02)' }}>
+              <div className="shift-panel-breakout" style={{ padding: '1.5rem', border: '1px solid rgb(var(--purple-rgb) / 0.15)', borderRadius: '1rem', background: 'rgb(var(--purple-rgb) / 0.02)' }}>
                 <ShiftsPicker
                   shifts={shifts}
                   owed={owed}

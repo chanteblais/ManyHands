@@ -106,19 +106,19 @@ export function ChoiceDialog({
         aria-modal="true"
         style={{
           position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 61,
-          background: '#1A0A24', border: '1px solid rgba(200,168,72,0.4)', borderRadius: '1rem',
+          background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.4)', borderRadius: '1rem',
           padding: '1.6rem 1.75rem', width: '90%', maxWidth: '380px', maxHeight: '82vh', overflowY: 'auto',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(200,168,72,0.08)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgb(var(--gold-rgb) / 0.08)',
         }}
       >
-        <p style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.85, margin: '0 0 0.6rem' }}>
+        <p style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.85, margin: '0 0 0.6rem' }}>
           ✦ {eyebrow}
         </p>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.2rem', color: '#F3EDE6', margin: 0, lineHeight: 1.3 }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--cream)', margin: 0, lineHeight: 1.3 }}>
           {title}
         </p>
         {body && (
-          <p style={{ fontSize: '0.82rem', color: '#F3EDE6', opacity: 0.7, margin: '0.6rem 0 0', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.82rem', color: 'var(--cream)', opacity: 0.7, margin: '0.6rem 0 0', lineHeight: 1.5 }}>
             {body}
           </p>
         )}
@@ -131,18 +131,18 @@ export function ChoiceDialog({
                 display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '0.75rem',
                 width: '100%', textAlign: 'left', padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
                 cursor: 'pointer', background: c.danger ? 'rgba(255,80,80,0.07)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${c.danger ? 'rgba(255,80,80,0.35)' : 'rgba(200,168,72,0.25)'}`,
+                border: `1px solid ${c.danger ? 'rgba(255,80,80,0.35)' : 'rgb(var(--gold-rgb) / 0.25)'}`,
               }}
             >
-              <span style={{ fontSize: '0.85rem', color: c.danger ? '#ff8a8a' : '#F3EDE6' }}>{c.label}</span>
-              {c.sub && <span style={{ fontSize: '0.68rem', color: '#C8A848', opacity: 0.7, whiteSpace: 'nowrap', flexShrink: 0 }}>{c.sub}</span>}
+              <span style={{ fontSize: '0.85rem', color: c.danger ? 'var(--danger)' : 'var(--cream)' }}>{c.label}</span>
+              {c.sub && <span style={{ fontSize: '0.68rem', color: 'var(--gold)', opacity: 0.7, whiteSpace: 'nowrap', flexShrink: 0 }}>{c.sub}</span>}
             </button>
           ))}
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.2rem' }}>
           <button
             onClick={onCancel}
-            style={{ padding: '0.5rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
+            style={{ padding: '0.5rem 1.1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
           >
             {cancelLabel}
           </button>
@@ -164,8 +164,8 @@ export function ConfirmDialog({
     return () => window.removeEventListener('keydown', onKey)
   }, [onCancel])
 
-  const accentBorder = danger ? 'rgba(255,80,80,0.45)' : 'rgba(200,168,72,0.55)'
-  const accentBg = danger ? 'rgba(255,80,80,0.1)' : 'rgba(200,168,72,0.14)'
+  const accentBorder = danger ? 'rgba(255,80,80,0.45)' : 'rgb(var(--gold-rgb) / 0.55)'
+  const accentBg = danger ? 'rgba(255,80,80,0.1)' : 'rgb(var(--gold-rgb) / 0.14)'
   const eyebrowText = eyebrow ?? (notice ? 'A small snag' : 'A moment of pause')
   const confirmText = confirmLabel ?? (notice ? 'Understood' : 'Confirm')
 
@@ -177,19 +177,19 @@ export function ConfirmDialog({
         aria-modal="true"
         style={{
           position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 61,
-          background: '#1A0A24', border: '1px solid rgba(200,168,72,0.4)', borderRadius: '1rem',
+          background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.4)', borderRadius: '1rem',
           padding: '1.6rem 1.75rem', width: '90%', maxWidth: '380px',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(200,168,72,0.08)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgb(var(--gold-rgb) / 0.08)',
         }}
       >
-        <p style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.85, margin: '0 0 0.6rem' }}>
+        <p style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.85, margin: '0 0 0.6rem' }}>
           ✦ {eyebrowText}
         </p>
-        <p style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.2rem', color: '#F3EDE6', margin: 0, lineHeight: 1.3 }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--cream)', margin: 0, lineHeight: 1.3 }}>
           {title}
         </p>
         {body && (
-          <p style={{ fontSize: '0.82rem', color: '#F3EDE6', opacity: 0.7, margin: '0.6rem 0 0', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.82rem', color: 'var(--cream)', opacity: 0.7, margin: '0.6rem 0 0', lineHeight: 1.5 }}>
             {body}
           </p>
         )}
@@ -197,7 +197,7 @@ export function ConfirmDialog({
           {!notice && (
             <button
               onClick={onCancel}
-              style={{ padding: '0.5rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
+              style={{ padding: '0.5rem 1.1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
             >
               {cancelLabel}
             </button>
@@ -207,7 +207,7 @@ export function ConfirmDialog({
             onClick={onConfirm}
             style={{
               padding: '0.5rem 1.25rem', borderRadius: '9999px', cursor: 'pointer',
-              fontSize: '0.8rem', letterSpacing: '0.05em', color: '#F3EDE6',
+              fontSize: '0.8rem', letterSpacing: '0.05em', color: 'var(--cream)',
               border: `1px solid ${accentBorder}`, background: accentBg,
             }}
           >

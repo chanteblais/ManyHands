@@ -16,7 +16,7 @@ export function ApplicationRow({ app, showActions, kindTag = false }: { app: any
           flex: 1,
           minWidth: '200px',
           padding: '1.25rem 1.5rem',
-          border: '1px solid rgba(200,168,72,0.12)',
+          border: '1px solid rgb(var(--gold-rgb) / 0.12)',
           borderRadius: '0.75rem',
           background: 'rgba(255,255,255,0.02)',
           display: 'flex',
@@ -28,11 +28,11 @@ export function ApplicationRow({ app, showActions, kindTag = false }: { app: any
           transition: 'border-color 0.15s, background 0.15s',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(200,168,72,0.3)'
+          e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.3)'
           e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(200,168,72,0.12)'
+          e.currentTarget.style.borderColor = 'rgb(var(--gold-rgb) / 0.12)'
           e.currentTarget.style.background = 'rgba(255,255,255,0.02)'
         }}
       >
@@ -43,7 +43,7 @@ export function ApplicationRow({ app, showActions, kindTag = false }: { app: any
           <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>{app.email}</p>
         </div>
         {kindTag && (
-          <span style={{ fontSize: '0.62rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848', border: '1px solid rgba(200,168,72,0.35)', background: 'rgba(200,168,72,0.07)', borderRadius: '9999px', padding: '0.18rem 0.6rem', flexShrink: 0 }}>
+          <span style={{ fontSize: '0.62rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', border: '1px solid rgb(var(--gold-rgb) / 0.35)', background: 'rgb(var(--gold-rgb) / 0.07)', borderRadius: '9999px', padding: '0.18rem 0.6rem', flexShrink: 0 }}>
             Member
           </span>
         )}

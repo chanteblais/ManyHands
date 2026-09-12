@@ -30,15 +30,15 @@ export default async function SchedulePage() {
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '4.5rem 1.5rem 6rem', position: 'relative', zIndex: 1 }}>
 
         <div style={{ marginBottom: '2rem' }}>
-          <a href="/" style={{ fontSize: '0.78rem', letterSpacing: '0.12em', color: '#C8A848', textDecoration: 'none', opacity: 0.55 }}>
+          <a href="/" style={{ fontSize: '0.78rem', letterSpacing: '0.12em', color: 'var(--gold)', textDecoration: 'none', opacity: 0.55 }}>
             ← Back to camp
           </a>
         </div>
 
         <h1 style={{
-          fontFamily: 'TokyoDreams, serif',
+          fontFamily: 'var(--font-display)',
           fontSize: 'clamp(2rem, 6vw, 3.5rem)',
-          color: '#C8A848',
+          color: 'var(--gold)',
           textAlign: 'center',
           marginBottom: '0.5rem',
           textShadow: '0 2px 8px rgba(0,0,0,0.8)',
@@ -46,7 +46,7 @@ export default async function SchedulePage() {
           Schedule
         </h1>
 
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.4), transparent)', margin: '2rem 0 3rem' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.4), transparent)', margin: '2rem 0 3rem' }} />
 
         <LeadUpGatherings initialEvents={leadUpEvents} />
 

@@ -10,7 +10,7 @@ body {
 
 input::placeholder,
 textarea::placeholder {
-  color: rgba(243, 237, 230, 0.28);
+  color: rgb(var(--cream-rgb) / 0.28);
 }
 
 /* Versioned filenames — /fonts/* is served immutable (next.config.js), so a
@@ -33,13 +33,48 @@ textarea::placeholder {
 }
 
 @layer base {
+  /* Theme tokens — the single source of every brand/semantic colour and the
+     display face. Components consume them as var(--gold) or, with alpha,
+     rgb(var(--gold-rgb) / 0.2). A community's theme (communities.theme,
+     injected by app/layout.tsx) overrides these on :root. The defaults are the
+     Glåüm palette and are mirrored in lib/theme.ts — change both together. */
   :root {
-    --background: #1A0A24;
+    --ink: #1A0A24;
+    --ink-rgb: 26 10 36;
+    --ink-deep: #130820;
+    --plum: #5D2B7A;
+    --plum-rgb: 93 43 122;
+    --plum-dark: #2A0A3A;
+    --gold: #C8A848;
+    --gold-rgb: 200 168 72;
+    --gold-pale: #D4B050;
+    --gold-deep: #A8882A;
+    --gold-dark: #634D0B;
+    --bronze: #6F491F;
+    --purple: #D239F8;
+    --purple-rgb: 210 57 248;
+    --lavender: #D9B3FF;
+    --cream: #F3EDE6;
+    --cream-rgb: 243 237 230;
+    --lemon: #FFFACD;
+    --parchment: #EDE0C8;
+    --paper-ink: #3A2B14;
+    --muted: #8A8A8A;
+    --danger: #FF8A8A;
+    --danger-rgb: 255 138 138;
+    --danger-strong: #FF8080;
+    --danger-soft: #FFB4B4;
+    --warning: #FFCF80;
+    --amber: #FFB432;
+    --success: #7DCF8E;
+    --success-rgb: 125 207 142;
+    --font-display: 'TokyoDreams', serif;
+    --background: var(--ink);
     --border: 214.3 31.8% 91.4%;
   }
 
   html {
-    background-color: #1A0A24;
+    background-color: var(--ink);
   }
 
   * {
@@ -47,12 +82,12 @@ textarea::placeholder {
   }
 
   .site-shell {
-    color: #F3EDE6;
+    color: var(--cream);
     font-feature-settings: "rlig" 1, "calt" 1;
-    background-color: #1A0A24;
+    background-color: var(--ink);
     background-image:
-      radial-gradient(ellipse at center top, rgba(210, 57, 248, 0.18) 0%, rgba(93, 43, 122, 0.1) 50%, transparent 100%),
-      linear-gradient(180deg, #1A0A24 0%, #2A0A3A 60%, #1A0A24 100%);
+      radial-gradient(ellipse at center top, rgb(var(--purple-rgb) / 0.18) 0%, rgb(var(--plum-rgb) / 0.1) 50%, transparent 100%),
+      linear-gradient(180deg, var(--ink) 0%, var(--plum-dark) 60%, var(--ink) 100%);
     min-height: 100vh;
     position: relative;
   }
@@ -65,14 +100,14 @@ textarea::placeholder {
     width: 100%;
     height: 100%;
     background-image:
-      radial-gradient(circle at 1px 1px, rgba(200, 168, 72, 0.07) 1px, transparent 0);
+      radial-gradient(circle at 1px 1px, rgb(var(--gold-rgb) / 0.07) 1px, transparent 0);
     background-size: 24px 24px;
     pointer-events: none;
     z-index: 0;
   }
 
   .site-shell p {
-    color: #F3EDE6;
+    color: var(--cream);
   }
 
   .site-shell h1,
@@ -81,12 +116,12 @@ textarea::placeholder {
   .site-shell h4,
   .site-shell h5,
   .site-shell h6 {
-    color: #C8A848;
+    color: var(--gold);
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   }
 
   .site-shell a {
-    color: #C8A848;
+    color: var(--gold);
   }
 
   /* Clerk embeds: site-shell sets gold + heavy text-shadow on headings and cream on <p>,
@@ -112,12 +147,12 @@ textarea::placeholder {
 
 @layer components {
   .font-tokyo {
-    font-family: 'TokyoDreams', serif;
+    font-family: var(--font-display);
   }
 
   .site-shell button:focus-visible,
   .site-shell a:focus-visible {
-    outline: 2px solid #D239F8;
+    outline: 2px solid var(--purple);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -156,7 +191,7 @@ textarea::placeholder {
 
   @media (min-width: 769px) {
     .glass-bar {
-      background-color: var(--glass-bg, rgba(26, 10, 36, 0.75));
+      background-color: var(--glass-bg, rgb(var(--ink-rgb) / 0.75));
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
     }
@@ -164,12 +199,12 @@ textarea::placeholder {
 
   .gold-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, #C8A848, transparent);
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
     opacity: 0.4;
   }
 
   .purple-glow {
-    box-shadow: 0 0 40px rgba(210, 57, 248, 0.2), 0 0 80px rgba(210, 57, 248, 0.08);
+    box-shadow: 0 0 40px rgb(var(--purple-rgb) / 0.2), 0 0 80px rgb(var(--purple-rgb) / 0.08);
   }
 }
 

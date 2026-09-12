@@ -77,8 +77,8 @@ function useMentionRenderer(members: RadioMember[], currentUserId: string | null
             title={`View ${mem.displayName}'s profile`}
             style={{
               color: isSelf ? '#FFF1C2' : '#F8DBFF',
-              background: isSelf ? 'rgba(200,168,72,0.42)' : 'rgba(210,57,248,0.38)',
-              border: `1px solid ${isSelf ? 'rgba(200,168,72,0.4)' : 'rgba(210,57,248,0.4)'}`,
+              background: isSelf ? 'rgb(var(--gold-rgb) / 0.42)' : 'rgb(var(--purple-rgb) / 0.38)',
+              border: `1px solid ${isSelf ? 'rgb(var(--gold-rgb) / 0.4)' : 'rgb(var(--purple-rgb) / 0.4)'}`,
               borderRadius: '0.35rem',
               padding: '0.02rem 0.28rem',
               fontWeight: 700,
@@ -98,8 +98,8 @@ function useMentionRenderer(members: RadioMember[], currentUserId: string | null
             key={start}
             style={{
               color: '#FFF1C2',
-              background: 'rgba(200,168,72,0.42)',
-              border: '1px solid rgba(200,168,72,0.5)',
+              background: 'rgb(var(--gold-rgb) / 0.42)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.5)',
               borderRadius: '0.35rem',
               padding: '0.02rem 0.28rem',
               fontWeight: 700,
@@ -140,7 +140,7 @@ function RadioRow({ e, last, renderMentions }: {
         className="radio-row-msg"
         style={{
           margin: 0,
-          color: isSpeech ? VOICE_PURPLE : '#F3EDE6',
+          color: isSpeech ? VOICE_PURPLE : 'var(--cream)',
           opacity: isSpeech ? 1 : 0.92,
           fontStyle: isSpeech ? 'italic' : undefined,
           overflowWrap: 'anywhere',
@@ -154,7 +154,7 @@ function RadioRow({ e, last, renderMentions }: {
         )}
       </p>
       {e.detail && (
-        <p className="radio-row-detail" style={{ color: '#F3EDE6', opacity: 0.55 }}>
+        <p className="radio-row-detail" style={{ color: 'var(--cream)', opacity: 0.55 }}>
           {e.detail}
         </p>
       )}
@@ -178,7 +178,7 @@ function RadioRow({ e, last, renderMentions }: {
         display: 'flex',
         alignItems: 'flex-start',
         gap: isSpeech ? 0 : undefined,
-        borderBottom: last ? 'none' : '1px solid rgba(200,168,72,0.1)',
+        borderBottom: last ? 'none' : '1px solid rgb(var(--gold-rgb) / 0.1)',
       }}
     >
       {/* The moment's emblem — a large raw emoji (or medal art), no disc.
@@ -191,7 +191,7 @@ function RadioRow({ e, last, renderMentions }: {
 
       {/* Speech is right-aligned, so its clock keeps the LEFT edge. */}
       {isSpeech && (
-        <span className="radio-row-clock" style={{ flexShrink: 0, color: '#F3EDE6', opacity: 0.35, letterSpacing: '0.04em', marginRight: '0.75rem' }}>
+        <span className="radio-row-clock" style={{ flexShrink: 0, color: 'var(--cream)', opacity: 0.35, letterSpacing: '0.04em', marginRight: '0.75rem' }}>
           {clockOf(e.created_at)}
         </span>
       )}
@@ -206,7 +206,7 @@ function RadioRow({ e, last, renderMentions }: {
 
       {/* Automatic moments keep their clock on the right. */}
       {!isSpeech && (
-        <span className="radio-row-clock" style={{ flexShrink: 0, color: '#F3EDE6', opacity: 0.35, letterSpacing: '0.04em', marginLeft: '0.75rem' }}>
+        <span className="radio-row-clock" style={{ flexShrink: 0, color: 'var(--cream)', opacity: 0.35, letterSpacing: '0.04em', marginLeft: '0.75rem' }}>
           {clockOf(e.created_at)}
         </span>
       )}
@@ -230,9 +230,9 @@ const FEED_CSS = `
      underline marks the active kind, echoing the nav's active/dim contrast.
      flex-wrap (not overflow-x scroll) so every kind stays reachable on
      phones — the day-chip rail learned this lesson the hard way. */
-  .radio-filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1.1rem; margin: 0 0 1.75rem; padding-bottom: 0.85rem; border-bottom: 1px solid rgba(200,168,72,0.12); }
-  .radio-filter-chip { background: none; border: none; border-bottom: 2px solid transparent; padding: 0.15rem 0.05rem; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; font-family: inherit; cursor: pointer; color: rgba(243,237,230,0.4); }
-  .radio-filter-chip.active { color: #C8A848; border-bottom-color: rgba(200,168,72,0.6); }
+  .radio-filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1.1rem; margin: 0 0 1.75rem; padding-bottom: 0.85rem; border-bottom: 1px solid rgb(var(--gold-rgb) / 0.12); }
+  .radio-filter-chip { background: none; border: none; border-bottom: 2px solid transparent; padding: 0.15rem 0.05rem; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; font-family: inherit; cursor: pointer; color: rgb(var(--cream-rgb) / 0.4); }
+  .radio-filter-chip.active { color: var(--gold); border-bottom-color: rgb(var(--gold-rgb) / 0.6); }
   @media (max-width: 640px) {
     .radio-row { padding: 0.65rem 0.05rem; gap: 0.65rem; }
     .radio-row-emblem { width: 1.7rem; font-size: 1.15rem; }
@@ -319,7 +319,7 @@ export function RadioFeed({ events, members = [], currentUserId = null }: {
                 fontSize: '0.72rem',
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
-                color: '#C8A848',
+                color: 'var(--gold)',
                 opacity: 0.8,
                 margin: '0 0 0.25rem',
                 display: 'flex',
@@ -328,8 +328,8 @@ export function RadioFeed({ events, members = [], currentUserId = null }: {
               }}
             >
               {section.label}
-              <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgba(200,168,72,0.35), rgba(200,168,72,0.08))' }} />
-              <span aria-hidden style={{ color: '#C8A848', opacity: 0.7, fontSize: '0.8rem' }}>✦</span>
+              <span aria-hidden style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgb(var(--gold-rgb) / 0.35), rgb(var(--gold-rgb) / 0.08))' }} />
+              <span aria-hidden style={{ color: 'var(--gold)', opacity: 0.7, fontSize: '0.8rem' }}>✦</span>
             </h2>
 
             <div>
@@ -345,7 +345,7 @@ export function RadioFeed({ events, members = [], currentUserId = null }: {
       <p
         aria-hidden
         className="radio-signoff"
-        style={{ textAlign: 'center', fontStyle: 'italic', color: '#C8A848', opacity: 0.55 }}
+        style={{ textAlign: 'center', fontStyle: 'italic', color: 'var(--gold)', opacity: 0.55 }}
       >
         ✦ &nbsp;That's all for now. Stay tuned.&nbsp; ✦
       </p>

@@ -25,9 +25,9 @@ export type GroupIconOption = { name: string; image: string }
 // so the same art never shows under both).
 type PickTab = AssetCategory | 'group'
 
-const CREAM = '#F3EDE6'
+const CREAM = 'var(--cream)'
 const selectStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+  background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
   borderRadius: '0.3rem', color: CREAM, fontSize: '0.75rem',
   padding: '0.2rem 0.4rem', outline: 'none', fontFamily: 'inherit',
 }
@@ -65,8 +65,8 @@ function AssetTile({ src, label, selected, onClick, fit = 'contain' }: {
       <span style={{
         width: 60, height: 60, borderRadius: '0.5rem', overflow: 'hidden',
         background: 'rgba(8,0,18,0.6)',
-        border: selected ? '2px solid #C8A848' : '1px solid rgba(200,168,72,0.2)',
-        boxShadow: selected ? '0 0 0 1px rgba(200,168,72,0.4)' : 'none',
+        border: selected ? '2px solid var(--gold)' : '1px solid rgb(var(--gold-rgb) / 0.2)',
+        boxShadow: selected ? '0 0 0 1px rgb(var(--gold-rgb) / 0.4)' : 'none',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -157,7 +157,7 @@ export function AssetImagePicker({
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
         <span style={{
           width: 52, height: 52, flexShrink: 0, borderRadius: '0.5rem', overflow: 'hidden',
-          background: 'rgba(8,0,18,0.6)', border: '1px solid rgba(200,168,72,0.25)',
+          background: 'rgba(8,0,18,0.6)', border: '1px solid rgb(var(--gold-rgb) / 0.25)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           {!value
@@ -173,7 +173,7 @@ export function AssetImagePicker({
             <button
               type="button"
               onClick={() => { setActiveTab(primaryCategory); setErr(null); setOpen(true) }}
-              style={{ ...selectStyle, cursor: 'pointer', color: '#FFFACD' }}
+              style={{ ...selectStyle, cursor: 'pointer', color: 'var(--lemon)' }}
             >
               {value ? 'Change image' : 'Choose image'}
             </button>
@@ -199,11 +199,11 @@ export function AssetImagePicker({
         >
           <div
             onClick={e => e.stopPropagation()}
-            style={{ background: '#1A0A24', border: '1px solid rgba(200,168,72,0.5)', borderRadius: '0.75rem', width: 'min(560px, 100%)', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.6)' }}
+            style={{ background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.5)', borderRadius: '0.75rem', width: 'min(560px, 100%)', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.6)' }}
           >
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.9rem 1.1rem', borderBottom: '1px solid rgba(200,168,72,0.2)' }}>
-              <span style={{ fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: '1rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A848' }}>Choose an image</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.9rem 1.1rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.2)' }}>
+              <span style={{ fontFamily: 'var(--font-cormorant-garamond), serif', fontSize: '1rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)' }}>Choose an image</span>
               <button type="button" onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: CREAM, opacity: 0.6, fontSize: '1.1rem', lineHeight: 1, padding: '0.2rem' }}>×</button>
             </div>
 
@@ -215,10 +215,10 @@ export function AssetImagePicker({
                   type="button"
                   onClick={() => setActiveTab(t.value)}
                   style={{
-                    border: '1px solid rgba(200,168,72,0.3)', borderRadius: '9999px', cursor: 'pointer',
+                    border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '9999px', cursor: 'pointer',
                     padding: '0.25rem 0.85rem', fontSize: '0.72rem', letterSpacing: '0.04em',
-                    background: activeTab === t.value ? '#C8A848' : 'transparent',
-                    color: activeTab === t.value ? '#1A0A24' : CREAM,
+                    background: activeTab === t.value ? 'var(--gold)' : 'transparent',
+                    color: activeTab === t.value ? 'var(--ink)' : CREAM,
                     fontWeight: activeTab === t.value ? 600 : 400,
                     opacity: activeTab === t.value ? 1 : 0.7,
                   }}
@@ -243,16 +243,16 @@ export function AssetImagePicker({
             </div>
 
             {/* Footer: upload your own */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.8rem 1.1rem', borderTop: '1px solid rgba(200,168,72,0.2)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.8rem 1.1rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.2)' }}>
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 disabled={busy}
-                style={{ ...selectStyle, cursor: busy ? 'wait' : 'pointer', color: '#FFFACD', opacity: busy ? 0.5 : 1 }}
+                style={{ ...selectStyle, cursor: busy ? 'wait' : 'pointer', color: 'var(--lemon)', opacity: busy ? 0.5 : 1 }}
               >
                 {busy ? 'Uploading…' : '＋ Upload your own'}
               </button>
-              {err && <span style={{ fontSize: '0.7rem', color: '#ff8a8a' }}>{err}</span>}
+              {err && <span style={{ fontSize: '0.7rem', color: 'var(--danger)' }}>{err}</span>}
             </div>
           </div>
         </div>

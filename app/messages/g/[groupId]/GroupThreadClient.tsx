@@ -57,13 +57,13 @@ function Avatar({ url, name, size = 30 }: { url: string | null; name: string; si
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%', flexShrink: 0,
-      border: '1px solid rgba(111,73,31,0.7)', background: 'rgba(200,168,72,0.08)',
+      border: '1px solid rgba(111,73,31,0.7)', background: 'rgb(var(--gold-rgb) / 0.08)',
       overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       {url
         // eslint-disable-next-line @next/next/no-img-element
         ? <img src={supabaseResizedUrl(url, size * 2) ?? ''} loading="lazy" decoding="async" alt={`${name}'s avatar`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        : <span aria-hidden="true" style={{ fontFamily: 'TokyoDreams, serif', fontSize: size * 0.42, color: '#C8A848', opacity: 0.6 }}>{name.charAt(0).toUpperCase()}</span>}
+        : <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: size * 0.42, color: 'var(--gold)', opacity: 0.6 }}>{name.charAt(0).toUpperCase()}</span>}
     </div>
   )
 }
@@ -78,16 +78,16 @@ function MessageBubble({ msg, isMe, showSender, avatarSize = 30, renderBody }: {
       )}
       <div style={{ maxWidth: '72%', display: 'flex', flexDirection: 'column', alignItems: isMe ? 'flex-end' : 'flex-start' }}>
         {showSender && !isMe && (
-          <span style={{ fontSize: '0.7rem', color: '#C8A848', opacity: 0.7, margin: '0 0.2rem 0.2rem' }}>{msg.sender_name}</span>
+          <span style={{ fontSize: '0.7rem', color: 'var(--gold)', opacity: 0.7, margin: '0 0.2rem 0.2rem' }}>{msg.sender_name}</span>
         )}
         <div
           aria-label={`${isMe ? 'You' : msg.sender_name} said`}
           style={{
             padding: '0.6rem 0.9rem',
             borderRadius: isMe ? '1.1rem 1.1rem 0.25rem 1.1rem' : '1.1rem 1.1rem 1.1rem 0.25rem',
-            background: isMe ? 'rgba(210,57,248,0.18)' : 'rgba(200,168,72,0.09)',
-            border: isMe ? '1px solid rgba(210,57,248,0.25)' : '1px solid rgba(200,168,72,0.15)',
-            fontSize: '0.9rem', lineHeight: 1.5, color: '#F3EDE6',
+            background: isMe ? 'rgb(var(--purple-rgb) / 0.18)' : 'rgb(var(--gold-rgb) / 0.09)',
+            border: isMe ? '1px solid rgb(var(--purple-rgb) / 0.25)' : '1px solid rgb(var(--gold-rgb) / 0.15)',
+            fontSize: '0.9rem', lineHeight: 1.5, color: 'var(--cream)',
             wordBreak: 'break-word', whiteSpace: 'pre-wrap',
           }}
         >
@@ -176,8 +176,8 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
             title={`View ${mem.displayName}'s profile`}
             style={{
               color: isSelf ? '#FFF1C2' : '#F8DBFF',
-              background: isSelf ? 'rgba(200,168,72,0.45)' : 'rgba(210,57,248,0.42)',
-              border: `1px solid ${isSelf ? 'rgba(200,168,72,0.4)' : 'rgba(210,57,248,0.4)'}`,
+              background: isSelf ? 'rgb(var(--gold-rgb) / 0.45)' : 'rgb(var(--purple-rgb) / 0.42)',
+              border: `1px solid ${isSelf ? 'rgb(var(--gold-rgb) / 0.4)' : 'rgb(var(--purple-rgb) / 0.4)'}`,
               borderRadius: '0.35rem', padding: '0.05rem 0.3rem', fontWeight: 700,
               textDecoration: 'none', whiteSpace: 'nowrap',
             }}
@@ -294,7 +294,7 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
     display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem',
     width: '100%', padding: '0.65rem 0.9rem', textAlign: 'left',
     background: 'transparent', border: 'none', cursor: 'pointer',
-    color: '#F3EDE6', fontSize: '0.82rem', fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
+    color: 'var(--cream)', fontSize: '0.82rem', fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
   }
 
   // Composer change → update text and re-detect an in-progress @mention.
@@ -410,18 +410,18 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
       {/* Thread header */}
       <div className="glass-bar" style={{
         padding: '5.5rem 1.5rem 1.25rem',
-        borderBottom: '1px solid rgba(200,168,72,0.15)',
+        borderBottom: '1px solid rgb(var(--gold-rgb) / 0.15)',
         display: 'flex', alignItems: 'center', gap: '0.85rem',
         position: 'sticky', top: 0,
-        ['--glass-bg' as string]: 'rgba(26,10,36,0.92)',
+        ['--glass-bg' as string]: 'rgb(var(--ink-rgb) / 0.92)',
         zIndex: 10,
       }}>
-        <a href="/messages" aria-label="Back to all messages" style={{ color: '#C8A848', opacity: 0.5, textDecoration: 'none', fontSize: '0.8rem', letterSpacing: '0.08em', flexShrink: 0 }}>
+        <a href="/messages" aria-label="Back to all messages" style={{ color: 'var(--gold)', opacity: 0.5, textDecoration: 'none', fontSize: '0.8rem', letterSpacing: '0.08em', flexShrink: 0 }}>
           <span aria-hidden="true">←</span>
         </a>
         <div style={{
           width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0,
-          border: '1px solid rgba(111,73,31,0.7)', background: 'rgba(200,168,72,0.08)',
+          border: '1px solid rgba(111,73,31,0.7)', background: 'rgb(var(--gold-rgb) / 0.08)',
           overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: '1.15rem',
         }}>
@@ -430,7 +430,7 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
             : <span aria-hidden="true">{groupIcon || '✦'}</span>}
         </div>
         <div>
-          <p style={{ margin: 0, fontFamily: 'TokyoDreams, serif', fontSize: '1.05rem', color: '#C8A848' }}>{groupName}</p>
+          <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.05rem', color: 'var(--gold)' }}>{groupName}</p>
           <p style={{ margin: 0, fontSize: '0.7rem', opacity: 0.4 }}>Group thread{muted ? ' · Muted' : ''}</p>
         </div>
 
@@ -442,7 +442,7 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
             title={muted ? 'Muted — notification settings' : 'Notification settings'}
             aria-haspopup="menu"
             aria-expanded={menuOpen}
-            style={{ background: 'none', border: 'none', color: muted ? '#F3EDE6' : '#C8A848', opacity: muted ? 0.5 : 0.8, cursor: 'pointer', lineHeight: 0, padding: '0.25rem 0.4rem', display: 'flex', alignItems: 'center' }}
+            style={{ background: 'none', border: 'none', color: muted ? 'var(--cream)' : 'var(--gold)', opacity: muted ? 0.5 : 0.8, cursor: 'pointer', lineHeight: 0, padding: '0.25rem 0.4rem', display: 'flex', alignItems: 'center' }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -451,23 +451,23 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
             </svg>
           </button>
           {menuOpen && (
-            <div role="menu" style={{ position: 'absolute', top: 'calc(100% + 4px)', right: 0, minWidth: '230px', background: 'rgba(22,8,34,0.98)', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '0.7rem', boxShadow: '0 12px 32px rgba(0,0,0,0.5)', overflow: 'hidden', zIndex: 21 }}>
+            <div role="menu" style={{ position: 'absolute', top: 'calc(100% + 4px)', right: 0, minWidth: '230px', background: 'rgba(22,8,34,0.98)', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '0.7rem', boxShadow: '0 12px 32px rgba(0,0,0,0.5)', overflow: 'hidden', zIndex: 21 }}>
                 <button role="menuitemcheckbox" aria-checked={muted} onClick={toggleMute} style={menuItemStyle}>
                   <span style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
                     <span>Mute this group</span>
                     <span style={{ fontSize: '0.66rem', opacity: 0.4 }}>Stop showing an unread badge</span>
                   </span>
-                  <span aria-hidden="true" style={{ fontSize: '1rem', color: muted ? '#D239F8' : '#F3EDE6', opacity: muted ? 0.95 : 0.4 }}>{muted ? '☑' : '☐'}</span>
+                  <span aria-hidden="true" style={{ fontSize: '1rem', color: muted ? 'var(--purple)' : 'var(--cream)', opacity: muted ? 0.95 : 0.4 }}>{muted ? '☑' : '☐'}</span>
                 </button>
-                <button role="menuitemcheckbox" aria-checked={emailOptIn} onClick={toggleEmail} style={{ ...menuItemStyle, borderTop: '1px solid rgba(200,168,72,0.1)' }}>
+                <button role="menuitemcheckbox" aria-checked={emailOptIn} onClick={toggleEmail} style={{ ...menuItemStyle, borderTop: '1px solid rgb(var(--gold-rgb) / 0.1)' }}>
                   <span style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
                     <span>Email me about this group</span>
                     <span style={{ fontSize: '0.66rem', opacity: 0.4 }}>Get an email when there&rsquo;s activity</span>
                   </span>
-                  <span aria-hidden="true" style={{ fontSize: '1rem', color: emailOptIn ? '#D239F8' : '#F3EDE6', opacity: emailOptIn ? 0.95 : 0.4 }}>{emailOptIn ? '☑' : '☐'}</span>
+                  <span aria-hidden="true" style={{ fontSize: '1rem', color: emailOptIn ? 'var(--purple)' : 'var(--cream)', opacity: emailOptIn ? 0.95 : 0.4 }}>{emailOptIn ? '☑' : '☐'}</span>
                 </button>
                 {canLeave && (
-                  <button role="menuitem" onClick={() => { setMenuOpen(false); leaveGroup() }} disabled={leaving} style={{ ...menuItemStyle, color: '#ff8a8a', borderTop: '1px solid rgba(200,168,72,0.12)' }}>
+                  <button role="menuitem" onClick={() => { setMenuOpen(false); leaveGroup() }} disabled={leaving} style={{ ...menuItemStyle, color: 'var(--danger)', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
                     {leaving ? 'Leaving…' : 'Leave group'}
                   </button>
                 )}
@@ -497,7 +497,7 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
           if (msg.sender_clerk_id === 'system') {
             return (
               <div key={msg.id} style={{ textAlign: 'center', margin: '1.4rem 0', padding: '0 1rem' }}>
-                <p style={{ color: '#C8A848', fontSize: '0.88rem', fontStyle: 'italic', lineHeight: 1.55, margin: 0 }}>
+                <p style={{ color: 'var(--gold)', fontSize: '0.88rem', fontStyle: 'italic', lineHeight: 1.55, margin: 0 }}>
                   {msg.body}
                 </p>
                 <p style={{ fontSize: '0.65rem', opacity: 0.35, margin: '0.3rem 0 0', letterSpacing: '0.05em' }}>
@@ -532,7 +532,7 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
                   aria-expanded={isExpanded}
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
-                    color: replies.length ? '#C8A848' : '#F3EDE6',
+                    color: replies.length ? 'var(--gold)' : 'var(--cream)',
                     opacity: replies.length ? 0.7 : 0.4,
                     fontSize: '0.7rem', letterSpacing: '0.04em',
                     padding: '0.1rem 0.3rem', marginLeft: isMe ? 0 : '2.6rem',
@@ -546,7 +546,7 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
 
               {/* Reply thread (one level, collapsible) */}
               {isExpanded && (
-                <div style={{ marginLeft: '2.6rem', paddingLeft: '0.85rem', borderLeft: '1px solid rgba(200,168,72,0.18)', marginBottom: '0.6rem' }}>
+                <div style={{ marginLeft: '2.6rem', paddingLeft: '0.85rem', borderLeft: '1px solid rgb(var(--gold-rgb) / 0.18)', marginBottom: '0.6rem' }}>
                   {replies.map((r, ri) => {
                     const rIsMe = r.sender_clerk_id === currentUserId
                     const rPrev = ri > 0 ? replies[ri - 1] : null
@@ -566,13 +566,13 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
                       style={{
                         flex: 1, padding: '0.5rem 0.75rem',
                         background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(200,168,72,0.2)',
-                        borderRadius: '0.6rem', color: '#F3EDE6', fontSize: '0.85rem',
+                        border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+                        borderRadius: '0.6rem', color: 'var(--cream)', fontSize: '0.85rem',
                         outline: 'none', boxSizing: 'border-box',
                         fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
                       }}
-                      onFocus={e => { e.target.style.borderColor = 'rgba(210,57,248,0.45)' }}
-                      onBlur={e => { e.target.style.borderColor = 'rgba(200,168,72,0.2)' }}
+                      onFocus={e => { e.target.style.borderColor = 'rgb(var(--purple-rgb) / 0.45)' }}
+                      onBlur={e => { e.target.style.borderColor = 'rgb(var(--gold-rgb) / 0.2)' }}
                     />
                     <button
                       onClick={() => sendReply(msg.id)}
@@ -580,11 +580,11 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
                       aria-label="Send reply"
                       style={{
                         padding: '0.5rem 0.9rem',
-                        background: (replyDrafts[msg.id] ?? '').trim() ? 'rgba(210,57,248,0.2)' : 'rgba(255,255,255,0.04)',
-                        border: `1px solid ${(replyDrafts[msg.id] ?? '').trim() ? 'rgba(210,57,248,0.4)' : 'rgba(200,168,72,0.1)'}`,
+                        background: (replyDrafts[msg.id] ?? '').trim() ? 'rgb(var(--purple-rgb) / 0.2)' : 'rgba(255,255,255,0.04)',
+                        border: `1px solid ${(replyDrafts[msg.id] ?? '').trim() ? 'rgb(var(--purple-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.1)'}`,
                         borderRadius: '0.6rem',
-                        color: (replyDrafts[msg.id] ?? '').trim() ? '#D239F8' : '#F3EDE6',
-                        fontSize: '0.75rem', fontFamily: 'TokyoDreams, serif', letterSpacing: '0.05em',
+                        color: (replyDrafts[msg.id] ?? '').trim() ? 'var(--purple)' : 'var(--cream)',
+                        fontSize: '0.75rem', fontFamily: 'var(--font-display)', letterSpacing: '0.05em',
                         cursor: (replyDrafts[msg.id] ?? '').trim() && replySending !== msg.id ? 'pointer' : 'not-allowed',
                         opacity: (replyDrafts[msg.id] ?? '').trim() && replySending !== msg.id ? 1 : 0.35,
                         flexShrink: 0, whiteSpace: 'nowrap',
@@ -604,9 +604,9 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
       {/* Compose */}
       <div className="glass-bar" style={{
         padding: '0.85rem 1.5rem 2rem',
-        borderTop: '1px solid rgba(200,168,72,0.12)',
+        borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)',
         position: 'sticky', bottom: 0,
-        ['--glass-bg' as string]: 'rgba(26,10,36,0.92)',
+        ['--glass-bg' as string]: 'rgb(var(--ink-rgb) / 0.92)',
       }}>
         {error && (
           <p role="alert" style={{ color: '#f87171', fontSize: '0.78rem', marginBottom: '0.5rem', opacity: 0.85 }}>{error}</p>
@@ -617,7 +617,7 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
             {mention && mentionMatches.length > 0 && (
               <div role="listbox" aria-label="Mention a member" style={{
                 position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, right: 0,
-                background: 'rgba(22,8,34,0.98)', border: '1px solid rgba(200,168,72,0.25)',
+                background: 'rgba(22,8,34,0.98)', border: '1px solid rgb(var(--gold-rgb) / 0.25)',
                 borderRadius: '0.6rem', boxShadow: '0 12px 32px rgba(0,0,0,0.5)',
                 overflow: 'hidden', zIndex: 20,
               }}>
@@ -631,8 +631,8 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
                     style={{
                       display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%',
                       padding: '0.5rem 0.75rem', textAlign: 'left', cursor: 'pointer',
-                      background: i === mentionHighlight ? 'rgba(210,57,248,0.15)' : 'transparent',
-                      border: 'none', color: '#F3EDE6',
+                      background: i === mentionHighlight ? 'rgb(var(--purple-rgb) / 0.15)' : 'transparent',
+                      border: 'none', color: 'var(--cream)',
                     }}
                   >
                     <Avatar url={m.avatarUrl} name={m.displayName} size={24} />
@@ -657,18 +657,18 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
               style={{
                 width: '100%', padding: '0.65rem 0.9rem',
                 background: 'rgba(255,255,255,0.04)',
-                border: `1px solid ${isOver ? 'rgba(248,113,113,0.5)' : 'rgba(200,168,72,0.2)'}`,
-                borderRadius: '0.75rem', color: '#F3EDE6', fontSize: '0.9rem',
+                border: `1px solid ${isOver ? 'rgba(248,113,113,0.5)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
+                borderRadius: '0.75rem', color: 'var(--cream)', fontSize: '0.9rem',
                 resize: 'none', outline: 'none',
                 fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
                 lineHeight: 1.5, transition: 'border-color 0.15s', boxSizing: 'border-box',
                 maxHeight: '160px', overflowY: 'hidden',
               }}
-              onFocus={e => { e.target.style.borderColor = 'rgba(210,57,248,0.45)' }}
-              onBlur={e => { e.target.style.borderColor = isOver ? 'rgba(248,113,113,0.5)' : 'rgba(200,168,72,0.2)' }}
+              onFocus={e => { e.target.style.borderColor = 'rgb(var(--purple-rgb) / 0.45)' }}
+              onBlur={e => { e.target.style.borderColor = isOver ? 'rgba(248,113,113,0.5)' : 'rgb(var(--gold-rgb) / 0.2)' }}
             />
             {body.length > MAX_CHARS * 0.8 && (
-              <span aria-live="polite" style={{ position: 'absolute', bottom: '0.45rem', right: '0.6rem', fontSize: '0.65rem', opacity: 0.4, color: isOver ? '#f87171' : '#F3EDE6' }}>
+              <span aria-live="polite" style={{ position: 'absolute', bottom: '0.45rem', right: '0.6rem', fontSize: '0.65rem', opacity: 0.4, color: isOver ? '#f87171' : 'var(--cream)' }}>
                 {charsLeft}
               </span>
             )}
@@ -679,11 +679,11 @@ export function GroupThreadClient({ currentUserId, groupId, groupName, groupIcon
             aria-label="Send message"
             style={{
               padding: '0.65rem 1.25rem',
-              background: body.trim() && !isOver ? 'rgba(210,57,248,0.2)' : 'rgba(255,255,255,0.04)',
-              border: `1px solid ${body.trim() && !isOver ? 'rgba(210,57,248,0.4)' : 'rgba(200,168,72,0.1)'}`,
+              background: body.trim() && !isOver ? 'rgb(var(--purple-rgb) / 0.2)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${body.trim() && !isOver ? 'rgb(var(--purple-rgb) / 0.4)' : 'rgb(var(--gold-rgb) / 0.1)'}`,
               borderRadius: '0.75rem',
-              color: body.trim() && !isOver ? '#D239F8' : '#F3EDE6',
-              fontSize: '0.82rem', fontFamily: 'TokyoDreams, serif', letterSpacing: '0.06em',
+              color: body.trim() && !isOver ? 'var(--purple)' : 'var(--cream)',
+              fontSize: '0.82rem', fontFamily: 'var(--font-display)', letterSpacing: '0.06em',
               cursor: body.trim() && !isOver && !sending ? 'pointer' : 'not-allowed',
               opacity: body.trim() && !isOver && !sending ? 1 : 0.35,
               transition: 'all 0.15s', flexShrink: 0, whiteSpace: 'nowrap',

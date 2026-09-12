@@ -45,7 +45,7 @@ export function MobileTabBar({ links }: { links: TabBarLink[] }) {
           // Near-opaque instead of frosted: the bar only exists on phones,
           // where a fixed backdrop-filter re-blurs on every scroll frame.
           backgroundColor: 'rgba(20, 8, 30, 0.97)',
-          borderTop: '1px solid rgba(200, 168, 72, 0.25)',
+          borderTop: '1px solid rgb(var(--gold-rgb) / 0.25)',
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}
       >
@@ -70,7 +70,7 @@ export function MobileTabBar({ links }: { links: TabBarLink[] }) {
                 padding: '8px 2px 7px',
                 position: 'relative',
                 textDecoration: 'none',
-                color: active ? '#C8A848' : 'rgba(243, 237, 230, 0.55)',
+                color: active ? 'var(--gold)' : 'rgb(var(--cream-rgb) / 0.55)',
                 transition: 'color 0.2s',
               }}
             >
@@ -86,7 +86,7 @@ export function MobileTabBar({ links }: { links: TabBarLink[] }) {
                     width: '64%',
                     height: '1px',
                     background:
-                      'linear-gradient(90deg, transparent, rgba(200,168,72,0.8), transparent)',
+                      'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.8), transparent)',
                   }}
                 >
                   <span
@@ -98,8 +98,8 @@ export function MobileTabBar({ links }: { links: TabBarLink[] }) {
                       width: '4px',
                       height: '4px',
                       borderRadius: '50%',
-                      background: '#C8A848',
-                      boxShadow: '0 0 6px rgba(200,168,72,0.9)',
+                      background: 'var(--gold)',
+                      boxShadow: '0 0 6px rgb(var(--gold-rgb) / 0.9)',
                     }}
                   />
                 </span>
@@ -116,7 +116,7 @@ export function MobileTabBar({ links }: { links: TabBarLink[] }) {
                       minWidth: '15px',
                       height: '15px',
                       borderRadius: '9999px',
-                      background: '#D239F8',
+                      background: 'var(--purple)',
                       color: '#fff',
                       fontSize: '0.56rem',
                       fontWeight: 700,
@@ -125,7 +125,7 @@ export function MobileTabBar({ links }: { links: TabBarLink[] }) {
                       justifyContent: 'center',
                       padding: '0 4px',
                       lineHeight: 1,
-                      boxShadow: '0 0 8px rgba(210,57,248,0.5)',
+                      boxShadow: '0 0 8px rgb(var(--purple-rgb) / 0.5)',
                     }}
                   >
                     {unread > 9 ? '9+' : unread}

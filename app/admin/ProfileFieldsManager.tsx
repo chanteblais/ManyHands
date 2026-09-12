@@ -10,18 +10,18 @@ import {
 } from '@/lib/profile-fields'
 import { useConfirm } from '../components/ConfirmDialog'
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
 
 const inputStyle: React.CSSProperties = {
   background: 'transparent', border: 'none',
-  borderBottom: '1px solid rgba(200,168,72,0.2)',
+  borderBottom: '1px solid rgb(var(--gold-rgb) / 0.2)',
   color: CREAM, fontSize: '0.85rem', outline: 'none',
   padding: '0 0 0.15rem', fontFamily: 'inherit', boxSizing: 'border-box',
 }
 const selectStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+  background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
   borderRadius: '0.3rem', color: CREAM, fontSize: '0.75rem',
   padding: '0.2rem 0.4rem', outline: 'none', fontFamily: 'inherit',
 }
@@ -71,7 +71,7 @@ function Toggle({ on, onClick, title }: { on: boolean; onClick: () => void; titl
       <div style={{
         position: 'absolute', top: '3px', left: on ? '18px' : '3px',
         width: '13px', height: '13px', borderRadius: '50%',
-        background: on ? '#1A0A24' : 'rgba(255,255,255,0.5)', transition: 'left 0.2s',
+        background: on ? 'var(--ink)' : 'rgba(255,255,255,0.5)', transition: 'left 0.2s',
       }} />
     </button>
   )
@@ -211,8 +211,8 @@ export function ProfileFieldsManager({ initialFields }: { initialFields: Profile
             <div
               key={idx}
               style={{
-                border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.75rem',
-                background: 'rgba(200,168,72,0.02)', padding: '0.95rem 1rem',
+                border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.75rem',
+                background: 'rgb(var(--gold-rgb) / 0.02)', padding: '0.95rem 1rem',
                 display: 'flex', gap: '0.75rem', alignItems: 'flex-start',
                 opacity: field.enabled ? 1 : 0.55,
               }}
@@ -261,7 +261,7 @@ export function ProfileFieldsManager({ initialFields }: { initialFields: Profile
                     style={selectStyle}
                   >
                     {PROFILE_FIELD_TYPES.map(t => (
-                      <option key={t.value} value={t.value} style={{ background: '#1A0A24' }}>{t.label}</option>
+                      <option key={t.value} value={t.value} style={{ background: 'var(--ink)' }}>{t.label}</option>
                     ))}
                   </select>
                   {typeHasOptions(field.type) && (
@@ -299,7 +299,7 @@ export function ProfileFieldsManager({ initialFields }: { initialFields: Profile
                     if (ok) commitStored(stored.filter((_, i) => i !== idx))
                   }}
                   title="Remove"
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff8a8a', opacity: 0.45, fontSize: '0.8rem', padding: '0.1rem', marginTop: '0.15rem' }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', opacity: 0.45, fontSize: '0.8rem', padding: '0.1rem', marginTop: '0.15rem' }}
                 >✕</button>
               </div>
             </div>
@@ -311,14 +311,14 @@ export function ProfileFieldsManager({ initialFields }: { initialFields: Profile
         onClick={addField}
         style={{
           width: '100%', padding: '0.65rem',
-          border: '1px dashed rgba(210,57,248,0.25)', borderRadius: '0.75rem',
+          border: '1px dashed rgb(var(--purple-rgb) / 0.25)', borderRadius: '0.75rem',
           background: 'transparent', color: PURPLE, fontSize: '0.8rem',
           letterSpacing: '0.08em', cursor: 'pointer', opacity: 0.6,
         }}
       >+ Add profile field</button>
 
       {/* Built-in core fields — always present, member-filled, not configurable */}
-      <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(200,168,72,0.12)', paddingTop: '1rem' }}>
+      <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)', paddingTop: '1rem' }}>
         <p style={{ ...tinyLabel, opacity: 0.45, marginBottom: '0.6rem' }}>Always on every profile — members fill these in</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
           {(locked.length ? locked : LOCKED_PROFILE_FIELDS).map(f => (
@@ -328,7 +328,7 @@ export function ProfileFieldsManager({ initialFields }: { initialFields: Profile
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                 padding: '0.25rem 0.7rem', borderRadius: '9999px',
-                border: '1px solid rgba(200,168,72,0.28)', background: 'rgba(200,168,72,0.05)',
+                border: '1px solid rgb(var(--gold-rgb) / 0.28)', background: 'rgb(var(--gold-rgb) / 0.05)',
                 fontSize: '0.74rem', opacity: 0.85,
               }}
             >
@@ -340,7 +340,7 @@ export function ProfileFieldsManager({ initialFields }: { initialFields: Profile
       </div>
 
       {/* Derived facts — read-only reference for the medal rule builder */}
-      <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(200,168,72,0.12)', paddingTop: '1rem' }}>
+      <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.12)', paddingTop: '1rem' }}>
         <p style={{ ...tinyLabel, opacity: 0.45, marginBottom: '0.6rem' }}>Tracked automatically — the site fills these in; medal rules can use them</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
           {(system.length ? system : SYSTEM_PROFILE_FIELDS).map(f => (
@@ -350,7 +350,7 @@ export function ProfileFieldsManager({ initialFields }: { initialFields: Profile
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                 padding: '0.25rem 0.7rem', borderRadius: '9999px',
-                border: '1px solid rgba(200,168,72,0.18)', background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgb(var(--gold-rgb) / 0.18)', background: 'rgba(255,255,255,0.02)',
                 fontSize: '0.74rem', opacity: 0.8,
               }}
             >
@@ -361,7 +361,7 @@ export function ProfileFieldsManager({ initialFields }: { initialFields: Profile
       </div>
 
       <div style={{ minHeight: '1.2rem', marginTop: '0.75rem' }}>
-        {error && <p style={{ fontSize: '0.78rem', color: '#ff8a8a', margin: 0 }}>{error}</p>}
+        {error && <p style={{ fontSize: '0.78rem', color: 'var(--danger)', margin: 0 }}>{error}</p>}
         {!error && saved && <p style={{ fontSize: '0.72rem', color: GOLD, opacity: 0.6, margin: 0 }}>Saved ✓</p>}
       </div>
 

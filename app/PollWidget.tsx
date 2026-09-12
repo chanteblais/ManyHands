@@ -50,11 +50,11 @@ function PollItem({ poll }: { poll: Poll }) {
   const expired = poll.expires_at ? new Date(poll.expires_at) < new Date() : false
 
   return (
-    <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid rgba(200,168,72,0.08)' }}>
-      <p style={{ fontSize: '0.88rem', color: '#EDE0C8', margin: '0 0 0.85rem', lineHeight: 1.5 }}>
+    <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.08)' }}>
+      <p style={{ fontSize: '0.88rem', color: 'var(--parchment)', margin: '0 0 0.85rem', lineHeight: 1.5 }}>
         {poll.question}
         {poll.allow_multiple && (
-          <span style={{ fontSize: '0.65rem', color: '#D9B3FF', opacity: 0.7, marginLeft: '0.5rem' }}>
+          <span style={{ fontSize: '0.65rem', color: 'var(--lavender)', opacity: 0.7, marginLeft: '0.5rem' }}>
             (select all that apply)
           </span>
         )}
@@ -75,8 +75,8 @@ function PollItem({ poll }: { poll: Poll }) {
                 position: 'relative',
                 width: '100%',
                 textAlign: 'left',
-                background: isVoted ? 'rgba(200,168,72,0.12)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${isVoted ? 'rgba(200,168,72,0.45)' : 'rgba(200,168,72,0.15)'}`,
+                background: isVoted ? 'rgb(var(--gold-rgb) / 0.12)' : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${isVoted ? 'rgb(var(--gold-rgb) / 0.45)' : 'rgb(var(--gold-rgb) / 0.15)'}`,
                 borderRadius: '0.5rem',
                 padding: '0.5rem 0.85rem',
                 cursor: expired ? 'default' : 'pointer',
@@ -87,15 +87,15 @@ function PollItem({ poll }: { poll: Poll }) {
               {/* progress bar fill — results are visible to everyone, voted or not */}
               <span style={{
                 position: 'absolute', inset: 0, right: `${100 - pct}%`,
-                background: isVoted ? 'rgba(200,168,72,0.08)' : 'rgba(255,255,255,0.025)',
+                background: isVoted ? 'rgb(var(--gold-rgb) / 0.08)' : 'rgba(255,255,255,0.025)',
                 transition: 'right 0.4s ease',
                 pointerEvents: 'none',
               }} />
               <span style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.83rem', color: isVoted ? '#C8A848' : '#F3EDE6', opacity: isPending ? 0.6 : 1 }}>
+                <span style={{ fontSize: '0.83rem', color: isVoted ? 'var(--gold)' : 'var(--cream)', opacity: isPending ? 0.6 : 1 }}>
                   {isVoted && '✓ '}{opt}
                 </span>
-                <span style={{ fontSize: '0.72rem', color: '#C8A848', opacity: 0.6, flexShrink: 0 }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.6, flexShrink: 0 }}>
                   {pct}% · {counts[i]}
                 </span>
               </span>
@@ -105,7 +105,7 @@ function PollItem({ poll }: { poll: Poll }) {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.6rem' }}>
-        {error && <p style={{ fontSize: '0.7rem', color: '#ff8080', margin: 0 }}>{error}</p>}
+        {error && <p style={{ fontSize: '0.7rem', color: 'var(--danger-strong)', margin: 0 }}>{error}</p>}
         <p style={{ fontSize: '0.68rem', opacity: 0.3, margin: 0, marginLeft: 'auto' }}>
           {total} {total === 1 ? 'vote' : 'votes'}{expired ? ' · closed' : ''}
         </p>
@@ -123,7 +123,7 @@ export function PollWidget({ polls, canManage = false }: { polls: Poll[]; canMan
 
   return (
     <div style={{
-      border: '1px solid rgba(200,168,72,0.25)',
+      border: '1px solid rgb(var(--gold-rgb) / 0.25)',
       borderRadius: '1rem',
       background: 'rgba(10,0,20,0.5)',
       overflow: 'hidden',
@@ -131,14 +131,14 @@ export function PollWidget({ polls, canManage = false }: { polls: Poll[]; canMan
       flexDirection: 'column',
       height: '100%',
     }}>
-      <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgba(200,168,72,0.12)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
-        <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.55, margin: 0 }}>
+      <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
+        <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>
           Polls
         </p>
         {canManage && (
           <button
             onClick={() => setManaging(true)}
-            style={{ background: 'none', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '0.4rem', color: '#C8A848', padding: '0.2rem 0.7rem', cursor: 'pointer', fontSize: '0.68rem', letterSpacing: '0.08em' }}
+            style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '0.4rem', color: 'var(--gold)', padding: '0.2rem 0.7rem', cursor: 'pointer', fontSize: '0.68rem', letterSpacing: '0.08em' }}
           >
             Manage
           </button>
@@ -151,7 +151,7 @@ export function PollWidget({ polls, canManage = false }: { polls: Poll[]; canMan
           </p>
         ) : (
           polls.map((poll, i) => (
-            <div key={poll.id} style={{ borderBottom: i < polls.length - 1 ? '1px solid rgba(200,168,72,0.08)' : 'none' }}>
+            <div key={poll.id} style={{ borderBottom: i < polls.length - 1 ? '1px solid rgb(var(--gold-rgb) / 0.08)' : 'none' }}>
               <PollItem poll={poll} />
             </div>
           ))
@@ -164,15 +164,15 @@ export function PollWidget({ polls, canManage = false }: { polls: Poll[]; canMan
           onClick={() => setManaging(false)}
         >
           <div
-            style={{ background: '#1A0A24', border: '1px solid rgba(200,168,72,0.3)', borderRadius: '1rem', padding: '1.75rem', maxWidth: '620px', width: '100%' }}
+            style={{ background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.3)', borderRadius: '1rem', padding: '1.75rem', maxWidth: '620px', width: '100%' }}
             onClick={e => e.stopPropagation()}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h2 style={{ fontFamily: 'TokyoDreams, serif', color: '#C8A848', fontSize: '1.2rem', margin: 0 }}>Manage Polls</h2>
+              <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--gold)', fontSize: '1.2rem', margin: 0 }}>Manage Polls</h2>
               <button
                 onClick={() => setManaging(false)}
                 aria-label="Close"
-                style={{ background: 'none', border: 'none', color: '#F3EDE6', opacity: 0.5, cursor: 'pointer', fontSize: '1.4rem', lineHeight: 1, padding: '0 0.25rem' }}
+                style={{ background: 'none', border: 'none', color: 'var(--cream)', opacity: 0.5, cursor: 'pointer', fontSize: '1.4rem', lineHeight: 1, padding: '0 0.25rem' }}
               >×</button>
             </div>
             <PollsManager />

@@ -9,9 +9,9 @@ import {
 } from '@/lib/site-config'
 import { useConfirm } from '../components/ConfirmDialog'
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
 
 type CollectionOption = { id: string; name: string; groupCount: number }
 type ShiftTypeOption = { id: string; name: string }
@@ -179,8 +179,8 @@ export function AttunementTasksManager({
       <div
         style={{
           display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
-          border: '1px solid rgba(200,168,72,0.15)', borderRadius: '0.75rem',
-          background: 'rgba(200,168,72,0.02)', padding: '0.75rem 1rem', marginBottom: '1.25rem',
+          border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '0.75rem',
+          background: 'rgb(var(--gold-rgb) / 0.02)', padding: '0.75rem 1rem', marginBottom: '1.25rem',
         }}
       >
         <div style={{ flex: 1, minWidth: '220px' }}>
@@ -199,13 +199,13 @@ export function AttunementTasksManager({
           value={nudgeDays}
           onChange={e => changeNudgeDays(parseInt(e.target.value, 10))}
           style={{
-            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+            background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
             borderRadius: '0.3rem', color: CREAM, fontSize: '0.75rem',
             padding: '0.2rem 0.4rem', outline: 'none', fontFamily: 'inherit', cursor: 'pointer',
           }}
         >
           {ATTUNEMENT_NUDGE_OPTIONS.map(o => (
-            <option key={o.value} value={o.value} style={{ background: '#1A0A24' }}>{o.label}</option>
+            <option key={o.value} value={o.value} style={{ background: 'var(--ink)' }}>{o.label}</option>
           ))}
         </select>
       </div>
@@ -221,9 +221,9 @@ export function AttunementTasksManager({
           <div
             key={task.id}
             style={{
-              border: '1px solid rgba(200,168,72,0.15)',
+              border: '1px solid rgb(var(--gold-rgb) / 0.15)',
               borderRadius: '0.75rem',
-              background: 'rgba(200,168,72,0.02)',
+              background: 'rgb(var(--gold-rgb) / 0.02)',
               padding: '0.85rem 1rem',
               display: 'flex',
               gap: '0.75rem',
@@ -246,7 +246,7 @@ export function AttunementTasksManager({
               <div style={{
                 position: 'absolute', top: '3px', left: task.enabled ? '21px' : '3px',
                 width: '16px', height: '16px', borderRadius: '50%',
-                background: task.enabled ? '#1A0A24' : 'rgba(255,255,255,0.5)',
+                background: task.enabled ? 'var(--ink)' : 'rgba(255,255,255,0.5)',
                 transition: 'left 0.2s',
               }} />
             </button>
@@ -260,7 +260,7 @@ export function AttunementTasksManager({
                 style={{
                   width: '100%', boxSizing: 'border-box',
                   background: 'transparent', border: 'none',
-                  borderBottom: '1px solid rgba(200,168,72,0.2)',
+                  borderBottom: '1px solid rgb(var(--gold-rgb) / 0.2)',
                   color: CREAM, fontSize: '0.85rem', outline: 'none',
                   padding: '0 0 0.15rem', fontFamily: 'inherit',
                 }}
@@ -277,24 +277,24 @@ export function AttunementTasksManager({
                   }
                   onChange={e => changeRequirement(idx, e.target.value)}
                   style={{
-                    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+                    background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
                     borderRadius: '0.3rem', color: CREAM, fontSize: '0.75rem',
                     padding: '0.2rem 0.4rem', outline: 'none', fontFamily: 'inherit',
                   }}
                 >
                   {ATTUNEMENT_REQUIREMENTS.map(r => (
-                    <option key={r.value} value={r.value} style={{ background: '#1A0A24' }}>{r.label}</option>
+                    <option key={r.value} value={r.value} style={{ background: 'var(--ink)' }}>{r.label}</option>
                   ))}
-                  <optgroup label="Shift hours" style={{ background: '#1A0A24' }}>
-                    <option value="shift:" style={{ background: '#1A0A24' }}>Any shift</option>
+                  <optgroup label="Shift hours" style={{ background: 'var(--ink)' }}>
+                    <option value="shift:" style={{ background: 'var(--ink)' }}>Any shift</option>
                     {shiftTypes.map(s => (
-                      <option key={s.id} value={`shift:${s.id}`} style={{ background: '#1A0A24' }}>{s.name}</option>
+                      <option key={s.id} value={`shift:${s.id}`} style={{ background: 'var(--ink)' }}>{s.name}</option>
                     ))}
                   </optgroup>
-                  <optgroup label="Collection membership" style={{ background: '#1A0A24' }}>
-                    <option value="col:" style={{ background: '#1A0A24' }}>Any collection</option>
+                  <optgroup label="Collection membership" style={{ background: 'var(--ink)' }}>
+                    <option value="col:" style={{ background: 'var(--ink)' }}>Any collection</option>
                     {collections.map(c => (
-                      <option key={c.id} value={`col:${c.id}`} style={{ background: '#1A0A24' }}>{c.name}</option>
+                      <option key={c.id} value={`col:${c.id}`} style={{ background: 'var(--ink)' }}>{c.name}</option>
                     ))}
                   </optgroup>
                 </select>
@@ -308,7 +308,7 @@ export function AttunementTasksManager({
                       value={task.requiredCount ?? 1}
                       onChange={e => changeCount(idx, e.target.value)}
                       style={{
-                        width: '3rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+                        width: '3rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
                         borderRadius: '0.3rem', color: CREAM, fontSize: '0.75rem',
                         padding: '0.2rem 0.35rem', outline: 'none', fontFamily: 'inherit',
                       }}
@@ -326,7 +326,7 @@ export function AttunementTasksManager({
                       value={task.requiredHours ?? 1}
                       onChange={e => changeHours(idx, e.target.value)}
                       style={{
-                        width: '3.5rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(200,168,72,0.2)',
+                        width: '3.5rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
                         borderRadius: '0.3rem', color: CREAM, fontSize: '0.75rem',
                         padding: '0.2rem 0.35rem', outline: 'none', fontFamily: 'inherit',
                       }}
@@ -374,7 +374,7 @@ export function AttunementTasksManager({
                   if (ok) update(tasks.filter((_, i) => i !== idx))
                 }}
                 title="Remove"
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff8a8a', opacity: 0.45, fontSize: '0.8rem', padding: '0.1rem', marginTop: '0.15rem' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', opacity: 0.45, fontSize: '0.8rem', padding: '0.1rem', marginTop: '0.15rem' }}
               >✕</button>
             </div>
           </div>
@@ -388,7 +388,7 @@ export function AttunementTasksManager({
         ])}
         style={{
           width: '100%', padding: '0.65rem',
-          border: '1px dashed rgba(210,57,248,0.25)',
+          border: '1px dashed rgb(var(--purple-rgb) / 0.25)',
           borderRadius: '0.75rem', background: 'transparent',
           color: PURPLE, fontSize: '0.8rem', letterSpacing: '0.08em',
           cursor: 'pointer', opacity: 0.6,
@@ -396,7 +396,7 @@ export function AttunementTasksManager({
       >+ Add attunement task</button>
 
       <div style={{ minHeight: '1.2rem', marginTop: '0.75rem' }}>
-        {error && <p style={{ fontSize: '0.78rem', color: '#ff8a8a', margin: 0 }}>{error}</p>}
+        {error && <p style={{ fontSize: '0.78rem', color: 'var(--danger)', margin: 0 }}>{error}</p>}
         {!error && saved && <p style={{ fontSize: '0.72rem', color: GOLD, opacity: 0.6, margin: 0 }}>Saved ✓</p>}
       </div>
 

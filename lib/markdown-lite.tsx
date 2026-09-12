@@ -6,8 +6,8 @@ import React from 'react'
 // Shared by the application form's text-block elements (app/apply/ApplyWizard),
 // the profile's custom text blocks + editable Camp Info body, and the builders.
 
-const GOLD = '#C8A848'
-const CREAM = '#F3EDE6'
+const GOLD = 'var(--gold)'
+const CREAM = 'var(--cream)'
 
 export function renderInline(text: string): React.ReactNode[] {
   const linkStyle: React.CSSProperties = { color: GOLD, textDecoration: 'underline', textUnderlineOffset: '2px' }

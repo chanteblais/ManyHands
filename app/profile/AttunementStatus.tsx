@@ -71,7 +71,7 @@ export function AttunementStatus({ tasks, title = 'Attunement Status', minimumHo
           width: '1.4rem', height: '1.4rem', borderRadius: '50%', flexShrink: 0,
           border: task.done ? 'none' : '1.25px solid rgba(100,70,25,0.72)',
           background: task.done
-            ? 'radial-gradient(circle at 38% 35%, #9C713C, #6F491F)'
+            ? 'radial-gradient(circle at 38% 35%, #9C713C, var(--bronze))'
             : 'rgba(255,255,255,0.28)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: task.done ? '0 1px 2px rgba(100,65,20,0.24), inset 0 1px 0 rgba(255,255,255,0.2)' : 'inset 0 0 0 1px rgba(255,255,255,0.32)',

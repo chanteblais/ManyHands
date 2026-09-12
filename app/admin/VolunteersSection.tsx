@@ -46,11 +46,11 @@ function ShiftStatus({ satisfied }: { satisfied: boolean }) {
       letterSpacing: '0.06em',
       border: satisfied
         ? '1px solid rgba(100,220,130,0.35)'
-        : '1px solid rgba(210,57,248,0.25)',
-      color: satisfied ? 'rgba(100,220,130,0.9)' : 'rgba(210,57,248,0.7)',
+        : '1px solid rgb(var(--purple-rgb) / 0.25)',
+      color: satisfied ? 'rgba(100,220,130,0.9)' : 'rgb(var(--purple-rgb) / 0.7)',
       background: satisfied
         ? 'rgba(100,220,130,0.07)'
-        : 'rgba(210,57,248,0.06)',
+        : 'rgb(var(--purple-rgb) / 0.06)',
       flexShrink: 0,
     }}>
       {satisfied ? '✓ Shifts complete' : '○ Shifts incomplete'}
@@ -64,7 +64,7 @@ function SubHeading({ children }: { children: React.ReactNode }) {
       fontSize: '0.65rem',
       letterSpacing: '0.15em',
       textTransform: 'uppercase',
-      color: '#F3EDE6',
+      color: 'var(--cream)',
       opacity: 0.3,
       marginBottom: '0.75rem',
       marginTop: '0.25rem',
@@ -85,7 +85,7 @@ function CampMemberRow({ member }: { member: CampMember }) {
 
   return (
     <div style={{
-      border: '1px solid rgba(200,168,72,0.12)',
+      border: '1px solid rgb(var(--gold-rgb) / 0.12)',
       borderRadius: '0.75rem',
       background: 'rgba(255,255,255,0.02)',
       overflow: 'hidden',
@@ -110,7 +110,7 @@ function CampMemberRow({ member }: { member: CampMember }) {
           <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.15rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
             {displayName} {member.last_name}
             {member.suspended && (
-              <span style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ffcf80', border: '1px solid rgba(255,180,80,0.35)', borderRadius: '9999px', padding: '0.1rem 0.5rem', fontWeight: 400 }}>
+              <span style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--warning)', border: '1px solid rgba(255,180,80,0.35)', borderRadius: '9999px', padding: '0.1rem 0.5rem', fontWeight: 400 }}>
                 Suspended
               </span>
             )}
@@ -127,10 +127,10 @@ function CampMemberRow({ member }: { member: CampMember }) {
       </button>
 
       {expanded && (
-        <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid rgba(200,168,72,0.08)' }}>
+        <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid rgb(var(--gold-rgb) / 0.08)' }}>
           {(member.contributions ?? []).length > 0 && (
             <div style={{ marginTop: '1rem' }}>
-              <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.5rem' }}>
+              <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.5rem' }}>
                 Contributions
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
@@ -138,7 +138,7 @@ function CampMemberRow({ member }: { member: CampMember }) {
                   <span key={c} style={{
                     padding: '0.2rem 0.65rem',
                     borderRadius: '9999px',
-                    border: '1px solid rgba(200,168,72,0.2)',
+                    border: '1px solid rgb(var(--gold-rgb) / 0.2)',
                     fontSize: '0.78rem',
                     opacity: 0.8,
                   }}>
@@ -151,7 +151,7 @@ function CampMemberRow({ member }: { member: CampMember }) {
           <div style={{ marginTop: '1rem' }}>
             <a
               href={`/admin/${member.id}`}
-              style={{ fontSize: '0.78rem', color: '#C8A848', opacity: 0.5, textDecoration: 'none', letterSpacing: '0.06em' }}
+              style={{ fontSize: '0.78rem', color: 'var(--gold)', opacity: 0.5, textDecoration: 'none', letterSpacing: '0.06em' }}
             >
               View full application →
             </a>
@@ -218,9 +218,9 @@ export function PendingVolunteerRow({ volunteer }: { volunteer: Volunteer }) {
 
   return (
     <div style={{
-      border: '1px solid rgba(210,57,248,0.25)',
+      border: '1px solid rgb(var(--purple-rgb) / 0.25)',
       borderRadius: '0.75rem',
-      background: 'rgba(210,57,248,0.04)',
+      background: 'rgb(var(--purple-rgb) / 0.04)',
       overflow: 'hidden',
     }}>
       <button
@@ -247,11 +247,11 @@ export function PendingVolunteerRow({ volunteer }: { volunteer: Volunteer }) {
         </div>
         {/* What they are — the queue mixes member applications and volunteer
             signups, so every row wears its kind (directory tag language). */}
-        <span style={{ fontSize: '0.62rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#D239F8', border: '1px solid rgba(210,57,248,0.35)', background: 'rgba(210,57,248,0.07)', borderRadius: '9999px', padding: '0.18rem 0.6rem', flexShrink: 0 }}>
+        <span style={{ fontSize: '0.62rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--purple)', border: '1px solid rgb(var(--purple-rgb) / 0.35)', background: 'rgb(var(--purple-rgb) / 0.07)', borderRadius: '9999px', padding: '0.18rem 0.6rem', flexShrink: 0 }}>
           Volunteer
         </span>
         {volunteer.signup_intent && (
-          <span style={{ fontSize: '0.72rem', color: '#D239F8', opacity: 0.7, flexShrink: 0, letterSpacing: '0.06em' }}>
+          <span style={{ fontSize: '0.72rem', color: 'var(--purple)', opacity: 0.7, flexShrink: 0, letterSpacing: '0.06em' }}>
             {INTENT_LABELS[volunteer.signup_intent] ?? volunteer.signup_intent}
           </span>
         )}
@@ -260,11 +260,11 @@ export function PendingVolunteerRow({ volunteer }: { volunteer: Volunteer }) {
       </button>
 
       {expanded && (
-        <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid rgba(210,57,248,0.1)' }}>
+        <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid rgb(var(--purple-rgb) / 0.1)' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1rem', marginBottom: '1.25rem' }}>
             {volunteer.days_available?.length > 0 && (
               <div>
-                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.4rem' }}>Days Available</p>
+                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.4rem' }}>Days Available</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                   {volunteer.days_available.map(d => (
                     <span key={d} style={{ fontSize: '0.82rem', opacity: 0.8 }}>{d}</span>
@@ -274,25 +274,25 @@ export function PendingVolunteerRow({ volunteer }: { volunteer: Volunteer }) {
             )}
             {volunteer.phone && (
               <div>
-                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.4rem' }}>Phone</p>
+                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.4rem' }}>Phone</p>
                 <p style={{ fontSize: '0.82rem', opacity: 0.8 }}>{volunteer.phone}</p>
               </div>
             )}
           </div>
 
-          {error && <p style={{ color: '#ff8a8a', fontSize: '0.8rem', textAlign: 'right', marginBottom: '0.75rem' }}>{error}</p>}
+          {error && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', textAlign: 'right', marginBottom: '0.75rem' }}>{error}</p>}
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
             <button
               onClick={handleRemove}
               disabled={removing}
-              style={{ padding: '0.45rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(255,100,100,0.25)', background: 'transparent', color: '#F3EDE6', fontSize: '0.78rem', opacity: removing ? 0.4 : 0.5, cursor: removing ? 'not-allowed' : 'pointer' }}
+              style={{ padding: '0.45rem 1.1rem', borderRadius: '9999px', border: '1px solid rgba(255,100,100,0.25)', background: 'transparent', color: 'var(--cream)', fontSize: '0.78rem', opacity: removing ? 0.4 : 0.5, cursor: removing ? 'not-allowed' : 'pointer' }}
             >
               {removing ? 'Declining…' : 'Decline'}
             </button>
             <button
               onClick={handleApprove}
               disabled={approving}
-              style={{ padding: '0.45rem 1.25rem', borderRadius: '9999px', border: '1px solid rgba(210,57,248,0.5)', background: 'rgba(210,57,248,0.08)', color: '#D239F8', fontSize: '0.78rem', fontWeight: 600, cursor: approving ? 'not-allowed' : 'pointer', opacity: approving ? 0.5 : 1, letterSpacing: '0.04em' }}
+              style={{ padding: '0.45rem 1.25rem', borderRadius: '9999px', border: '1px solid rgb(var(--purple-rgb) / 0.5)', background: 'rgb(var(--purple-rgb) / 0.08)', color: 'var(--purple)', fontSize: '0.78rem', fontWeight: 600, cursor: approving ? 'not-allowed' : 'pointer', opacity: approving ? 0.5 : 1, letterSpacing: '0.04em' }}
             >
               {approving ? 'Approving…' : 'Approve'}
             </button>
@@ -338,7 +338,7 @@ function VolunteerRow({ volunteer }: { volunteer: Volunteer }) {
 
   return (
     <div style={{
-      border: '1px solid rgba(210,57,248,0.12)',
+      border: '1px solid rgb(var(--purple-rgb) / 0.12)',
       borderRadius: '0.75rem',
       background: 'rgba(255,255,255,0.02)',
       overflow: 'hidden',
@@ -367,7 +367,7 @@ function VolunteerRow({ volunteer }: { volunteer: Volunteer }) {
         </div>
         <span style={{ fontSize: '0.78rem', opacity: 0.4, flexShrink: 0 }}>{signed}</span>
         {volunteer.days_available?.length > 0 && (
-          <span style={{ fontSize: '0.75rem', color: '#D239F8', opacity: 0.65, flexShrink: 0 }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--purple)', opacity: 0.65, flexShrink: 0 }}>
             {volunteer.days_available.length} {volunteer.days_available.length === 1 ? 'day' : 'days'}
           </span>
         )}
@@ -377,11 +377,11 @@ function VolunteerRow({ volunteer }: { volunteer: Volunteer }) {
       </button>
 
       {expanded && (
-        <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid rgba(210,57,248,0.08)' }}>
+        <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid rgb(var(--purple-rgb) / 0.08)' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1rem', marginBottom: '1rem' }}>
             {volunteer.days_available?.length > 0 && (
               <div>
-                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.4rem' }}>Days Available</p>
+                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.4rem' }}>Days Available</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                   {volunteer.days_available.map(d => (
                     <span key={d} style={{ fontSize: '0.82rem', opacity: 0.8 }}>{d}</span>
@@ -391,34 +391,34 @@ function VolunteerRow({ volunteer }: { volunteer: Volunteer }) {
             )}
             {volunteer.preferred_times?.length > 0 && (
               <div>
-                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.4rem' }}>Preferred Times</p>
+                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.4rem' }}>Preferred Times</p>
                 <p style={{ fontSize: '0.82rem', opacity: 0.8 }}>{volunteer.preferred_times.join(', ')}</p>
               </div>
             )}
             {volunteer.shift_interests?.length > 0 && (
               <div>
-                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.4rem' }}>Shift Interests</p>
+                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.4rem' }}>Shift Interests</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
                   {volunteer.shift_interests.map(s => (
-                    <span key={s} style={{ padding: '0.15rem 0.6rem', borderRadius: '9999px', border: '1px solid rgba(210,57,248,0.2)', fontSize: '0.78rem', color: '#D239F8', opacity: 0.75 }}>{s}</span>
+                    <span key={s} style={{ padding: '0.15rem 0.6rem', borderRadius: '9999px', border: '1px solid rgb(var(--purple-rgb) / 0.2)', fontSize: '0.78rem', color: 'var(--purple)', opacity: 0.75 }}>{s}</span>
                   ))}
                 </div>
               </div>
             )}
             {volunteer.phone && (
               <div>
-                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.4rem' }}>Phone</p>
+                <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.4rem' }}>Phone</p>
                 <p style={{ fontSize: '0.82rem', opacity: 0.8 }}>{volunteer.phone}</p>
               </div>
             )}
           </div>
           {volunteer.other_notes && (
-            <div style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(200,168,72,0.08)', marginBottom: '1rem' }}>
-              <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8A848', opacity: 0.5, marginBottom: '0.3rem' }}>Notes</p>
+            <div style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgb(var(--gold-rgb) / 0.08)', marginBottom: '1rem' }}>
+              <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.5, marginBottom: '0.3rem' }}>Notes</p>
               <p style={{ fontSize: '0.85rem', opacity: 0.75, lineHeight: 1.6 }}>{volunteer.other_notes}</p>
             </div>
           )}
-          {error && <p style={{ color: '#ff8a8a', fontSize: '0.8rem', textAlign: 'right', marginBottom: '0.75rem' }}>{error}</p>}
+          {error && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', textAlign: 'right', marginBottom: '0.75rem' }}>{error}</p>}
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button
               onClick={handleRemove}
@@ -428,7 +428,7 @@ function VolunteerRow({ volunteer }: { volunteer: Volunteer }) {
                 borderRadius: '9999px',
                 border: '1px solid rgba(255,100,100,0.25)',
                 background: 'transparent',
-                color: '#F3EDE6',
+                color: 'var(--cream)',
                 fontSize: '0.75rem',
                 opacity: removing ? 0.4 : 0.5,
                 cursor: removing ? 'not-allowed' : 'pointer',
@@ -481,7 +481,7 @@ export function VolunteersSection({
       {volunteers.length > 0 && (
         <div>
           {campMembers.length > 0 && (
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.1), transparent)', marginBottom: '2rem' }} />
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.1), transparent)', marginBottom: '2rem' }} />
           )}
           <SubHeading>Helping Hands — {volunteers.length}</SubHeading>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>

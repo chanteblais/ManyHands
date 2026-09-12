@@ -13,7 +13,10 @@ backfill script, hourly per-community crons, storage prefixes, badge by slug, `/
 Branch 1e (`feat/tenancy-rls`) built 2026-09-12: migration 076 (RLS on every table, tenant_isolation
 policies on the JWT `community_id` claim), `lib/tenant-token.ts`, per-community `authenticated`
 client in `tenantDb` with service-key fallback, `scripts/verify-tenant-isolation.mjs`. Live once
-`SUPABASE_JWT_SECRET` is set. Next: 1f (theme tokens), then tenant 2.** Drafted 2026-09-11 from a full inventory of the schema (36 tables), config layer,
+`SUPABASE_JWT_SECRET` is set. Branch 1f (`ux/theme-tokens`) built 2026-09-12: 22 colour tokens +
+the display font on `:root` (`lib/theme.ts` ↔ `globals.css`), ~1,100 hex literals and ~1,070 alpha
+variants across 109 files rewritten to `var()`, `communities.theme` overrides injected by the root
+layout. Next: tenant 2.** Drafted 2026-09-11 from a full inventory of the schema (36 tables), config layer,
 auth and data access (94 API routes, ~500 `.from()` call sites). Supersedes the Phase 1 sketch in
 [`multi-community.md`](./multi-community.md) (kept there as history).
 
@@ -298,7 +301,7 @@ must be pixel-identical after every merge; production keeps resolving `camp.glau
 | 1c | `feat/tenancy-program` — **built 2026-09-11** | groups/collections/departments/roles/shift types/schedule/shift signups/lead-up/resources/polls/radio/announcements/shoutouts/distinctions/messaging + admin dashboards + dev pages + crons (single-community resolution; loop is 1d). Every exported querying lib function takes `communityId` first. Allowlist 94 → 0. | Allowlist empty. ✔ |
 | 1d | `feat/tenancy-auth-crons` — **built 2026-09-11** | DB roles (`members.role`/`can_manage_polls`, platform owner in Clerk) + `scripts/backfill-member-roles.mjs`, `requireAdmin()` resolving the community itself, `proxy.ts` → sign-in wall, set-admin routes on the members row, notify-admin from `members.role`, hourly per-community crons (`lib/community-time.ts`), storage prefixes (`objectPath`), badge `?c=<slug>` + `theme.badge`, `/api/me/communities` + `/communities`, **migration 075**. Deploy coupling: run the backfill and apply 075 with the deploy. | `npm run check` green; 075 applied; backfill run. |
 | 1e | `feat/tenancy-rls` — **built 2026-09-12** | Migration 076 (RLS on every table; `tenant_isolation` for `authenticated` on `community_id = request_community_id()`; `app_access` on person tables; `anon` gets nothing; grants incl. `claim_shift_signup`), `lib/tenant-token.ts` (HS256 / RS256 / ES256), `tenantDb` minting a per-community `authenticated` client (service-key fallback when unset), `scripts/verify-tenant-isolation.mjs`. Order: apply 076 → secret in `.env.local` → run the leak test → secret in Vercel. | The stranger-token leak test reads zero rows on every scoped table. ✔ (pending the secret) |
-| 1f | `ux/theme-tokens` (parallel, any time) | Colour tokens in `globals.css`, inline hexes → `var(--…)`, `communities.theme` → `<html style>`; behaviour-identity check (screenshots before/after). | Glåüm renders identically; a second theme object re-skins the site. |
+| 1f | `ux/theme-tokens` — **built 2026-09-12** | 22 colour tokens + `--font-display` on `:root` (`lib/theme.ts` registry generates the block); mechanical sweep of `app/`, `components/`, `lib/` (109 files; email, badge, manifest, Clerk appearance, schedule palette, data-URL SVGs excluded); Tailwind `brand.*` on the variables; `communities.theme.colors`/`fonts` → `<style>` overrides in the layout. Identity check: rendered HTML before/after the sweep is identical once `var()` is resolved back to hex. | Glåüm renders identically; a second theme object re-skins the site. ✔ |
 | 2 | `feat/second-tenant` | Seed script for a fictional demo community (the App Review / showcase asset), then the real tenant 2: Clerk primary → platform root, `camp.glaum.ca` satellite, host rows, per-community Resend sender. | Two communities live on one deployment. |
 
 Steps 1b and 1c are the bulk (the ~500-call-site sweep); they can be split further by area if a

@@ -18,26 +18,26 @@ export const dynamic = 'force-dynamic'
 
 const statIcon: Record<string, React.ReactNode> = {
   waves: (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C8A848" strokeWidth="0.9" strokeLinecap="round" aria-hidden>
-      <circle cx="12" cy="12" r="1.6" fill="#C8A848" stroke="none" />
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="0.9" strokeLinecap="round" aria-hidden>
+      <circle cx="12" cy="12" r="1.6" fill="var(--gold)" stroke="none" />
       <path d="M8.5 15.5a5 5 0 0 1 0-7M15.5 8.5a5 5 0 0 1 0 7" />
       <path d="M5.7 18.3a9 9 0 0 1 0-12.6M18.3 5.7a9 9 0 0 1 0 12.6" opacity="0.6" />
     </svg>
   ),
   tent: (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C8A848" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M12 4 3 19h18L12 4Z" />
       <path d="M12 12l-3.4 7h6.8L12 12Z" />
     </svg>
   ),
   medal: (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C8A848" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <circle cx="12" cy="12" r="7.6" />
       <path d="M12 7.7l1.1 3.2 3.2 1.1-3.2 1.1-1.1 3.2-1.1-3.2-3.2-1.1 3.2-1.1L12 7.7Z" />
     </svg>
   ),
   horn: (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C8A848" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M4 10v4h3l7 5V5l-7 5H4Z" />
       <path d="M17.5 9.5a4 4 0 0 1 0 5" />
     </svg>
@@ -88,10 +88,10 @@ export default async function RadioPage() {
            many lines its label wraps to */
         .radio-stat { display: flex; align-items: flex-start; gap: 0.75rem; justify-content: center; padding: 0 0.75rem; min-width: 0; }
         .radio-stat-icon { margin-top: 2px; }
-        .radio-stat + .radio-stat { border-left: 1px solid rgba(200,168,72,0.14); }
+        .radio-stat + .radio-stat { border-left: 1px solid rgb(var(--gold-rgb) / 0.14); }
         .radio-stat-icon { opacity: 0.8; flex-shrink: 0; display: flex; }
-        .radio-stat-num { display: block; font-size: 1.25rem; color: #C8A848; line-height: 1.1; }
-        .radio-stat-label { display: block; font-size: 0.68rem; color: #F3EDE6; opacity: 0.5; line-height: 1.35; }
+        .radio-stat-num { display: block; font-size: 1.25rem; color: var(--gold); line-height: 1.1; }
+        .radio-stat-label { display: block; font-size: 0.68rem; color: var(--cream); opacity: 0.5; line-height: 1.35; }
         /* one row on mobile too — everything just gets smaller */
         @media (max-width: 640px) {
           .radio-stat { gap: 0.35rem; padding: 0 0.25rem; }
@@ -125,9 +125,9 @@ export default async function RadioPage() {
         <div
           className="radio-stats"
           style={{
-            border: '1px solid rgba(200,168,72,0.16)',
+            border: '1px solid rgb(var(--gold-rgb) / 0.16)',
             borderRadius: '0.9rem',
-            background: 'rgba(243,237,230,0.03)',
+            background: 'rgb(var(--cream-rgb) / 0.03)',
             padding: '0.65rem 0.4rem',
             marginBottom: '1.75rem',
           }}

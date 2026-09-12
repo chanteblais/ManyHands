@@ -12,10 +12,10 @@ import { useEffect, useState } from 'react'
 // so there's no second fetch and no loading flash. Required gaps can't be permanently
 // dismissed (only snoozed), matching the registry rule.
 
-const GOLD = '#C8A848'
-const PURPLE = '#D239F8'
-const CREAM = '#F3EDE6'
-const INK = '#1A0A24'
+const GOLD = 'var(--gold)'
+const PURPLE = 'var(--purple)'
+const CREAM = 'var(--cream)'
+const INK = 'var(--ink)'
 
 const SNOOZE_KEY = 'glaum-profile-nudge-snoozed'
 
@@ -90,15 +90,15 @@ export function ProfileNudge({ gaps }: { gaps: Gap[] }) {
           marginBottom: '1.75rem',
           padding: '1.1rem 1.4rem',
           borderRadius: '0.9rem',
-          border: '1px solid rgba(210,57,248,0.35)',
-          background: 'linear-gradient(100deg, rgba(210,57,248,0.08), rgba(200,168,72,0.06))',
-          boxShadow: '0 0 26px rgba(210,57,248,0.10)',
+          border: '1px solid rgb(var(--purple-rgb) / 0.35)',
+          background: 'linear-gradient(100deg, rgb(var(--purple-rgb) / 0.08), rgb(var(--gold-rgb) / 0.06))',
+          boxShadow: '0 0 26px rgb(var(--purple-rgb) / 0.10)',
         }}
       >
         <span aria-hidden style={{ color: PURPLE, fontSize: '1.4rem', lineHeight: 1, flexShrink: 0 }}>✦</span>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ margin: '0 0 0.2rem', fontFamily: 'TokyoDreams, serif', fontSize: '1.02rem', color: GOLD, letterSpacing: '0.02em' }}>
+          <p style={{ margin: '0 0 0.2rem', fontFamily: 'var(--font-display)', fontSize: '1.02rem', color: GOLD, letterSpacing: '0.02em' }}>
             {gaps.length === 1 ? 'One more detail would round out your profile' : `${gaps.length} details would round out your profile`}
           </p>
           <p style={{ margin: 0, fontSize: '0.82rem', color: CREAM, opacity: 0.7, lineHeight: 1.5 }}>

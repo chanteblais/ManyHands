@@ -56,9 +56,9 @@ export function AdminActions({ id, email, redirectAfter }: { id: string; email: 
         style={{
           padding: '0.4rem 1rem',
           borderRadius: '9999px',
-          border: '1px solid rgba(210,57,248,0.4)',
+          border: '1px solid rgb(var(--purple-rgb) / 0.4)',
           background: 'transparent',
-          color: '#D239F8',
+          color: 'var(--purple)',
           fontSize: '0.75rem',
           letterSpacing: '0.08em',
           cursor: loading ? 'not-allowed' : 'pointer',
@@ -73,9 +73,9 @@ export function AdminActions({ id, email, redirectAfter }: { id: string; email: 
         style={{
           padding: '0.4rem 1rem',
           borderRadius: '9999px',
-          border: '1px solid rgba(200,168,72,0.2)',
+          border: '1px solid rgb(var(--gold-rgb) / 0.2)',
           background: 'transparent',
-          color: '#F3EDE6',
+          color: 'var(--cream)',
           fontSize: '0.75rem',
           letterSpacing: '0.08em',
           cursor: loading ? 'not-allowed' : 'pointer',

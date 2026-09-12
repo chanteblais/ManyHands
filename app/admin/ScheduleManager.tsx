@@ -106,13 +106,13 @@ const blank = (): Omit<ScheduleEvent, 'id' | 'sort_order'> => ({
 })
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(200,168,72,0.2)',
-  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: '#F3EDE6', fontSize: '0.875rem',
+  width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgb(var(--gold-rgb) / 0.2)',
+  borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: 'var(--cream)', fontSize: '0.875rem',
   fontFamily: 'var(--font-libre-baskerville), Georgia, serif', outline: 'none',
 }
 const labelStyle: React.CSSProperties = {
   fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase',
-  color: '#C8A848', opacity: 0.65, display: 'block', marginBottom: '0.35rem',
+  color: 'var(--gold)', opacity: 0.65, display: 'block', marginBottom: '0.35rem',
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -126,15 +126,15 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
         onClick={() => onChange(!checked)}
         style={{
           display: 'inline-block', width: '36px', height: '20px', borderRadius: '9999px', flexShrink: 0,
-          background: checked ? '#C8A848' : 'rgba(255,255,255,0.1)',
-          border: `1px solid ${checked ? '#C8A848' : 'rgba(200,168,72,0.2)'}`,
+          background: checked ? 'var(--gold)' : 'rgba(255,255,255,0.1)',
+          border: `1px solid ${checked ? 'var(--gold)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
           position: 'relative', transition: 'background 0.2s', cursor: 'pointer',
         }}
       >
         <span style={{
           position: 'absolute', top: '2px', left: checked ? '17px' : '2px',
           width: '14px', height: '14px', borderRadius: '50%',
-          background: '#F3EDE6', transition: 'left 0.2s',
+          background: 'var(--cream)', transition: 'left 0.2s',
         }} />
       </span>
       <span style={{ opacity: 0.75 }}>{label}</span>
@@ -200,15 +200,15 @@ function EventModal({
       <div style={{
         position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
         width: 'min(95vw, 580px)', maxHeight: '88vh', overflowY: 'auto',
-        background: '#1A0A24', border: '1px solid rgba(200,168,72,0.25)',
+        background: 'var(--ink)', border: '1px solid rgb(var(--gold-rgb) / 0.25)',
         borderRadius: '1rem', padding: '1.5rem', zIndex: 50,
         boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <h3 style={{ fontFamily: 'TokyoDreams, serif', fontSize: '1.15rem', color: '#C8A848', margin: 0 }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', color: 'var(--gold)', margin: 0 }}>
             {initial.title ? 'Edit event' : 'New event'}
           </h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#C8A848', fontSize: '1.4rem', cursor: 'pointer', opacity: 0.7 }}>×</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '1.4rem', cursor: 'pointer', opacity: 0.7 }}>×</button>
         </div>
 
         <Field label="Title">
@@ -225,7 +225,7 @@ function EventModal({
                 value={form.event_date ?? ''}
                 onChange={e => set('event_date', e.target.value || null)}
               />
-              <span style={{ fontSize: '0.85rem', color: derivedDay ? '#C8A848' : 'rgba(243,237,230,0.35)', letterSpacing: '0.04em', fontStyle: derivedDay ? 'normal' : 'italic' }}>
+              <span style={{ fontSize: '0.85rem', color: derivedDay ? 'var(--gold)' : 'rgb(var(--cream-rgb) / 0.35)', letterSpacing: '0.04em', fontStyle: derivedDay ? 'normal' : 'italic' }}>
                 {derivedDay ?? 'pick a date'}
               </span>
             </div>
@@ -241,7 +241,7 @@ function EventModal({
           <Field label={form.participation_type === 'shift' ? 'End' : 'End (optional)'}>
             <TimeField value={form.end_time} onChange={v => set('end_time', v)} durationFrom={form.start_time} />
           </Field>
-          <div style={{ marginBottom: '1rem', paddingBottom: '0.6rem', fontSize: '0.82rem', color: '#C8A848', opacity: 0.75, whiteSpace: 'nowrap' }}>
+          <div style={{ marginBottom: '1rem', paddingBottom: '0.6rem', fontSize: '0.82rem', color: 'var(--gold)', opacity: 0.75, whiteSpace: 'nowrap' }}>
             {shiftDurationHours(form.start_time, form.end_time) > 0 ? `${shiftDurationHours(form.start_time, form.end_time)}h` : '—'}
           </div>
         </div>
@@ -249,7 +249,7 @@ function EventModal({
         {/* Late-night convention, said where it matters: the date stays the true
             morning date, but the event lists/renders as the previous night. */}
         {(parseHHMM(form.start_time) ?? LATE_NIGHT_BOUNDARY_MIN) < LATE_NIGHT_BOUNDARY_MIN && (
-          <p style={{ fontSize: '0.75rem', color: '#C8A848', opacity: 0.7, lineHeight: 1.5, margin: '-0.4rem 0 1rem' }}>
+          <p style={{ fontSize: '0.75rem', color: 'var(--gold)', opacity: 0.7, lineHeight: 1.5, margin: '-0.4rem 0 1rem' }}>
             ✦ Before 6:00 AM counts as late night{form.is_recurring
               ? ' — each picked day means that night, running past midnight.'
               : form.event_date
@@ -279,9 +279,9 @@ function EventModal({
                         style={{
                           padding: '0.35rem 0.75rem', borderRadius: '9999px', cursor: 'pointer',
                           fontSize: '0.7rem', letterSpacing: '0.06em', whiteSpace: 'nowrap',
-                          border: `1px solid ${selected ? 'rgba(200,168,72,0.6)' : 'rgba(200,168,72,0.2)'}`,
-                          background: selected ? 'rgba(200,168,72,0.12)' : 'transparent',
-                          color: '#C8A848', opacity: selected ? 1 : 0.45,
+                          border: `1px solid ${selected ? 'rgb(var(--gold-rgb) / 0.6)' : 'rgb(var(--gold-rgb) / 0.2)'}`,
+                          background: selected ? 'rgb(var(--gold-rgb) / 0.12)' : 'transparent',
+                          color: 'var(--gold)', opacity: selected ? 1 : 0.45,
                         }}
                       >
                         {d.short} {d.date}
@@ -352,7 +352,7 @@ function EventModal({
                   type="checkbox"
                   checked={form.needs_lead}
                   onChange={e => set('needs_lead', e.target.checked)}
-                  style={{ marginTop: '0.2rem', accentColor: '#C8A848', cursor: 'pointer' }}
+                  style={{ marginTop: '0.2rem', accentColor: 'var(--gold)', cursor: 'pointer' }}
                 />
                 <span style={{ opacity: 0.75, lineHeight: 1.5 }}>
                   This shift has a lead ✦ — members are offered &ldquo;I&rsquo;d like to be the shift lead&rdquo; when they sign up
@@ -388,25 +388,25 @@ function EventModal({
           <Toggle checked={form.show_on_schedule} onChange={(v) => set('show_on_schedule', v)} label="Show on schedule page" />
         </div>
 
-        {error && <p style={{ color: '#ff8a8a', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
+        {error && <p style={{ color: 'var(--danger)', fontSize: '0.82rem', marginBottom: '0.75rem' }}>{error}</p>}
 
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', alignItems: 'center' }}>
           {/* Delete lives here too — from the week view the modal is the only
               way to reach an event, so it can't be list-row-only. */}
           {onDelete && (
-            <button onClick={onDelete} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(255,100,100,0.25)', background: 'transparent', color: '#ff8a8a', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7, marginRight: 'auto' }}>
+            <button onClick={onDelete} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(255,100,100,0.25)', background: 'transparent', color: 'var(--danger)', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7, marginRight: 'auto' }}>
               Delete
             </button>
           )}
           {missing && (
-            <span style={{ fontSize: '0.72rem', color: '#C8A848', opacity: 0.55, fontStyle: 'italic', marginRight: onDelete ? undefined : 'auto' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--gold)', opacity: 0.55, fontStyle: 'italic', marginRight: onDelete ? undefined : 'auto' }}>
               Needs {missing}
             </span>
           )}
-          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.2)', background: 'transparent', color: '#F3EDE6', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>
+          <button onClick={onClose} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.2)', background: 'transparent', color: 'var(--cream)', cursor: 'pointer', fontSize: '0.82rem', opacity: 0.7 }}>
             Cancel
           </button>
-          <button onClick={() => onSave(form)} disabled={saving || !canSave} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.45)', background: 'transparent', color: '#FFFACD', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.05em', opacity: (saving || !canSave) ? 0.5 : 1 }}>
+          <button onClick={() => onSave(form)} disabled={saving || !canSave} style={{ padding: '0.6rem 1.2rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.45)', background: 'transparent', color: 'var(--lemon)', cursor: 'pointer', fontSize: '0.82rem', letterSpacing: '0.05em', opacity: (saving || !canSave) ? 0.5 : 1 }}>
             {saving ? 'Saving…' : 'Save event'}
           </button>
         </div>
@@ -415,7 +415,7 @@ function EventModal({
   )
 }
 
-const PARTICIPATION_BADGE: Record<string, string> = { general: '#8fb0d0', shift: '#D239F8', mandatory: '#C8A848' }
+const PARTICIPATION_BADGE: Record<string, string> = { general: '#8fb0d0', shift: 'var(--purple)', mandatory: 'var(--gold)' }
 
 // Drag-reorder only exists where order is real: recurring events render in
 // sort_order on the member schedule. Dated events order by date + time, so
@@ -459,10 +459,10 @@ function EventRow({
       style={{
         padding: '0.6rem 1rem', borderRadius: '0.65rem',
         border: drag?.isDragOver
-          ? '1px solid rgba(200,168,72,0.5)'
-          : '1px solid rgba(200,168,72,0.12)',
+          ? '1px solid rgb(var(--gold-rgb) / 0.5)'
+          : '1px solid rgb(var(--gold-rgb) / 0.12)',
         background: drag?.isDragOver
-          ? 'rgba(200,168,72,0.07)'
+          ? 'rgb(var(--gold-rgb) / 0.07)'
           : event.visible ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.005)',
         opacity: event.visible ? 1 : 0.5,
         cursor: drag ? 'grab' : 'default',
@@ -474,43 +474,43 @@ function EventRow({
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
       {/* Drag handle (recurring only) */}
       {drag && (
-        <div style={{ color: '#C8A848', opacity: 0.25, flexShrink: 0, fontSize: '1rem', lineHeight: 1, userSelect: 'none' }}>
+        <div style={{ color: 'var(--gold)', opacity: 0.25, flexShrink: 0, fontSize: '1rem', lineHeight: 1, userSelect: 'none' }}>
           ⠿
         </div>
       )}
 
       {/* Time column — aligned down the day, so the eye reads a timetable */}
-      <div style={{ width: '6.2rem', flexShrink: 0, fontSize: '0.72rem', lineHeight: 1.4, color: '#C8A848', opacity: event.time ? 0.75 : 0.3 }}>
+      <div style={{ width: '6.2rem', flexShrink: 0, fontSize: '0.72rem', lineHeight: 1.4, color: 'var(--gold)', opacity: event.time ? 0.75 : 0.3 }}>
         {event.time || '—'}
       </div>
 
       {/* Icon */}
-      <div style={{ color: '#C8A848', opacity: 0.45, flexShrink: 0 }}>
+      <div style={{ color: 'var(--gold)', opacity: 0.45, flexShrink: 0 }}>
         <EventIcon type={event.icon_type} size={18} />
       </div>
 
       {/* Title (+ weekday name for undated legacy rows) — the 10rem basis is
           what triggers the wrap before the title column gets crushed */}
       <div style={{ flex: '1 1 10rem', minWidth: 0 }}>
-        <p style={{ fontSize: '0.88rem', fontWeight: 600, color: '#F3EDE6', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <p style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--cream)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {event.title}
-          {event.highlight && <span style={{ color: '#C8A848', opacity: 0.7, marginLeft: '0.4rem' }}>✦</span>}
+          {event.highlight && <span style={{ color: 'var(--gold)', opacity: 0.7, marginLeft: '0.4rem' }}>✦</span>}
         </p>
         {(subLabel ?? (showDay && event.day ? event.day : null)) && (
-          <p style={{ fontSize: '0.68rem', color: '#C8A848', opacity: 0.5, margin: '0.1rem 0 0', letterSpacing: '0.06em' }}>{subLabel ?? event.day}</p>
+          <p style={{ fontSize: '0.68rem', color: 'var(--gold)', opacity: 0.5, margin: '0.1rem 0 0', letterSpacing: '0.06em' }}>{subLabel ?? event.day}</p>
         )}
       </div>
 
       {/* Participation badge — shift shows its shift-type name */}
       {event.participation_type !== 'general' && (
-        <span style={{ fontSize: '0.6rem', color: PARTICIPATION_BADGE[event.participation_type] ?? '#C8A848', opacity: 0.9, border: `1px solid ${(PARTICIPATION_BADGE[event.participation_type] ?? '#C8A848')}55`, borderRadius: '9999px', padding: '0.1rem 0.5rem', flexShrink: 0, letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '0.6rem', color: PARTICIPATION_BADGE[event.participation_type] ?? 'var(--gold)', opacity: 0.9, border: `1px solid ${(PARTICIPATION_BADGE[event.participation_type] ?? 'var(--gold)')}55`, borderRadius: '9999px', padding: '0.1rem 0.5rem', flexShrink: 0, letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
           {event.participation_type === 'shift' ? (shiftTypeName ?? 'Shift') : 'Mandatory'}
         </span>
       )}
       {!event.show_on_schedule && (
         <span
           title="Not shown on the schedule page or home teaser (members can still sign up / acknowledge)"
-          style={{ fontSize: '0.6rem', color: '#C8A848', opacity: 0.55, border: '1px dashed rgba(200,168,72,0.35)', borderRadius: '9999px', padding: '0.1rem 0.5rem', flexShrink: 0, letterSpacing: '0.05em', whiteSpace: 'nowrap' }}
+          style={{ fontSize: '0.6rem', color: 'var(--gold)', opacity: 0.55, border: '1px dashed rgb(var(--gold-rgb) / 0.35)', borderRadius: '9999px', padding: '0.1rem 0.5rem', flexShrink: 0, letterSpacing: '0.05em', whiteSpace: 'nowrap' }}
         >
           off schedule
         </span>
@@ -522,14 +522,14 @@ function EventRow({
           onClick={onToggleVisible}
           title={event.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'}
           aria-label={event.visible ? 'Visible to members — click to hide' : 'Hidden from members — click to show'}
-          style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: '#C8A848', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}
+          style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: 'var(--gold)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}
         >
           {event.visible ? '●' : '○'}
         </button>
-        <button onClick={onEdit} style={{ background: 'none', border: '1px solid rgba(200,168,72,0.2)', borderRadius: '0.4rem', color: '#C8A848', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
+        <button onClick={onEdit} style={{ background: 'none', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '0.4rem', color: 'var(--gold)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.6 }}>
           Edit
         </button>
-        <button onClick={onDelete} style={{ background: 'none', border: '1px solid rgba(255,100,100,0.2)', borderRadius: '0.4rem', color: '#ff8a8a', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>
+        <button onClick={onDelete} style={{ background: 'none', border: '1px solid rgba(255,100,100,0.2)', borderRadius: '0.4rem', color: 'var(--danger)', cursor: 'pointer', padding: '0.25rem 0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>
           ✕
         </button>
       </div>
@@ -557,15 +557,15 @@ function ShiftRosterLine({ event, entries, label, busyKey, onToggleLead }: {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
       {label && (
-        <span style={{ fontSize: '0.62rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.7, whiteSpace: 'nowrap', minWidth: '3.4rem' }}>
+        <span style={{ fontSize: '0.62rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.7, whiteSpace: 'nowrap', minWidth: '3.4rem' }}>
           {label}
         </span>
       )}
-      <span style={{ fontSize: '0.68rem', color: full ? '#C8A848' : '#F3EDE6', opacity: full ? 0.85 : 0.4, whiteSpace: 'nowrap' }}>
+      <span style={{ fontSize: '0.68rem', color: full ? 'var(--gold)' : 'var(--cream)', opacity: full ? 0.85 : 0.4, whiteSpace: 'nowrap' }}>
         {n}{event.capacity != null ? ` / ${event.capacity}` : ''} signed up
       </span>
       {event.needs_lead && n > 0 && !hasLead && (
-        <span style={{ fontSize: '0.62rem', color: '#C8A848', border: '1px solid rgba(200,168,72,0.4)', borderRadius: '9999px', padding: '0.08rem 0.5rem', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '0.62rem', color: 'var(--gold)', border: '1px solid rgb(var(--gold-rgb) / 0.4)', borderRadius: '9999px', padding: '0.08rem 0.5rem', whiteSpace: 'nowrap' }}>
           ✦ no lead yet
         </span>
       )}
@@ -581,8 +581,8 @@ function ShiftRosterLine({ event, entries, label, busyKey, onToggleLead }: {
               style={{
                 background: 'none', borderRadius: '9999px', padding: '0.12rem 0.55rem',
                 fontSize: '0.68rem', whiteSpace: 'nowrap',
-                border: `1px solid ${lead ? 'rgba(200,168,72,0.45)' : 'rgba(255,255,255,0.12)'}`,
-                color: lead ? '#C8A848' : '#F3EDE6',
+                border: `1px solid ${lead ? 'rgb(var(--gold-rgb) / 0.45)' : 'rgba(255,255,255,0.12)'}`,
+                color: lead ? 'var(--gold)' : 'var(--cream)',
                 cursor: 'pointer',
                 opacity: busy ? 0.35 : lead ? 0.95 : 0.65,
               }}
@@ -594,7 +594,7 @@ function ShiftRosterLine({ event, entries, label, busyKey, onToggleLead }: {
               <a
                 href={`/admin/${e.application_id}`}
                 title={`View ${e.name}'s application`}
-                style={{ fontSize: '0.6rem', color: '#C8A848', opacity: 0.4, textDecoration: 'none' }}
+                style={{ fontSize: '0.6rem', color: 'var(--gold)', opacity: 0.4, textDecoration: 'none' }}
               >
                 ↗
               </a>
@@ -635,13 +635,13 @@ function ShiftRoster({ event, entries, busyKey, error, onToggleLead }: {
           />
         )
       })}
-      {error && <span style={{ fontSize: '0.68rem', color: '#ff8a8a' }}>{error}</span>}
+      {error && <span style={{ fontSize: '0.68rem', color: 'var(--danger)' }}>{error}</span>}
     </div>
   )
 }
 
 // Section header shared by the day groups: label · count · hairline · add.
-function GroupHeader({ label, sub, count, onAdd, addLabel, color = '#C8A848' }: {
+function GroupHeader({ label, sub, count, onAdd, addLabel, color = 'var(--gold)' }: {
   label: string
   sub?: string
   count?: number
@@ -654,9 +654,9 @@ function GroupHeader({ label, sub, count, onAdd, addLabel, color = '#C8A848' }: 
       <span style={{ fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color, opacity: 0.75, whiteSpace: 'nowrap' }}>
         {label}
       </span>
-      {sub && <span style={{ fontSize: '0.68rem', color: '#F3EDE6', opacity: 0.35, whiteSpace: 'nowrap' }}>{sub}</span>}
+      {sub && <span style={{ fontSize: '0.68rem', color: 'var(--cream)', opacity: 0.35, whiteSpace: 'nowrap' }}>{sub}</span>}
       {count !== undefined && count > 0 && (
-        <span style={{ fontSize: '0.68rem', color: '#F3EDE6', opacity: 0.3 }}>{count}</span>
+        <span style={{ fontSize: '0.68rem', color: 'var(--cream)', opacity: 0.3 }}>{count}</span>
       )}
       <span style={{ flex: 1, height: '1px', alignSelf: 'center', background: `linear-gradient(90deg, ${color}26, transparent)` }} />
       {onAdd && (
@@ -1126,7 +1126,7 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
     onToggleVisible: () => handleToggleVisible(ev),
   })
 
-  const chipStyle = (color = '#C8A848'): React.CSSProperties => ({
+  const chipStyle = (color = 'var(--gold)'): React.CSSProperties => ({
     flexShrink: 0, padding: '0.35rem 0.8rem', borderRadius: '9999px',
     border: `1px solid ${color}33`, background: 'transparent',
     color, cursor: 'pointer', fontSize: '0.7rem', letterSpacing: '0.08em',
@@ -1151,7 +1151,7 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           {/* List ⇄ Week: the list is the working roster; the week grid shows
               time as space (overlaps, gaps, lopsided days). */}
-          <div style={{ display: 'flex', border: '1px solid rgba(200,168,72,0.25)', borderRadius: '9999px', overflow: 'hidden' }}>
+          <div style={{ display: 'flex', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '9999px', overflow: 'hidden' }}>
             {(['list', 'week'] as const).map(v => (
               <button
                 key={v}
@@ -1159,8 +1159,8 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
                 style={{
                   padding: '0.45rem 0.9rem', border: 'none', cursor: 'pointer',
                   fontSize: '0.72rem', letterSpacing: '0.08em', textTransform: 'capitalize',
-                  background: view === v ? 'rgba(200,168,72,0.15)' : 'transparent',
-                  color: '#C8A848', opacity: view === v ? 1 : 0.5,
+                  background: view === v ? 'rgb(var(--gold-rgb) / 0.15)' : 'transparent',
+                  color: 'var(--gold)', opacity: view === v ? 1 : 0.5,
                 }}
               >
                 {v}
@@ -1168,7 +1168,7 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
             ))}
           </div>
           <button
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '9999px', border: '1px solid rgba(200,168,72,0.25)', background: 'transparent', color: '#C8A848', cursor: 'pointer', fontSize: '0.78rem', letterSpacing: '0.06em', opacity: 0.75 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '9999px', border: '1px solid rgb(var(--gold-rgb) / 0.25)', background: 'transparent', color: 'var(--gold)', cursor: 'pointer', fontSize: '0.78rem', letterSpacing: '0.06em', opacity: 0.75 }}
             onClick={() => openAdd()}
           >
             + Add event
@@ -1177,7 +1177,7 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
       </div>
 
       {actionError && (
-        <p style={{ color: '#ff8a8a', fontSize: '0.78rem', margin: '0 0 0.85rem' }}>{actionError}</p>
+        <p style={{ color: 'var(--danger)', fontSize: '0.78rem', margin: '0 0 0.85rem' }}>{actionError}</p>
       )}
 
       {/* Week view — day columns × hour axis; click empty slot to add there,
@@ -1185,7 +1185,7 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
       {view === 'week' && (
         <div style={{ marginBottom: '1.5rem' }}>
           {moveError && (
-            <p style={{ color: '#ff8a8a', fontSize: '0.78rem', margin: '0 0 0.6rem' }}>{moveError}</p>
+            <p style={{ color: 'var(--danger)', fontSize: '0.78rem', margin: '0 0 0.6rem' }}>{moveError}</p>
           )}
           <ScheduleWeekView
             events={events}
@@ -1211,10 +1211,10 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
             )
           })}
           {undated.length > 0 && (
-            <button style={chipStyle('#ff8a8a')} onClick={() => jumpTo('undated')}>Undated</button>
+            <button style={chipStyle('var(--danger)')} onClick={() => jumpTo('undated')}>Undated</button>
           )}
           {recurring.length > 0 && (
-            <button style={chipStyle('#D239F8')} onClick={() => jumpTo('recurring')}>Recurring</button>
+            <button style={chipStyle('var(--purple)')} onClick={() => jumpTo('recurring')}>Recurring</button>
           )}
         </div>
       )}
@@ -1254,7 +1254,7 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
       {/* Undated legacy rows — they need a real date to sit on the calendar */}
       {undated.length > 0 && (
         <div ref={(el) => { sectionRefs.current['undated'] = el }} style={{ marginBottom: '1.5rem', scrollMarginTop: '5.5rem' }}>
-          <GroupHeader label="Undated" sub="edit each event to give it a date" count={undated.length} color="#ff8a8a" />
+          <GroupHeader label="Undated" sub="edit each event to give it a date" count={undated.length} color="var(--danger)" />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             {undated.map((ev) => <EventRow key={ev.id} {...rowProps(ev)} showDay />)}
           </div>
@@ -1262,16 +1262,16 @@ export function ScheduleManager({ rangeStart, rangeEnd, initialEvents, initialSh
       )}
 
       {/* Divider */}
-      <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(200,168,72,0.15), transparent)', margin: '0 0 1.5rem' }} />
+      <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgb(var(--gold-rgb) / 0.15), transparent)', margin: '0 0 1.5rem' }} />
 
       {/* Recurring events — order here is their display order, so drag persists */}
       <div ref={(el) => { sectionRefs.current['recurring'] = el }} style={{ scrollMarginTop: '5.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <p style={{ fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.55, margin: 0 }}>
+          <p style={{ fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--purple)', opacity: 0.55, margin: 0 }}>
             Recurring — {recurring.length}
           </p>
           <button
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '9999px', border: '1px solid rgba(210,57,248,0.25)', background: 'transparent', color: '#D239F8', cursor: 'pointer', fontSize: '0.78rem', letterSpacing: '0.06em', opacity: 0.75 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '9999px', border: '1px solid rgb(var(--purple-rgb) / 0.25)', background: 'transparent', color: 'var(--purple)', cursor: 'pointer', fontSize: '0.78rem', letterSpacing: '0.06em', opacity: 0.75 }}
             onClick={() => { setModal({ mode: 'add', recurring: true }); setModalError(null) }}
           >
             + Add recurring

@@ -4,13 +4,32 @@
 
 ## Color Palette
 
+> **Tokens (branch 1f, 2026-09-12).** Every colour below is a CSS custom property declared on `:root` in `app/globals.css` and mirrored in `lib/theme.ts` (`THEME_COLORS`). Components use `var(--gold)` (never a hex) and, for alpha, `rgb(var(--gold-rgb) / 0.2)`; the display face is `var(--font-display)`. A community re-skins the site through `communities.theme` — `{ "colors": { "gold": "#…", "ink": "#…" }, "fonts": { "display": "'Fraunces', serif" } }` — which `app/layout.tsx` injects as `:root` overrides. Files that keep literal hexes because their consumers can't resolve CSS variables: `lib/send-email.ts` (mail clients), `app/api/badge/route.tsx` (Satori), `app/manifest.ts` + the `themeColor` viewport meta, `lib/clerk-appearance.ts` (Clerk derives shades), `lib/shift-colors.ts` (deterministic schedule palette), and any `data:` SVG URL.
+>
+> | Token | Default | Alpha form | Role |
+> |---|---|---|---|
+> | `--ink` | `#1A0A24` | `--ink-rgb` | Site background |
+> | `--plum` / `--plum-dark` | `#5D2B7A` / `#2A0A3A` | `--plum-rgb` | Background gradient |
+> | `--gold` | `#C8A848` | `--gold-rgb` | Headings, links, dividers, primary buttons |
+> | `--gold-pale` / `--gold-deep` / `--gold-dark` / `--bronze` | `#D4B050` / `#A8882A` / `#634D0B` / `#6F491F` | — | Gold family (text on gold, engraving) |
+> | `--purple` | `#D239F8` | `--purple-rgb` | Accent, focus rings, "changed since you looked" |
+> | `--lavender` | `#D9B3FF` | — | Soft accent |
+> | `--cream` | `#F3EDE6` | `--cream-rgb` | Body text |
+> | `--lemon` / `--parchment` / `--paper-ink` | `#FFFACD` / `#EDE0C8` / `#3A2B14` | — | Light surfaces + their text |
+> | `--muted` | `#8A8A8A` | — | De-emphasised text |
+> | `--danger` / `--danger-strong` / `--danger-soft` | `#FF8A8A` / `#FF8080` / `#FFB4B4` | `--danger-rgb` | Errors, destructive actions |
+> | `--warning` / `--amber` | `#FFCF80` / `#FFB432` | — | Cautions, pending states |
+> | `--success` | `#7DCF8E` | `--success-rgb` | Confirmations |
+> | `--font-display` | `'TokyoDreams', serif` | — | Display face (`.font-tokyo`) |
+
+
 Defined in `tailwind.config.ts` under `theme.extend.colors.glaum` and used throughout.
 
 | Name | Hex | Tailwind class | Usage |
 |---|---|---|---|
-| Ink | `#1A0A24` | `bg-glaum-ink` | Site background, base dark |
-| Purple | `#D239F8` | `text-glaum-purple` | Accent, focus rings, highlights |
-| Gold | `#C8A848` | `text-glaum-gold` | Headings, links, dividers, badges |
+| Ink | `#1A0A24` (`var(--ink)`) | `bg-brand-ink` | Site background, base dark |
+| Purple | `#D239F8` (`var(--purple)`) | `text-brand-purple` | Accent, focus rings, highlights |
+| Gold | `#C8A848` (`var(--gold)`) | `text-brand-gold` | Headings, links, dividers, badges |
 | Dark Gold | `#634D0B` | `text-glaum-dark-gold` | Darker gold for contrast |
 | Cream | `#FFFACD` | `text-glaum-cream` | High-contrast text on dark |
 | Plum | `#5D2B7A` | `bg-glaum-plum` | Mid-tone purple fills |

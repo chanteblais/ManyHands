@@ -61,7 +61,7 @@ export default async function DevSchedulePage() {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '3rem 1.5rem' }}>
-      <p style={{ color: '#C8A848', fontSize: '0.8rem', opacity: 0.7, marginBottom: '2rem' }}>
+      <p style={{ color: 'var(--gold)', fontSize: '0.8rem', opacity: 0.7, marginBottom: '2rem' }}>
         Dev sandbox — live schedule + [TEST] late-night rows (not in the database).
       </p>
       <ScheduleCalendarClient events={data} days={days} />
