@@ -25,7 +25,9 @@ const GATES = [
 // Intentionally public routes, relative paths from the repo root. Add one ONLY
 // with a comment saying why it's public and the date that was reviewed.
 const PUBLIC_ROUTES = new Set([
-  // (none — every current route is gated)
+  // Public community directory: names/descriptions that already appear on each
+  // community's public home page; no member data. Reviewed 2026-09-12.
+  'app/api/communities/route.ts',
 ])
 
 function walk(dir) {

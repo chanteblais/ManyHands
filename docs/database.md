@@ -23,7 +23,7 @@ The tenant row (`074`). One per community; Glåüm is seeded as `slug = 'glaum'`
 | `event_name` | TEXT | Interim until Event is a first-class object (`What If 2026`) |
 | `email_from` | TEXT | `Name <addr>`; NULL → deployment `RESEND_FROM` (branch 1b moves sending here) |
 | `theme` | JSONB | `{}`. Read keys: `colors` = `{ <token>: "#rrggbb" }` overriding the `:root` colour tokens (`lib/theme.ts` — `ink`, `gold`, `purple`, `cream`, …), `fonts.display` = a font stack for the display face, `brand` = `{ tagline, kicker, hero_image, footer_line, footer_link: { label, href } }` (the header sub-line, the kicker after the event name, the home hero image, the footer line and link — each optional, hidden when absent; `lib/theme.ts` `themeBrand`), `badge` = `{ base_url, font_url, width?, height?, font_name? }` for `/api/badge?c=<slug>` (absent → the repo's Glåüm assets). Invalid values are ignored. |
-| `settings` | JSONB | Small platform-level knobs; `{}`. Read keys: `nudge_hour_local` (attunement nudge send hour, default 9), `reminder_morning_hour_local` (default 8), `reminder_evening_hour_local` (default 19) — all community-local hours for the hourly crons |
+| `settings` | JSONB | Small platform-level knobs; `{}`. Read keys: `discoverable` (default true; `false` hides the community from the public directory on the platform host), `nudge_hour_local` (attunement nudge send hour, default 9), `reminder_morning_hour_local` (default 8), `reminder_evening_hour_local` (default 19) — all community-local hours for the hourly crons |
 | `status` | TEXT | `active` / `paused` / `archived` |
 | `created_at` | TIMESTAMPTZ | |
 

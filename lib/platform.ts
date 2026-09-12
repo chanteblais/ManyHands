@@ -22,6 +22,8 @@
 // host), so this is safe to deploy ahead of the DNS/Clerk changes.
 
 export const PLATFORM_NAME = process.env.PLATFORM_NAME || 'Many Hands'
+/** Slug of the pseudo-community served on the platform host (lib/community.ts). */
+export const PLATFORM_COMMUNITY_SLUG = 'platform'
 
 const LOCAL = /^(localhost|127\.0\.0\.1|\[::1\]|[a-z0-9-]+\.localhost)(:\d+)?$/i
 
@@ -77,7 +79,7 @@ export function isPlatformPath(pathname: string): boolean {
   return (
     pathname === '/communities' ||
     pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up') || pathname === '/sign-out' ||
-    pathname === '/api/sign-out' || pathname === '/api/nav-auth' || pathname.startsWith('/api/me/') ||
+    pathname === '/api/sign-out' || pathname === '/api/nav-auth' || pathname.startsWith('/api/me/') || pathname === '/api/communities' ||
     pathname === '/manifest.webmanifest'
   )
 }

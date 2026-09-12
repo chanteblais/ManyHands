@@ -18,6 +18,7 @@ import { MessagesNavLink } from './MessagesNavLink'
 import { MobileTabBar, type TabBarLink } from './MobileTabBar'
 import { useCommunity } from './CommunityProvider'
 import { themeBrand } from '@/lib/theme'
+import { PLATFORM_COMMUNITY_SLUG } from '@/lib/platform'
 
 const AUTH_MEMORY_KEY = 'glaum-auth-signed-in'
 const AUTH_NAME_KEY = 'glaum-auth-first-name'
@@ -89,12 +90,14 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
   const avatarUrl = serverAuth?.avatarUrl ?? null
   const initials = userFirstName?.[0] ?? '✦'
   const isAdmin = Boolean(serverAuth?.isAdmin)
-  const activeNavLinks = signedIn && isApproved ? memberNavLinks : publicNavLinks
+  // The platform host has no community pages — only the picker/directory.
+  const onPlatform = community.slug === PLATFORM_COMMUNITY_SLUG
+  const activeNavLinks = onPlatform ? [] : signedIn && isApproved ? memberNavLinks : publicNavLinks
   // On phones, approved members get the bottom tab bar instead of page links
   // in the hamburger — the menu shrinks to overflow (name, About, Admin, sign
   // out). Public visitors keep the full hamburger, and /admin keeps the plain
   // header: admin is a web/desktop workspace (docs/mobile-companion.md).
-  const tabBarActive = isMobile && signedIn && isApproved && !pathname.startsWith('/admin')
+  const tabBarActive = isMobile && signedIn && isApproved && !pathname.startsWith('/admin') && !onPlatform
 
   useEffect(() => {
     setMounted(true)

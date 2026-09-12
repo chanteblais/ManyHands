@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache'
 import { headers } from 'next/headers'
 import { supabaseAdmin } from '@/lib/supabase'
 import { SITE_NAME, EVENT_NAME, SITE_DESCRIPTION } from '@/lib/site-config'
-import { isPlatformHost, platformHosts, PLATFORM_NAME } from '@/lib/platform'
+import { isPlatformHost, platformHosts, PLATFORM_NAME, PLATFORM_COMMUNITY_SLUG } from '@/lib/platform'
 
 // Tenant resolution (docs/tenancy-design.md §2). Every server render and API
 // route resolves the current community ONCE from the request host and passes
@@ -126,7 +126,7 @@ function fallbackCommunity(): Community {
 // picker and the auth pages only. Requests there resolve to this pseudo-
 // community so the layout, header and auth pages render; every scoped query
 // against its all-zero id returns nothing.
-export const PLATFORM_COMMUNITY_SLUG = 'platform'
+export { PLATFORM_COMMUNITY_SLUG }
 function platformCommunity(): Community {
   return {
     id: FALLBACK_COMMUNITY_ID, slug: PLATFORM_COMMUNITY_SLUG, name: PLATFORM_NAME, description: null,
