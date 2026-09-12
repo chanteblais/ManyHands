@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb, type TenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { getNotificationPreferences } from '@/lib/notification-prefs'
 import { sendSignupConfirmationEmail } from '@/lib/send-email'
 import { whenText } from '@/lib/event-reminders'
 
 // Confirm the signed-in user is an approved member before they may RSVP.
-async function requireApprovedMember(userId: string): Promise<boolean> {
-  const { data } = await supabaseAdmin
+async function requireApprovedMember(db: TenantDb, userId: string): Promise<boolean> {
+  const { data } = await db
     .from('members')
     .select('status')
     .eq('clerk_user_id', userId)
@@ -17,8 +17,8 @@ async function requireApprovedMember(userId: string): Promise<boolean> {
   return !!data
 }
 
-async function rsvpCount(eventId: string): Promise<number> {
-  const { count } = await supabaseAdmin
+async function rsvpCount(db: TenantDb, eventId: string): Promise<number> {
+  const { count } = await db
     .from('lead_up_event_rsvps')
     .select('id', { count: 'exact', head: true })
     .eq('lead_up_event_id', eventId)
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   try {
     // Allow an explicit desired state; default to toggle.
@@ -49,14 +50,14 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     // Approval gate, gathering check, and existing-RSVP lookup are
     // independent — one parallel round trip instead of three serial ones.
     const [approved, { data: event }, { data: existing }] = await Promise.all([
-      requireApprovedMember(userId),
-      supabaseAdmin
+      requireApprovedMember(db, userId),
+      db
         .from('lead_up_events')
         .select('id, title, event_date, start_time, location')
         .eq('id', params.id)
         .eq('visible', true)
         .maybeSingle(),
-      supabaseAdmin
+      db
         .from('lead_up_event_rsvps')
         .select('id')
         .eq('lead_up_event_id', params.id)
@@ -72,17 +73,17 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     const shouldRemove = desired === 'off' || (desired === 'toggle' && !!existing)
 
     if (shouldRemove) {
-      const { error } = await supabaseAdmin
+      const { error } = await db
         .from('lead_up_event_rsvps')
         .delete()
         .eq('lead_up_event_id', params.id)
         .eq('clerk_user_id', userId)
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-      return NextResponse.json({ rsvped: false, count: await rsvpCount(params.id) })
+      return NextResponse.json({ rsvped: false, count: await rsvpCount(db, params.id) })
     }
 
     if (!existing) {
-      const { error } = await supabaseAdmin
+      const { error } = await db
         .from('lead_up_event_rsvps')
         .insert({ lead_up_event_id: params.id, clerk_user_id: userId })
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
       try {
         const prefs = await getNotificationPreferences(userId)
         if (prefs.email_event_reminders) {
-          const { data: m } = await supabaseAdmin
+          const { data: m } = await db
             .from('members').select('email, first_name, preferred_name')
             .eq('clerk_user_id', userId).maybeSingle()
           if (m?.email) {
@@ -114,7 +115,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
       }
     }
 
-    return NextResponse.json({ rsvped: true, count: await rsvpCount(params.id) })
+    return NextResponse.json({ rsvped: true, count: await rsvpCount(db, params.id) })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to RSVP'
     return NextResponse.json({ error: message }, { status: 500 })

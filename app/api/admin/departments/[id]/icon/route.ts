@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { normalizeIconImage } from '@/lib/icon-image'
 import { requireAdmin } from '@/lib/admin-auth'
 
@@ -16,6 +17,9 @@ const BUCKET = 'group-badges'
 export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const formData = await req.formData()
   const file = formData.get('icon') as File | null
@@ -41,7 +45,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
 
   const path = `departments/${params.id}/icon.png`
 
-  const { error: uploadError } = await supabaseAdmin.storage
+  const { error: uploadError } = await db.storage
     .from(BUCKET)
     .upload(path, buffer, { contentType: 'image/png', upsert: true, cacheControl: '31536000' })
 
@@ -50,7 +54,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     return NextResponse.json({ error: uploadError.message }, { status: 500 })
   }
 
-  const { data: { publicUrl } } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(path)
+  const { data: { publicUrl } } = db.storage.from(BUCKET).getPublicUrl(path)
   // Bust CDN cache so a re-upload shows immediately.
   const image = `${publicUrl}?v=${Date.now()}`
 

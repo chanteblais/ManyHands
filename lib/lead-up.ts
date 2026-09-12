@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 import type { LeadUpEvent } from '@/app/schedule/LeadUpGatherings'
 
 // Visible, non-past lead-up gatherings with RSVP headcounts and whether this
@@ -8,8 +8,9 @@ import type { LeadUpEvent } from '@/app/schedule/LeadUpGatherings'
 // Past gatherings drop out for members (no RSVPing something that already
 // happened); dateless gatherings stay. Matches the home-dashboard teaser.
 // Caller is responsible for the approved-member gate.
-export async function getMemberLeadUpEvents(userId: string): Promise<LeadUpEvent[]> {
-  const { data: events, error } = await supabaseAdmin
+export async function getMemberLeadUpEvents(communityId: string, userId: string): Promise<LeadUpEvent[]> {
+  const db = tenantDb(communityId)
+  const { data: events, error } = await db
     .from('lead_up_events')
     .select('*')
     .eq('visible', true)
@@ -22,7 +23,7 @@ export async function getMemberLeadUpEvents(userId: string): Promise<LeadUpEvent
   const counts: Record<string, number> = {}
   const mine = new Set<string>()
   if (ids.length) {
-    const { data: rsvps } = await supabaseAdmin
+    const { data: rsvps } = await db
       .from('lead_up_event_rsvps')
       .select('lead_up_event_id, clerk_user_id')
       .in('lead_up_event_id', ids)

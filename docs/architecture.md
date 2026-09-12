@@ -239,7 +239,7 @@ See [database.md → Storage Buckets](database.md#storage-buckets) for the canon
 
 > Roadmap: [multi-community.md](multi-community.md). Phase 1 design + branch sequence: [tenancy-design.md](tenancy-design.md).
 
-The platform serves many communities from one codebase, one database, one deployment. Glåüm is community 1. **Branch 1a (2026-09-11) laid the foundation; 1b (same day) swept identity, config and email; 1c–1d remain** — until the sweep finishes, some feature code still uses the raw client and the DB's transitional default pins every row to Glåüm.
+The platform serves many communities from one codebase, one database, one deployment. Glåüm is community 1. **Branches 1a–1c (2026-09-11) put every query in the app behind `tenantDb`** — no feature code imports the raw client any more (the allowlist is empty; the guard now simply forbids it). What remains before a second community can exist is branch 1d: DB-backed admin roles, per-community crons, storage path prefixes, badge assets, the `/api/me/communities` picker, and migration 075 (drop the transitional default; community-scoped unique constraints).
 
 ### Community resolution — `lib/community.ts`
 
@@ -258,7 +258,9 @@ await db.from('shoutouts').insert({ body, clerk_user_id })         // community_
 ```
 `select`/`update`/`delete` on a scoped table are filtered by `community_id`; `insert`/`upsert` rows are stamped (and refused if they carry a different community). `GLOBAL_TABLES` (`communities`, `push_tokens`, `notification_preferences`) pass through. `rpc` and `storage` are exposed unscoped — pass the community explicitly; new uploads use `objectPath(communityId, relativePath)` (`${communityId}/…`; existing objects keep their paths).
 
-**Guard:** `npm run check` runs `scripts/check-tenant-scope.mjs`, which fails on any file under `app/`, `lib/`, `components/` importing `@/lib/supabase` unless it is listed in `scripts/tenant-scope-allowlist.txt` (shrink-only; stale entries also fail). New feature code must use `tenantDb`. Exempt by design: `lib/supabase.ts`, `lib/tenant-db.ts`, `lib/community.ts`.
+**Guard:** `npm run check` runs `scripts/check-tenant-scope.mjs`, which fails on any file under `app/`, `lib/`, `components/` importing `@/lib/supabase` (alias or relative). The allowlist (`scripts/tenant-scope-allowlist.txt`) emptied with branch 1c and must stay empty. Exempt by design: `lib/supabase.ts`, `lib/tenant-db.ts`, `lib/community.ts`.
+
+**Lib convention (since 1c):** every exported lib function that queries takes `communityId: string` FIRST (`getMemberGroups(communityId, clerkUserId)`, `getInboxConversations(communityId, userId)`, `getRadioFeed(communityId, limit)`, …); pure helpers keep their shape. Pages and route handlers resolve `const community = await getCommunity()` once, right after the auth gate, and pass `community.id` down (or `community` itself to email/notify).
 
 ### Community-scoped lib signatures (since 1b)
 
@@ -273,9 +275,11 @@ Every identity/config/notification helper takes the community first:
 
 `SITE_NAME` / `EVENT_NAME` / `SITE_DESCRIPTION` survive only as the synthetic-fallback values in `lib/community.ts` (pre-migration safety net) and inside `DEFAULT_TRACK_COPY`. Feature code reads `community.name` / `community.eventName` / `community.description` from `getCommunity()` (server) or `useCommunity()` (client). Never hardcode `"Glåüm"`; never import the SITE_* constants in new code.
 
-### Not yet community-scoped (sweep in progress — see tenancy-design.md §8)
+### Not yet community-scoped (branch 1d — see tenancy-design.md §8)
 
-- **Queries** — 94 files still on the raw client (the allowlist; identity, config and email are done). Rows are pinned to Glåüm by the DB default; a second tenant must not be created until the allowlist is empty and `075` is applied.
-- **Admin roles** — still Clerk `publicMetadata.role`; `members.role` exists but is unread (branch 1d).
-- **Crons (per-community loop), storage path prefixes, badge assets** — branch 1d. Email sender/links are done (1b).
+- **Unique constraints + transitional default** — rows are still pinned to Glåüm by the `074` column default and the per-person unique constraints are still global; **a second tenant must not be created until migration `075` is applied.**
+- **Admin roles** — still Clerk `publicMetadata.role`; `members.role` exists but is unread.
+- **Crons** — resolve one community from the request host; the per-community, per-timezone loop is 1d.
+- **Storage object paths, badge assets, `/api/me/communities` + picker + empty state** — 1d.
+- **Direct `page_content` reads** in a few files (`app/admin/page.tsx`, `app/admin/[id]/page.tsx`, `app/api/admin/schedule/[id]/route.ts`, both crons, `lib/attunement-nudge.ts`) go through `db` (scoped) but bypass the cached reader — genlog row 2026-09-11.
 - **Branding** — no colour tokens yet (branch 1f).

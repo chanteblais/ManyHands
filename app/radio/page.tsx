@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { getApprovedMember } from '@/lib/members'
 import { getCommunity } from '@/lib/community'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getRadioFeed, getRadioNowData, getRadioStats } from '@/lib/radio'
 import { Header } from '@/components/Header'
 import { RadioHero } from './RadioHero'
@@ -48,17 +48,18 @@ export default async function RadioPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const member = await getApprovedMember(community.id, userId)
   if (!member) redirect('/profile')
 
   const [events, nowData, stats, rosterRes] = await Promise.all([
-    getRadioFeed(60),
+    getRadioFeed(community.id, 60),
     getRadioNowData(community.id),
-    getRadioStats(),
+    getRadioStats(community.id),
     // The roster for @mention autocomplete + turning "@Name" into profile-linked
     // pills. Approved members with a Clerk id and a display name.
-    supabaseAdmin
+    db
       .from('members')
       .select('clerk_user_id, first_name, preferred_name')
       .eq('status', 'approved'),

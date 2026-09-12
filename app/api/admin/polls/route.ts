@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requirePollManager } from '@/lib/poll-auth'
 
 export async function GET() {
   if (!(await requirePollManager())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('polls')
     .select('*')
     .order('created_at', { ascending: false })
@@ -16,9 +19,11 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   if (!(await requirePollManager())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const body = await req.json()
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('polls')
     .insert([{
       question: body.question,

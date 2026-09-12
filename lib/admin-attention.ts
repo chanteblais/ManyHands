@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 import { getPageContent, getPageContentValue } from './page-content'
 import { eventRangeDays, shiftOccurrenceDates } from './shift-occurrences'
 
@@ -36,12 +36,13 @@ const daysUntil = (iso: string) =>
 // At most five prioritized, actionable lines. Every line names work and links
 // to where it's done. Order = review queues first, then time-sensitive comms.
 export async function getAttentionItems(communityId: string): Promise<AttentionItem[]> {
+  const db = tenantDb(communityId)
   const [apps, vols, roleReqs, roleSuggs, { data: gatherings }, { data: leadShifts }, { data: shiftHolds }, rangeConfig] = await Promise.all([
-    supabaseAdmin.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-    supabaseAdmin.from('volunteers').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-    supabaseAdmin.from('camp_signups').select('clerk_user_id', { count: 'exact', head: true }).eq('role_approval_status', 'pending'),
-    supabaseAdmin.from('role_suggestions').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-    supabaseAdmin
+    db.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+    db.from('volunteers').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+    db.from('camp_signups').select('clerk_user_id', { count: 'exact', head: true }).eq('role_approval_status', 'pending'),
+    db.from('role_suggestions').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+    db
       .from('lead_up_events')
       .select('id, title, event_date, visible, notified_at')
       .eq('visible', true)
@@ -50,7 +51,7 @@ export async function getAttentionItems(communityId: string): Promise<AttentionI
     // Full-but-leadless shifts: the organizer opted the shift into having a
     // lead (049), every seat is taken, and nobody holds the ✦ — the one state
     // members can no longer notice at signup time, so it's flagged here.
-    supabaseAdmin
+    db
       .from('schedule_events')
       .select('id, title, capacity, event_date, is_recurring, recurrence_days')
       .eq('participation_type', 'shift')
@@ -58,7 +59,7 @@ export async function getAttentionItems(communityId: string): Promise<AttentionI
       .eq('needs_lead', true)
       .gt('capacity', 0)
       .or(`event_date.is.null,event_date.gte.${todayLocal()},is_recurring.eq.true`),
-    supabaseAdmin.from('member_shift_signups').select('clerk_user_id, schedule_event_id, occurrence_date, role'),
+    db.from('member_shift_signups').select('clerk_user_id, schedule_event_id, occurrence_date, role'),
     getPageContent(communityId, ['config_event_start_date', 'config_event_end_date']),
   ])
 
@@ -140,9 +141,10 @@ export async function getAttentionItems(communityId: string): Promise<AttentionI
 // The thin always-visible strip under the admin tabs: days to camp + the next
 // couple of dated milestones on the runway.
 export async function getAdminRunway(communityId: string): Promise<AdminRunway> {
+  const db = tenantDb(communityId)
   const [startValue, { data: gatherings }] = await Promise.all([
     getPageContentValue(communityId, 'config_event_start_date'),
-    supabaseAdmin
+    db
       .from('lead_up_events')
       .select('title, event_date')
       .eq('visible', true)

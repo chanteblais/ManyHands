@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 import { getMyConversations, findDirectConversation, visibleToFilter } from './conversations'
 
 // Read-side helpers for the messages UI, shared by the API routes and the
@@ -25,10 +25,11 @@ export type InboxConversation = {
 // conversations appear only once they have messages (legacy behavior); group
 // conversations always appear for groups the member belongs to, so an empty
 // group still has an entry point.
-export async function getInboxConversations(userId: string): Promise<InboxConversation[]> {
+export async function getInboxConversations(communityId: string, userId: string): Promise<InboxConversation[]> {
+  const db = tenantDb(communityId)
   let convs
   try {
-    convs = await getMyConversations(userId)
+    convs = await getMyConversations(communityId, userId)
   } catch {
     return []
   }
@@ -42,7 +43,7 @@ export async function getInboxConversations(userId: string): Promise<InboxConver
   const [msgsRes, groupsRes, profilesRes] = await Promise.all([
     // All messages across my conversations that I may see (ordinary messages
     // plus my own private welcome notes), newest first.
-    supabaseAdmin
+    db
       .from('messages')
       .select('conversation_id, sender_clerk_id, body, created_at, sender_name')
       .in('conversation_id', convs.map(c => c.conversationId))
@@ -50,12 +51,12 @@ export async function getInboxConversations(userId: string): Promise<InboxConver
       .order('created_at', { ascending: false }),
     // Group names/icons.
     groupIds.length
-      ? supabaseAdmin.from('groups').select('id, name, icon, icon_image').in('id', groupIds)
+      ? db.from('groups').select('id, name, icon, icon_image').in('id', groupIds)
       : Promise.resolve({ data: [] }),
     // Profiles for the other party in each direct conversation.
     // Phase 5: identity resolution reads the canonical `members` table.
     otherIds.length
-      ? supabaseAdmin
+      ? db
           .from('members')
           .select('clerk_user_id, first_name, preferred_name, avatar_url')
           .in('clerk_user_id', otherIds)
@@ -144,18 +145,19 @@ export type ThreadMessage = {
 
 // The DM thread between two users, chronological, with read receipts derived
 // from the recipient's last_read_at cursor.
-export async function getDirectThreadMessages(myId: string, otherId: string): Promise<ThreadMessage[]> {
-  const convId = await findDirectConversation(myId, otherId)
+export async function getDirectThreadMessages(communityId: string, myId: string, otherId: string): Promise<ThreadMessage[]> {
+  const db = tenantDb(communityId)
+  const convId = await findDirectConversation(communityId, myId, otherId)
   if (!convId) return []
 
   // Messages and read cursors are independent — run them together.
   const [msgsRes, partsRes] = await Promise.all([
-    supabaseAdmin
+    db
       .from('messages')
       .select('id, sender_clerk_id, recipient_clerk_id, body, created_at')
       .eq('conversation_id', convId)
       .order('created_at', { ascending: true }),
-    supabaseAdmin
+    db
       .from('conversation_participants')
       .select('clerk_user_id, last_read_at')
       .eq('conversation_id', convId),

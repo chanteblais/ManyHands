@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getPageContent } from '@/lib/page-content'
 import { getCommunity } from '@/lib/community'
 import { ScheduleCalendarClient } from '@/components/ScheduleCalendarClient'
@@ -10,15 +10,16 @@ export { ICON_TYPES } from '@/components/EventIcon'
 
 export async function ScheduleSection() {
   const community = await getCommunity()
+  const db = tenantDb(community.id)
   const [{ data: eventsRaw }, { data: shiftTypes }, config] = await Promise.all([
-    supabaseAdmin
+    db
       .from('schedule_events')
       .select('id, day, time, title, subtitle, detail_desc, icon_type, highlight, is_recurring, recurrence_days, event_date, participation_type, shift_type_id')
       .eq('visible', true)
       // Admin can keep an event off the schedule page while it stays signable.
       .eq('show_on_schedule', true)
       .order('sort_order', { ascending: true }),
-    supabaseAdmin.from('shift_types').select('id').order('sort_order'),
+    db.from('shift_types').select('id').order('sort_order'),
     getPageContent(community.id, ['config_event_start_date', 'config_event_end_date']),
   ])
 

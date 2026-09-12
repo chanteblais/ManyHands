@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 import { getPageContent } from './page-content'
 import { shiftDurationHours } from './shift-hours'
 import { parseAttunementTasks } from './site-config'
@@ -62,6 +62,7 @@ export type ShiftHoursOverview = {
 }
 
 export async function getShiftHoursOverview(communityId: string): Promise<ShiftHoursOverview> {
+  const db = tenantDb(communityId)
   const [
     { data: shiftTypes },
     { data: events },
@@ -74,22 +75,22 @@ export async function getShiftHoursOverview(communityId: string): Promise<ShiftH
     { data: roleRows },
     { data: roleHolderRows },
   ] = await Promise.all([
-    supabaseAdmin.from('shift_types').select('id, name, sort_order').order('sort_order'),
-    supabaseAdmin
+    db.from('shift_types').select('id, name, sort_order').order('sort_order'),
+    db
       .from('schedule_events')
       .select('id, shift_type_id, start_time, end_time, capacity, event_date, is_recurring, recurrence_days')
       .eq('participation_type', 'shift'),
     // Shared with the Manage-side roster (lib/admin-program-data.ts
     // getAdminRosters) so "who holds this shift" can never disagree.
-    fetchShiftHolds(),
+    fetchShiftHolds(communityId),
     getPageContent(communityId, ['config_event_start_date', 'config_event_end_date', 'config_attunement_tasks']),
-    supabaseAdmin.from('applications').select('clerk_user_id').eq('status', 'approved').not('clerk_user_id', 'is', null),
+    db.from('applications').select('clerk_user_id').eq('status', 'approved').not('clerk_user_id', 'is', null),
     // Shared with Manage + Overview's other counts (lib/admin-counts.ts).
-    getSuspendedClerkUserIds(),
-    supabaseAdmin.from('groups').select('id, required_shift_type_id, required_shift_hours').not('required_shift_type_id', 'is', null),
-    supabaseAdmin.from('group_members').select('clerk_user_id, group_id'),
-    supabaseAdmin.from('roles').select('id, required_shift_type_id, required_shift_hours').not('required_shift_type_id', 'is', null),
-    supabaseAdmin
+    getSuspendedClerkUserIds(communityId),
+    db.from('groups').select('id, required_shift_type_id, required_shift_hours').not('required_shift_type_id', 'is', null),
+    db.from('group_members').select('clerk_user_id, group_id'),
+    db.from('roles').select('id, required_shift_type_id, required_shift_hours').not('required_shift_type_id', 'is', null),
+    db
       .from('camp_signups')
       .select('clerk_user_id, role_id, role_approval_status')
       .not('role_id', 'is', null),

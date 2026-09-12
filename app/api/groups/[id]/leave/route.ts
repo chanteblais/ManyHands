@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { findGroupConversation, deleteGroupWelcome } from '@/lib/conversations'
 
 export const dynamic = 'force-dynamic'
@@ -11,8 +12,10 @@ export async function POST(_req: Request, props: { params: Promise<{ id: string 
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
-  const { data: group } = await supabaseAdmin
+  const { data: group } = await db
     .from('groups')
     .select('id, join_policy')
     .eq('id', params.id)
@@ -22,7 +25,7 @@ export async function POST(_req: Request, props: { params: Promise<{ id: string 
     return NextResponse.json({ error: 'Ask an admin to remove you from this group.' }, { status: 403 })
   }
 
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('group_members')
     .delete()
     .eq('group_id', params.id)
@@ -31,15 +34,15 @@ export async function POST(_req: Request, props: { params: Promise<{ id: string 
 
   // Clean up my participant row so read/mute state doesn't linger, and my
   // private welcome note so a later re-join welcomes freshly.
-  const convId = await findGroupConversation(params.id)
+  const convId = await findGroupConversation(community.id, params.id)
   if (convId) {
-    await supabaseAdmin
+    await db
       .from('conversation_participants')
       .delete()
       .eq('conversation_id', convId)
       .eq('clerk_user_id', userId)
   }
-  await deleteGroupWelcome(userId, params.id)
+  await deleteGroupWelcome(community.id, userId, params.id)
 
   return NextResponse.json({ success: true })
 }

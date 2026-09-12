@@ -1,7 +1,7 @@
 import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { auth } from '@clerk/nextjs/server'
 import { redirect, notFound } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getDirectThreadMessages } from '@/lib/inbox'
 import { getApprovedMember } from '@/lib/members'
 import { getCommunity } from '@/lib/community'
@@ -14,6 +14,7 @@ export default async function ThreadPage(props: { params: Promise<{ userId: stri
   const { userId: myId } = await auth()
   if (!myId) redirect('/sign-in')
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // Can't message yourself
   if (params.userId === myId) redirect('/messages')
@@ -26,13 +27,13 @@ export default async function ThreadPage(props: { params: Promise<{ userId: stri
     // fallback; see app/messages/page.tsx).
     getApprovedMember(community.id, myId),
     // Recipient profile
-    supabaseAdmin
+    db
       .from('members')
       .select('clerk_user_id, first_name, preferred_name, avatar_url, pronouns')
       .eq('clerk_user_id', params.userId)
       .eq('status', 'approved')
       .maybeSingle(),
-    getDirectThreadMessages(myId, params.userId).catch(() => null),
+    getDirectThreadMessages(community.id, myId, params.userId).catch(() => null),
   ])
 
   if (!me) redirect('/profile')
@@ -55,7 +56,7 @@ export default async function ThreadPage(props: { params: Promise<{ userId: stri
     // may have only ever received messages from us — still allow the thread
     // if any history exists in either direction.
     const [{ data: lastFromThem }, { count }] = await Promise.all([
-      supabaseAdmin
+      db
         .from('messages')
         .select('sender_name')
         .eq('sender_clerk_id', params.userId)
@@ -63,7 +64,7 @@ export default async function ThreadPage(props: { params: Promise<{ userId: stri
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
-      supabaseAdmin
+      db
         .from('messages')
         .select('id', { count: 'exact', head: true })
         .or(

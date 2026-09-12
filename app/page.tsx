@@ -165,7 +165,7 @@ let canManagePolls = false
           .limit(1)
           .maybeSingle(),
         // "On the Air" teaser — the latest Radio events (docs/radio.md)
-        getRadioFeed(6),
+        getRadioFeed(community.id, 6),
       ])
 
       campSignup = signupResult.data ?? null
@@ -242,11 +242,11 @@ let canManagePolls = false
   const [pageContentResult, memberGroups, shiftState, resourceWidget, suspendedResult] = await Promise.all([
     pageContentQuery,
     // Groups the member belongs to (replaces the old setup_preference "contributions").
-    getMemberGroups(application?.clerk_user_id as string | null),
-    shiftClerkId ? getMemberShiftState(shiftClerkId) : Promise.resolve(EMPTY_MEMBER_SHIFT_STATE),
+    getMemberGroups(community.id, application?.clerk_user_id as string | null),
+    shiftClerkId ? getMemberShiftState(community.id, shiftClerkId) : Promise.resolve(EMPTY_MEMBER_SHIFT_STATE),
     // "Bring Something" widget state: the list needing the most attention +
     // the member's own commitments. null = no targeted items yet (hidden).
-    isApprovedForBatch ? getResourceWidgetState(shiftClerkId) : Promise.resolve(null),
+    isApprovedForBatch ? getResourceWidgetState(community.id, shiftClerkId) : Promise.resolve(null),
     // Suspension flag (063) — a suspended member holds no commitments, so we
     // swap the attunement banner for a "paused" notice instead of nagging them.
     isApprovedForBatch && application?.clerk_user_id

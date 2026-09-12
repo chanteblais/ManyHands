@@ -11,7 +11,7 @@
 // live against the member's own clock (their device is at camp; the server
 // is in UTC).
 
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getPageContent, getPageContentValue } from '@/lib/page-content'
 
 export type RadioKind =
@@ -99,9 +99,9 @@ export type RadioEventInput = {
 
 // Best-effort insert — a failed radio post must never break the action it
 // rode on (approval, claim, grant), so this logs and swallows.
-export async function postRadioEvent(event: RadioEventInput): Promise<string | null> {
+export async function postRadioEvent(communityId: string, event: RadioEventInput): Promise<string | null> {
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await tenantDb(communityId)
       .from('radio_events')
       .insert([{
         kind: event.kind,
@@ -135,7 +135,7 @@ export async function postSourcedRadioEvent(
   try {
     const radioValue = await getPageContentValue(communityId, 'config_radio')
     if (!parseRadioSources(radioValue)[source]) return
-    await postRadioEvent(event)
+    await postRadioEvent(communityId, event)
   } catch (e) {
     console.error('[radio] sourced post failed', e)
   }
@@ -143,9 +143,9 @@ export async function postSourcedRadioEvent(
 
 // First name for a radio line ("Sarah just covered…") — Radio is
 // members-only, so first names are the right register.
-export async function getRadioActorName(clerkUserId: string): Promise<string> {
+export async function getRadioActorName(communityId: string, clerkUserId: string): Promise<string> {
   try {
-    const { data } = await supabaseAdmin
+    const { data } = await tenantDb(communityId)
       .from('members')
       .select('preferred_name, first_name')
       .eq('clerk_user_id', clerkUserId)
@@ -237,17 +237,19 @@ export function listMilestoneRadioPost(listTitle: string): RadioEventInput {
 // the feed shouldn't).
 
 export async function resourceStateAfterClaim(
+  communityId: string,
   resourceId: string,
   listId: string,
 ): Promise<{ remaining: number | null; listJustCompleted: boolean; listTitle: string | null }> {
   try {
+    const db = tenantDb(communityId)
     const [{ data: items }, { data: list }] = await Promise.all([
-      supabaseAdmin.from('resources').select('id, quantity_needed').eq('list_id', listId),
-      supabaseAdmin.from('resource_lists').select('title').eq('id', listId).maybeSingle(),
+      db.from('resources').select('id, quantity_needed').eq('list_id', listId),
+      db.from('resource_lists').select('title').eq('id', listId).maybeSingle(),
     ])
     const itemIds = (items ?? []).map(i => i.id)
     const { data: claims } = itemIds.length
-      ? await supabaseAdmin.from('resource_claims').select('resource_id, quantity').in('resource_id', itemIds)
+      ? await db.from('resource_claims').select('resource_id, quantity').in('resource_id', itemIds)
       : { data: [] as { resource_id: string; quantity: number }[] }
 
     const claimedByItem: Record<string, number> = {}
@@ -267,7 +269,7 @@ export async function resourceStateAfterClaim(
 
     let listJustCompleted = false
     if (listCovered && list?.title) {
-      const { data: existing } = await supabaseAdmin
+      const { data: existing } = await db
         .from('radio_events')
         .select('id')
         .eq('kind', 'milestone')
@@ -288,8 +290,9 @@ export async function resourceStateAfterClaim(
 
 // Latest visible posts. No avatar join — the feed's visual language is big
 // emoji + gold entity highlights, not faces (mockup decision 2026-07-03).
-export async function getRadioFeed(limit = 60): Promise<RadioEventRow[]> {
-  const { data, error } = await supabaseAdmin
+export async function getRadioFeed(communityId: string, limit = 60): Promise<RadioEventRow[]> {
+  const db = tenantDb(communityId)
+  const { data, error } = await db
     .from('radio_events')
     .select('id, kind, message, detail, icon, actor_clerk_id, actor_name, link, created_at, created_by')
     .eq('visible', true)
@@ -308,7 +311,7 @@ export async function getRadioFeed(limit = 60): Promise<RadioEventRow[]> {
   const needsName = data.filter(r => !r.actor_name && (r.created_by || r.actor_clerk_id))
   if (needsName.length) {
     const ids = Array.from(new Set(needsName.map(r => r.created_by || r.actor_clerk_id).filter(Boolean))) as string[]
-    const { data: mem } = await supabaseAdmin
+    const { data: mem } = await db
       .from('members')
       .select('clerk_user_id, preferred_name, first_name')
       .in('clerk_user_id', ids)
@@ -333,14 +336,15 @@ export type RadioStats = {
   broadcasts: number
 }
 
-export async function getRadioStats(): Promise<RadioStats> {
+export async function getRadioStats(communityId: string): Promise<RadioStats> {
   const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
   try {
+    const db = tenantDb(communityId)
     const [week, contributions, achievements, broadcasts] = await Promise.all([
-      supabaseAdmin.from('radio_events').select('id', { count: 'exact', head: true }).eq('visible', true).gte('created_at', weekAgo),
-      supabaseAdmin.from('radio_events').select('id', { count: 'exact', head: true }).eq('visible', true).eq('kind', 'contribution'),
-      supabaseAdmin.from('radio_events').select('id', { count: 'exact', head: true }).eq('visible', true).eq('kind', 'achievement'),
-      supabaseAdmin.from('radio_events').select('id', { count: 'exact', head: true }).eq('visible', true).eq('kind', 'broadcast'),
+      db.from('radio_events').select('id', { count: 'exact', head: true }).eq('visible', true).gte('created_at', weekAgo),
+      db.from('radio_events').select('id', { count: 'exact', head: true }).eq('visible', true).eq('kind', 'contribution'),
+      db.from('radio_events').select('id', { count: 'exact', head: true }).eq('visible', true).eq('kind', 'achievement'),
+      db.from('radio_events').select('id', { count: 'exact', head: true }).eq('visible', true).eq('kind', 'broadcast'),
     ])
     return {
       postsThisWeek: week.count ?? 0,
@@ -375,7 +379,7 @@ export async function getRadioNowData(communityId: string): Promise<RadioNowData
 
   const [config, { data: events }] = await Promise.all([
     getPageContent(communityId, ['config_event_start_date', 'config_event_end_date']),
-    supabaseAdmin
+    tenantDb(communityId)
       .from('schedule_events')
       .select('title, start_time, end_time, participation_type, event_date, is_recurring, recurrence_days')
       .eq('visible', true)

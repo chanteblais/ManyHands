@@ -76,7 +76,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
         .delete()
         .eq('clerk_user_id', application.clerk_user_id),
       // All their private group welcome notes go with the memberships.
-      deleteGroupWelcome(application.clerk_user_id),
+      deleteGroupWelcome(community.id, application.clerk_user_id),
     ])
 
     // Notify the removed member

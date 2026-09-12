@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function GET() {
@@ -7,7 +8,10 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { data, error } = await supabaseAdmin
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const { data, error } = await db
     .from('admin_notifications')
     .select('id, application_id, event_type, message, details, created_at, read_at')
     .order('created_at', { ascending: false })
@@ -26,8 +30,11 @@ export async function PATCH() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const now = new Date().toISOString()
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('admin_notifications')
     .update({ read_at: now })
     .is('read_at', null)
@@ -45,7 +52,10 @@ export async function DELETE() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { error } = await supabaseAdmin
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const { error } = await db
     .from('admin_notifications')
     .delete()
     .neq('id', '00000000-0000-0000-0000-000000000000') // delete all rows

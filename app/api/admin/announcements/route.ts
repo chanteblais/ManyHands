@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function GET() {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const now = new Date().toISOString()
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('announcements')
     .select('*')
     .eq('visible', true)
@@ -23,8 +27,11 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const body = await req.json()
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('announcements')
     .insert([{
       title: body.title,

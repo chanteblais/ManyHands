@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity, type Community } from '@/lib/community'
 import {
   findGroupConversation,
@@ -34,19 +34,20 @@ export async function GET(_req: Request, props: { params: Promise<{ groupId: str
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // Membership + approval checks and conversation lookup are independent — run together.
   const [isMember, approvedMember, convId] = await Promise.all([
-    isGroupMember(params.groupId, userId),
+    isGroupMember(community.id, params.groupId, userId),
     getApprovedMember(community.id, userId),
-    findGroupConversation(params.groupId),
+    findGroupConversation(community.id, params.groupId),
   ])
   if (!isMember || !approvedMember) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
   if (!convId) return NextResponse.json({ messages: [] })
 
-  const { data: msgs, error } = await supabaseAdmin
+  const { data: msgs, error } = await db
     .from('messages')
     .select('id, sender_clerk_id, body, created_at, sender_name, parent_message_id')
     .eq('conversation_id', convId)
@@ -64,7 +65,7 @@ export async function GET(_req: Request, props: { params: Promise<{ groupId: str
   // snapshot name so messages from departed members stay readable.
   const senderIds = Array.from(new Set((msgs ?? []).map(m => m.sender_clerk_id)))
   const { data: profiles } = senderIds.length
-    ? await supabaseAdmin
+    ? await db
         // Phase 5: identity resolution reads the canonical `members` table.
         .from('members')
         .select('clerk_user_id, first_name, preferred_name, avatar_url')
@@ -97,6 +98,7 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const { body, parentMessageId } = await req.json()
   if (!body?.trim()) return NextResponse.json({ error: 'body is required' }, { status: 400 })
@@ -107,11 +109,11 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
   // The status check mirrors GET: a lingering group_members row must not let a
   // removed/rejected member keep posting.
   const [isMember, existingConvId, { data: senderApp }] = await Promise.all([
-    isGroupMember(params.groupId, userId),
-    findGroupConversation(params.groupId),
+    isGroupMember(community.id, params.groupId, userId),
+    findGroupConversation(community.id, params.groupId),
     // Snapshot the sender's display name (the messages table has no FK to
     // applications) — status rides along for the approval gate.
-    supabaseAdmin
+    db
       .from('members')
       .select('preferred_name, first_name, status')
       .eq('clerk_user_id', userId)
@@ -121,7 +123,7 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const convId = existingConvId ?? (await getOrCreateGroupConversation(params.groupId))
+  const convId = existingConvId ?? (await getOrCreateGroupConversation(community.id, params.groupId))
 
   // Replies are one level deep: a parent must be a top-level message in this
   // conversation (you can't reply to a reply). System notes (the private
@@ -129,7 +131,7 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
   // parent is invisible to everyone else.
   let parent_message_id: string | null = null
   if (parentMessageId) {
-    const { data: parent } = await supabaseAdmin
+    const { data: parent } = await db
       .from('messages')
       .select('id, conversation_id, parent_message_id, sender_clerk_id')
       .eq('id', parentMessageId)
@@ -142,7 +144,7 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
 
   const senderName = senderApp?.preferred_name || senderApp?.first_name || 'A member'
 
-  const { data: message, error } = await supabaseAdmin
+  const { data: message, error } = await db
     .from('messages')
     .insert({ conversation_id: convId, sender_clerk_id: userId, sender_name: senderName, body: body.trim(), parent_message_id })
     .select()
@@ -155,7 +157,7 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
   // notify (in-app) + email the mentioned members. Opted-in members get a
   // throttled activity email. Best-effort — never block the post on notifications.
   await Promise.all([
-    markConversationRead(convId, userId),
+    markConversationRead(community.id, convId, userId),
     (async () => {
       try {
         const mentionedIds = await notifyMentions({
@@ -198,17 +200,18 @@ async function notifyMentions(opts: {
 }): Promise<string[]> {
   const { community, groupId, messageId, senderId, senderName, body } = opts
   if (!body.includes('@')) return [] // fast path: no mentions possible
+  const db = tenantDb(community.id)
 
   // Group roster and group name are independent — one round-trip.
   const [{ data: memberRows }, { data: group }] = await Promise.all([
-    supabaseAdmin.from('group_members').select('clerk_user_id').eq('group_id', groupId),
-    supabaseAdmin.from('groups').select('name').eq('id', groupId).maybeSingle(),
+    db.from('group_members').select('clerk_user_id').eq('group_id', groupId),
+    db.from('groups').select('name').eq('id', groupId).maybeSingle(),
   ])
   // Group members other than the sender.
   const memberIds = (memberRows ?? []).map(r => r.clerk_user_id).filter(id => id && id !== senderId)
   if (!memberIds.length) return []
 
-  const { data: apps } = await supabaseAdmin
+  const { data: apps } = await db
     .from('members')
     .select('clerk_user_id, first_name, preferred_name, email')
     .in('clerk_user_id', memberIds)
@@ -233,7 +236,7 @@ async function notifyMentions(opts: {
     // Throttle email (look for a prior mention notification before creating this
     // one) and the email preference — independent checks.
     const [{ data: recent }, prefs] = await Promise.all([
-      supabaseAdmin
+      db
         .from('user_notifications')
         .select('id')
         .eq('clerk_user_id', recipientId)
@@ -246,7 +249,7 @@ async function notifyMentions(opts: {
     const throttled = !!(recent && recent.length)
 
     // In-app notification — always.
-    await supabaseAdmin.from('user_notifications').insert({
+    await db.from('user_notifications').insert({
       clerk_user_id: recipientId,
       event_type: 'group_mention',
       message: `${senderName} mentioned you in ${groupName}`,
@@ -288,27 +291,28 @@ async function notifyOptedIn(opts: {
   excludeIds: string[]
 }) {
   const { community, groupId, conversationId, messageCreatedAt, senderId, senderName, body, excludeIds } = opts
+  const db = tenantDb(community.id)
 
   // Opted-in participants, the per-conversation burst throttle, and the group
   // name are independent — one round-trip.
   const since = new Date(Date.now() - MENTION_EMAIL_THROTTLE_MS).toISOString()
   const [{ data: optedIn }, { data: priorBurst }, { data: group }] = await Promise.all([
     // Opted-in participants other than the sender (and not already mentioned).
-    supabaseAdmin
+    db
       .from('conversation_participants')
       .select('clerk_user_id')
       .eq('conversation_id', conversationId)
       .eq('email_opt_in', true)
       .neq('clerk_user_id', senderId),
     // Per-conversation throttle: skip if there was another message in the window.
-    supabaseAdmin
+    db
       .from('messages')
       .select('id')
       .eq('conversation_id', conversationId)
       .lt('created_at', messageCreatedAt)
       .gte('created_at', since)
       .limit(1),
-    supabaseAdmin.from('groups').select('name').eq('id', groupId).maybeSingle(),
+    db.from('groups').select('name').eq('id', groupId).maybeSingle(),
   ])
   const exclude = new Set([...excludeIds, senderId])
   const recipientIds = (optedIn ?? []).map(p => p.clerk_user_id).filter(id => id && !exclude.has(id))
@@ -316,7 +320,7 @@ async function notifyOptedIn(opts: {
   if (priorBurst && priorBurst.length) return
 
   const groupName = group?.name || 'a group'
-  const { data: apps } = await supabaseAdmin
+  const { data: apps } = await db
     .from('members')
     .select('clerk_user_id, first_name, preferred_name, email')
     .in('clerk_user_id', recipientIds)

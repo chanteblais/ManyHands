@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { shiftDurationHours } from '@/lib/shift-hours'
 
 // Server-side helper: everything attunement needs to evaluate shift-hours
@@ -40,23 +40,24 @@ type ReqRow = {
   shift_types: { name: string } | null
 }
 
-export async function getMemberShiftState(clerkUserId: string): Promise<MemberShiftState> {
+export async function getMemberShiftState(communityId: string, clerkUserId: string): Promise<MemberShiftState> {
+  const db = tenantDb(communityId)
   const [signupsRes, roleRes, groupRes] = await Promise.all([
     // Held shifts (member_shift_signups — the single source since 065).
     // occurrence_date names each held night — every night of a recurring shift
     // counts its own hours (it's a regular shift).
-    supabaseAdmin
+    db
       .from('member_shift_signups')
       .select('schedule_event_id, occurrence_date')
       .eq('clerk_user_id', clerkUserId),
     // The member's role (which may carry a requirement).
-    supabaseAdmin
+    db
       .from('camp_signups')
       .select('role_id, role_approval_status, roles(required_shift_type_id, required_shift_hours, shift_types:required_shift_type_id(name))')
       .eq('clerk_user_id', clerkUserId)
       .maybeSingle(),
     // Groups the member belongs to, with their optional requirement.
-    supabaseAdmin
+    db
       .from('group_members')
       .select('groups(id, required_shift_type_id, required_shift_hours, shift_types:required_shift_type_id(name))')
       .eq('clerk_user_id', clerkUserId),
@@ -74,7 +75,7 @@ export async function getMemberShiftState(clerkUserId: string): Promise<MemberSh
   const hoursByShiftType: Record<string, number> = {}
   let totalShiftHours = 0
   if (eventIds.size > 0) {
-    const { data: events } = await supabaseAdmin
+    const { data: events } = await db
       .from('schedule_events')
       .select('id, participation_type, shift_type_id, start_time, end_time')
       .in('id', Array.from(eventIds))

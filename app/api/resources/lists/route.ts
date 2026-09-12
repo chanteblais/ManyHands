@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 
@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const member = await getApprovedMember(community.id, userId)
   if (!member) {
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
   const { title, description, show_on_dashboard } = await req.json()
   if (!title?.trim()) return NextResponse.json({ error: 'A title is required' }, { status: 400 })
 
-  const { data: list, error } = await supabaseAdmin
+  const { data: list, error } = await db
     .from('resource_lists')
     .insert({
       title: title.trim().slice(0, 80),

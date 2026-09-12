@@ -1,7 +1,7 @@
 import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getInboxConversations } from '@/lib/inbox'
 import { getApprovedMember } from '@/lib/members'
 import { getCommunity } from '@/lib/community'
@@ -19,6 +19,7 @@ export default async function MessagesPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // The access check, the "New Message" member picker, and the initial inbox
   // are independent reads — run them together (the page renders with the inbox
@@ -30,13 +31,13 @@ export default async function MessagesPage() {
     getApprovedMember(community.id, userId),
     // All other approved members for the "New Message" picker
     // Phase 5: identity resolution reads the canonical `members` table.
-    supabaseAdmin
+    db
       .from('members')
       .select('clerk_user_id, first_name, preferred_name, avatar_url')
       .eq('status', 'approved')
       .neq('clerk_user_id', userId)
       .order('first_name', { ascending: true }),
-    getInboxConversations(userId),
+    getInboxConversations(community.id, userId),
   ])
 
   if (!me) redirect('/profile')

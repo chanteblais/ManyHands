@@ -1,6 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
 import { ScheduleSection } from '@/components/ScheduleSection'
 import { LeadUpGatherings } from './LeadUpGatherings'
 import { Header } from '@/components/Header'
@@ -20,7 +19,7 @@ export default async function SchedulePage() {
     // Only approved members can view schedule — canonical gate (members table
     // + email fallback; see app/messages/page.tsx).
     getApprovedMember(community.id, userId),
-    getMemberLeadUpEvents(userId).catch(() => undefined),
+    getMemberLeadUpEvents(community.id, userId).catch(() => undefined),
   ])
 
   if (!member) redirect('/profile')

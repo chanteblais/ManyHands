@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb, type TenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { getSelfJoinGroups } from '@/lib/participate-data'
 import { getApprovedMember } from '@/lib/members'
@@ -14,8 +14,8 @@ import { sendGroupWelcome, deleteGroupWelcome } from '@/lib/conversations'
 // `group_select` field governs the application wizard only, not this surface.
 
 // Returns the set of group ids members may opt into on the Participate page.
-async function selectableGroupIds(): Promise<Set<string>> {
-  const { data: groups, error } = await supabaseAdmin
+async function selectableGroupIds(db: TenantDb): Promise<Set<string>> {
+  const { data: groups, error } = await db
     .from('groups')
     .select('id, collection_id, group_collections(self_join)')
 
@@ -40,10 +40,11 @@ async function selectableGroupIds(): Promise<Set<string>> {
 export async function GET() {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
   // Data assembly lives in lib/participate-data.ts, shared with the
   // server-rendered /participate page (this route is the client's refresh path).
-  const groups = await getSelfJoinGroups(userId)
+  const groups = await getSelfJoinGroups(community.id, userId)
   return NextResponse.json({ groups })
 }
 
@@ -52,6 +53,7 @@ export async function POST(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // Approved members only — same gate as the /participate page this backs.
   const member = await getApprovedMember(community.id, userId)
@@ -70,29 +72,29 @@ export async function POST(req: NextRequest) {
   }
 
   // Only selectable groups in a visible collection are self-manageable.
-  const ids = await selectableGroupIds()
+  const ids = await selectableGroupIds(db)
   if (!ids.has(group_id)) {
     return NextResponse.json({ error: 'This group cannot be self-managed' }, { status: 403 })
   }
 
   if (joined) {
-    const { data: inserted, error } = await supabaseAdmin
+    const { data: inserted, error } = await db
       .from('group_members')
       .upsert({ group_id, clerk_user_id: userId, source: 'application' }, { onConflict: 'group_id,clerk_user_id', ignoreDuplicates: true })
       .select('clerk_user_id')
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     // Fresh membership → private welcome note in the group thread (their unread
     // badge confirms the join and points them at the thread).
-    if ((inserted ?? []).length > 0) await sendGroupWelcome(group_id, userId)
+    if ((inserted ?? []).length > 0) await sendGroupWelcome(community.id, group_id, userId)
   } else {
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('group_members')
       .delete()
       .eq('group_id', group_id)
       .eq('clerk_user_id', userId)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     // Clear the welcome note so a later re-join welcomes freshly.
-    await deleteGroupWelcome(userId, group_id)
+    await deleteGroupWelcome(community.id, userId, group_id)
   }
 
   return NextResponse.json({ success: true, joined })

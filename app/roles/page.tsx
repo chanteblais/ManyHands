@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { IconImage, ROUND_FILL } from '@/components/IconImage'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { Header } from '@/components/Header'
 import { isImageIcon } from '@/lib/icon-src'
 import { roleSlug } from '@/lib/role-slug'
@@ -74,6 +74,7 @@ export default async function RolesRegistryPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // Same gate as /schedule and /participate: approved members only —
   // canonical gate (members table + email fallback; see app/messages/page.tsx).
@@ -81,10 +82,10 @@ export default async function RolesRegistryPage() {
   if (!member) redirect('/profile')
 
   const [deptRes, rolesRes, signupRes, roleCounts] = await Promise.all([
-    supabaseAdmin.from('departments').select('id, name, description, icon, sort_order').order('sort_order'),
-    supabaseAdmin.from('roles').select('id, name, description, capacity, department_id, purpose, responsibilities_before, responsibilities_during, ideal_for, commitment, commitment_period, requires_approval').order('sort_order'),
-    supabaseAdmin.from('camp_signups').select('role_id, role_approval_status').eq('clerk_user_id', userId).maybeSingle(),
-    supabaseAdmin.from('camp_signups').select('role_id').not('role_id', 'is', null),
+    db.from('departments').select('id, name, description, icon, sort_order').order('sort_order'),
+    db.from('roles').select('id, name, description, capacity, department_id, purpose, responsibilities_before, responsibilities_during, ideal_for, commitment, commitment_period, requires_approval').order('sort_order'),
+    db.from('camp_signups').select('role_id, role_approval_status').eq('clerk_user_id', userId).maybeSingle(),
+    db.from('camp_signups').select('role_id').not('role_id', 'is', null),
   ])
 
   const signedUp: Record<string, number> = {}
@@ -194,7 +195,7 @@ export default async function RolesRegistryPage() {
 
             {/* Role entries */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {dept.roles.map(role => {
+              {dept.roles.map((role: RoleRow) => {
                 const count = signedUp[role.id] ?? 0
                 const isCurrent = signup?.role_id === role.id
                 const isPending = isCurrent && signup?.role_approval_status === 'pending'

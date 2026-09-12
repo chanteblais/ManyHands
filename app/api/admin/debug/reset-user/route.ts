@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function POST(req: NextRequest) {
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const { email } = await req.json()
   if (!email?.trim()) return NextResponse.json({ error: 'Email required' }, { status: 400 })
 
   // Find application by email
-  const { data: application } = await supabaseAdmin
+  const { data: application } = await db
     .from('applications')
     .select('id, clerk_user_id, first_name, last_name, email')
     .eq('email', email.trim().toLowerCase())
@@ -20,18 +24,18 @@ export async function POST(req: NextRequest) {
   const deleted: string[] = []
 
   if (clerkUserId) {
-    await supabaseAdmin.from('camp_signups').delete().eq('clerk_user_id', clerkUserId)
+    await db.from('camp_signups').delete().eq('clerk_user_id', clerkUserId)
     deleted.push('camp_signups')
 
-    await supabaseAdmin.from('user_notifications').delete().eq('clerk_user_id', clerkUserId)
+    await db.from('user_notifications').delete().eq('clerk_user_id', clerkUserId)
     deleted.push('user_notifications')
 
-    await supabaseAdmin.from('role_suggestions').delete().eq('clerk_user_id', clerkUserId)
+    await db.from('role_suggestions').delete().eq('clerk_user_id', clerkUserId)
     deleted.push('role_suggestions')
   }
 
   if (application) {
-    await supabaseAdmin.from('applications').delete().eq('id', application.id)
+    await db.from('applications').delete().eq('id', application.id)
     deleted.push('application')
   }
 

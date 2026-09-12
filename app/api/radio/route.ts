@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity, type Community } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 import { parseRadioSources, postRadioEvent } from '@/lib/radio'
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const member = await getApprovedMember(community.id, userId)
   if (!member) {
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
   // is interactive, so a member deserves a real error — a hook can swallow a
   // failed post, a composer must not pretend it landed. This is also the
   // admin's kill switch for open-mic (Admin → Radio → Member voices).
-  const { data: configRow } = await supabaseAdmin
+  const { data: configRow } = await db
     .from('page_content')
     .select('value')
     .eq('key', 'config_radio')
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
   const body = message.trim().slice(0, 280)
 
   // A notify-all post carries the megaphone; an ordinary voice, the ✦.
-  const id = await postRadioEvent({
+  const id = await postRadioEvent(community.id, {
     kind: 'voice',
     message: body,
     icon: notifyAll ? '📢' : '✦',
@@ -93,12 +94,13 @@ async function fanOut(opts: {
   notifyAll: boolean
 }): Promise<{ notified: number; mentioned: number }> {
   const { community, postId, senderId, senderName, body, notifyAll } = opts
+  const db = tenantDb(community.id)
 
   const hasMention = body.includes('@')
   if (!notifyAll && !hasMention) return { notified: 0, mentioned: 0 }
 
   // The audience is every approved member but the sender.
-  const { data: membersRaw } = await supabaseAdmin
+  const { data: membersRaw } = await db
     .from('members')
     .select('clerk_user_id, email, first_name, preferred_name')
     .eq('status', 'approved')
@@ -119,7 +121,7 @@ async function fanOut(opts: {
     const recipientId = m.clerk_user_id as string
     const recipientName = m.preferred_name || m.first_name || 'there'
     const prefs = await getNotificationPreferences(recipientId)
-    await supabaseAdmin.from('user_notifications').insert({
+    await db.from('user_notifications').insert({
       clerk_user_id: recipientId,
       event_type: 'radio_mention',
       message: `${senderName} mentioned you on Radio`,
@@ -128,7 +130,7 @@ async function fanOut(opts: {
     await dispatchMemberNotification(recipientId, {
       kind: 'new_message',
       prefs,
-      push: { title: 'Glåüm Radio', body: `${senderName} mentioned you: ${body.slice(0, 120)}`, link: '/radio' },
+      push: { title: `${community.name} Radio`, body: `${senderName} mentioned you: ${body.slice(0, 120)}`, link: '/radio' },
       email: m.email ? () => sendRadioMentionEmail({ community, to: m.email!, recipientName, senderName, preview: body }) : undefined,
     })
   }))
@@ -144,7 +146,7 @@ async function fanOut(opts: {
       details: { radioEventId: postId },
     }))
     if (bellRows.length) {
-      await supabaseAdmin.from('user_notifications').insert(bellRows)
+      await db.from('user_notifications').insert(bellRows)
       notified = bellRows.length
     }
     await Promise.all(broadcastRecipients.map(async m => {
@@ -154,7 +156,7 @@ async function fanOut(opts: {
       await dispatchMemberNotification(recipientId, {
         kind: 'announcement',
         prefs,
-        push: { title: 'Glåüm Radio', body: `${senderName}: ${body.slice(0, 120)}`, link: '/radio' },
+        push: { title: `${community.name} Radio`, body: `${senderName}: ${body.slice(0, 120)}`, link: '/radio' },
         email: m.email ? () => sendRadioBroadcastEmail({ community, to: m.email!, recipientName, senderName, message: body }) : undefined,
       })
     }))

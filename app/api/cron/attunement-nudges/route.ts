@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { collectOutstandingAttunement } from '@/lib/attunement-nudge'
 import { sendAttunementNudgeEmail } from '@/lib/send-email'
@@ -40,12 +40,14 @@ async function authorize(req: NextRequest): Promise<'cron' | 'admin' | null> {
 export async function GET(req: NextRequest) {
   const caller = await authorize(req)
   if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // Resolved once from the host (the per-community loop is a later branch).
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const params = req.nextUrl.searchParams
   const dryRun = caller === 'admin' ? params.get('send') !== '1' : params.get('dryRun') === '1'
 
-  const outstanding = await collectOutstandingAttunement()
+  const outstanding = await collectOutstandingAttunement(community.id)
 
   // Opt-outs + ledger in two batch queries.
   const clerkIds = outstanding.map(m => m.clerkUserId)
@@ -53,11 +55,11 @@ export async function GET(req: NextRequest) {
   const ledger = new Map<string, { last_sent_at: string; outstanding_count: number; nudge_count: number }>()
   if (clerkIds.length) {
     const [{ data: prefRows, error: prefError }, { data: ledgerRows }] = await Promise.all([
-      supabaseAdmin
+      db
         .from('notification_preferences')
         .select('clerk_user_id, email_attunement_nudges')
         .in('clerk_user_id', clerkIds),
-      supabaseAdmin
+      db
         .from('attunement_nudges')
         .select('clerk_user_id, last_sent_at, outstanding_count, nudge_count')
         .in('clerk_user_id', clerkIds),
@@ -72,7 +74,7 @@ export async function GET(req: NextRequest) {
     for (const l of ledgerRows ?? []) ledger.set(l.clerk_user_id, l)
   }
 
-  const { data: cfgRows } = await supabaseAdmin
+  const { data: cfgRows } = await db
     .from('page_content')
     .select('key, value')
     .in('key', ['config_event_start_date', 'config_attunement_nudge_days'])
@@ -106,7 +108,7 @@ export async function GET(req: NextRequest) {
     const outstandingCount = m.outstandingRequired.length + m.outstandingCommitments.length
     let claimed: boolean
     if (prev) {
-      const { data: rows, error } = await supabaseAdmin
+      const { data: rows, error } = await db
         .from('attunement_nudges')
         .update({ last_sent_at: new Date().toISOString(), outstanding_count: outstandingCount, nudge_count: prev.nudge_count + 1 })
         .eq('clerk_user_id', m.clerkUserId)
@@ -114,11 +116,11 @@ export async function GET(req: NextRequest) {
         .select('clerk_user_id')
       claimed = !error && (rows?.length ?? 0) > 0
     } else {
-      const { data: rows, error } = await supabaseAdmin
+      const { data: rows, error } = await db
         .from('attunement_nudges')
         .upsert(
           { clerk_user_id: m.clerkUserId, last_sent_at: new Date().toISOString(), outstanding_count: outstandingCount, nudge_count: 1 },
-          { onConflict: 'clerk_user_id', ignoreDuplicates: true }
+          { onConflict: 'clerk_user_id', ignoreDuplicates: true } // unique on clerk_user_id alone until migration 075
         )
         .select('clerk_user_id')
       claimed = !error && (rows?.length ?? 0) > 0
@@ -128,8 +130,8 @@ export async function GET(req: NextRequest) {
     // Send failed → restore the previous ledger state so the next sweep
     // retries instead of waiting out a cooldown that never emailed (best-effort).
     const releaseClaim = () => prev
-      ? supabaseAdmin.from('attunement_nudges').update(prev).eq('clerk_user_id', m.clerkUserId)
-      : supabaseAdmin.from('attunement_nudges').delete().eq('clerk_user_id', m.clerkUserId)
+      ? db.from('attunement_nudges').update(prev).eq('clerk_user_id', m.clerkUserId)
+      : db.from('attunement_nudges').delete().eq('clerk_user_id', m.clerkUserId)
 
     try {
       const result = await sendAttunementNudgeEmail({

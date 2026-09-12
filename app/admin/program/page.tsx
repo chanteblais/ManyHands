@@ -1,7 +1,7 @@
 import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { requireAdmin } from '@/lib/admin-auth'
 import { AdminNav } from '../AdminNav'
 import { CategoryHeading } from '../CategoryHeading'
@@ -39,6 +39,7 @@ export default async function ProgramPage() {
 
   if (!(await requireAdmin())) redirect('/')
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const [
     { data: configRows },
@@ -49,11 +50,11 @@ export default async function ProgramPage() {
     rosters,
     leadUpEvents,
   ] = await Promise.all([
-    supabaseAdmin
+    db
       .from('page_content')
       .select('key, value')
       .in('key', ['config_shift_signup_open', 'config_event_start_date', 'config_event_end_date']),
-    supabaseAdmin
+    db
       .from('admin_notifications')
       .select('id, application_id, event_type, message, details, created_at, read_at')
       .order('created_at', { ascending: false })
@@ -61,10 +62,10 @@ export default async function ProgramPage() {
     getAdminRunway(community.id),
     // The managers' section data, server-rendered so the tab paints populated
     // (no mount-fetch wave) — same assembly the /api/admin routes serve.
-    safe(getAdminScheduleEvents()),
-    safe(getAdminShiftTypes()),
+    safe(getAdminScheduleEvents(community.id)),
+    safe(getAdminShiftTypes(community.id)),
     safe(getAdminRosters(community.id)),
-    safe(getAdminLeadUpEvents()),
+    safe(getAdminLeadUpEvents(community.id)),
   ])
   const configMap = Object.fromEntries((configRows ?? []).map(r => [r.key, r.value]))
   const shiftSignupOpen = configMap['config_shift_signup_open'] !== 'false'

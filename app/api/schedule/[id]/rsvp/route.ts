@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb, type TenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 
 // Confirm the signed-in user is an approved member before they may RSVP.
-async function requireApprovedMember(userId: string): Promise<boolean> {
-  const { data } = await supabaseAdmin
+async function requireApprovedMember(db: TenantDb, userId: string): Promise<boolean> {
+  const { data } = await db
     .from('members')
     .select('status')
     .eq('clerk_user_id', userId)
@@ -13,8 +14,8 @@ async function requireApprovedMember(userId: string): Promise<boolean> {
   return !!data
 }
 
-async function rsvpCount(eventId: string): Promise<number> {
-  const { count } = await supabaseAdmin
+async function rsvpCount(db: TenantDb, eventId: string): Promise<number> {
+  const { count } = await db
     .from('event_rsvps')
     .select('id', { count: 'exact', head: true })
     .eq('schedule_event_id', eventId)
@@ -26,16 +27,18 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   try {
     const [{ data: existing }, count] = await Promise.all([
-      supabaseAdmin
+      db
         .from('event_rsvps')
         .select('id')
         .eq('schedule_event_id', params.id)
         .eq('clerk_user_id', userId)
         .maybeSingle(),
-      rsvpCount(params.id),
+      rsvpCount(db, params.id),
     ])
 
     return NextResponse.json({ rsvped: !!existing, count })
@@ -50,6 +53,8 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   try {
     // Allow the client to specify an explicit desired state; default to toggle.
@@ -65,14 +70,14 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     // Approval gate, event check, and existing-RSVP lookup are independent —
     // one parallel round trip instead of three serial ones.
     const [approved, { data: event }, { data: existing }] = await Promise.all([
-      requireApprovedMember(userId),
-      supabaseAdmin
+      requireApprovedMember(db, userId),
+      db
         .from('schedule_events')
         .select('id')
         .eq('id', params.id)
         .eq('visible', true)
         .maybeSingle(),
-      supabaseAdmin
+      db
         .from('event_rsvps')
         .select('id')
         .eq('schedule_event_id', params.id)
@@ -85,23 +90,23 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     const shouldRemove = desired === 'off' || (desired === 'toggle' && !!existing)
 
     if (shouldRemove) {
-      const { error } = await supabaseAdmin
+      const { error } = await db
         .from('event_rsvps')
         .delete()
         .eq('schedule_event_id', params.id)
         .eq('clerk_user_id', userId)
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-      return NextResponse.json({ rsvped: false, count: await rsvpCount(params.id) })
+      return NextResponse.json({ rsvped: false, count: await rsvpCount(db, params.id) })
     }
 
     if (!existing) {
-      const { error } = await supabaseAdmin
+      const { error } = await db
         .from('event_rsvps')
         .insert({ schedule_event_id: params.id, clerk_user_id: userId })
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json({ rsvped: true, count: await rsvpCount(params.id) })
+    return NextResponse.json({ rsvped: true, count: await rsvpCount(db, params.id) })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to RSVP'
     return NextResponse.json({ error: message }, { status: 500 })

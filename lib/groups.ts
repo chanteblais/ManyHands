@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 
 export type MemberGroup = {
   id: string
@@ -18,9 +18,9 @@ export type MemberGroup = {
 
 // Fetch the groups a member belongs to (ordered by the group's sort_order).
 // Replaces the old `setup_preference`-derived "contributions" concept.
-export async function getMemberGroups(clerkUserId: string | null | undefined): Promise<MemberGroup[]> {
+export async function getMemberGroups(communityId: string, clerkUserId: string | null | undefined): Promise<MemberGroup[]> {
   if (!clerkUserId) return []
-  const { data } = await supabaseAdmin
+  const { data } = await tenantDb(communityId)
     .from('group_members')
     .select('groups(id, name, icon, description, icon_image, sort_order, collection_id, group_collections(name, show_on_profile, sort_order))')
     .eq('clerk_user_id', clerkUserId)
@@ -50,8 +50,8 @@ export async function getMemberGroups(clerkUserId: string | null | undefined): P
 
 // Map of clerk_user_id → group names they belong to. For admin roster/overview
 // views that need every member's groups at once (replaces reading setup_preference).
-export async function getGroupNamesByUser(): Promise<Record<string, string[]>> {
-  const { data } = await supabaseAdmin
+export async function getGroupNamesByUser(communityId: string): Promise<Record<string, string[]>> {
+  const { data } = await tenantDb(communityId)
     .from('group_members')
     .select('clerk_user_id, groups(name)')
 

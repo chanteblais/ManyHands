@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 import { getPageContent, getPageContentValue } from './page-content'
 import { shiftDurationHours } from './shift-hours'
 import { getMemberShiftState } from './shift-attunement'
@@ -21,11 +21,12 @@ export type RoleSignupData = {
 }
 
 export async function getRoleSignupData(communityId: string, userId: string): Promise<RoleSignupData> {
+  const db = tenantDb(communityId)
   const [deptRes, rolesRes, signupRes, roleCounts, shiftFlagValue] = await Promise.all([
-    supabaseAdmin.from('departments').select('id, name, description, icon, sort_order').order('sort_order'),
-    supabaseAdmin.from('roles').select('id, name, description, capacity, sort_order, department_id, purpose, responsibilities_before, responsibilities_during, ideal_for, commitment, commitment_period, requires_approval').order('sort_order'),
-    supabaseAdmin.from('camp_signups').select('role_id, role_approval_status').eq('clerk_user_id', userId).maybeSingle(),
-    supabaseAdmin.from('camp_signups').select('role_id').not('role_id', 'is', null),
+    db.from('departments').select('id, name, description, icon, sort_order').order('sort_order'),
+    db.from('roles').select('id, name, description, capacity, sort_order, department_id, purpose, responsibilities_before, responsibilities_during, ideal_for, commitment, commitment_period, requires_approval').order('sort_order'),
+    db.from('camp_signups').select('role_id, role_approval_status').eq('clerk_user_id', userId).maybeSingle(),
+    db.from('camp_signups').select('role_id').not('role_id', 'is', null),
     getPageContentValue(communityId, 'config_shift_signup_open'),
   ])
 
@@ -63,8 +64,9 @@ export const holdOccKey = (userId: string, eventId: string, occDate: string | nu
 
 // Unique (member, event, occurrence) holds from member_shift_signups (the
 // single source of shift holds since the legacy column drop, migration 065).
-export async function fetchAllHolds() {
-  const { data: many } = await supabaseAdmin
+export async function fetchAllHolds(communityId: string) {
+  const db = tenantDb(communityId)
+  const { data: many } = await db
     .from('member_shift_signups')
     .select('clerk_user_id, schedule_event_id, occurrence_date, role')
   const pairs = new Set<string>()
@@ -109,18 +111,19 @@ export type ShiftSignupData = {
 }
 
 export async function getShiftSignupData(communityId: string, userId: string): Promise<ShiftSignupData> {
+  const db = tenantDb(communityId)
   const [eventsRes, holds, shiftState, config, typesRes] = await Promise.all([
-    supabaseAdmin
+    db
       .from('schedule_events')
       .select('id, title, subtitle, day, time, event_date, start_time, end_time, capacity, shift_type_id, needs_lead, is_recurring, recurrence_days, shift_types(name, icon)')
       .eq('participation_type', 'shift')
       .eq('visible', true)
       .order('event_date', { ascending: true, nullsFirst: false })
       .order('start_time', { ascending: true, nullsFirst: false }),
-    fetchAllHolds(),
-    getMemberShiftState(userId),
+    fetchAllHolds(communityId),
+    getMemberShiftState(communityId, userId),
     getPageContent(communityId, ['config_shift_signup_open', 'config_attunement_tasks', 'config_event_start_date', 'config_event_end_date']),
-    supabaseAdmin.from('shift_types').select('id, name, icon').order('sort_order'),
+    db.from('shift_types').select('id, name, icon').order('sort_order'),
   ])
 
   // Registry order drives each type's palette slot (lib/shift-colors.ts).
@@ -251,16 +254,17 @@ type SelfJoinGroupRow = {
   shift_types: { name: string } | { name: string }[] | null
 }
 
-export async function getSelfJoinGroups(userId: string): Promise<SelfJoinGroup[]> {
+export async function getSelfJoinGroups(communityId: string, userId: string): Promise<SelfJoinGroup[]> {
+  const db = tenantDb(communityId)
   // One round-trip: the groups query embeds its collection's self_join flag
   // (so no separate selectable-ids pass) and the caller's memberships are
   // independent of it.
   const [groupsRes, mineRes] = await Promise.all([
-    supabaseAdmin
+    db
       .from('groups')
       .select('id, name, description, icon, icon_image, sort_order, collection_id, required_shift_hours, group_collections(name, sort_order, self_join), shift_types:required_shift_type_id(name)')
       .order('sort_order', { ascending: true }),
-    supabaseAdmin.from('group_members').select('group_id').eq('clerk_user_id', userId),
+    db.from('group_members').select('group_id').eq('clerk_user_id', userId),
   ])
 
   // Table missing (pre-migration) → nothing selectable rather than a 500.

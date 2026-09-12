@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 
 export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
-  const { data: shoutout } = await supabaseAdmin
+  const { data: shoutout } = await db
     .from('shoutouts')
     .select('id, clerk_user_id')
     .eq('id', params.id)
@@ -24,7 +27,7 @@ export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: s
   }
   if (!isOwner && !isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { error } = await supabaseAdmin.from('shoutouts').delete().eq('id', params.id)
+  const { error } = await db.from('shoutouts').delete().eq('id', params.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   return NextResponse.json({ ok: true })

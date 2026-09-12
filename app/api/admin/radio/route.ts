@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { requireAdmin } from '@/lib/admin-auth'
 import { postRadioEvent } from '@/lib/radio'
 import { sendUserEmail, appOrigin } from '@/lib/send-email'
@@ -12,8 +12,10 @@ export async function GET() {
   const userId = await requireAdmin()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+
   try {
-    return NextResponse.json({ events: await getAdminRadioEvents() })
+    return NextResponse.json({ events: await getAdminRadioEvents(community.id) })
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to load' }, { status: 500 })
   }
@@ -27,6 +29,7 @@ export async function POST(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const { message, detail, icon, notify } = await req.json().catch(() => ({}))
   if (typeof message !== 'string' || !message.trim()) {
@@ -38,14 +41,14 @@ export async function POST(req: NextRequest) {
 
   // Sign the broadcast with the organizer's name — Radio speech reads the same
   // whoever holds the mic (the feed renders "— Name" on every spoken row).
-  const { data: me } = await supabaseAdmin
+  const { data: me } = await db
     .from('members')
     .select('preferred_name, first_name')
     .eq('clerk_user_id', userId)
     .maybeSingle()
   const actorName = me?.preferred_name || me?.first_name || null
 
-  const id = await postRadioEvent({
+  const id = await postRadioEvent(community.id, {
     kind: 'broadcast',
     message: body,
     detail: detailValue,
@@ -59,7 +62,7 @@ export async function POST(req: NextRequest) {
   let notified = 0
   let emailed = 0
   if (notify === true) {
-    const { data: membersRaw } = await supabaseAdmin
+    const { data: membersRaw } = await db
       .from('members')
       .select('clerk_user_id, email, first_name, preferred_name')
       .eq('status', 'approved')
@@ -74,7 +77,7 @@ export async function POST(req: NextRequest) {
         details: { radioEventId: id },
       }))
     if (bellRows.length) {
-      await supabaseAdmin.from('user_notifications').insert(bellRows)
+      await db.from('user_notifications').insert(bellRows)
       notified = bellRows.length
     }
 
@@ -82,7 +85,7 @@ export async function POST(req: NextRequest) {
     const clerkIds = recipients.map(m => m.clerk_user_id).filter(Boolean) as string[]
     const optedOut = new Set<string>()
     if (clerkIds.length) {
-      const { data: prefRows } = await supabaseAdmin
+      const { data: prefRows } = await db
         .from('notification_preferences')
         .select('clerk_user_id, email_announcements')
         .in('clerk_user_id', clerkIds)

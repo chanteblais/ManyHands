@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { getCommunity } from '@/lib/community'
 import { collectEventReminders, campDate } from '@/lib/event-reminders'
 import { sendEventReminderEmail } from '@/lib/send-email'
@@ -34,7 +34,9 @@ async function authorize(req: NextRequest): Promise<'cron' | 'admin' | null> {
 export async function GET(req: NextRequest) {
   const caller = await authorize(req)
   if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // Resolved once from the host (the per-community loop is a later branch).
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const params = req.nextUrl.searchParams
   const dryRun = caller === 'admin' ? params.get('send') !== '1' : params.get('dryRun') === '1'
@@ -51,7 +53,7 @@ export async function GET(req: NextRequest) {
 
   for (const phase of phases) {
     const targetDate = dateOverride ?? campDate(phase === 'day_before' ? 1 : 0)
-    const recipients = await collectEventReminders(targetDate)
+    const recipients = await collectEventReminders(community.id, targetDate)
 
     // Opt-outs + already-sent ledger for this (date, phase), in two batch queries.
     const ids = recipients.map(r => r.clerkUserId)
@@ -59,9 +61,9 @@ export async function GET(req: NextRequest) {
     const alreadySent = new Set<string>()
     if (ids.length) {
       const [{ data: prefRows, error: prefError }, { data: ledgerRows }] = await Promise.all([
-        supabaseAdmin.from('notification_preferences')
+        db.from('notification_preferences')
           .select('clerk_user_id, email_event_reminders').in('clerk_user_id', ids),
-        supabaseAdmin.from('event_reminders_sent')
+        db.from('event_reminders_sent')
           .select('clerk_user_id').eq('target_date', targetDate).eq('phase', phase).in('clerk_user_id', ids),
       ])
       // Fail CLOSED on a broken opt-out read: without it we can't tell who
@@ -92,7 +94,7 @@ export async function GET(req: NextRequest) {
       // double-email when two fires overlap; claim-then-send at worst drops a
       // reminder if the process dies mid-send — the release below covers the
       // known failure paths.)
-      const { error: claimError } = await supabaseAdmin.from('event_reminders_sent')
+      const { error: claimError } = await db.from('event_reminders_sent')
         .insert({ clerk_user_id: r.clerkUserId, target_date: targetDate, phase })
       if (claimError) {
         entry.status = claimError.code === '23505'
@@ -101,7 +103,7 @@ export async function GET(req: NextRequest) {
         continue
       }
       // Send failed → release the claim so the next fire can retry (best-effort).
-      const releaseClaim = () => supabaseAdmin.from('event_reminders_sent')
+      const releaseClaim = () => db.from('event_reminders_sent')
         .delete().eq('clerk_user_id', r.clerkUserId).eq('target_date', targetDate).eq('phase', phase)
 
       try {

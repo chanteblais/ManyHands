@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { findDirectConversation } from '@/lib/conversations'
 
 export const dynamic = 'force-dynamic'
@@ -13,11 +14,14 @@ export async function POST(_req: Request, props: { params: Promise<{ userId: str
   const { userId: myId } = await auth()
   if (!myId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const otherId = params.userId
 
-  const convId = await findDirectConversation(myId, otherId)
+  const convId = await findDirectConversation(community.id, myId, otherId)
   if (convId) {
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('conversation_participants')
       .update({ last_read_at: new Date().toISOString() })
       .eq('conversation_id', convId)

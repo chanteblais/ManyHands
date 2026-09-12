@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 // PATCH: clear the member's role, remove one shift (remove_shift: <event_id>),
@@ -9,6 +10,9 @@ import { requireAdmin } from '@/lib/admin-auth'
 export async function PATCH(req: NextRequest, props: { params: Promise<{ userId: string }> }) {
   const params = await props.params;
   if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const body = await req.json()
 
@@ -24,7 +28,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ userId:
     if (!schedule_event_id || (role !== 'member' && role !== 'lead')) {
       return NextResponse.json({ error: 'set_shift_role needs schedule_event_id and role "member"|"lead"' }, { status: 400 })
     }
-    let q = supabaseAdmin
+    let q = db
       .from('member_shift_signups')
       .update({ role }, { count: 'exact' })
       .eq('clerk_user_id', params.userId)
@@ -40,7 +44,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ userId:
   }
 
   if (body.clear_role) {
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('camp_signups')
       .update({ role_id: null, role_approval_status: null })
       .eq('clerk_user_id', params.userId)
@@ -48,7 +52,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ userId:
   }
 
   if (body.remove_shift) {
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('member_shift_signups')
       .delete()
       .eq('clerk_user_id', params.userId)
@@ -57,7 +61,7 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ userId:
   }
 
   if (body.clear_shift) {
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from('member_shift_signups')
       .delete()
       .eq('clerk_user_id', params.userId)

@@ -1,7 +1,7 @@
 import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { auth } from '@clerk/nextjs/server'
 import { redirect, notFound } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import { Header } from '@/components/Header'
 import { findGroupConversation, getParticipantPrefs } from '@/lib/conversations'
 import { getApprovedMember } from '@/lib/members'
@@ -13,6 +13,7 @@ export default async function GroupThreadPage(props: { params: Promise<{ groupId
   const { userId: myId } = await auth()
   if (!myId) redirect('/sign-in')
   const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // The access check, group row, roster, and conversation lookup are
   // independent reads — run them together.
@@ -21,17 +22,17 @@ export default async function GroupThreadPage(props: { params: Promise<{ groupId
     // see app/messages/page.tsx).
     getApprovedMember(community.id, myId),
     // The group must exist…
-    supabaseAdmin
+    db
       .from('groups')
       .select('id, name, icon, icon_image, join_policy')
       .eq('id', params.groupId)
       .maybeSingle(),
     // …and group threads are members-only.
-    supabaseAdmin
+    db
       .from('group_members')
       .select('clerk_user_id')
       .eq('group_id', params.groupId),
-    findGroupConversation(params.groupId),
+    findGroupConversation(community.id, params.groupId),
   ])
 
   if (!me) redirect('/profile')
@@ -43,13 +44,13 @@ export default async function GroupThreadPage(props: { params: Promise<{ groupId
   // a mention of me renders highlighted too) and my per-thread prefs.
   const [memberAppsRes, prefs] = await Promise.all([
     memberIds.length
-      ? supabaseAdmin
+      ? db
           .from('members')
           .select('clerk_user_id, first_name, preferred_name, avatar_url')
           .in('clerk_user_id', memberIds)
           .eq('status', 'approved')
       : Promise.resolve({ data: [] }),
-    convId ? getParticipantPrefs(convId, myId) : Promise.resolve({ muted: false, email_opt_in: false }),
+    convId ? getParticipantPrefs(community.id, convId, myId) : Promise.resolve({ muted: false, email_opt_in: false }),
   ])
   const members = (memberAppsRes.data ?? []).map(a => ({
     userId: a.clerk_user_id as string,

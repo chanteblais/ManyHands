@@ -65,7 +65,7 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
       : { data: null as any[] | null },
     // Cross-reference chips (docs/admin-ux-handoff.md A5): the member's linked
     // entities at a glance, each deep-linking to where that entity is managed.
-    app.clerk_user_id ? getMemberGroups(app.clerk_user_id) : [],
+    app.clerk_user_id ? getMemberGroups(community.id, app.clerk_user_id) : [],
     getAdminRunway(community.id),
     db
       .from('page_content')
@@ -88,7 +88,7 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
     signup?.role_id
       ? db.from('roles').select('name, commitment, department_id, departments(name, icon)').eq('id', signup.role_id).single()
       : none,
-    member ? getMemberAwards(member.id) : [],
+    member ? getMemberAwards(community.id, member.id) : [],
     member ? getMemberProfileValues(community.id, member.id) : ({} as Record<string, unknown>),
   ])
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 import { getAdminLeadUpEvents } from '@/lib/admin-program-data'
 
@@ -11,8 +12,10 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  const community = await getCommunity()
+
   try {
-    return NextResponse.json({ events: await getAdminLeadUpEvents() })
+    return NextResponse.json({ events: await getAdminLeadUpEvents(community.id) })
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 })
   }
@@ -23,10 +26,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const body = await req.json()
 
   // Place new gathering at the end.
-  const { data: last } = await supabaseAdmin
+  const { data: last } = await db
     .from('lead_up_events')
     .select('sort_order')
     .order('sort_order', { ascending: false })
@@ -34,7 +40,7 @@ export async function POST(req: NextRequest) {
     .maybeSingle()
   const sort_order = (last?.sort_order ?? 0) + 1
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('lead_up_events')
     .insert([{
       title: body.title,
