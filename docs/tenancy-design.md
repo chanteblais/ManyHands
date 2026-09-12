@@ -1,7 +1,8 @@
 # Multi-Tenancy Design — Phase 1 Foundation
 
-**Status: DESIGN, awaiting Chanté's sign-off on the five decisions below. No code or migration
-written yet.** Drafted 2026-09-11 from a full inventory of the schema (36 tables), config layer,
+**Status: decisions 1–5 approved as recommended (Chanté, 2026-09-11). Branch 1a
+(`feat/tenancy-schema`) built the same day — migration `074`, `lib/community.ts`,
+`lib/tenant-db.ts`, the scope guard, `CommunityProvider`. Next: 1b.** Drafted 2026-09-11 from a full inventory of the schema (36 tables), config layer,
 auth and data access (94 API routes, ~500 `.from()` call sites). Supersedes the Phase 1 sketch in
 [`multi-community.md`](./multi-community.md) (kept there as history).
 
@@ -99,21 +100,30 @@ Child-table uniques (`group_members (group_id, clerk_user_id)`, `poll_votes`, `e
 - `lib/members.ts` `resolveMember`/`getApprovedMember`/`upsertMember` all take `communityId`.
   The email-fallback lookup (`ilike email`) stays but is scoped.
 
-### 1.5 Migration 074 (draft — the real file is written when implementation starts)
+### 1.5 Migrations 074 + 075
 
-Non-destructive: adds columns, backfills, adds/replaces constraints. One transaction.
+**Split (decided while building 1a):** three live upserts target constraints the design replaces
+(`camp_signups` on `clerk_user_id`, `page_content` on `key`, `attunement_nudges` on
+`clerk_user_id`), so swapping constraints in 074 would break them before the sweep reaches those
+files. Therefore:
+
+- **`074_communities.sql` (written, branch 1a)** — purely additive: `communities` + Glåüm seed,
+  `community_id` on all 34 scoped tables (backfilled, NOT NULL, indexed) with the **transitional
+  default** `platform_default_community_id()` so un-swept inserts keep working, `members.role` /
+  `can_manage_polls`, and `claim_shift_signup()` stamping `community_id` from the event. Safe in
+  either deploy order.
+- **`075` (end of the sweep, branch 1d)** — drops the transitional default and its function, and
+  performs the constraint swaps below. Only after 075 may a second community exist.
+
+The constraint swaps, for 075 (non-destructive; one transaction):
 ```sql
 begin;
-create table communities (…as above…);
-insert into communities (slug, name, hosts, timezone, event_name, email_from)
-  values ('glaum', 'Glåüm', '{camp.glaum.ca}', 'America/Vancouver', 'What If 2026',
-          'Glåüm Camp <hello@glaum.ca>');   -- email_from copied from RESEND_FROM at apply time
-
--- for each scoped table T (35 of them):
-alter table T add column community_id uuid references communities(id);
-update T set community_id = (select id from communities where slug = 'glaum');
-alter table T alter column community_id set not null;
-create index T_community_idx on T (community_id);
+-- drop the 1a bridge:
+do $$ declare t text; begin
+  foreach t in array (…the 34 scoped tables…) loop
+    execute format('alter table %I alter column community_id drop default', t);
+  end loop; end $$;
+drop function platform_default_community_id();
 
 -- constraint swaps (§1.3):
 alter table members drop constraint members_clerk_user_id_key;
@@ -132,14 +142,11 @@ alter table shift_types drop constraint shift_types_backfill_key_key;
 alter table shift_types add constraint shift_types_community_backfill_uniq unique (community_id, backfill_key);
 alter table applications add constraint applications_community_user_uniq unique (community_id, clerk_user_id);
 
--- roles (decision #1):
-alter table members add column role text not null default 'member' check (role in ('member','admin'));
-alter table members add column can_manage_polls boolean not null default false;
--- backfilled by a one-off script from Clerk publicMetadata (role=admin, canManagePolls) — see §4.
 commit;
 ```
-Exact constraint names to be confirmed against the live DB before the file is finalized.
-`claim_shift_signup()` (073) gains a `p_community_id` parameter and scopes its count.
+Exact constraint names to be confirmed against the live DB before 075 is finalized (default
+names shown). `claim_shift_signup()` keeps its 073 signature — 074 already stamps the signup
+from the event row, and 075 scopes the capacity count by the event's community.
 
 ---
 
@@ -275,10 +282,10 @@ must be pixel-identical after every merge; production keeps resolving `camp.glau
 
 | Step | Branch | Contents | Done when |
 |---|---|---|---|
-| 1a | `feat/tenancy-schema` | Migration 074 (+ constraint-name verification), `lib/community.ts`, `lib/tenant-db.ts`, the scope guard script (allowlist = everything, shrinking per step), `CommunityProvider`, `DEFAULT_COMMUNITY_SLUG`. No call-site changes yet. | Migration applied; app unchanged; `getCommunity()` returns glaum everywhere. |
+| 1a | `feat/tenancy-schema` — **built 2026-09-11** | Migration 074 (additive; constraint swaps deferred to 075), `lib/community.ts`, `lib/tenant-db.ts`, the scope guard script (allowlist = 117 files, shrinking per step), `CommunityProvider` mounted in the root layout, `DEFAULT_COMMUNITY_SLUG`. No call-site changes. | Migration applied; app unchanged; `getCommunity()` returns glaum everywhere. |
 | 1b | `feat/tenancy-identity` | `members`/`applications`/`volunteers`/profile/apply/approve/suspension/dues + `page_content` + site-config consumers + email/notify/notify-admin. | Guard allowlist no longer contains these files. |
 | 1c | `feat/tenancy-program` | groups/collections/departments/roles/shift types/schedule/shift signups/lead-up/resources/polls/radio/announcements/shoutouts/distinctions + admin dashboards. | Same. |
-| 1d | `feat/tenancy-auth-crons` | DB roles + backfill script, `requireCommunityAdmin`, `proxy.ts` wall change, set-admin routes, hourly crons, storage prefixing, badge by slug, `/api/me/communities` + picker + empty state. | Guard allowlist empty; `npm run check` green. |
+| 1d | `feat/tenancy-auth-crons` | DB roles + backfill script, `requireCommunityAdmin`, `proxy.ts` wall change, set-admin routes, hourly crons, storage prefixing, badge by slug, `/api/me/communities` + picker + empty state, **migration 075** (drop transitional default; constraint swaps). | Guard allowlist empty; `npm run check` green; 075 applied. |
 | 1e | `feat/tenancy-rls` | RLS policies on all scoped tables keyed on a `community_id` JWT claim; `tenant-db` mints a per-request scoped token instead of using the service key. | A deliberate unscoped query returns zero rows in a test. |
 | 1f | `ux/theme-tokens` (parallel, any time) | Colour tokens in `globals.css`, inline hexes → `var(--…)`, `communities.theme` → `<html style>`; behaviour-identity check (screenshots before/after). | Glåüm renders identically; a second theme object re-skins the site. |
 | 2 | `feat/second-tenant` | Seed script for a fictional demo community (the App Review / showcase asset), then the real tenant 2: Clerk primary → platform root, `camp.glaum.ca` satellite, host rows, per-community Resend sender. | Two communities live on one deployment. |

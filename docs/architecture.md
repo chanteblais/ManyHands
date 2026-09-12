@@ -237,34 +237,40 @@ See [database.md → Storage Buckets](database.md#storage-buckets) for the canon
 
 ## Multi-Community Architecture
 
-> See [multi-community.md](multi-community.md) for the full roadmap.
+> Roadmap: [multi-community.md](multi-community.md). Phase 1 design + branch sequence: [tenancy-design.md](tenancy-design.md).
 
-This codebase is being evolved toward a **multi-community platform**. Glåüm is the first community. As features are added, follow these patterns to keep the platform generalisable:
+The platform serves many communities from one codebase, one database, one deployment. Glåüm is community 1. **Branch 1a (2026-09-11) laid the foundation; the call-site sweep (1b–1d) is in progress** — until it finishes, feature code still uses the raw client and the DB's transitional default pins every row to Glåüm.
 
-### Community identity — `lib/site-config.ts`
+### Community resolution — `lib/community.ts`
 
-Site name, event name, and description are driven by env vars (`NEXT_PUBLIC_SITE_NAME`, `NEXT_PUBLIC_EVENT_NAME`, `NEXT_PUBLIC_SITE_DESCRIPTION`). Use these constants anywhere a community name appears in source code rather than hardcoding `"Glåüm"`.
+- `getCommunity()` — server-only; resolves the current request's community from the host (`x-forwarded-host`, then `host`; `host:port` first, then bare hostname) against `communities.hosts`, falling back to `DEFAULT_COMMUNITY_SLUG` (env, default `glaum`) for localhost/preview/single-host. Throws `CommunityNotFoundError` only when neither resolves (the future platform-root picker handles that). The table is cached whole (`unstable_cache`, tag `communities`, 5-min revalidate); errors are never cached.
+- Pre-migration safety: if the `communities` table is missing, a synthetic default (id `00000000-…`, name/event from `lib/site-config.ts`) is served with a one-time warning, so a mis-ordered deploy degrades instead of 500ing.
+- `listCommunitiesForUser(clerkUserId)` — the person's memberships × communities; feeds `/api/me/communities` (branch 1d) for the app switcher / web picker.
+- `app/layout.tsx` resolves once per request and mounts `<CommunityProvider>` (`components/CommunityProvider.tsx`); client components read `useCommunity()` (`id`, `slug`, `name`, `eventName`, `theme`) instead of build-time constants.
+
+### Scoped data access — `lib/tenant-db.ts`
+
+```ts
+const community = await getCommunity()
+const db = tenantDb(community.id)
+await db.from('members').select('id').eq('clerk_user_id', userId) // + .eq('community_id', …) applied
+await db.from('shoutouts').insert({ body, clerk_user_id })         // community_id stamped
+```
+`select`/`update`/`delete` on a scoped table are filtered by `community_id`; `insert`/`upsert` rows are stamped (and refused if they carry a different community). `GLOBAL_TABLES` (`communities`, `push_tokens`, `notification_preferences`) pass through. `rpc` and `storage` are exposed unscoped — pass the community explicitly; new uploads use `objectPath(communityId, relativePath)` (`${communityId}/…`; existing objects keep their paths).
+
+**Guard:** `npm run check` runs `scripts/check-tenant-scope.mjs`, which fails on any file under `app/`, `lib/`, `components/` importing `@/lib/supabase` unless it is listed in `scripts/tenant-scope-allowlist.txt` (shrink-only; stale entries also fail). New feature code must use `tenantDb`. Exempt by design: `lib/supabase.ts`, `lib/tenant-db.ts`, `lib/community.ts`.
 
 ### Configurable content — `page_content` table
 
-`page_content` is the primary mechanism for community-specific text and option lists. Before hardcoding a string in source, ask whether it belongs in `page_content`. Currently configurable via this pattern:
+`page_content` is the per-community content/config store (community-scoped since `074`; PK becomes `(community_id, key)` in `075`). Read it through `lib/page-content.ts` (cached; the cache key/tag gets a community dimension in branch 1b), never directly. Before hardcoding a string in source, ask whether it belongs here. Currently configurable: homepage copy (`home_*`), form configs (`config_member_form`, …), agreement items, attendance options, and every `config_*` key listed in [database.md](database.md).
 
-- Homepage copy (`home_*`)
-- Form field labels, step titles, custom fields (`config_member_form`)
-- Agreement checkbox items (`member_acknowledgements`)
-- Attendance options (`member_attendance_options`)
-- Any text editable via the inline page editor
+### Community identity — `lib/site-config.ts` (being retired)
 
-The pattern for each: fetch the key from `page_content` in the server component, parse JSON, pass down as a prop. Fall back to constants in `lib/site-config.ts` if the key is absent.
+`SITE_NAME` / `EVENT_NAME` / `SITE_DESCRIPTION` are build-time env constants (`NEXT_PUBLIC_SITE_NAME`, …) — one value per deployment, so they cannot vary per tenant. Branch 1b replaces their 15 consumers with `community.name` / `community.eventName` from `getCommunity()` / `useCommunity()`. Until then, keep using them rather than hardcoding `"Glåüm"`.
 
-### What is NOT yet community-scoped
+### Not yet community-scoped (sweep in progress — see tenancy-design.md §8)
 
-These are explicitly deferred until a second community exists:
-
-- **Database rows** — all tables are currently single-community. There is no `community_id` column.
-- **Clerk** — single Clerk instance, single admin role. No org-level isolation.
-- **Storage** — single `avatars` / `schedule-icons` bucket shared by all.
-- **Badge** — font (`TokyoDreams`) and base image (`badge_base.png`) are Glåüm-specific.
-- **Branding** — colors, fonts, and design system are Glåüm's. Per-community theming is deferred.
-
-When adding a feature that would need to be community-specific: implement it for a single community first using `page_content` or `lib/site-config.ts` defaults. The multi-tenancy layer comes later.
+- **Queries** — 117 files still on the raw client (the allowlist). Rows are pinned to Glåüm by the DB default; a second tenant must not be created until the allowlist is empty and `075` is applied.
+- **Admin roles** — still Clerk `publicMetadata.role`; `members.role` exists but is unread (branch 1d).
+- **Email sender/links, crons, storage paths, badge assets** — branches 1b/1d.
+- **Branding** — no colour tokens yet (branch 1f).

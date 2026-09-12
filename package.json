@@ -8,7 +8,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "check:routes": "node scripts/check-route-auth.mjs",
-    "check": "npm run typecheck && npm run check:routes"
+    "check:tenant": "node scripts/check-tenant-scope.mjs",
+    "check": "npm run typecheck && npm run check:routes && npm run check:tenant"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.39.3",
