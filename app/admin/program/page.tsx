@@ -11,6 +11,7 @@ import { LeadUpGatheringsManager } from '../LeadUpGatheringsManager'
 import { ShiftSignupToggle } from '../ShiftSignupToggle'
 import { PROGRAM_CATEGORIES } from '../admin-sections'
 import { getAdminRunway } from '@/lib/admin-attention'
+import { getCommunity } from '@/lib/community'
 import {
   getAdminScheduleEvents,
   getAdminShiftTypes,
@@ -37,6 +38,7 @@ export default async function ProgramPage() {
   if (!userId) redirect('/sign-in')
 
   if (!(await requireAdmin())) redirect('/')
+  const community = await getCommunity()
 
   const [
     { data: configRows },
@@ -56,12 +58,12 @@ export default async function ProgramPage() {
       .select('id, application_id, event_type, message, details, created_at, read_at')
       .order('created_at', { ascending: false })
       .limit(20),
-    getAdminRunway(),
+    getAdminRunway(community.id),
     // The managers' section data, server-rendered so the tab paints populated
     // (no mount-fetch wave) — same assembly the /api/admin routes serve.
     safe(getAdminScheduleEvents()),
     safe(getAdminShiftTypes()),
-    safe(getAdminRosters()),
+    safe(getAdminRosters(community.id)),
     safe(getAdminLeadUpEvents()),
   ])
   const configMap = Object.fromEntries((configRows ?? []).map(r => [r.key, r.value]))

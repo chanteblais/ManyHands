@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
@@ -7,7 +8,10 @@ export async function DELETE(req: NextRequest, props: { params: Promise<{ id: st
   const userId = await requireAdmin()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { error } = await supabaseAdmin
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const { error } = await db
     .from('volunteers')
     .update({ status: 'removed' })
     .eq('id', params.id)

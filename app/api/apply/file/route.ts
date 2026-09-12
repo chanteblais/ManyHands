@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { requireAdmin } from '@/lib/admin-auth'
 import { APPLICATION_FILES_BUCKET, APPLICATION_FILE_ROUTE } from '@/lib/application-files'
 import { bytesMatchType } from '@/lib/file-sniff'
@@ -28,6 +29,9 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const formData = await req.formData()
   const file = formData.get('file') as File | null
   if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
@@ -40,7 +44,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Quota check against what this user already has in their folder.
-  const { data: existing, error: listError } = await supabaseAdmin.storage
+  const { data: existing, error: listError } = await db.storage
     .from(APPLICATION_FILES_BUCKET)
     .list(userId, { limit: MAX_FILES_PER_USER + 1 })
   if (listError) {
@@ -64,7 +68,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'File content does not match its type.' }, { status: 400 })
   }
 
-  const { error: uploadError } = await supabaseAdmin.storage
+  const { error: uploadError } = await db.storage
     .from(APPLICATION_FILES_BUCKET)
     .upload(path, buffer, { contentType: file.type, upsert: false, cacheControl: '31536000' })
 
@@ -86,6 +90,9 @@ export async function GET(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const path = req.nextUrl.searchParams.get('path') ?? ''
   const segments = path.split('/')
   if (segments.length !== 2 || segments.some(s => !s || s === '.' || s === '..' || !/^[A-Za-z0-9._-]+$/.test(s))) {
@@ -96,7 +103,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { data, error } = await supabaseAdmin.storage
+  const { data, error } = await db.storage
     .from(APPLICATION_FILES_BUCKET)
     .createSignedUrl(path, 60)
   if (error || !data?.signedUrl) {

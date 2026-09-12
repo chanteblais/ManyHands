@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { grantDistinction, revokeDistinction } from '@/lib/distinction-awards'
 import { requireAdmin } from '@/lib/admin-auth'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { parseDistinctions } from '@/lib/distinctions'
 import { postSourcedRadioEvent, achievementRadioPost } from '@/lib/radio'
 
@@ -14,6 +15,9 @@ export async function POST(req: NextRequest, props: { params: Promise<{ memberId
   const adminId = await requireAdmin()
   if (!adminId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const { distinctionId, note } = await req.json().catch(() => ({}))
   if (typeof distinctionId !== 'string' || !distinctionId) {
     return NextResponse.json({ error: 'distinctionId required' }, { status: 400 })
@@ -25,12 +29,12 @@ export async function POST(req: NextRequest, props: { params: Promise<{ memberId
   // (rule-derived earns are computed, never stored — see docs/radio.md).
   if (ok) {
     const [{ data: member }, { data: configRow }] = await Promise.all([
-      supabaseAdmin
+      db
         .from('members')
         .select('clerk_user_id, preferred_name, first_name')
         .eq('id', params.memberId)
         .maybeSingle(),
-      supabaseAdmin
+      db
         .from('page_content')
         .select('value')
         .eq('key', 'config_distinctions')
@@ -39,7 +43,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ memberId
     const rule = parseDistinctions(configRow?.value).find(r => r.id === distinctionId)
     if (member && rule) {
       const actorName = member.preferred_name || member.first_name || 'A member'
-      await postSourcedRadioEvent('achievement', {
+      await postSourcedRadioEvent(community.id, 'achievement', {
         ...achievementRadioPost(actorName, rule.label, rule.engraving, rule.image || rule.glyph),
         actorClerkId: member.clerk_user_id,
         actorName,

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import sharp from 'sharp'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { upsertMember } from '@/lib/members'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -10,6 +11,9 @@ const MAX_BYTES = 5 * 1024 * 1024 // 5 MB
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const formData = await req.formData()
   const file = formData.get('avatar') as File | null
@@ -49,7 +53,7 @@ export async function POST(req: NextRequest) {
   const path = `${userId}/avatar.${ext}`
 
   // Upload (upsert so re-uploads overwrite cleanly)
-  const { error: uploadError } = await supabaseAdmin.storage
+  const { error: uploadError } = await db.storage
     .from('avatars')
     .upload(path, buffer, { contentType, upsert: true, cacheControl: '31536000' })
 
@@ -61,9 +65,9 @@ export async function POST(req: NextRequest) {
   // Re-uploads that change extension (e.g. old avatar.jpg → avatar.webp) would
   // otherwise strand the previous object; remove() ignores missing paths.
   const stale = ['jpg', 'png', 'webp', 'gif'].filter((e) => e !== ext).map((e) => `${userId}/avatar.${e}`)
-  await supabaseAdmin.storage.from('avatars').remove(stale)
+  await db.storage.from('avatars').remove(stale)
 
-  const { data: { publicUrl } } = supabaseAdmin.storage
+  const { data: { publicUrl } } = db.storage
     .from('avatars')
     .getPublicUrl(path)
 
@@ -74,12 +78,12 @@ export async function POST(req: NextRequest) {
   const user = await currentUser()
   const email = user?.emailAddresses[0]?.emailAddress
 
-  await supabaseAdmin
+  await db
     .from('applications')
     .update({ avatar_url: avatarUrl })
     .or(`clerk_user_id.eq.${userId}${email ? `,email.eq.${email}` : ''}`)
 
-  await supabaseAdmin
+  await db
     .from('volunteers')
     .update({ avatar_url: avatarUrl })
     .eq('clerk_user_id', userId)
@@ -89,7 +93,7 @@ export async function POST(req: NextRequest) {
   // in `volunteers`, not here), so inserting would create a nameless, emailless
   // phantom member for every signed-in non-member. Members are created on
   // apply/approve, where identity is present.
-  await upsertMember(userId, { avatar_url: avatarUrl }, undefined, { updateOnly: true })
+  await upsertMember(community.id, userId, { avatar_url: avatarUrl }, undefined, { updateOnly: true })
 
   return NextResponse.json({ avatarUrl })
 }

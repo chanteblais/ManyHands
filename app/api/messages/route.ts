@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity, type Community } from '@/lib/community'
 import { getNotificationPreferences } from '@/lib/notification-prefs'
 import { dispatchMemberNotification } from '@/lib/notify'
 import { getOrCreateDirectConversation, findDirectConversation } from '@/lib/conversations'
@@ -27,6 +28,7 @@ export async function GET() {
 export async function POST(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
   const { recipientId, body } = await req.json()
   if (!recipientId || !body?.trim()) {
@@ -95,6 +97,7 @@ export async function POST(req: Request) {
       details: { senderId: userId, messageId: message.id },
     }),
     notifyRecipient({
+      community,
       messageId: message.id,
       senderId: userId,
       senderName,
@@ -112,6 +115,7 @@ export async function POST(req: Request) {
 // Push goes per-message; email keeps the 30-minute per-sender throttle (the
 // native rhythm: the device buzzes each time, the inbox gets one nudge).
 async function notifyRecipient(opts: {
+  community: Community
   messageId: string
   senderId: string
   senderName: string
@@ -155,6 +159,7 @@ async function notifyRecipient(opts: {
 }
 
 async function sendThrottledMessageEmail(opts: {
+  community: Community
   messageId: string
   senderId: string
   senderName: string
@@ -174,6 +179,7 @@ async function sendThrottledMessageEmail(opts: {
   if (!email) return
 
   const result = await sendNewMessageEmail({
+    community: opts.community,
     to: email,
     recipientName: opts.recipientName,
     senderName: opts.senderName,

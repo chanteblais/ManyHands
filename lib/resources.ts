@@ -39,7 +39,7 @@ export type MemberResourceView = { lists: MemberResourceList[]; pulse: ResourceP
 
 const EMPTY_PULSE: ResourcePulse = { contributorsToday: 0, latest: null }
 
-export async function getMemberResourceView(userId: string): Promise<MemberResourceView> {
+export async function getMemberResourceView(communityId: string, userId: string): Promise<MemberResourceView> {
   const { data: lists, error } = await supabaseAdmin
     .from('resource_lists')
     .select('id, title, description, visible, show_on_dashboard, sort_order, groups(name), departments(name), roles(name)')
@@ -63,7 +63,7 @@ export async function getMemberResourceView(userId: string): Promise<MemberResou
   // Offer attribution ("offered by Sam") — the one place member names surface
   // here — and claim totals both depend only on the item rows.
   const [offererNames, claimsRes] = await Promise.all([
-    memberDisplayNames((items ?? []).map(i => i.offered_by).filter(Boolean) as string[]),
+    memberDisplayNames(communityId, (items ?? []).map(i => i.offered_by).filter(Boolean) as string[]),
     itemIds.length > 0
       ? supabaseAdmin.from('resource_claims').select('resource_id, clerk_user_id, quantity, updated_at').in('resource_id', itemIds)
       : Promise.resolve({ data: [] }),
@@ -79,7 +79,7 @@ export async function getMemberResourceView(userId: string): Promise<MemberResou
 
   // Claimant names depend on the claim rows, so this lookup can't join the
   // batch above.
-  const claimantNames = await memberDisplayNames(claimRows.map(c => c.clerk_user_id))
+  const claimantNames = await memberDisplayNames(communityId, claimRows.map(c => c.clerk_user_id))
   const claimantsByItem: Record<string, MemberResourceClaimant[]> = {}
   for (const c of claimRows) {
     ;(claimantsByItem[c.resource_id] ??= []).push({

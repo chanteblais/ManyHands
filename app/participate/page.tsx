@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { getApprovedMember, getActiveVolunteer } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 import { getRoleSignupData, getShiftSignupData, getSelfJoinGroups } from '@/lib/participate-data'
 import { getMemberResourceView } from '@/lib/resources'
@@ -14,24 +15,25 @@ export const dynamic = 'force-dynamic'
 export default async function SignupPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
 
   // Everything the page's sections need, in one parallel round-trip — the
   // same assembly the /api/signup, /api/shift-signups, /api/groups/membership
   // and /api/resources routes serve, so the sections render with their data
   // in place instead of fetching it after hydration.
   const [member, roleData, shiftData, selfJoinGroups, resourceView, adminUserId] = await Promise.all([
-    getApprovedMember(userId),
-    getRoleSignupData(userId),
-    getShiftSignupData(userId),
+    getApprovedMember(community.id, userId),
+    getRoleSignupData(community.id, userId),
+    getShiftSignupData(community.id, userId),
     getSelfJoinGroups(userId),
-    getMemberResourceView(userId),
+    getMemberResourceView(community.id, userId),
     requireAdmin(),
   ])
   // Not a member — an active volunteer still participates, shifts-only:
   // volunteers exist to take shifts. No roles, groups, resources, or hour
   // requirements (those are member concepts); every shift they take is a gift.
   if (!member) {
-    const volunteer = await getActiveVolunteer(userId)
+    const volunteer = await getActiveVolunteer(community.id, userId)
     if (!volunteer) redirect('/profile')
 
     const volunteerInitialData = {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity, type Community } from '@/lib/community'
 import {
   findGroupConversation,
   getOrCreateGroupConversation,
@@ -32,11 +33,12 @@ export async function GET(_req: Request, props: { params: Promise<{ groupId: str
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
   // Membership + approval checks and conversation lookup are independent — run together.
   const [isMember, approvedMember, convId] = await Promise.all([
     isGroupMember(params.groupId, userId),
-    getApprovedMember(userId),
+    getApprovedMember(community.id, userId),
     findGroupConversation(params.groupId),
   ])
   if (!isMember || !approvedMember) {
@@ -94,6 +96,7 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
   const { body, parentMessageId } = await req.json()
   if (!body?.trim()) return NextResponse.json({ error: 'body is required' }, { status: 400 })
@@ -156,6 +159,7 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
     (async () => {
       try {
         const mentionedIds = await notifyMentions({
+          community,
           groupId: params.groupId,
           messageId: message.id,
           senderId: userId,
@@ -163,6 +167,7 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
           body: body.trim(),
         })
         await notifyOptedIn({
+          community,
           groupId: params.groupId,
           conversationId: convId,
           messageCreatedAt: message.created_at,
@@ -184,13 +189,14 @@ export async function POST(req: Request, props: { params: Promise<{ groupId: str
 // matched against current member display names (the autocomplete inserts the exact
 // name), so this also catches mentions typed in replies (which have no autocomplete).
 async function notifyMentions(opts: {
+  community: Community
   groupId: string
   messageId: string
   senderId: string
   senderName: string
   body: string
 }): Promise<string[]> {
-  const { groupId, messageId, senderId, senderName, body } = opts
+  const { community, groupId, messageId, senderId, senderName, body } = opts
   if (!body.includes('@')) return [] // fast path: no mentions possible
 
   // Group roster and group name are independent — one round-trip.
@@ -260,7 +266,7 @@ async function notifyMentions(opts: {
       email:
         throttled || !a.email
           ? undefined
-          : () => sendGroupMentionEmail({ to: a.email!, recipientName, senderName, groupName, groupId, preview: body }),
+          : () => sendGroupMentionEmail({ community, to: a.email!, recipientName, senderName, groupName, groupId, preview: body }),
     })
   }))
 
@@ -272,6 +278,7 @@ async function notifyMentions(opts: {
 // burst of messages yields one nudge rather than per-message spam. `excludeIds` are
 // the just-mentioned members (already emailed).
 async function notifyOptedIn(opts: {
+  community: Community
   groupId: string
   conversationId: string
   messageCreatedAt: string
@@ -280,7 +287,7 @@ async function notifyOptedIn(opts: {
   body: string
   excludeIds: string[]
 }) {
-  const { groupId, conversationId, messageCreatedAt, senderId, senderName, body, excludeIds } = opts
+  const { community, groupId, conversationId, messageCreatedAt, senderId, senderName, body, excludeIds } = opts
 
   // Opted-in participants, the per-conversation burst throttle, and the group
   // name are independent — one round-trip.
@@ -332,7 +339,7 @@ async function notifyOptedIn(opts: {
           link: `/messages/g/${groupId}`,
         },
         email: m?.email
-          ? () => sendGroupActivityEmail({ to: m.email!, recipientName, senderName, groupName, groupId, preview: body })
+          ? () => sendGroupActivityEmail({ community, to: m.email!, recipientName, senderName, groupName, groupId, preview: body })
           : undefined,
       })
     } catch (err) {

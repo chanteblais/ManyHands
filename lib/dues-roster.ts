@@ -1,8 +1,8 @@
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 import type { DuesAudience } from '@/lib/dues'
 
 // One row per person the dues tracker shows (Community → Camp Dues). Server-only
-// (imports supabaseAdmin) — kept separate from the pure lib/dues.ts so the
+// (imports tenantDb) — kept separate from the pure lib/dues.ts so the
 // client-side DuesManager can import config types without pulling in server code.
 export type DuesRosterRow = {
   // Row id in its own table (members.id or volunteers.id), keyed by `kind`.
@@ -26,16 +26,17 @@ const memberName = (m: { preferred_name?: string | null; first_name?: string | n
 // Load the tracker roster for the selected audience(s). Camp members and active
 // volunteers are unioned; each row carries its `kind` so mutations route to the
 // right table.
-export async function getDuesRoster(audience: DuesAudience): Promise<DuesRosterRow[]> {
+export async function getDuesRoster(communityId: string, audience: DuesAudience): Promise<DuesRosterRow[]> {
+  const db = tenantDb(communityId)
   const [members, volunteers] = await Promise.all([
     audience.members
-      ? supabaseAdmin
+      ? db
           .from('members')
           .select('id, email, first_name, last_name, preferred_name, dues_paid_at, dues_reported_at, dues_note, suspended_at')
           .eq('status', 'approved')
       : Promise.resolve({ data: [] as unknown[] }),
     audience.volunteers
-      ? supabaseAdmin
+      ? db
           .from('volunteers')
           .select('id, email, first_name, last_name, preferred_name, dues_paid_at, dues_note')
           .eq('status', 'active')

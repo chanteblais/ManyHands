@@ -9,7 +9,7 @@
 
 import { cache } from 'react'
 import { currentUser } from '@clerk/nextjs/server'
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 
 export type MemberRecord = {
   id: string
@@ -49,18 +49,20 @@ export type MemberIdentity = Partial<Omit<MemberRecord, 'id' | 'clerk_user_id'>>
  * lookup per render instead of querying twice.
  */
 export const resolveMember = cache(async function resolveMember(
+  communityId: string,
   clerkUserId: string | null,
   email?: string | null,
 ): Promise<MemberRecord | null> {
+  const db = tenantDb(communityId)
   try {
     if (clerkUserId) {
-      const { data } = await supabaseAdmin
+      const { data } = await db
         .from('members').select(MEMBER_COLUMNS)
         .eq('clerk_user_id', clerkUserId).maybeSingle()
       if (data) return data as MemberRecord
     }
     if (email) {
-      const { data } = await supabaseAdmin
+      const { data } = await db
         .from('members').select(MEMBER_COLUMNS)
         .ilike('email', email).maybeSingle()
       if (data) return data as MemberRecord
@@ -79,17 +81,17 @@ export const resolveMember = cache(async function resolveMember(
  * never linked. Found-by-email rows get clerk_user_id backfilled so the next
  * request takes the fast path.
  */
-export async function resolveMemberForUser(clerkUserId: string): Promise<MemberRecord | null> {
-  const direct = await resolveMember(clerkUserId)
+export async function resolveMemberForUser(communityId: string, clerkUserId: string): Promise<MemberRecord | null> {
+  const direct = await resolveMember(communityId, clerkUserId)
   if (direct) return direct
 
   const user = await currentUser()
   const email = user?.emailAddresses[0]?.emailAddress
   if (!email) return null
 
-  const byEmail = await resolveMember(null, email)
+  const byEmail = await resolveMember(communityId, null, email)
   if (byEmail && !byEmail.clerk_user_id) {
-    const { error } = await supabaseAdmin
+    const { error } = await tenantDb(communityId)
       .from('members')
       .update({ clerk_user_id: clerkUserId })
       .eq('id', byEmail.id)
@@ -100,8 +102,8 @@ export async function resolveMemberForUser(clerkUserId: string): Promise<MemberR
 }
 
 /** resolveMemberForUser gated on approved status — the standard API-route auth check. */
-export async function getApprovedMember(clerkUserId: string): Promise<MemberRecord | null> {
-  const member = await resolveMemberForUser(clerkUserId)
+export async function getApprovedMember(communityId: string, clerkUserId: string): Promise<MemberRecord | null> {
+  const member = await resolveMemberForUser(communityId, clerkUserId)
   return member?.status === 'approved' ? member : null
 }
 
@@ -122,9 +124,9 @@ export type VolunteerRecord = {
  * volunteers return null: shift self-serve is an active-volunteer ability, the
  * same bar the rest of the app uses (directory, dues, own-profile commitments).
  */
-export async function getActiveVolunteer(clerkUserId: string): Promise<VolunteerRecord | null> {
+export async function getActiveVolunteer(communityId: string, clerkUserId: string): Promise<VolunteerRecord | null> {
   try {
-    const { data } = await supabaseAdmin
+    const { data } = await tenantDb(communityId)
       .from('volunteers')
       .select('id, clerk_user_id, email, first_name, last_name, preferred_name, status')
       .eq('clerk_user_id', clerkUserId)
@@ -148,12 +150,12 @@ export type ShiftParticipant =
  * (members who also have a stale volunteer row count as members), else active
  * volunteer, else null.
  */
-export async function getShiftParticipant(clerkUserId: string): Promise<ShiftParticipant | null> {
+export async function getShiftParticipant(communityId: string, clerkUserId: string): Promise<ShiftParticipant | null> {
   // Both lookups key on clerk_user_id and member wins — run them in parallel
   // (this sits on the hot path of every shift-signup request).
   const [member, volunteer] = await Promise.all([
-    getApprovedMember(clerkUserId),
-    getActiveVolunteer(clerkUserId),
+    getApprovedMember(communityId, clerkUserId),
+    getActiveVolunteer(communityId, clerkUserId),
   ])
   if (member) return { kind: 'member', member }
   return volunteer ? { kind: 'volunteer', volunteer } : null
@@ -176,9 +178,9 @@ export function memberDisplayName(member: MemberRecord, fallback: string): strin
 }
 
 /** The member's stored profile values (empty object when none). */
-export async function getMemberProfileValues(memberId: string): Promise<Record<string, unknown>> {
+export async function getMemberProfileValues(communityId: string, memberId: string): Promise<Record<string, unknown>> {
   try {
-    const { data } = await supabaseAdmin
+    const { data } = await tenantDb(communityId)
       .from('member_profiles').select('values')
       .eq('member_id', memberId).maybeSingle()
     return (data?.values as Record<string, unknown>) ?? {}
@@ -190,13 +192,14 @@ export async function getMemberProfileValues(memberId: string): Promise<Record<s
 
 /** Merge partial values into member_profiles.values (read-modify-write). */
 export async function setProfileValues(
+  communityId: string,
   memberId: string,
   partial: Record<string, unknown>,
 ): Promise<void> {
   try {
-    const current = await getMemberProfileValues(memberId)
+    const current = await getMemberProfileValues(communityId, memberId)
     const next = { ...current, ...partial }
-    const { error } = await supabaseAdmin
+    const { error } = await tenantDb(communityId)
       .from('member_profiles')
       .upsert([{ member_id: memberId, values: next, updated_at: new Date().toISOString() }], { onConflict: 'member_id' })
     if (error) console.error('[members] setProfileValues', error)
@@ -218,13 +221,15 @@ export async function setProfileValues(
  * present — apply / approve / profile-edit.
  */
 export async function upsertMember(
+  communityId: string,
   clerkUserId: string | null,
   identity: MemberIdentity,
   profileValues?: Record<string, unknown>,
   options?: { updateOnly?: boolean },
 ): Promise<string | null> {
+  const db = tenantDb(communityId)
   try {
-    const existing = await resolveMember(clerkUserId, identity.email ?? null)
+    const existing = await resolveMember(communityId, clerkUserId, identity.email ?? null)
     let memberId: string | null = existing?.id ?? null
 
     if (!memberId && options?.updateOnly) return null
@@ -232,10 +237,10 @@ export async function upsertMember(
     if (memberId) {
       const patch: Record<string, unknown> = { ...identity, updated_at: new Date().toISOString() }
       if (clerkUserId && !existing?.clerk_user_id) patch.clerk_user_id = clerkUserId
-      const { error } = await supabaseAdmin.from('members').update(patch).eq('id', memberId)
+      const { error } = await db.from('members').update(patch).eq('id', memberId)
       if (error) { console.error('[members] update', error); return null }
     } else {
-      const { data, error } = await supabaseAdmin
+      const { data, error } = await db
         .from('members')
         .insert([{ clerk_user_id: clerkUserId, ...identity }])
         .select('id').single()
@@ -244,10 +249,10 @@ export async function upsertMember(
     }
 
     if (profileValues && Object.keys(profileValues).length > 0) {
-      await setProfileValues(memberId, profileValues)
+      await setProfileValues(communityId, memberId, profileValues)
     } else {
       // Ensure a profile row exists even when there are no values yet.
-      await supabaseAdmin
+      await db
         .from('member_profiles')
         .upsert([{ member_id: memberId }], { onConflict: 'member_id', ignoreDuplicates: true })
     }
@@ -263,20 +268,22 @@ export async function upsertMember(
  * clerk_user_id). Used by the approve/reject/cancel flows during dual-write.
  */
 export async function setMemberStatus(
+  communityId: string,
   clerkUserId: string | null,
   applicationId: string | null,
   status: string,
 ): Promise<void> {
+  const db = tenantDb(communityId)
   try {
     const stamp = new Date().toISOString()
     if (applicationId) {
-      const { error, count } = await supabaseAdmin
+      const { error, count } = await db
         .from('members').update({ status, updated_at: stamp }, { count: 'exact' })
         .eq('application_id', applicationId)
       if (!error && (count ?? 0) > 0) return
     }
     if (clerkUserId) {
-      await supabaseAdmin
+      await db
         .from('members').update({ status, updated_at: stamp })
         .eq('clerk_user_id', clerkUserId)
     }

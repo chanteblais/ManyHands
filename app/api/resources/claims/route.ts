@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 import {
   postSourcedRadioEvent,
@@ -16,6 +17,7 @@ import {
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
   const { resource_id, quantity } = await req.json()
   if (!resource_id || typeof quantity !== 'number' || !Number.isFinite(quantity)) {
@@ -26,7 +28,7 @@ export async function POST(req: NextRequest) {
   // Member gate + resource lookup are independent — one parallel round trip.
   // Approved members only — same gate as the /participate page this backs.
   const [member, { data: resource }] = await Promise.all([
-    getApprovedMember(userId),
+    getApprovedMember(community.id, userId),
     supabaseAdmin
       .from('resources')
       .select('id, name, list_id, offered_by, resource_lists(visible)')
@@ -90,14 +92,14 @@ export async function POST(req: NextRequest) {
         getRadioActorName(userId),
         resourceStateAfterClaim(resource_id, resource.list_id),
       ])
-      await postSourcedRadioEvent('contribution', {
+      await postSourcedRadioEvent(community.id, 'contribution', {
         ...contributionRadioPost(actorName, resource.name, qty, state.remaining),
         actorClerkId: userId,
         actorName,
       })
       // A claim that completes the whole list is a community milestone.
       if (state.listJustCompleted && state.listTitle) {
-        await postSourcedRadioEvent('milestone', listMilestoneRadioPost(state.listTitle))
+        await postSourcedRadioEvent(community.id, 'milestone', listMilestoneRadioPost(state.listTitle))
       }
     }
   }

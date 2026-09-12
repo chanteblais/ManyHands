@@ -1,14 +1,15 @@
 import type { MetadataRoute } from 'next'
-import { SITE_NAME, EVENT_NAME, SITE_DESCRIPTION } from '@/lib/site-config'
+import { getCommunity } from '@/lib/community'
 
 // Web App Manifest — generated dynamically so each community deployment gets its
-// own name/colours via site-config env vars. Next.js serves this at
+// own name/colours from its `communities` row. Next.js serves this at
 // /manifest.webmanifest and injects the <link rel="manifest"> automatically.
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const { name, eventName, description } = await getCommunity()
   return {
-    name: `${SITE_NAME} @ ${EVENT_NAME}`,
-    short_name: SITE_NAME,
-    description: SITE_DESCRIPTION,
+    name: eventName ? `${name} @ ${eventName}` : name,
+    short_name: name,
+    description: description ?? `${name} community`,
     id: '/',
     start_url: '/',
     scope: '/',

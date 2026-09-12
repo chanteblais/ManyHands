@@ -6,10 +6,12 @@ import { LeadUpGatherings } from './LeadUpGatherings'
 import { Header } from '@/components/Header'
 import { getMemberLeadUpEvents } from '@/lib/lead-up'
 import { getApprovedMember } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 
 export default async function SchedulePage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
 
   // Gate + gatherings in one batch; the events are discarded on redirect. A
   // failed gatherings fetch degrades to undefined — the section then runs its
@@ -17,7 +19,7 @@ export default async function SchedulePage() {
   const [member, leadUpEvents] = await Promise.all([
     // Only approved members can view schedule — canonical gate (members table
     // + email fallback; see app/messages/page.tsx).
-    getApprovedMember(userId),
+    getApprovedMember(community.id, userId),
     getMemberLeadUpEvents(userId).catch(() => undefined),
   ])
 

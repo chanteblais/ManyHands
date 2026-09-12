@@ -20,13 +20,13 @@ export type RoleSignupData = {
   shiftSignupOpen: boolean
 }
 
-export async function getRoleSignupData(userId: string): Promise<RoleSignupData> {
+export async function getRoleSignupData(communityId: string, userId: string): Promise<RoleSignupData> {
   const [deptRes, rolesRes, signupRes, roleCounts, shiftFlagValue] = await Promise.all([
     supabaseAdmin.from('departments').select('id, name, description, icon, sort_order').order('sort_order'),
     supabaseAdmin.from('roles').select('id, name, description, capacity, sort_order, department_id, purpose, responsibilities_before, responsibilities_during, ideal_for, commitment, commitment_period, requires_approval').order('sort_order'),
     supabaseAdmin.from('camp_signups').select('role_id, role_approval_status').eq('clerk_user_id', userId).maybeSingle(),
     supabaseAdmin.from('camp_signups').select('role_id').not('role_id', 'is', null),
-    getPageContentValue('config_shift_signup_open'),
+    getPageContentValue(communityId, 'config_shift_signup_open'),
   ])
 
   const shiftSignupOpen = shiftFlagValue !== 'false'
@@ -108,7 +108,7 @@ export type ShiftSignupData = {
   shiftSignupOpen: boolean
 }
 
-export async function getShiftSignupData(userId: string): Promise<ShiftSignupData> {
+export async function getShiftSignupData(communityId: string, userId: string): Promise<ShiftSignupData> {
   const [eventsRes, holds, shiftState, config, typesRes] = await Promise.all([
     supabaseAdmin
       .from('schedule_events')
@@ -119,7 +119,7 @@ export async function getShiftSignupData(userId: string): Promise<ShiftSignupDat
       .order('start_time', { ascending: true, nullsFirst: false }),
     fetchAllHolds(),
     getMemberShiftState(userId),
-    getPageContent(['config_shift_signup_open', 'config_attunement_tasks', 'config_event_start_date', 'config_event_end_date']),
+    getPageContent(communityId, ['config_shift_signup_open', 'config_attunement_tasks', 'config_event_start_date', 'config_event_end_date']),
     supabaseAdmin.from('shift_types').select('id, name, icon').order('sort_order'),
   ])
 
@@ -132,6 +132,7 @@ export async function getShiftSignupData(userId: string): Promise<ShiftSignupDat
   // Resolve names for every holder once (leads are a subset) — both the "Led
   // by …" line and the full signed-up roster read from this one map.
   const holderNames = await memberDisplayNames(
+    communityId,
     Array.from(holds.holdersByOcc.values()).flatMap(s => Array.from(s)),
   )
 

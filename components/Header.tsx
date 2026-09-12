@@ -1,5 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { resolveMemberForUser } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 import { HeaderClient, type NavAuthState } from './HeaderClient'
 
 // Server side of the nav: resolves the signed-in member's state during the
@@ -17,7 +18,8 @@ export async function Header() {
   try {
     const { userId } = await auth()
     if (userId) {
-      const member = await resolveMemberForUser(userId)
+      const community = await getCommunity()
+      const member = await resolveMemberForUser(community.id, userId)
       initialAuth = {
         isSignedIn: true,
         isApproved: member?.status === 'approved',

@@ -3,7 +3,8 @@ import { auth } from '@clerk/nextjs/server'
 import { EventIcon } from '@/components/EventIcon'
 import { IconImage, ROUND_FILL } from '@/components/IconImage'
 import { redirect, notFound } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { getPageContent } from '@/lib/page-content'
 import { displayPlacement } from '@/lib/late-night'
 import { Header } from '@/components/Header'
@@ -63,14 +64,16 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // Viewer gate + target member fetch are independent — one parallel batch.
   // getApprovedMember is the standard clerk_user_id-first lookup (email
   // fallback only on a miss), so no Clerk Backend-API call on the hot path.
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.id)
   const [viewer, { data: member }] = await Promise.all([
-    getApprovedMember(userId),
-    supabaseAdmin
+    getApprovedMember(community.id, userId),
+    db
       .from('applications')
       .select('id, first_name, preferred_name, pronouns, avatar_url, clerk_user_id, submitted_at, status, camped_before')
       .eq('status', 'approved')
@@ -84,7 +87,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
   // Not a member id — it may be a volunteer (directory cards link here too).
   if (!member) {
     const { data: volunteer } = isUuid
-      ? await supabaseAdmin
+      ? await db
           .from('volunteers')
           .select('id, first_name, preferred_name, pronouns, avatar_url, created_at, clerk_user_id')
           .eq('status', 'active')
@@ -95,7 +98,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
     // Volunteers hold shifts too (that's the point of volunteering) — the same
     // registry card the member profile shows.
     const { data: volShiftRows } = volunteer.clerk_user_id
-      ? await supabaseAdmin
+      ? await db
           .from('member_shift_signups')
           .select('occurrence_date, role, schedule_events(id, title, day, time, icon_type, event_date)')
           .eq('clerk_user_id', volunteer.clerk_user_id)
@@ -108,7 +111,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
   // canonical member record.
   const [{ data: campSignup }, memberGroups, cfgMap, profileMember, { data: shiftRows }] = await Promise.all([
     member.clerk_user_id
-      ? supabaseAdmin
+      ? db
           .from('camp_signups')
           .select('role_id, role_approval_status, roles(name, description, purpose, department_id, departments(name, icon, description))')
           .eq('clerk_user_id', member.clerk_user_id)
@@ -116,12 +119,12 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
       : { data: null },
     // Group affiliations — the member's "Contributions" (Setup / Decor / Teardown …).
     getMemberGroups(member.clerk_user_id as string | null),
-    getPageContent(['config_distinctions', 'config_profile_fields']),
-    resolveMember((member.clerk_user_id as string | null) ?? null),
+    getPageContent(community.id, ['config_distinctions', 'config_profile_fields']),
+    resolveMember(community.id, (member.clerk_user_id as string | null) ?? null),
     // Shifts the member holds — same source as their own /profile commitments
     // card (member_shift_signups), plus the night held + lead offer per row.
     member.clerk_user_id
-      ? supabaseAdmin
+      ? db
           .from('member_shift_signups')
           .select('occurrence_date, role, schedule_events(id, title, day, time, icon_type, event_date)')
           .eq('clerk_user_id', member.clerk_user_id)
@@ -136,7 +139,7 @@ export default async function MemberPage(props: { params: Promise<{ id: string }
   // Merged namespace: stored profile values ∪ derived system facts (system wins).
   // Guarded — falls back to system-facts-only when no member row exists yet.
   const [profileValues, awardedIdList] = profileMember
-    ? await Promise.all([getMemberProfileValues(profileMember.id), getMemberAwards(profileMember.id)])
+    ? await Promise.all([getMemberProfileValues(community.id, profileMember.id), getMemberAwards(profileMember.id)])
     : [{} as Record<string, unknown>, null]
   const awardedIds = awardedIdList ? new Set(awardedIdList) : undefined
 

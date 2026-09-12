@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getSelfJoinGroups } from '@/lib/participate-data'
 import { getApprovedMember } from '@/lib/members'
 import { sendGroupWelcome, deleteGroupWelcome } from '@/lib/conversations'
@@ -50,8 +51,10 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+
   // Approved members only — same gate as the /participate page this backs.
-  const member = await getApprovedMember(userId)
+  const member = await getApprovedMember(community.id, userId)
   if (!member) {
     return NextResponse.json({ error: 'Only approved members can join groups' }, { status: 403 })
   }

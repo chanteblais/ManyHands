@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server'
 import { resolveMemberForUser, memberDisplayName } from '@/lib/members'
 import { suspendMember, liftSuspension } from '@/lib/suspension'
 import { notifyAdmin } from '@/lib/notify-admin'
+import { getCommunity } from '@/lib/community'
 
 // Self-serve suspension: POST { suspended: boolean, note?: string }.
 // Suspending releases the member's groups + shifts (see lib/suspension.ts);
@@ -11,7 +12,9 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const member = await resolveMemberForUser(userId)
+  const community = await getCommunity()
+
+  const member = await resolveMemberForUser(community.id, userId)
   if (!member || member.status !== 'approved') {
     return NextResponse.json({ error: 'Only approved members can suspend their attendance' }, { status: 403 })
   }
@@ -29,9 +32,9 @@ export async function POST(req: NextRequest) {
     // Already suspended → idempotent success (double-click, stale tab).
     if (member.suspended_at) return NextResponse.json({ success: true })
 
-    const { roleRemoved, groupsRemoved, shiftsRemoved, resourceClaimsRemoved } = await suspendMember(member, userId, note)
+    const { roleRemoved, groupsRemoved, shiftsRemoved, resourceClaimsRemoved } = await suspendMember(community.id, member, userId, note)
 
-    await notifyAdmin({
+    await notifyAdmin(community, {
       applicationId: member.application_id,
       eventType: 'attendance_suspended',
       message: `${displayName} suspended their attendance`,
@@ -47,9 +50,9 @@ export async function POST(req: NextRequest) {
   } else {
     if (!member.suspended_at) return NextResponse.json({ success: true })
 
-    await liftSuspension(member)
+    await liftSuspension(community.id, member)
 
-    await notifyAdmin({
+    await notifyAdmin(community, {
       applicationId: member.application_id,
       eventType: 'suspension_lifted',
       message: `${displayName} resumed their attendance`,

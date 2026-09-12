@@ -1,19 +1,38 @@
 import { Resend } from 'resend'
+import type { Community } from '@/lib/community'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Sender is RESEND_FROM (e.g. "Glåüm Camp <notifications@glaum.ca>"); the
-// domain must be verified in the Resend dashboard. If unset we fall back to
-// Resend's shared sandbox sender. Note: the verified email domain (glaum.ca)
-// is distinct from the site domain (camp.glaum.ca, see NEXT_PUBLIC_SITE_URL).
-const FROM = process.env.RESEND_FROM || 'Glåüm Camp <onboarding@resend.dev>'
+// Every email is sent on behalf of ONE community: its name is the wordmark,
+// subject prefix and footer; its first host is the link origin; its
+// `email_from` is the sender (falling back to the deployment's RESEND_FROM —
+// the domain must be verified in the Resend dashboard — then to Resend's
+// sandbox sender). Callers pass the resolved `Community` (lib/community.ts).
 
-export const APP_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://camp.glaum.ca').replace(/\/$/, '')
+/** What an email needs to know about the community it speaks for. */
+export type EmailBrand = { name: string; origin: string; from: string }
+
+const PLATFORM_FROM = process.env.RESEND_FROM || 'Many Hands <onboarding@resend.dev>'
+const ENV_ORIGIN = (process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '')
+
+/** Absolute origin for links in this community's emails. */
+export function appOrigin(community: Pick<Community, 'hosts'>): string {
+  const host = community.hosts.find(h => !h.includes('localhost'))
+  if (host) return `https://${host}`
+  return ENV_ORIGIN || 'http://localhost:3000'
+}
+
+export function emailBrand(community: Pick<Community, 'name' | 'hosts' | 'emailFrom'>): EmailBrand {
+  return { name: community.name, origin: appOrigin(community), from: community.emailFrom || PLATFORM_FROM }
+}
+
+type BrandSource = Pick<Community, 'name' | 'hosts' | 'emailFrom'>
 
 export type SendResult = { ok: boolean; error?: string }
 
-export async function sendAdminEmail(to: string, subject: string, html: string): Promise<SendResult> {
-  const { error } = await resend.emails.send({ from: FROM, to, subject, html: wrap(html) })
+export async function sendAdminEmail(community: BrandSource, to: string, subject: string, html: string): Promise<SendResult> {
+  const brand = emailBrand(community)
+  const { error } = await resend.emails.send({ from: brand.from, to, subject, html: wrap(brand, html) })
   if (error) {
     console.error('[sendAdminEmail]', error)
     return { ok: false, error: error.message }
@@ -21,8 +40,9 @@ export async function sendAdminEmail(to: string, subject: string, html: string):
   return { ok: true }
 }
 
-export async function sendUserEmail(to: string, subject: string, html: string): Promise<SendResult> {
-  const { error } = await resend.emails.send({ from: FROM, to, subject, html: wrap(html) })
+export async function sendUserEmail(community: BrandSource, to: string, subject: string, html: string): Promise<SendResult> {
+  const brand = emailBrand(community)
+  const { error } = await resend.emails.send({ from: brand.from, to, subject, html: wrap(brand, html) })
   if (error) {
     console.error('[sendUserEmail]', error)
     return { ok: false, error: error.message }
@@ -36,20 +56,22 @@ export async function sendUserEmail(to: string, subject: string, html: string): 
  * explains how to opt out of these emails.
  */
 export async function sendNewMessageEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   senderName: string
   preview: string
   senderId: string
 }) {
-  const { to, recipientName, senderName, preview, senderId } = opts
-  const threadUrl = `${APP_URL}/messages?to=${encodeURIComponent(senderId)}`
-  const prefsUrl = `${APP_URL}/profile#notifications`
+  const { community, to, recipientName, senderName, preview, senderId } = opts
+  const brand = emailBrand(community)
+  const threadUrl = `${brand.origin}/messages?to=${encodeURIComponent(senderId)}`
+  const prefsUrl = `${brand.origin}/profile#notifications`
   const safePreview = escapeHtml(preview).slice(0, 280)
 
   const html = `
     <p>Hi ${escapeHtml(recipientName)},</p>
-    <p><strong style="color:#C8A848">${escapeHtml(senderName)}</strong> sent you a message on Glåüm:</p>
+    <p><strong style="color:#C8A848">${escapeHtml(senderName)}</strong> sent you a message on ${brand.name}:</p>
     <blockquote style="margin:18px 0;padding:12px 16px;border-left:3px solid #C8A848;background:rgba(200,168,72,0.06);color:#3a2b14;font-style:italic;border-radius:6px">
       ${safePreview}${preview.length > 280 ? '…' : ''}
     </blockquote>
@@ -61,7 +83,7 @@ export async function sendNewMessageEmail(opts: {
       <a href="${prefsUrl}" style="color:#8a8a8a">Manage your notification preferences</a>.
     </p>`
 
-  return sendUserEmail(to, `${senderName} messaged you on Glåüm`, html)
+  return sendUserEmail(community, to, `${senderName} messaged you on ${brand.name}`, html)
 }
 
 /**
@@ -70,6 +92,7 @@ export async function sendNewMessageEmail(opts: {
  * mention is a deliberate, targeted signal.
  */
 export async function sendGroupMentionEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   senderName: string
@@ -77,14 +100,15 @@ export async function sendGroupMentionEmail(opts: {
   groupId: string
   preview: string
 }) {
-  const { to, recipientName, senderName, groupName, groupId, preview } = opts
-  const threadUrl = `${APP_URL}/messages/g/${encodeURIComponent(groupId)}`
-  const prefsUrl = `${APP_URL}/profile#notifications`
+  const { community, to, recipientName, senderName, groupName, groupId, preview } = opts
+  const brand = emailBrand(community)
+  const threadUrl = `${brand.origin}/messages/g/${encodeURIComponent(groupId)}`
+  const prefsUrl = `${brand.origin}/profile#notifications`
   const safePreview = escapeHtml(preview).slice(0, 280)
 
   const html = `
     <p>Hi ${escapeHtml(recipientName)},</p>
-    <p><strong style="color:#C8A848">${escapeHtml(senderName)}</strong> mentioned you in <strong>${escapeHtml(groupName)}</strong> on Glåüm:</p>
+    <p><strong style="color:#C8A848">${escapeHtml(senderName)}</strong> mentioned you in <strong>${escapeHtml(groupName)}</strong> on ${brand.name}:</p>
     <blockquote style="margin:18px 0;padding:12px 16px;border-left:3px solid #C8A848;background:rgba(200,168,72,0.06);color:#3a2b14;font-style:italic;border-radius:6px">
       ${safePreview}${preview.length > 280 ? '…' : ''}
     </blockquote>
@@ -96,7 +120,7 @@ export async function sendGroupMentionEmail(opts: {
       <a href="${prefsUrl}" style="color:#8a8a8a">Manage your notification preferences</a>.
     </p>`
 
-  await sendUserEmail(to, `${senderName} mentioned you in ${groupName}`, html)
+  await sendUserEmail(community, to, `${senderName} mentioned you in ${groupName}`, html)
 }
 
 /**
@@ -105,6 +129,7 @@ export async function sendGroupMentionEmail(opts: {
  * behaves like a "the thread is active again" nudge rather than per-message spam.
  */
 export async function sendGroupActivityEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   senderName: string
@@ -112,14 +137,15 @@ export async function sendGroupActivityEmail(opts: {
   groupId: string
   preview: string
 }) {
-  const { to, recipientName, senderName, groupName, groupId, preview } = opts
-  const threadUrl = `${APP_URL}/messages/g/${encodeURIComponent(groupId)}`
-  const prefsUrl = `${APP_URL}/profile#notifications`
+  const { community, to, recipientName, senderName, groupName, groupId, preview } = opts
+  const brand = emailBrand(community)
+  const threadUrl = `${brand.origin}/messages/g/${encodeURIComponent(groupId)}`
+  const prefsUrl = `${brand.origin}/profile#notifications`
   const safePreview = escapeHtml(preview).slice(0, 280)
 
   const html = `
     <p>Hi ${escapeHtml(recipientName)},</p>
-    <p>New activity in <strong style="color:#C8A848">${escapeHtml(groupName)}</strong> on Glåüm:</p>
+    <p>New activity in <strong style="color:#C8A848">${escapeHtml(groupName)}</strong> on ${brand.name}:</p>
     <blockquote style="margin:18px 0;padding:12px 16px;border-left:3px solid #C8A848;background:rgba(200,168,72,0.06);color:#3a2b14;font-style:italic;border-radius:6px">
       <strong>${escapeHtml(senderName)}:</strong> ${safePreview}${preview.length > 280 ? '…' : ''}
     </blockquote>
@@ -131,7 +157,7 @@ export async function sendGroupActivityEmail(opts: {
       <a href="${prefsUrl}" style="color:#8a8a8a">manage your notification preferences</a>.
     </p>`
 
-  await sendUserEmail(to, `New activity in ${groupName}`, html)
+  await sendUserEmail(community, to, `New activity in ${groupName}`, html)
 }
 
 /**
@@ -140,6 +166,7 @@ export async function sendGroupActivityEmail(opts: {
  * the recipient's `email_announcements` preference (checked by the caller).
  */
 export async function sendLeadUpGatheringEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   title: string
@@ -148,9 +175,10 @@ export async function sendLeadUpGatheringEmail(opts: {
   link: string | null
   imageUrl?: string | null
 }) {
-  const { to, recipientName, title, when, location, link, imageUrl } = opts
-  const scheduleUrl = `${APP_URL}/schedule`
-  const prefsUrl = `${APP_URL}/profile#notifications`
+  const { community, to, recipientName, title, when, location, link, imageUrl } = opts
+  const brand = emailBrand(community)
+  const scheduleUrl = `${brand.origin}/schedule`
+  const prefsUrl = `${brand.origin}/profile#notifications`
 
   const banner = imageUrl
     ? `<img src="${encodeURI(imageUrl)}" alt="" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin:0 0 16px" />`
@@ -178,7 +206,7 @@ export async function sendLeadUpGatheringEmail(opts: {
       <a href="${prefsUrl}" style="color:#8a8a8a">Manage your notification preferences</a>.
     </p>`
 
-  return sendUserEmail(to, `New gathering: ${title}`, html)
+  return sendUserEmail(community, to, `New gathering: ${title}`, html)
 }
 
 /**
@@ -189,6 +217,7 @@ export async function sendLeadUpGatheringEmail(opts: {
  * recipient's `email_attunement_nudges` preference (checked by the caller).
  */
 export async function sendAttunementNudgeEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   required: { label: string; href?: string }[]
@@ -196,15 +225,16 @@ export async function sendAttunementNudgeEmail(opts: {
   eventName: string
   daysUntil: number
 }) {
-  const { to, recipientName, required, commitments, eventName, daysUntil } = opts
-  const prefsUrl = `${APP_URL}/profile#notifications`
+  const { community, to, recipientName, required, commitments, eventName, daysUntil } = opts
+  const brand = emailBrand(community)
+  const prefsUrl = `${brand.origin}/profile#notifications`
 
   const taskList = (items: { label: string; href?: string }[]) => `
     <ul style="margin:10px 0 18px;padding-left:0;list-style:none">
       ${items.map(t => `
         <li style="margin:6px 0;padding:9px 14px;border-left:3px solid #C8A848;background:rgba(200,168,72,0.06);border-radius:6px;color:#3a2b14">
           ✦&nbsp; ${t.href
-            ? `<a href="${APP_URL}${encodeURI(t.href)}" style="color:#634D0B;text-decoration:none;font-weight:bold">${escapeHtml(t.label)}</a>`
+            ? `<a href="${brand.origin}${encodeURI(t.href)}" style="color:#634D0B;text-decoration:none;font-weight:bold">${escapeHtml(t.label)}</a>`
             : `<strong>${escapeHtml(t.label)}</strong>`}
         </li>`).join('')}
     </ul>`
@@ -231,14 +261,14 @@ export async function sendAttunementNudgeEmail(opts: {
     ${requiredBlock}
     ${commitmentsBlock}
     <p style="margin:24px 0">
-      <a href="${APP_URL}/profile" style="display:inline-block;background:#C8A848;color:#1A0A24;text-decoration:none;padding:11px 22px;border-radius:8px;font-weight:bold">Complete your attunement ✦</a>
+      <a href="${brand.origin}/profile" style="display:inline-block;background:#C8A848;color:#1A0A24;text-decoration:none;padding:11px 22px;border-radius:8px;font-weight:bold">Complete your attunement ✦</a>
     </p>
     <p style="font-size:12px;color:#8a8a8a;margin-top:28px">
       You're receiving this because you have outstanding attunement tasks and attunement reminders turned on.
       <a href="${prefsUrl}" style="color:#8a8a8a">Manage your notification preferences</a>.
     </p>`
 
-  return sendUserEmail(to, subject, html)
+  return sendUserEmail(community, to, subject, html)
 }
 
 // One gathering or shift as it appears in a confirmation / reminder email.
@@ -256,6 +286,7 @@ export type ReminderItem = {
  * off all gathering/shift email.
  */
 export async function sendSignupConfirmationEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   kind: 'gathering' | 'shift'
@@ -264,9 +295,10 @@ export async function sendSignupConfirmationEmail(opts: {
   location?: string | null
   href: string
 }) {
-  const { to, recipientName, kind, title, whenText, location, href } = opts
-  const prefsUrl = `${APP_URL}/profile#notifications`
-  const url = href.startsWith('http') ? href : `${APP_URL}${href}`
+  const { community, to, recipientName, kind, title, whenText, location, href } = opts
+  const brand = emailBrand(community)
+  const prefsUrl = `${brand.origin}/profile#notifications`
+  const url = href.startsWith('http') ? href : `${brand.origin}${href}`
   const lead = kind === 'gathering' ? "You're on the list for this gathering:" : "You're signed up for this shift:"
   const locRow = location ? `<p style="margin:4px 0"><strong>Where:</strong> ${escapeHtml(location)}</p>` : ''
 
@@ -287,7 +319,7 @@ export async function sendSignupConfirmationEmail(opts: {
     </p>`
 
   const subject = kind === 'gathering' ? `You're in: ${title}` : `Shift confirmed: ${title}`
-  return sendUserEmail(to, subject, html)
+  return sendUserEmail(community, to, subject, html)
 }
 
 /**
@@ -297,6 +329,7 @@ export async function sendSignupConfirmationEmail(opts: {
  * `email_event_reminders` preference (checked by the caller).
  */
 export async function sendEventReminderEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   phase: 'day_before' | 'morning_of'
@@ -305,14 +338,15 @@ export async function sendEventReminderEmail(opts: {
   // member-gated and would bounce them to /profile.
   schedulePath?: string
 }) {
-  const { to, recipientName, phase, items, schedulePath = '/schedule' } = opts
-  const prefsUrl = `${APP_URL}/profile#notifications`
+  const { community, to, recipientName, phase, items, schedulePath = '/schedule' } = opts
+  const brand = emailBrand(community)
+  const prefsUrl = `${brand.origin}/profile#notifications`
   const whenWord = phase === 'day_before' ? 'tomorrow' : 'today'
 
   const list = `
     <ul style="margin:10px 0 18px;padding-left:0;list-style:none">
       ${items.map(it => {
-        const url = it.href.startsWith('http') ? it.href : `${APP_URL}${it.href}`
+        const url = it.href.startsWith('http') ? it.href : `${brand.origin}${it.href}`
         const tag = it.kind === 'gathering' ? 'Gathering' : 'Shift'
         return `
         <li style="margin:6px 0;padding:9px 14px;border-left:3px solid #C8A848;background:rgba(200,168,72,0.06);border-radius:6px;color:#3a2b14">
@@ -325,22 +359,22 @@ export async function sendEventReminderEmail(opts: {
 
   const count = items.length
   const subject = phase === 'day_before'
-    ? (count === 1 ? `Tomorrow: ${items[0].title}` : `${count} things on your Glåüm calendar tomorrow`)
-    : (count === 1 ? `Today: ${items[0].title}` : `${count} things on your Glåüm calendar today`)
+    ? (count === 1 ? `Tomorrow: ${items[0].title}` : `${count} things on your ${brand.name} calendar tomorrow`)
+    : (count === 1 ? `Today: ${items[0].title}` : `${count} things on your ${brand.name} calendar today`)
 
   const html = `
     <p>Hi ${escapeHtml(recipientName)},</p>
     <p>A gentle reminder — here's what you have coming up ${whenWord}:</p>
     ${list}
     <p style="margin:24px 0">
-      <a href="${APP_URL}${schedulePath}" style="display:inline-block;background:#C8A848;color:#1A0A24;text-decoration:none;padding:11px 22px;border-radius:8px;font-weight:bold">View your schedule ✦</a>
+      <a href="${brand.origin}${schedulePath}" style="display:inline-block;background:#C8A848;color:#1A0A24;text-decoration:none;padding:11px 22px;border-radius:8px;font-weight:bold">View your schedule ✦</a>
     </p>
     <p style="font-size:12px;color:#8a8a8a;margin-top:28px">
       You're receiving this because you have gathering &amp; shift reminders turned on.
       <a href="${prefsUrl}" style="color:#8a8a8a">Manage your notification preferences</a>.
     </p>`
 
-  return sendUserEmail(to, subject, html)
+  return sendUserEmail(community, to, subject, html)
 }
 
 /**
@@ -348,19 +382,21 @@ export async function sendEventReminderEmail(opts: {
  * recipient's message-notification preference (checked at the seam).
  */
 export async function sendRadioMentionEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   senderName: string
   preview: string
 }) {
-  const { to, recipientName, senderName, preview } = opts
-  const radioUrl = `${APP_URL}/radio`
-  const prefsUrl = `${APP_URL}/profile#notifications`
+  const { community, to, recipientName, senderName, preview } = opts
+  const brand = emailBrand(community)
+  const radioUrl = `${brand.origin}/radio`
+  const prefsUrl = `${brand.origin}/profile#notifications`
   const safePreview = escapeHtml(preview).slice(0, 280)
 
-  const html = wrap(`
+  const html = wrap(brand, `
     <p>Hi ${escapeHtml(recipientName)},</p>
-    <p><strong style="color:#634D0B">${escapeHtml(senderName)}</strong> mentioned you on Glåüm Radio:</p>
+    <p><strong style="color:#634D0B">${escapeHtml(senderName)}</strong> mentioned you on ${brand.name} Radio:</p>
     <blockquote style="margin:18px 0;padding:12px 16px;border-left:3px solid #C8A848;background:rgba(200,168,72,0.06);color:#3a2b14;font-style:italic;border-radius:6px">
       ${safePreview}${preview.length > 280 ? '…' : ''}
     </blockquote>
@@ -372,7 +408,7 @@ export async function sendRadioMentionEmail(opts: {
       <a href="${prefsUrl}" style="color:#8a8a8a">Manage your notification preferences</a>.
     </p>`)
 
-  await sendUserEmail(to, `${senderName} mentioned you on Radio`, html)
+  await sendUserEmail(community, to, `${senderName} mentioned you on Radio`, html)
 }
 
 /**
@@ -381,17 +417,19 @@ export async function sendRadioMentionEmail(opts: {
  * caller). Mirrors the organizer-broadcast email so both read the same.
  */
 export async function sendRadioBroadcastEmail(opts: {
+  community: BrandSource
   to: string
   recipientName: string
   senderName: string
   message: string
 }) {
-  const { to, recipientName, senderName, message } = opts
-  const radioUrl = `${APP_URL}/radio`
-  const prefsUrl = `${APP_URL}/profile#notifications`
+  const { community, to, recipientName, senderName, message } = opts
+  const brand = emailBrand(community)
+  const radioUrl = `${brand.origin}/radio`
+  const prefsUrl = `${brand.origin}/profile#notifications`
   const safeMessage = escapeHtml(message).slice(0, 400)
 
-  const html = wrap(`
+  const html = wrap(brand, `
     <p>Hi ${escapeHtml(recipientName)},</p>
     <p>📢 <strong style="color:#634D0B">${escapeHtml(senderName)}</strong> is on the air:</p>
     <blockquote style="margin:18px 0;padding:12px 16px;border-left:3px solid #C8A848;background:rgba(200,168,72,0.06);color:#3a2b14;font-style:italic;border-radius:6px">
@@ -405,7 +443,7 @@ export async function sendRadioBroadcastEmail(opts: {
       <a href="${prefsUrl}" style="color:#8a8a8a">Manage your notification preferences</a>.
     </p>`)
 
-  await sendUserEmail(to, `${senderName} on Radio: ${message.slice(0, 60)}${message.length > 60 ? '…' : ''}`, html)
+  await sendUserEmail(community, to, `${senderName} on Radio: ${message.slice(0, 60)}${message.length > 60 ? '…' : ''}`, html)
 }
 
 // ── Helpers ───────────────────────────────────────────────────────
@@ -419,15 +457,16 @@ function escapeHtml(s: string): string {
 }
 
 // Light branded wrapper so all emails look consistent and professional.
-function wrap(inner: string): string {
+function wrap(brand: EmailBrand, inner: string): string {
+  const wordmark = escapeHtml(brand.name.toUpperCase().split('').join(' '))
   return `
   <div style="font-family:Georgia,'Times New Roman',serif;max-width:560px;margin:0 auto;padding:8px;color:#2a2018">
     <div style="text-align:center;padding:18px 0 8px">
-      <span style="font-size:22px;letter-spacing:0.15em;color:#634D0B">G L Å Ü M</span>
+      <span style="font-size:22px;letter-spacing:0.15em;color:#634D0B">${wordmark}</span>
     </div>
     <div style="background:#fbf7ee;border:1px solid #e6d9b8;border-radius:14px;padding:24px 28px;line-height:1.6">
       ${inner}
     </div>
-    <p style="text-align:center;font-size:11px;color:#a59a86;margin:16px 0 8px">Glåüm Camp · Many Hands</p>
+    <p style="text-align:center;font-size:11px;color:#a59a86;margin:16px 0 8px">${escapeHtml(brand.name)} · Many Hands</p>
   </div>`
 }

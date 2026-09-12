@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase'
+import { globalDb } from '@/lib/tenant-db'
 
 export type NotificationPreferences = {
   email_new_message: boolean
@@ -39,7 +39,7 @@ export async function getNotificationPreferences(
   clerkUserId: string,
   opts?: { onError?: 'all-off' | 'defaults' }
 ): Promise<NotificationPreferences> {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await globalDb()
     .from('notification_preferences')
     .select('email_new_message, email_announcements, email_application, email_attunement_nudges, email_event_reminders')
     .eq('clerk_user_id', clerkUserId)

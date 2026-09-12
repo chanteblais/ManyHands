@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import { getPageContent } from '@/lib/page-content'
+import { getCommunity } from '@/lib/community'
 import { ScheduleCalendarClient } from '@/components/ScheduleCalendarClient'
 import { shiftColorIndexMap } from '@/lib/shift-colors'
 import { buildScheduleDays } from '@/lib/schedule-days'
@@ -8,6 +9,7 @@ export { EventIcon } from '@/components/EventIcon'
 export { ICON_TYPES } from '@/components/EventIcon'
 
 export async function ScheduleSection() {
+  const community = await getCommunity()
   const [{ data: eventsRaw }, { data: shiftTypes }, config] = await Promise.all([
     supabaseAdmin
       .from('schedule_events')
@@ -17,7 +19,7 @@ export async function ScheduleSection() {
       .eq('show_on_schedule', true)
       .order('sort_order', { ascending: true }),
     supabaseAdmin.from('shift_types').select('id').order('sort_order'),
-    getPageContent(['config_event_start_date', 'config_event_end_date']),
+    getPageContent(community.id, ['config_event_start_date', 'config_event_end_date']),
   ])
 
   // Each shift type gets a stable palette slot from its registry position.

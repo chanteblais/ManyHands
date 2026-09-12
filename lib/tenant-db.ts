@@ -47,7 +47,9 @@ function stamp<T extends Row>(communityId: string, rows: T | T[]): (T & { commun
 // everywhere. Casting through a concrete PostgrestFilterBuilder<any, …> keeps
 // that contract without dragging supabase-js's query-string type parser into
 // the wrapper (forwarding the column literal as a generic overflows tsc).
-type Filter = PostgrestFilterBuilder<any, any, any, any>
+// Result = any[] so `.maybeSingle()` / `.single()` narrow to `any` (with a bare
+// `any` they collapse to `{}`).
+type Filter = PostgrestFilterBuilder<any, any, any, any[]>
 const asFilter = (q: unknown) => q as Filter
 
 // `scope === null` is the passthrough for GLOBAL_TABLES.
@@ -94,6 +96,22 @@ export function tenantDb(communityId: string): TenantDb {
     from: (table: string) => scopedTable(supabaseAdmin.from(table), GLOBAL_TABLES.has(table) ? null : communityId),
     rpc: supabaseAdmin.rpc.bind(supabaseAdmin),
     storage: supabaseAdmin.storage,
+  }
+}
+
+/**
+ * Client for person-level tables only (`GLOBAL_TABLES`): push tokens,
+ * notification preferences. Refuses scoped tables so a global helper can never
+ * become an unscoped back door.
+ */
+export function globalDb(): { from: (table: string) => ScopedTable } {
+  return {
+    from(table: string) {
+      if (!GLOBAL_TABLES.has(table)) {
+        throw new Error(`[tenant-db] "${table}" is community-scoped — use tenantDb(community.id)`)
+      }
+      return scopedTable(supabaseAdmin.from(table), null)
+    },
   }
 }
 

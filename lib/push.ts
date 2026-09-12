@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import { supabaseAdmin } from '@/lib/supabase'
+import { globalDb } from '@/lib/tenant-db'
 
 // Native push channel: FCM HTTP v1 (delivers to both APNs/iOS and Android —
 // the Capacitor app registers FCM tokens via /api/push/register). Implemented
@@ -90,7 +90,7 @@ export async function sendPushToMember(clerkUserId: string, payload: PushPayload
     const sa = serviceAccount()
     if (!sa) return { sent: 0 }
 
-    const { data: tokens } = await supabaseAdmin
+    const { data: tokens } = await globalDb()
       .from('push_tokens')
       .select('token')
       .eq('clerk_user_id', clerkUserId)
@@ -120,7 +120,7 @@ export async function sendPushToMember(clerkUserId: string, payload: PushPayload
         const text = await res.text().catch(() => '')
         // Token no longer valid (app uninstalled / token rotated) — prune it.
         if (res.status === 404 || text.includes('UNREGISTERED') || text.includes('INVALID_ARGUMENT')) {
-          await supabaseAdmin.from('push_tokens').delete().eq('token', token)
+          await globalDb().from('push_tokens').delete().eq('token', token)
         } else {
           console.error('[push] FCM send failed:', res.status, text)
         }

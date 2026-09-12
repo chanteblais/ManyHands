@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { sendUserEmail } from '@/lib/send-email'
 import { requireAdmin } from '@/lib/admin-auth'
 import { setMemberStatus } from '@/lib/members'
@@ -11,6 +12,8 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const userId = await requireAdmin()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
   const client = await clerkClient()
 
   const { id } = params
@@ -25,7 +28,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   }
 
   // Fetch application so we can clear their signups and notify them
-  const { data: application } = await supabaseAdmin
+  const { data: application } = await db
     .from('applications')
     .select('clerk_user_id, first_name, preferred_name')
     .eq('id', id)
@@ -34,7 +37,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   if (!application) return NextResponse.json({ error: 'Application not found' }, { status: 404 })
 
   // Soft-remove: mark cancelled, preserving the row (reversible by re-approving)
-  const { error: updateError } = await supabaseAdmin
+  const { error: updateError } = await db
     .from('applications')
     .update({
       status: 'cancelled',
@@ -51,7 +54,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
 
   // Mirror onto the canonical member record — member-only access checks
   // (getApprovedMember) read members.status, not the application row.
-  await setMemberStatus(application?.clerk_user_id ?? null, id, 'cancelled')
+  await setMemberStatus(community.id, application?.clerk_user_id ?? null, id, 'cancelled')
 
   // Free up their role + shift slots (role lives on camp_signups; shift claims
   // live on member_shift_signups since the shifts redesign) and revoke group
@@ -60,15 +63,15 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   let emailWarning: string | undefined
   if (application?.clerk_user_id) {
     await Promise.all([
-      supabaseAdmin
+      db
         .from('camp_signups')
         .delete()
         .eq('clerk_user_id', application.clerk_user_id),
-      supabaseAdmin
+      db
         .from('member_shift_signups')
         .delete()
         .eq('clerk_user_id', application.clerk_user_id),
-      supabaseAdmin
+      db
         .from('group_members')
         .delete()
         .eq('clerk_user_id', application.clerk_user_id),
@@ -79,7 +82,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     // Notify the removed member
     const displayName = application.preferred_name || application.first_name || 'there'
     const message = 'Your membership for this gathering has been removed by the Many Hands.'
-    await supabaseAdmin.from('user_notifications').insert([{
+    await db.from('user_notifications').insert([{
       clerk_user_id: application.clerk_user_id,
       event_type: 'membership_removed',
       message,
@@ -96,8 +99,9 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     }
     if (email) {
       const result = await sendUserEmail(
+        community,
         email,
-        'An update on your Glåüm membership',
+        `An update on your ${community.name} membership`,
         `<p>Hi ${displayName},</p><p>${message}</p>${reason ? `<p>${reason}</p>` : ''}<p>If you believe this was a mistake, please reach out to the camp organizers.</p>`,
       )
       // Removal itself succeeded (status + slot release + in-app notification);

@@ -6,6 +6,7 @@ import { Header } from '@/components/Header'
 import { isImageIcon } from '@/lib/icon-src'
 import { roleSlug } from '@/lib/role-slug'
 import { getApprovedMember } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 import { ClaimRoleButton } from './ClaimRoleButton'
 
 export const dynamic = 'force-dynamic'
@@ -72,10 +73,11 @@ function ChargeList({ heading, text }: { heading: string; text: string }) {
 export default async function RolesRegistryPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
 
   // Same gate as /schedule and /participate: approved members only —
   // canonical gate (members table + email fallback; see app/messages/page.tsx).
-  const member = await getApprovedMember(userId)
+  const member = await getApprovedMember(community.id, userId)
   if (!member) redirect('/profile')
 
   const [deptRes, rolesRes, signupRes, roleCounts] = await Promise.all([

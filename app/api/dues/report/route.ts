@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { resolveMemberForUser, memberDisplayName } from '@/lib/members'
 import { notifyAdmin } from '@/lib/notify-admin'
 import { parseDuesConfig, duesAppliesToMembers } from '@/lib/dues'
@@ -13,13 +14,16 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const member = await resolveMemberForUser(userId)
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const member = await resolveMemberForUser(community.id, userId)
   if (!member || member.status !== 'approved') {
     return NextResponse.json({ error: 'Only approved members can report dues' }, { status: 403 })
   }
 
   // Dues must be on and applied to members.
-  const { data: cfgRow } = await supabaseAdmin.from('page_content').select('value').eq('key', 'config_dues').maybeSingle()
+  const { data: cfgRow } = await db.from('page_content').select('value').eq('key', 'config_dues').maybeSingle()
   if (!duesAppliesToMembers(parseDuesConfig(cfgRow?.value))) {
     return NextResponse.json({ error: 'Camp dues are not being collected' }, { status: 403 })
   }
@@ -38,10 +42,10 @@ export async function POST(req: NextRequest) {
   if (reported) {
     if (member.dues_reported_at) return NextResponse.json({ success: true, dues_reported_at: member.dues_reported_at })
     const now = new Date().toISOString()
-    const { error } = await supabaseAdmin.from('members').update({ dues_reported_at: now }).eq('id', member.id)
+    const { error } = await db.from('members').update({ dues_reported_at: now }).eq('id', member.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    await notifyAdmin({
+    await notifyAdmin(community, {
       applicationId: member.application_id,
       eventType: 'dues_reported',
       message: `${memberDisplayName(member, 'A member')} reported paying camp dues`,
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
 
   // Un-report (mistaken claim) — quiet, no admin notification.
   if (!member.dues_reported_at) return NextResponse.json({ success: true, dues_reported_at: null })
-  const { error } = await supabaseAdmin.from('members').update({ dues_reported_at: null }).eq('id', member.id)
+  const { error } = await db.from('members').update({ dues_reported_at: null }).eq('id', member.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true, dues_reported_at: null })
 }

@@ -4,6 +4,7 @@ import { redirect, notFound } from 'next/navigation'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getDirectThreadMessages } from '@/lib/inbox'
 import { getApprovedMember } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 import { Header } from '@/components/Header'
 import { ThreadClient } from './ThreadClient'
 import { supabaseResizedUrl } from '@/lib/supabase-image'
@@ -12,6 +13,7 @@ export default async function ThreadPage(props: { params: Promise<{ userId: stri
   const params = await props.params;
   const { userId: myId } = await auth()
   if (!myId) redirect('/sign-in')
+  const community = await getCommunity()
 
   // Can't message yourself
   if (params.userId === myId) redirect('/messages')
@@ -22,7 +24,7 @@ export default async function ThreadPage(props: { params: Promise<{ userId: stri
   const [me, { data: other }, initialMessages] = await Promise.all([
     // Auth: only approved members — canonical gate (members table + email
     // fallback; see app/messages/page.tsx).
-    getApprovedMember(myId),
+    getApprovedMember(community.id, myId),
     // Recipient profile
     supabaseAdmin
       .from('members')

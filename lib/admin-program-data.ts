@@ -40,7 +40,7 @@ export async function getAdminShiftTypes(): Promise<ShiftTypeRow[]> {
 // query is shared with the Overview shift-hours ledger (lib/shift-signups.ts
 // fetchShiftHolds), so the admin count always agrees with the member-facing
 // "N signed up".
-export async function getAdminRosters(): Promise<Record<string, RosterEntry[]>> {
+export async function getAdminRosters(communityId: string): Promise<Record<string, RosterEntry[]>> {
   const many = await fetchShiftHolds()
 
   // Each night of a recurring shift is its own roster: hold identity is
@@ -62,8 +62,8 @@ export async function getAdminRosters(): Promise<Record<string, RosterEntry[]>> 
 
   const allIds = Array.from(byEvent.values()).flatMap(h => Array.from(h.values()).map(v => v.clerk_user_id))
   const [names, applicationIds] = await Promise.all([
-    memberDisplayNames(allIds),
-    applicationIdsByClerkId(allIds),
+    memberDisplayNames(communityId, allIds),
+    applicationIdsByClerkId(communityId, allIds),
   ])
 
   const rosters: Record<string, RosterEntry[]> = {}

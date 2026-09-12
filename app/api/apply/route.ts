@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { notifyAdmin } from '@/lib/notify-admin'
 import { upsertMember } from '@/lib/members'
 import { parseProfileFields, storedFields, applicationFields, coerceProfileValue } from '@/lib/profile-fields'
@@ -12,11 +13,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   try {
     // A prior application only blocks re-applying if it's still active. A
     // *cancelled* application is treated as "no application" everywhere else
     // (profile/apply pages), so it must not block — we revive it below instead.
-    const { data: existing } = await supabaseAdmin
+    const { data: existing } = await db
       .from('applications')
       .select('id, status')
       .eq('clerk_user_id', userId)
@@ -103,7 +107,7 @@ export async function POST(req: NextRequest) {
     // cancellation state) rather than inserting a second row — the rest of the app
     // assumes one application row per clerk_user_id. Otherwise insert a new one.
     const { data: inserted, error } = existing
-      ? await supabaseAdmin
+      ? await db
           .from('applications')
           .update({
             ...record,
@@ -116,7 +120,7 @@ export async function POST(req: NextRequest) {
           .eq('id', existing.id)
           .select('id')
           .single()
-      : await supabaseAdmin
+      : await db
           .from('applications')
           .insert([record])
           .select('id')
@@ -131,7 +135,7 @@ export async function POST(req: NextRequest) {
     // actually offered by a visible "Group selection" field in the member form
     // config (a field with unset `options` offers every group).
     if (Array.isArray(data.group_choices) && data.group_choices.length > 0) {
-      const { data: cfgRow } = await supabaseAdmin
+      const { data: cfgRow } = await db
         .from('page_content')
         .select('value')
         .eq('key', 'config_member_form')
@@ -153,7 +157,7 @@ export async function POST(req: NextRequest) {
       } catch { /* malformed config → no groups allowed */ }
 
       if (allowAll || explicitIds.size > 0) {
-        const { data: validGroups } = await supabaseAdmin
+        const { data: validGroups } = await db
           .from('groups')
           .select('id')
           .in('id', data.group_choices)
@@ -161,7 +165,7 @@ export async function POST(req: NextRequest) {
           .filter(g => allowAll || explicitIds.has(g.id))
           .map(g => ({ group_id: g.id, clerk_user_id: userId, source: 'application' }))
         if (rows.length > 0) {
-          const { data: insertedRows, error: gmError } = await supabaseAdmin
+          const { data: insertedRows, error: gmError } = await db
             .from('group_members')
             .upsert(rows, { onConflict: 'group_id,clerk_user_id', ignoreDuplicates: true })
             .select('group_id')
@@ -180,7 +184,7 @@ export async function POST(req: NextRequest) {
     // raw answers stay on the application row (custom_answers) untouched.
     let profileValues: Record<string, unknown> | undefined
     if (data.profile_values && typeof data.profile_values === 'object') {
-      const { data: registryRow } = await supabaseAdmin
+      const { data: registryRow } = await db
         .from('page_content')
         .select('value')
         .eq('key', 'config_profile_fields')
@@ -201,6 +205,7 @@ export async function POST(req: NextRequest) {
     // seed the profile from the already-keyed custom answers. Guarded inside
     // upsertMember — a failure here must never break the application submission.
     await upsertMember(
+      community.id,
       userId,
       {
         email: data.email,
@@ -217,7 +222,7 @@ export async function POST(req: NextRequest) {
     )
 
     const displayName = [data.preferred_name || data.first_name, data.last_name].filter(Boolean).join(' ')
-    await notifyAdmin({
+    await notifyAdmin(community, {
       eventType: 'new_application',
       applicationId: inserted?.id ?? null,
       message: `New application from ${displayName}`,

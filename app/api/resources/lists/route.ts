@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 
 // Create a resource list. Shared Resources is member-owned (2026-07-08): any
@@ -11,8 +12,9 @@ import { getApprovedMember } from '@/lib/members'
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
-  const member = await getApprovedMember(userId)
+  const member = await getApprovedMember(community.id, userId)
   if (!member) {
     return NextResponse.json({ error: 'Only approved members can create lists' }, { status: 403 })
   }

@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { getPageContentValue } from '@/lib/page-content'
 import { getApprovedMember } from '@/lib/members'
 import { parseDuesConfig, formatDuesAmount, duesConfigReady, duesAppliesToMembers } from '@/lib/dues'
@@ -20,10 +21,12 @@ export const dynamic = 'force-dynamic'
 export default async function DuesPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const [member, duesValue] = await Promise.all([
-    getApprovedMember(userId),
-    getPageContentValue('config_dues'),
+    getApprovedMember(community.id, userId),
+    getPageContentValue(community.id, 'config_dues'),
   ])
   if (!member) redirect('/profile')
 

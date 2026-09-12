@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect, notFound } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { supabaseResizedUrl } from '@/lib/supabase-image'
 import { requireAdmin } from '@/lib/admin-auth'
 import { AdminActions } from '../AdminActions'
@@ -26,8 +27,10 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
   if (!userId) redirect('/sign-in')
 
   if (!(await requireAdmin())) redirect('/')
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
-  const { data: app } = await supabaseAdmin
+  const { data: app } = await db
     .from('applications')
     .select('*')
     .eq('id', params.id)
@@ -48,14 +51,14 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
     member,
   ] = await Promise.all([
     app.clerk_user_id
-      ? supabaseAdmin
+      ? db
           .from('camp_signups')
           .select('role_id, role_approval_status')
           .eq('clerk_user_id', app.clerk_user_id)
           .maybeSingle()
       : none,
     app.clerk_user_id
-      ? supabaseAdmin
+      ? db
           .from('member_shift_signups')
           .select('role, schedule_events(id, title, time, day)')
           .eq('clerk_user_id', app.clerk_user_id)
@@ -63,13 +66,13 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
     // Cross-reference chips (docs/admin-ux-handoff.md A5): the member's linked
     // entities at a glance, each deep-linking to where that entity is managed.
     app.clerk_user_id ? getMemberGroups(app.clerk_user_id) : [],
-    getAdminRunway(),
-    supabaseAdmin
+    getAdminRunway(community.id),
+    db
       .from('page_content')
       .select('key, value')
       .in('key', ['config_member_form', 'config_distinctions', 'config_profile_fields', 'config_dues']),
     // The person's canonical member record (manual distinctions + profile values).
-    (app.clerk_user_id || app.email) ? resolveMember(app.clerk_user_id ?? null, app.email) : null,
+    (app.clerk_user_id || app.email) ? resolveMember(community.id, app.clerk_user_id ?? null, app.email) : null,
   ])
   const cfgMap: Record<string, string | undefined> = Object.fromEntries((cfgRows ?? []).map(r => [r.key, r.value]))
 
@@ -83,10 +86,10 @@ export default async function ApplicationDetailPage(props: { params: Promise<{ i
   // Second batch: rows that hang off the signup / member rows above.
   const [roleRes, memberAwards, memberProfileValues] = await Promise.all([
     signup?.role_id
-      ? supabaseAdmin.from('roles').select('name, commitment, department_id, departments(name, icon)').eq('id', signup.role_id).single()
+      ? db.from('roles').select('name, commitment, department_id, departments(name, icon)').eq('id', signup.role_id).single()
       : none,
     member ? getMemberAwards(member.id) : [],
-    member ? getMemberProfileValues(member.id) : ({} as Record<string, unknown>),
+    member ? getMemberProfileValues(community.id, member.id) : ({} as Record<string, unknown>),
   ])
 
   let signupData: { role: any; shifts: { id: string; title: string; time: string | null; day: string; lead: boolean }[] } | null = null

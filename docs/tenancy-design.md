@@ -2,7 +2,10 @@
 
 **Status: decisions 1–5 approved as recommended (Chanté, 2026-09-11). Branch 1a
 (`feat/tenancy-schema`) built the same day — migration `074`, `lib/community.ts`,
-`lib/tenant-db.ts`, the scope guard, `CommunityProvider`. Next: 1b.** Drafted 2026-09-11 from a full inventory of the schema (36 tables), config layer,
+`lib/tenant-db.ts`, the scope guard, `CommunityProvider` — merged; migration 074 applied in prod.
+Branch 1b (`feat/tenancy-identity`) built the same day: identity, config and email libs
+take the community explicitly; 32 files fully on `tenantDb`; every member/admin route
+resolves the community once. Next: 1c (program sweep).** Drafted 2026-09-11 from a full inventory of the schema (36 tables), config layer,
 auth and data access (94 API routes, ~500 `.from()` call sites). Supersedes the Phase 1 sketch in
 [`multi-community.md`](./multi-community.md) (kept there as history).
 
@@ -283,7 +286,7 @@ must be pixel-identical after every merge; production keeps resolving `camp.glau
 | Step | Branch | Contents | Done when |
 |---|---|---|---|
 | 1a | `feat/tenancy-schema` — **built 2026-09-11** | Migration 074 (additive; constraint swaps deferred to 075), `lib/community.ts`, `lib/tenant-db.ts`, the scope guard script (allowlist = 117 files, shrinking per step), `CommunityProvider` mounted in the root layout, `DEFAULT_COMMUNITY_SLUG`. No call-site changes. | Migration applied; app unchanged; `getCommunity()` returns glaum everywhere. |
-| 1b | `feat/tenancy-identity` | `members`/`applications`/`volunteers`/profile/apply/approve/suspension/dues + `page_content` + site-config consumers + email/notify/notify-admin. | Guard allowlist no longer contains these files. |
+| 1b | `feat/tenancy-identity` — **built 2026-09-11** | `members`/`applications`/`volunteers`/profile/apply/approve/suspension/dues + `page_content` (per-community cache tags) + site-config consumers (layout metadata, manifest, install prompt) + email (community-branded sender/links/wordmark)/notify/notify-admin; `globalDb()` for person-level tables; every route/page that calls a changed lib resolves `getCommunity()` once. Allowlist 133 → 94 (the guard also learned relative imports). | Guard allowlist no longer contains these files. ✔ |
 | 1c | `feat/tenancy-program` | groups/collections/departments/roles/shift types/schedule/shift signups/lead-up/resources/polls/radio/announcements/shoutouts/distinctions + admin dashboards. | Same. |
 | 1d | `feat/tenancy-auth-crons` | DB roles + backfill script, `requireCommunityAdmin`, `proxy.ts` wall change, set-admin routes, hourly crons, storage prefixing, badge by slug, `/api/me/communities` + picker + empty state, **migration 075** (drop transitional default; constraint swaps). | Guard allowlist empty; `npm run check` green; 075 applied. |
 | 1e | `feat/tenancy-rls` | RLS policies on all scoped tables keyed on a `community_id` JWT claim; `tenant-db` mints a per-request scoped token instead of using the service key. | A deliberate unscoped query returns zero rows in a test. |

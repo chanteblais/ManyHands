@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { getApprovedMember, memberDisplayName } from '@/lib/members'
 import { getRoleSignupData } from '@/lib/participate-data'
 
@@ -12,9 +13,11 @@ export async function GET() {
   // response, not what we fetch, so there's no need to serialize on it.
   // Data assembly lives in lib/participate-data.ts, shared with the
   // server-rendered /participate page (this route is the client's refresh path).
+  const community = await getCommunity()
+
   const [application, data] = await Promise.all([
-    getApprovedMember(userId),
-    getRoleSignupData(userId),
+    getApprovedMember(community.id, userId),
+    getRoleSignupData(community.id, userId),
   ])
 
   if (!application) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -29,7 +32,10 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const application = await getApprovedMember(userId)
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const application = await getApprovedMember(community.id, userId)
   if (!application) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const body = await req.json()
@@ -40,7 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'role_id required' }, { status: 400 })
   }
 
-  const { data: existing } = await supabaseAdmin
+  const { data: existing } = await db
     .from('camp_signups')
     .select('role_id, role_approval_status')
     .eq('clerk_user_id', userId)
@@ -58,7 +64,7 @@ export async function POST(req: NextRequest) {
   let requiresApproval = false
   let roleData: { requires_approval: boolean; name: string } | null = null
   if (next_role_id && isRoleChange) {
-    const { data, error: roleError } = await supabaseAdmin.from('roles').select('requires_approval, name').eq('id', next_role_id).single()
+    const { data, error: roleError } = await db.from('roles').select('requires_approval, name').eq('id', next_role_id).single()
     if (roleError) console.error('[Signup] Role fetch error:', roleError)
     roleData = data
     requiresApproval = roleData?.requires_approval ?? false
@@ -70,11 +76,11 @@ export async function POST(req: NextRequest) {
     : (existing?.role_approval_status ?? null)
 
   const now = new Date().toISOString()
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('camp_signups')
     .upsert(
       { clerk_user_id: userId, role_id: next_role_id, role_approval_status, updated_at: now },
-      { onConflict: 'clerk_user_id' }
+      { onConflict: 'clerk_user_id' } // still the unique constraint until migration 075 (community_id, clerk_user_id)
     )
     .select()
     .single()
@@ -85,7 +91,7 @@ export async function POST(req: NextRequest) {
   if (requiresApproval && isRoleChange && next_role_id) {
     const name = memberDisplayName(application, userId)
 
-    const { error: notifError } = await supabaseAdmin.from('admin_notifications').insert({
+    const { error: notifError } = await db.from('admin_notifications').insert({
       application_id: application.id,
       event_type: 'role_approval_request',
       message: `${name} requested the "${roleData?.name}" role (requires approval)`,
@@ -99,10 +105,10 @@ export async function POST(req: NextRequest) {
     const name = memberDisplayName(application, userId)
 
     const [oldRole, newRole] = await Promise.all([
-      supabaseAdmin.from('roles').select('name').eq('id', existing?.role_id ?? '').single(),
-      supabaseAdmin.from('roles').select('name').eq('id', role_id).single(),
+      db.from('roles').select('name').eq('id', existing?.role_id ?? '').single(),
+      db.from('roles').select('name').eq('id', role_id).single(),
     ])
-    await supabaseAdmin.from('admin_notifications').insert({
+    await db.from('admin_notifications').insert({
       application_id: application.id,
       event_type: 'role_change',
       message: `${name} changed their role`,

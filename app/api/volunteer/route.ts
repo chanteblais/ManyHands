@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { notifyAdmin } from '@/lib/notify-admin'
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   // Check for existing record (may be cancelled). Use limit(1) to avoid
   // maybeSingle() errors if duplicate rows somehow exist from test data.
-  const { data: existing } = await supabaseAdmin
+  const { data: existing } = await db
     .from('volunteers')
     .select('id, status')
     .eq('clerk_user_id', userId)
@@ -43,8 +47,8 @@ export async function POST(req: NextRequest) {
 
   // Re-signup: update existing cancelled record instead of inserting
   const { data: upserted, error } = existing
-    ? await supabaseAdmin.from('volunteers').update(payload).eq('id', existing.id).select('id').single()
-    : await supabaseAdmin.from('volunteers').insert([{ clerk_user_id: userId, ...payload }]).select('id').single()
+    ? await db.from('volunteers').update(payload).eq('id', existing.id).select('id').single()
+    : await db.from('volunteers').insert([{ clerk_user_id: userId, ...payload }]).select('id').single()
 
   if (error) {
     console.error('Volunteer signup error:', error)
@@ -56,7 +60,7 @@ export async function POST(req: NextRequest) {
     (data.first_name as string | null) ||
     'Someone'
 
-  await notifyAdmin({
+  await notifyAdmin(community, {
     eventType: 'volunteer_signup',
     message: `${displayName} signed up to volunteer`,
     details: { email: data.email, volunteer_id: upserted?.id ?? existing?.id ?? null },
@@ -69,14 +73,17 @@ export async function DELETE() {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   // Fetch volunteer record first so we have their name/email for the notification
-  const { data: volunteer } = await supabaseAdmin
+  const { data: volunteer } = await db
     .from('volunteers')
     .select('first_name, preferred_name, email')
     .eq('clerk_user_id', userId)
     .maybeSingle()
 
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('volunteers')
     .update({ status: 'cancelled' })
     .eq('clerk_user_id', userId)
@@ -89,7 +96,7 @@ export async function DELETE() {
       (volunteer.first_name as string | null) ||
       'Volunteer'
 
-    await notifyAdmin({
+    await notifyAdmin(community, {
       eventType: 'volunteer_cancelled',
       message: `${displayName} cancelled their volunteer registration`,
       details: { email: volunteer.email },
@@ -103,7 +110,10 @@ export async function PATCH(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: existing } = await supabaseAdmin
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const { data: existing } = await db
     .from('volunteers')
     .select('id')
     .eq('clerk_user_id', userId)
@@ -123,7 +133,7 @@ export async function PATCH(req: NextRequest) {
   if ('other_notes' in body) updates.other_notes = body.other_notes || null
   if ('signup_intent' in body) updates.signup_intent = Array.isArray(body.signup_intent) && body.signup_intent.length > 0 ? body.signup_intent : null
 
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('volunteers')
     .update(updates)
     .eq('id', existing.id)

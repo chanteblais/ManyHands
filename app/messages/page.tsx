@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getInboxConversations } from '@/lib/inbox'
 import { getApprovedMember } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 import { Header } from '@/components/Header'
 import { MessagesInboxClient } from './MessagesInboxClient'
 import { UnreadCountBadge } from './UnreadCountBadge'
@@ -17,6 +18,7 @@ export type MemberOption = {
 export default async function MessagesPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
 
   // The access check, the "New Message" member picker, and the initial inbox
   // are independent reads — run them together (the page renders with the inbox
@@ -25,7 +27,7 @@ export default async function MessagesPage() {
     // Only approved members — the canonical gate (members table + email
     // fallback). The old raw applications-by-clerk-id query bounced localhost
     // dev-instance sessions, whose Clerk id predates the 059 prod remap.
-    getApprovedMember(userId),
+    getApprovedMember(community.id, userId),
     // All other approved members for the "New Message" picker
     // Phase 5: identity resolution reads the canonical `members` table.
     supabaseAdmin

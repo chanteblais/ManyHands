@@ -1,6 +1,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { getPageContent } from '@/lib/page-content'
 import { requireAdmin } from '@/lib/admin-auth'
 import { mergeMemberConfig, mergeVolunteerConfig } from '@/lib/form-config'
@@ -15,6 +16,8 @@ export default async function ApplyPage(
   const searchParams = await props.searchParams;
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const isAdminPreview = searchParams.admin_preview === '1'
 
@@ -24,9 +27,9 @@ export default async function ApplyPage(
   const [user, adminId, { data: existing }, { data: volunteer }, configMap] = await Promise.all([
     currentUser(),
     isAdminPreview ? requireAdmin() : null,
-    supabaseAdmin.from('members').select('id, status').eq('clerk_user_id', userId).maybeSingle(),
-    supabaseAdmin.from('volunteers').select('id, status').eq('clerk_user_id', userId).maybeSingle(),
-    getPageContent([
+    db.from('members').select('id, status').eq('clerk_user_id', userId).maybeSingle(),
+    db.from('volunteers').select('id, status').eq('clerk_user_id', userId).maybeSingle(),
+    getPageContent(community.id, [
       'config_member_form',
       'config_volunteer_form',
       'member_acknowledgements',
@@ -73,7 +76,7 @@ export default async function ApplyPage(
     }
     // All groups — a "Group selection" field (if the admin added one) picks which
     // of these it offers via the field's own config (field.options).
-    const { data: selectableGroups } = await supabaseAdmin
+    const { data: selectableGroups } = await db
       .from('groups')
       .select('id, name, description')
       .order('sort_order', { ascending: true })
@@ -82,7 +85,7 @@ export default async function ApplyPage(
 
   // Both closed → generic closed state
   if (!memberOpen && !volunteerOpen && !isAdmin) {
-    return <ClosedPage message="Applications to Glåüm are not currently open. Check back soon." />
+    return <ClosedPage message={`Applications to ${community.name} are not currently open. Check back soon.`} />
   }
 
   return <TrackPicker hideMember={!memberOpen && !isAdmin} hideVolunteer={!volunteerOpen && !isAdmin} copy={trackCopy} />
