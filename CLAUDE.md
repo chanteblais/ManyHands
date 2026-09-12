@@ -1,4 +1,4 @@
-# Glåüm Camp Website — Session Brief
+# Many Hands — Session Brief
 
 Loaded automatically at the start of every Claude session in this repo (root `CLAUDE.md`; worktrees carry it too). Deliberately short; the detailed docs in `docs/` are read on demand. (Until 2026-08-27 this lived at `docs/session-prompt.md` as a paste-in — same pattern as All Hands.)
 
