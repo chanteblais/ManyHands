@@ -239,7 +239,10 @@ eventually new-tenant starter templates. If anything gets built early, it's this
    same naming family as **All Hands**, the catering product.)
 5. **Boring-but-real launch mechanics** — business entity, liability, payment processing (Stripe
    already deferred once), privacy policy for multi-tenant member data. Park until first paid
-   customer is in sight.
+   customer is in sight. (2026-09-11: the App Store path pulls three of these forward — a
+   privacy policy + App Privacy labels, a legal entity name for the store listing, and
+   in-app account deletion are required *before* the first public TestFlight/listing, not
+   the first paid customer. See discussion log 2026-09-11.)
 6. **Event-mode toggle — can it do both?** (2026-08-27) One product serving seasonal camps *and*
    year-round communities via a mode switch: event-on = current implementation (countdown,
    schedule, shifts, attunement-as-readiness prominent), event-off = community-focused (registry,
@@ -427,3 +430,53 @@ festivals, collectives, retreats, volunteer groups). Throughout, she referred to
   debt; evolving bespoke requests into generalized primitives; pricing the levels of work; and
   making onboarding fast enough that **a typical community can genuinely launch in roughly a
   day** on the existing generalized foundation.
+
+### 2026-09-11 — Publishing the Many Hands app; does one app serve many bespoke sites?
+
+Chanté wants to publish the Many Hands app on the App Store and has **a couple of people
+interested in community sites**. Her framing: the Many Hands architecture carries everything
+needed to make a site; the sites made from it can be relatively bespoke; one published app is the
+door through which each community reaches its own site. Assessment (Claude, this session):
+
+- **Yes, the shape works — and it is the 2026-09-04 direction, unchanged.** One shared app, a
+  user logs in and sees the communities they belong to, each rendered from its own configuration.
+  Apple's rules favour this over per-community branded apps: App Review guideline 4.3 treats many
+  near-identical template apps as spam and asks providers to ship a single aggregator app
+  instead — one Many Hands app with a community picker is exactly the model they want.
+- **"Bespoke" means configuration-bespoke.** Branding, terminology, nav, profile fields, groups,
+  roles, feature toggles, copy — level A in `multi-community.md` — all render inside one app.
+  Level C (true one-offs) stays web-only. A **wrapped-web shell softens this**: whatever the web
+  renders, the app renders, so a one-off custom page for one community still appears in their
+  app for free. That is a real argument for Capacitor over a native-UI client under the service
+  model.
+- **Nearly none of the prerequisites exist yet** (checked against the code 2026-09-11):
+  no community table or tenant scoping anywhere in `lib/`/`app/`; no native shell project;
+  push dispatch + FCM sender exist (`lib/push.ts`, FCM relays to APNs) but tokens/notifications
+  aren't community-scoped; **no member self-service account deletion** (only admin removal —
+  Apple requires an in-app delete-account path, guideline 5.1.1(v)); **Sign in with Apple** is
+  required if any third-party login (e.g. Google) is offered, and Google blocks OAuth inside
+  embedded webviews, so shell login needs an in-app system browser or Clerk's native SDK; the
+  **name** collision (open question #4) plus App Store name uniqueness must be resolved before a
+  listing exists.
+- **The two interested communities are the "second use case"** the roadmap said to wait for.
+  What If is past; the foundation phase is now.
+- **Suggested sequence:** (1) multi-tenant foundation on the web first — the web *is* the app's
+  content; Glåüm becomes community 1 with zero visible change, then one interested community
+  onboards as tenant 2. (2) Capacitor shell in parallel — push registration, camera, haptics,
+  safe areas, a native community switcher; enough native value to clear guideline 4.2 ("more
+  than a repackaged website"). (3) Store hygiene — Apple Developer Program, legal entity name for
+  the listing, privacy policy + App Privacy labels, account deletion, Sign in with Apple,
+  staged-data screenshots only. (4) **TestFlight with Glåüm members first** — internal testing
+  needs no review, gets push into real hands early. (5) **Public App Store listing once tenant 2
+  is live**, so the store page is named and described as Many Hands, not as a Glåüm app.
+- **Distribution tiers, for reference:** TestFlight *internal* = up to 100 App Store Connect
+  users, no review, no store page. TestFlight *external* = up to 10,000 via public link, light
+  Beta App Review, still no store page. *App Store listing* = the searchable public product page
+  (name, description, screenshots, privacy labels, full App Review) — the first moment the app
+  has a public identity. Glåüm members never need to wait for the listing.
+- **Chanté's call (pending):** ship Glåüm-only on TestFlight as a stepping stone vs. wait for
+  tenant 2. Recommendation on record: TestFlight Glåüm-only early; hold the public listing for
+  the multi-community version.
+- Consequence for open question #5: the App Store path pulls **privacy policy, legal entity
+  name, account deletion** forward from "first paid customer" to "before first TestFlight/
+  listing" — noted there.

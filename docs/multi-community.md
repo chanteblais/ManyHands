@@ -7,6 +7,7 @@ Glåüm is the first community on the platform.
 > **Living ledger:** [`generalizability-log.md`](./generalizability-log.md) is the append-as-you-go record of every Glåüm/What-If–specific or single-community assumption found while building/dogfooding. It is maintained automatically during iterations and is the concrete requirements source for the Phase 1 foundation below. Build the foundation *after* What If (July 23, 2026), informed by that log + real test-user needs.
 
 > **Sibling track:** [`mobile-companion.md`](./mobile-companion.md) — the future mobile app is "just another client" of the same backend. It needs the same foundation this roadmap builds (API boundary, server-side logic, config over hardcoding); there is no separate mobile workstream.
+> *2026-09-11:* the App Store publication path (`mobile-companion.md` → App Store path; `business.md` → discussion log 2026-09-11) makes Phase 1 tenancy the gating work: the shared app cannot show a community picker until the web is multi-tenant. Two interested communities now exist — the "second use case" this roadmap waited for.
 
 > **Commercial track:** [`business.md`](./business.md) — the living record of the business-launch conversation: mission/success tiers, the seasonality analysis, market segments beyond burn camps, and pricing directions. This roadmap answers *how* the platform generalizes; that doc answers *for whom and on what terms*.
 
