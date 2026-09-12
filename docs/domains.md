@@ -109,8 +109,8 @@ satellite sync parameters are carried, and set `allowedRedirectOrigins` on the p
 asks for it before then.
 
 ## What this does NOT do yet
-- Route `withmanyhands.ca` to a marketing/landing page — the picker is the whole platform host
-  today (business.md → Showcase ladder rung 3 is the landing page, its own repo).
+- Route `withmanyhands.ca` to a marketing/landing page — the picker + public directory is the
+  whole platform host today (business.md → Showcase ladder rung 3 is the landing page, its own repo).
 - Automate the per-community host setup (Vercel domain + Clerk allowed subdomain + DNS).
 - Per-community deep-link domains for the native app — the app should use each community's
   first host (`appOrigin`); universal links are a later concern (mobile-companion.md).

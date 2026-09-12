@@ -1,22 +1,29 @@
 import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
+import { CommunityFinder } from '@/components/CommunityFinder'
 import { getCommunity, listCommunitiesForUser, isPlatformCommunity } from '@/lib/community'
+import { listDiscoverableCommunities } from '@/lib/community-directory'
 import { appOrigin } from '@/lib/send-email'
 
 export const dynamic = 'force-dynamic'
 
-// The community picker (docs/tenancy-design.md §6): every community the
-// signed-in person belongs to, or the no-community empty state. Reachable by
-// path on any community host today; becomes the landing surface of the
-// platform root host once that exists.
+// The community picker + public directory (docs/tenancy-design.md §6,
+// docs/features.md → Communities picker). Signed in: every community the
+// person belongs to, then "Find a community". Signed out: the directory with a
+// sign-in prompt. This is the whole platform host today (proxy.ts rewrites
+// `/` here on PLATFORM_HOSTS); it is also reachable by path on any community.
 export default async function CommunitiesPage() {
   const { userId } = await auth()
-  if (!userId) redirect('/sign-in')
-
-  const [current, memberships] = await Promise.all([getCommunity(), listCommunitiesForUser(userId)])
+  const [current, memberships, directory] = await Promise.all([
+    getCommunity(),
+    userId ? listCommunitiesForUser(userId) : Promise.resolve([]),
+    listDiscoverableCommunities(),
+  ])
   const visible = memberships.filter(m => m.status !== 'cancelled' && m.status !== 'removed' && m.status !== 'rejected')
+  const onPlatform = isPlatformCommunity(current)
+  const card = { marginTop: '2rem', padding: '1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '12px', lineHeight: 1.7 } as const
 
   return (
     <>
@@ -27,20 +34,26 @@ export default async function CommunitiesPage() {
             Many Hands
           </p>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 6vw, 3.5rem)', color: 'var(--gold)', margin: '0 0 0.75rem', lineHeight: 1 }}>
-            Your communities
+            {userId ? 'Your communities' : 'Communities'}
           </h1>
 
-          {visible.length === 0 ? (
-            <div style={{ marginTop: '2rem', padding: '1.5rem', border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '12px', lineHeight: 1.7 }}>
+          {!userId ? (
+            <div style={card}>
+              <p style={{ margin: '0 0 0.75rem' }}>Already part of a community here?</p>
+              <Link href="/sign-in" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>Sign in</Link>
+              <span style={{ opacity: 0.7 }}> to see your communities.</span>
+            </div>
+          ) : visible.length === 0 ? (
+            <div style={card}>
               <p style={{ margin: '0 0 0.75rem' }}>You&rsquo;re signed in, but you&rsquo;re not part of a community here yet.</p>
               <p style={{ margin: 0, opacity: 0.75 }}>
-                Ask your organizer for an invite — they&rsquo;ll point you at their community&rsquo;s page, where you can apply.
+                Find one below that is accepting applications, or ask your organizer for their community&rsquo;s page.
               </p>
             </div>
           ) : (
             <ul style={{ listStyle: 'none', padding: 0, margin: '2rem 0 0', display: 'grid', gap: '0.75rem' }}>
               {visible.map(({ community, status, role }) => {
-                const isCurrent = !isPlatformCommunity(current) && community.id === current.id
+                const isCurrent = !onPlatform && community.id === current.id
                 return (
                   <li key={community.id}>
                     <a
@@ -69,6 +82,8 @@ export default async function CommunitiesPage() {
               })}
             </ul>
           )}
+
+          <CommunityFinder communities={directory.filter(d => !visible.some(m => m.community.slug === d.slug))} />
         </div>
       </main>
       <Footer />
