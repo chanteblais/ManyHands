@@ -9,6 +9,7 @@ Loaded automatically at the start of every Claude session in this repo (root `CL
 - `docs/database.md` — tables, columns, `page_content` keys, migrations, storage buckets
 - `docs/features.md` — every page & feature, incl. the modular application builder
 - `docs/design-system.md` — colors, fonts, CSS classes, component patterns
+- `docs/tenancy-design.md` — Phase 1 multi-tenancy design (communities table, scoped client, DB roles, branch sequence); read before any tenancy work
 - The **catering kitchen board** left this repo 2026-08-26 — it's now its own product, **All Hands** (`~/Projects/all-hands`); work catering sessions there (`CLAUDE.md` in that repo is the brief). Nothing kitchen-related remains here (page + routes deleted; `/kitchen.html` 404s)
 
 ## Conventions & gotchas
