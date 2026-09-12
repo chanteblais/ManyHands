@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getNotificationPreferences } from '@/lib/notification-prefs'
 import { sendSignupConfirmationEmail } from '@/lib/send-email'
 import { whenText } from '@/lib/event-reminders'
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const community = await getCommunity()
 
   try {
     // Allow an explicit desired state; default to toggle.
@@ -96,6 +98,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
             .eq('clerk_user_id', userId).maybeSingle()
           if (m?.email) {
             await sendSignupConfirmationEmail({
+              community,
               to: m.email,
               recipientName: m.preferred_name || m.first_name || 'there',
               kind: 'gathering',

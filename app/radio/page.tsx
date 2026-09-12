@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { getApprovedMember } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getRadioFeed, getRadioNowData, getRadioStats } from '@/lib/radio'
 import { Header } from '@/components/Header'
@@ -46,13 +47,14 @@ const statIcon: Record<string, React.ReactNode> = {
 export default async function RadioPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
 
-  const member = await getApprovedMember(userId)
+  const member = await getApprovedMember(community.id, userId)
   if (!member) redirect('/profile')
 
   const [events, nowData, stats, rosterRes] = await Promise.all([
     getRadioFeed(60),
-    getRadioNowData(),
+    getRadioNowData(community.id),
     getRadioStats(),
     // The roster for @mention autocomplete + turning "@Name" into profile-linked
     // pills. Approved members with a Clerk id and a display name.

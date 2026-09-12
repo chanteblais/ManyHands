@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 import {
   postSourcedRadioEvent,
@@ -20,8 +21,9 @@ import {
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
-  const member = await getApprovedMember(userId)
+  const member = await getApprovedMember(community.id, userId)
   if (!member) {
     return NextResponse.json({ error: 'Only approved members can add resources' }, { status: 403 })
   }
@@ -79,13 +81,13 @@ export async function POST(req: NextRequest) {
       getRadioActorName(userId),
       resourceStateAfterClaim(item.id, list_id),
     ])
-    await postSourcedRadioEvent('contribution', {
+    await postSourcedRadioEvent(community.id, 'contribution', {
       ...contributionRadioPost(actorName, item.name, 1, state.remaining),
       actorClerkId: userId,
       actorName,
     })
     if (state.listJustCompleted && state.listTitle) {
-      await postSourcedRadioEvent('milestone', listMilestoneRadioPost(state.listTitle))
+      await postSourcedRadioEvent(community.id, 'milestone', listMilestoneRadioPost(state.listTitle))
     }
   }
 

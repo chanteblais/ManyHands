@@ -61,7 +61,7 @@ export type ShiftHoursOverview = {
   types: ShiftTypeHours[]
 }
 
-export async function getShiftHoursOverview(): Promise<ShiftHoursOverview> {
+export async function getShiftHoursOverview(communityId: string): Promise<ShiftHoursOverview> {
   const [
     { data: shiftTypes },
     { data: events },
@@ -82,7 +82,7 @@ export async function getShiftHoursOverview(): Promise<ShiftHoursOverview> {
     // Shared with the Manage-side roster (lib/admin-program-data.ts
     // getAdminRosters) so "who holds this shift" can never disagree.
     fetchShiftHolds(),
-    getPageContent(['config_event_start_date', 'config_event_end_date', 'config_attunement_tasks']),
+    getPageContent(communityId, ['config_event_start_date', 'config_event_end_date', 'config_attunement_tasks']),
     supabaseAdmin.from('applications').select('clerk_user_id').eq('status', 'approved').not('clerk_user_id', 'is', null),
     // Shared with Manage + Overview's other counts (lib/admin-counts.ts).
     getSuspendedClerkUserIds(),

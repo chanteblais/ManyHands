@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 
 export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const community = await getCommunity()
 
   const body = await req.json()
   const optionIndexes: number[] = Array.isArray(body.option_indexes) ? body.option_indexes : [body.option_index]
@@ -14,7 +16,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   // Approval gate + poll lookup are independent — one parallel round trip.
   // Polls live on the member dashboard — approved members only.
   const [approvedMember, { data: poll }] = await Promise.all([
-    getApprovedMember(userId),
+    getApprovedMember(community.id, userId),
     supabaseAdmin
       .from('polls')
       .select('id, allow_multiple, expires_at, options')

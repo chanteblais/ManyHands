@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { sendUserEmail, APP_URL } from '@/lib/send-email'
+import { sendUserEmail, appOrigin } from '@/lib/send-email'
 import { requireAdmin } from '@/lib/admin-auth'
+import { getCommunity } from '@/lib/community'
 
 async function getUserEmail(clerkUserId: string): Promise<string | null> {
   try {
@@ -18,6 +19,8 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
   const params = await props.params;
   try {
     if (!(await requireAdmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+    const community = await getCommunity()
 
     const { decision } = await req.json() // 'approved' | 'rejected'
 
@@ -79,9 +82,10 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
       const approvedEmail = await getUserEmail(suggestion.clerk_user_id)
       if (approvedEmail) {
         await sendUserEmail(
+          community,
           approvedEmail,
-          'Your Glåüm role suggestion was approved!',
-          `<p>Great news! Your suggested role "${suggestion.role_name}" has been added to the ${suggestion.dept_name} department and is now available to select on your <a href="${APP_URL}/profile">profile</a>.</p>`,
+          `Your ${community.name} role suggestion was approved!`,
+          `<p>Great news! Your suggested role "${suggestion.role_name}" has been added to the ${suggestion.dept_name} department and is now available to select on your <a href="${appOrigin(community)}/profile">profile</a>.</p>`,
         )
       }
     } else {
@@ -94,8 +98,9 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
       const rejectedEmail = await getUserEmail(suggestion.clerk_user_id)
       if (rejectedEmail) {
         await sendUserEmail(
+          community,
           rejectedEmail,
-          'An update on your Glåüm role suggestion',
+          `An update on your ${community.name} role suggestion`,
           `<p>Thanks for the suggestion! Unfortunately "${suggestion.role_name}" wasn't added at this time. Reach out to an organiser if you have questions.</p>`,
         )
       }

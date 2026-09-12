@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { sendLeadUpGatheringEmail } from '@/lib/send-email'
 import { clockLabel } from '@/lib/shift-hours'
 import { requireAdmin } from '@/lib/admin-auth'
+import { getCommunity } from '@/lib/community'
 
 // "2026-07-08" + "19:00" → "Tue, Jul 8 · 7:00 PM" (clockLabel tolerates
 // legacy display-string times).
@@ -25,6 +26,8 @@ export async function POST(_req: NextRequest, props: { params: Promise<{ id: str
   const params = await props.params;
   const actingUserId = await requireAdmin()
   if (!actingUserId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const community = await getCommunity()
 
   const { data: gathering } = await supabaseAdmin
     .from('lead_up_events')
@@ -81,6 +84,7 @@ export async function POST(_req: NextRequest, props: { params: Promise<{ id: str
     if (m.clerk_user_id && optedOut.has(m.clerk_user_id)) continue
     try {
       const result = await sendLeadUpGatheringEmail({
+        community,
         to: m.email,
         recipientName: m.preferred_name || m.first_name || 'there',
         title: gathering.title,

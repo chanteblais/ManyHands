@@ -1,5 +1,6 @@
 import { clerkClient } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import type { Community } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { sendAdminEmail } from '@/lib/send-email'
 
 type NotifyAdminInput = {
@@ -9,8 +10,8 @@ type NotifyAdminInput = {
   details?: Record<string, unknown>
 }
 
-export async function notifyAdmin(input: NotifyAdminInput): Promise<void> {
-  const { error } = await supabaseAdmin.from('admin_notifications').insert([
+export async function notifyAdmin(community: Community, input: NotifyAdminInput): Promise<void> {
+  const { error } = await tenantDb(community.id).from('admin_notifications').insert([
     {
       application_id: input.applicationId ?? null,
       event_type: input.eventType,
@@ -27,6 +28,8 @@ export async function notifyAdmin(input: NotifyAdminInput): Promise<void> {
     ? Object.entries(input.details).map(([k, v]) => `<p style="margin:4px 0"><b>${k}:</b> ${v}</p>`).join('')
     : ''
 
+  // Recipients are still the Clerk-instance-wide admins (publicMetadata.role);
+  // branch 1d switches this to `members.role = 'admin'` in this community.
   try {
     const client = await clerkClient()
     const { data: users } = await client.users.getUserList({ limit: 100 })
@@ -35,7 +38,7 @@ export async function notifyAdmin(input: NotifyAdminInput): Promise<void> {
       .flatMap(u => u.emailAddresses.map(e => e.emailAddress))
 
     for (const email of adminEmails) {
-      await sendAdminEmail(email, `Glåüm: ${input.message}`, `<p>${input.message}</p>${detailLines}`)
+      await sendAdminEmail(community, email, `${community.name}: ${input.message}`, `<p>${input.message}</p>${detailLines}`)
     }
   } catch (err) {
     console.error('[notifyAdmin] Failed to send email:', err)

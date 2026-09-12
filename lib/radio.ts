@@ -13,7 +13,6 @@
 
 import { supabaseAdmin } from '@/lib/supabase'
 import { getPageContent, getPageContentValue } from '@/lib/page-content'
-import { SITE_NAME } from '@/lib/site-config'
 
 export type RadioKind =
   | 'broadcast'     // 📢 organizer announcement
@@ -129,11 +128,12 @@ export async function postRadioEvent(event: RadioEventInput): Promise<string | n
 
 // Gated variant for the automatic sources — checks the config toggle first.
 export async function postSourcedRadioEvent(
+  communityId: string,
   source: keyof RadioSources,
   event: RadioEventInput,
 ): Promise<void> {
   try {
-    const radioValue = await getPageContentValue('config_radio')
+    const radioValue = await getPageContentValue(communityId, 'config_radio')
     if (!parseRadioSources(radioValue)[source]) return
     await postRadioEvent(event)
   } catch (e) {
@@ -171,10 +171,10 @@ const article = (noun: string) => (/^[aeiou]/i.test(noun) ? 'an' : 'a')
 // `**…**` in a message renders as a gold entity highlight (see
 // components/RadioMessage.tsx) — the person or thing the moment is about.
 
-export function welcomeRadioPost(name: string): RadioEventInput {
+export function welcomeRadioPost(communityName: string, name: string): RadioEventInput {
   return {
     kind: 'welcome',
-    message: `Welcome **${name}** to ${SITE_NAME}!`,
+    message: `Welcome **${name}** to ${communityName}!`,
     detail: 'Say hello if you see them around camp. 🌿',
     icon: '👋',
   }
@@ -370,11 +370,11 @@ export type RadioNowData = {
 
 const isoToday = () => new Date().toISOString().slice(0, 10)
 
-export async function getRadioNowData(): Promise<RadioNowData> {
+export async function getRadioNowData(communityId: string): Promise<RadioNowData> {
   const today = isoToday()
 
   const [config, { data: events }] = await Promise.all([
-    getPageContent(['config_event_start_date', 'config_event_end_date']),
+    getPageContent(communityId, ['config_event_start_date', 'config_event_end_date']),
     supabaseAdmin
       .from('schedule_events')
       .select('title, start_time, end_time, participation_type, event_date, is_recurring, recurrence_days')

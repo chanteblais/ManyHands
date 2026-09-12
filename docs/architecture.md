@@ -239,7 +239,7 @@ See [database.md → Storage Buckets](database.md#storage-buckets) for the canon
 
 > Roadmap: [multi-community.md](multi-community.md). Phase 1 design + branch sequence: [tenancy-design.md](tenancy-design.md).
 
-The platform serves many communities from one codebase, one database, one deployment. Glåüm is community 1. **Branch 1a (2026-09-11) laid the foundation; the call-site sweep (1b–1d) is in progress** — until it finishes, feature code still uses the raw client and the DB's transitional default pins every row to Glåüm.
+The platform serves many communities from one codebase, one database, one deployment. Glåüm is community 1. **Branch 1a (2026-09-11) laid the foundation; 1b (same day) swept identity, config and email; 1c–1d remain** — until the sweep finishes, some feature code still uses the raw client and the DB's transitional default pins every row to Glåüm.
 
 ### Community resolution — `lib/community.ts`
 
@@ -260,17 +260,22 @@ await db.from('shoutouts').insert({ body, clerk_user_id })         // community_
 
 **Guard:** `npm run check` runs `scripts/check-tenant-scope.mjs`, which fails on any file under `app/`, `lib/`, `components/` importing `@/lib/supabase` unless it is listed in `scripts/tenant-scope-allowlist.txt` (shrink-only; stale entries also fail). New feature code must use `tenantDb`. Exempt by design: `lib/supabase.ts`, `lib/tenant-db.ts`, `lib/community.ts`.
 
+### Community-scoped lib signatures (since 1b)
+
+Every identity/config/notification helper takes the community first:
+`resolveMember(communityId, clerkUserId, email?)`, `resolveMemberForUser(communityId, clerkUserId)`, `getApprovedMember(communityId, clerkUserId)`, `getShiftParticipant(communityId, clerkUserId)`, `upsertMember(communityId, …)`, `setMemberStatus(communityId, …)` (`lib/members.ts`); `getOwnedApplication(communityId, userId, email)`; `memberDisplayNames(communityId, ids)`; `suspendMember(communityId, …)` / `liftSuspension(communityId, member)`; `getDuesRoster(communityId, audience)`; `getPageContent(communityId, keys)` / `getPageContentValue` / `getAllPageContent(communityId)`; `notifyAdmin(community, input)`; every sender in `lib/send-email.ts` takes `community` (whole object) — `sendUserEmail(community, to, subject, html)`, typed senders carry `community` in their opts — and builds links from `appOrigin(community)` (first non-localhost host, else `NEXT_PUBLIC_SITE_URL`), sender from `community.emailFrom ?? RESEND_FROM`, wordmark/footer/subjects from `community.name`. `lib/notification-prefs.ts` and `lib/push.ts` use `globalDb()` (person-level tables). The site name/event name in the root layout metadata, the manifest and the install prompt come from the community row (`generateMetadata`, async `manifest()`, `useCommunity()`).
+
 ### Configurable content — `page_content` table
 
-`page_content` is the per-community content/config store (community-scoped since `074`; PK becomes `(community_id, key)` in `075`). Read it through `lib/page-content.ts` (cached; the cache key/tag gets a community dimension in branch 1b), never directly. Before hardcoding a string in source, ask whether it belongs here. Currently configurable: homepage copy (`home_*`), form configs (`config_member_form`, …), agreement items, attendance options, and every `config_*` key listed in [database.md](database.md).
+`page_content` is the per-community content/config store (community-scoped since `074`; PK becomes `(community_id, key)` in `075`). Read it through `lib/page-content.ts` — `getPageContent(communityId, keys)` etc., cached per community under tag `page-content:<communityId>` (`pageContentTag(communityId)`; the PATCH writer revalidates that tag) — never directly. Before hardcoding a string in source, ask whether it belongs here. Currently configurable: homepage copy (`home_*`), form configs (`config_member_form`, …), agreement items, attendance options, and every `config_*` key listed in [database.md](database.md).
 
-### Community identity — `lib/site-config.ts` (being retired)
+### Community identity — `lib/site-config.ts` (retired as identity source, 1b)
 
-`SITE_NAME` / `EVENT_NAME` / `SITE_DESCRIPTION` are build-time env constants (`NEXT_PUBLIC_SITE_NAME`, …) — one value per deployment, so they cannot vary per tenant. Branch 1b replaces their 15 consumers with `community.name` / `community.eventName` from `getCommunity()` / `useCommunity()`. Until then, keep using them rather than hardcoding `"Glåüm"`.
+`SITE_NAME` / `EVENT_NAME` / `SITE_DESCRIPTION` survive only as the synthetic-fallback values in `lib/community.ts` (pre-migration safety net) and inside `DEFAULT_TRACK_COPY`. Feature code reads `community.name` / `community.eventName` / `community.description` from `getCommunity()` (server) or `useCommunity()` (client). Never hardcode `"Glåüm"`; never import the SITE_* constants in new code.
 
 ### Not yet community-scoped (sweep in progress — see tenancy-design.md §8)
 
-- **Queries** — 117 files still on the raw client (the allowlist). Rows are pinned to Glåüm by the DB default; a second tenant must not be created until the allowlist is empty and `075` is applied.
+- **Queries** — 94 files still on the raw client (the allowlist; identity, config and email are done). Rows are pinned to Glåüm by the DB default; a second tenant must not be created until the allowlist is empty and `075` is applied.
 - **Admin roles** — still Clerk `publicMetadata.role`; `members.role` exists but is unread (branch 1d).
-- **Email sender/links, crons, storage paths, badge assets** — branches 1b/1d.
+- **Crons (per-community loop), storage path prefixes, badge assets** — branch 1d. Email sender/links are done (1b).
 - **Branding** — no colour tokens yet (branch 1f).

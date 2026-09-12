@@ -22,7 +22,8 @@ const EXEMPT = new Set([
   'lib/tenant-db.ts',     // the scoped wrapper
   'lib/community.ts',     // tenant resolution (reads `communities`, `members`)
 ])
-const RAW_IMPORT = /from\s+['"]@\/lib\/supabase['"]/
+// Alias or relative: '@/lib/supabase', './supabase', '../lib/supabase', …
+const RAW_IMPORT = /from\s+['"](?:@\/lib\/supabase|(?:\.{1,2}\/)+(?:lib\/)?supabase)['"]/
 
 function walk(dir) {
   const out = []

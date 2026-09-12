@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getPageContent, getPageContentValue } from '@/lib/page-content'
 import { getShiftParticipant, participantDisplayName } from '@/lib/members'
 import { getShiftSignupData } from '@/lib/participate-data'
@@ -19,22 +20,23 @@ import { whenText } from '@/lib/event-reminders'
 
 // The guarded configured event range (for validating an "every day" recurring
 // shift's occurrence dates), fetched once per request.
-async function getRangeDays(): Promise<string[]> {
-  const c = await getPageContent(['config_event_start_date', 'config_event_end_date'])
+async function getRangeDays(communityId: string): Promise<string[]> {
+  const c = await getPageContent(communityId, ['config_event_start_date', 'config_event_end_date'])
   return eventRangeDays(c['config_event_start_date'], c['config_event_end_date'])
 }
 
 export async function GET() {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
   // The approval gate runs alongside the data batch — it only gates the
   // response, not what we fetch, so there's no need to serialize on it.
   // Data assembly lives in lib/participate-data.ts, shared with the
   // server-rendered /participate page (this route is the client's refresh path).
   const [participant, data] = await Promise.all([
-    getShiftParticipant(userId),
-    getShiftSignupData(userId),
+    getShiftParticipant(community.id, userId),
+    getShiftSignupData(community.id, userId),
   ])
 
   if (!participant) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -47,6 +49,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
   const { schedule_event_id, occurrence_date: rawDate, role: rawRole } = await req.json()
   if (!schedule_event_id) return NextResponse.json({ error: 'schedule_event_id required' }, { status: 400 })
@@ -61,14 +64,14 @@ export async function POST(req: NextRequest) {
   // Participant gate, signup-open flag, event row, and configured range are
   // all independent — one parallel round trip instead of four serial ones.
   const [participant, flagValue, { data: event }, rangeDays] = await Promise.all([
-    getShiftParticipant(userId),
-    getPageContentValue('config_shift_signup_open'),
+    getShiftParticipant(community.id, userId),
+    getPageContentValue(community.id, 'config_shift_signup_open'),
     supabaseAdmin
       .from('schedule_events')
       .select('id, title, capacity, participation_type, visible, needs_lead, is_recurring, recurrence_days, event_date, time, start_time')
       .eq('id', schedule_event_id)
       .single(),
-    getRangeDays(),
+    getRangeDays(community.id),
   ])
   if (!participant) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   // Suspension is a member state (volunteers are gated by their status instead).
@@ -138,6 +141,7 @@ export async function POST(req: NextRequest) {
       const email = participant.kind === 'member' ? participant.member.email : participant.volunteer.email
       if (prefs.email_event_reminders && email) {
         await sendSignupConfirmationEmail({
+          community,
           to: email,
           recipientName: participantDisplayName(participant, userId),
           kind: 'shift',
@@ -180,8 +184,9 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
-  const participant = await getShiftParticipant(userId)
+  const participant = await getShiftParticipant(community.id, userId)
   if (!participant) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const schedule_event_id = req.nextUrl.searchParams.get('schedule_event_id')

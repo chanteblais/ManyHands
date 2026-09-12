@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
-import { sendUserEmail, APP_URL } from '@/lib/send-email'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
+import { sendUserEmail, appOrigin } from '@/lib/send-email'
 import { upsertMember } from '@/lib/members'
 import { requireAdmin } from '@/lib/admin-auth'
 import { postSourcedRadioEvent, welcomeRadioPost } from '@/lib/radio'
@@ -11,13 +12,15 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const userId = await requireAdmin()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
   const client = await clerkClient()
 
   const { id } = params
 
   // Fetch application so we can notify the user (and mirror identity onto the
   // canonical member record below)
-  const { data: application } = await supabaseAdmin
+  const { data: application } = await db
     .from('applications')
     .select('clerk_user_id, email, first_name, last_name, preferred_name, pronouns, phone, avatar_url')
     .eq('id', id)
@@ -26,7 +29,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   if (!application) return NextResponse.json({ error: 'Application not found' }, { status: 404 })
 
   // Mark application as approved
-  const { error: updateError } = await supabaseAdmin
+  const { error: updateError } = await db
     .from('applications')
     .update({
       status: 'approved',
@@ -44,7 +47,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   // created — e.g. pre-dual-write submissions — is inserted here rather than
   // silently no-opping and locking the approved member out of every
   // member-only surface (getApprovedMember gates on members.status).
-  await upsertMember(application.clerk_user_id ?? null, {
+  await upsertMember(community.id, application.clerk_user_id ?? null, {
     email: application.email,
     first_name: application.first_name,
     last_name: application.last_name,
@@ -60,8 +63,8 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   let emailWarning: string | undefined
   if (application?.clerk_user_id) {
     const displayName = application.preferred_name || application.first_name || 'Camper'
-    const message = `Welcome to Glåüm, ${displayName}! Your application has been approved. 🎉`
-    await supabaseAdmin.from('user_notifications').insert([{
+    const message = `Welcome to ${community.name}, ${displayName}! Your application has been approved. 🎉`
+    await db.from('user_notifications').insert([{
       clerk_user_id: application.clerk_user_id,
       event_type: 'application_approved',
       message,
@@ -69,7 +72,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
 
     // Radio: welcome the new member — once per member (re-approvals and the
     // migration-061 backfill both mean a welcome may already exist).
-    const { data: alreadyOnAir } = await supabaseAdmin
+    const { data: alreadyOnAir } = await db
       .from('radio_events')
       .select('id')
       .eq('kind', 'welcome')
@@ -77,8 +80,8 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
       .limit(1)
       .maybeSingle()
     if (!alreadyOnAir) {
-      await postSourcedRadioEvent('welcome', {
-        ...welcomeRadioPost(displayName),
+      await postSourcedRadioEvent(community.id, 'welcome', {
+        ...welcomeRadioPost(community.name, displayName),
         actorClerkId: application.clerk_user_id,
         actorName: displayName,
         // /members/[id] resolves clerk ids directly — the gold name links home.
@@ -97,9 +100,10 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     }
     if (email) {
       const result = await sendUserEmail(
+        community,
         email,
-        'Your Glåüm application has been approved!',
-        `<p>Hi ${displayName},</p><p>Great news — your application to Glåüm has been approved! Head to your <a href="${APP_URL}/profile">profile</a> to choose your role and shift.</p><p>See you at camp ✦</p>`,
+        `Your ${community.name} application has been approved!`,
+        `<p>Hi ${displayName},</p><p>Great news — your application to ${community.name} has been approved! Head to your <a href="${appOrigin(community)}/profile">profile</a> to choose your role and shift.</p><p>See you at camp ✦</p>`,
       )
       // Approval itself succeeded (status + in-app notification); only the
       // email failed. Surface it so the admin knows to follow up manually

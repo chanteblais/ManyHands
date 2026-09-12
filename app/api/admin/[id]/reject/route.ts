@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { sendUserEmail } from '@/lib/send-email'
 import { setMemberStatus } from '@/lib/members'
 import { requireAdmin } from '@/lib/admin-auth'
@@ -11,10 +12,12 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const userId = await requireAdmin()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
   const client = await clerkClient()
 
   // Fetch application so we can notify the user
-  const { data: application } = await supabaseAdmin
+  const { data: application } = await db
     .from('applications')
     .select('clerk_user_id, first_name, preferred_name')
     .eq('id', params.id)
@@ -22,7 +25,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
 
   if (!application) return NextResponse.json({ error: 'Application not found' }, { status: 404 })
 
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('applications')
     .update({
       status: 'rejected',
@@ -34,13 +37,13 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   // Dual-write: mirror the rejection onto the canonical member record.
-  await setMemberStatus(application?.clerk_user_id ?? null, params.id, 'rejected')
+  await setMemberStatus(community.id, application?.clerk_user_id ?? null, params.id, 'rejected')
 
   // Revoke apply-time group opt-ins — group_members grants group-thread access
   // and roster presence, which a rejected applicant shouldn't keep. Their
   // private group welcome notes go with the memberships.
   if (application?.clerk_user_id) {
-    await supabaseAdmin
+    await db
       .from('group_members')
       .delete()
       .eq('clerk_user_id', application.clerk_user_id)
@@ -51,7 +54,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   let emailWarning: string | undefined
   if (application?.clerk_user_id) {
     const message = 'The Many Hands have reviewed your application. Unfortunately it wasn\'t a fit for this gathering.'
-    await supabaseAdmin.from('user_notifications').insert([{
+    await db.from('user_notifications').insert([{
       clerk_user_id: application.clerk_user_id,
       event_type: 'application_rejected',
       message,
@@ -68,9 +71,10 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     }
     if (email) {
       const result = await sendUserEmail(
+        community,
         email,
-        'An update on your Glåüm application',
-        `<p>Hi ${application.preferred_name || application.first_name || 'there'},</p><p>${message}</p><p>Thank you for your interest in Glåüm.</p>`,
+        `An update on your ${community.name} application`,
+        `<p>Hi ${application.preferred_name || application.first_name || 'there'},</p><p>${message}</p><p>Thank you for your interest in ${community.name}.</p>`,
       )
       // Rejection itself succeeded (status + in-app notification); only the
       // email failed. Surface it so the admin knows to follow up manually

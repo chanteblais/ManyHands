@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity, type Community } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 import { parseRadioSources, postRadioEvent } from '@/lib/radio'
 import { getNotificationPreferences } from '@/lib/notification-prefs'
@@ -23,8 +24,9 @@ const HERE_RE = /(?:^|\s)@here(?![\w])/i
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
-  const member = await getApprovedMember(userId)
+  const member = await getApprovedMember(community.id, userId)
   if (!member) {
     return NextResponse.json({ error: 'Only approved members can broadcast' }, { status: 403 })
   }
@@ -66,7 +68,7 @@ export async function POST(req: NextRequest) {
   let notified = 0
   let mentioned = 0
   try {
-    const result = await fanOut({ postId: id, senderId: userId, senderName: actorName, body, notifyAll })
+    const result = await fanOut({ community, postId: id, senderId: userId, senderName: actorName, body, notifyAll })
     notified = result.notified
     mentioned = result.mentioned
   } catch (e) {
@@ -83,13 +85,14 @@ export async function POST(req: NextRequest) {
 // broadcast. In-app bell rows are always written; email/push ride the seam,
 // which honours each member's preferences.
 async function fanOut(opts: {
+  community: Community
   postId: string
   senderId: string
   senderName: string
   body: string
   notifyAll: boolean
 }): Promise<{ notified: number; mentioned: number }> {
-  const { postId, senderId, senderName, body, notifyAll } = opts
+  const { community, postId, senderId, senderName, body, notifyAll } = opts
 
   const hasMention = body.includes('@')
   if (!notifyAll && !hasMention) return { notified: 0, mentioned: 0 }
@@ -126,7 +129,7 @@ async function fanOut(opts: {
       kind: 'new_message',
       prefs,
       push: { title: 'Glåüm Radio', body: `${senderName} mentioned you: ${body.slice(0, 120)}`, link: '/radio' },
-      email: m.email ? () => sendRadioMentionEmail({ to: m.email!, recipientName, senderName, preview: body }) : undefined,
+      email: m.email ? () => sendRadioMentionEmail({ community, to: m.email!, recipientName, senderName, preview: body }) : undefined,
     })
   }))
 
@@ -152,7 +155,7 @@ async function fanOut(opts: {
         kind: 'announcement',
         prefs,
         push: { title: 'Glåüm Radio', body: `${senderName}: ${body.slice(0, 120)}`, link: '/radio' },
-        email: m.email ? () => sendRadioBroadcastEmail({ to: m.email!, recipientName, senderName, message: body }) : undefined,
+        email: m.email ? () => sendRadioBroadcastEmail({ community, to: m.email!, recipientName, senderName, message: body }) : undefined,
       })
     }))
   }

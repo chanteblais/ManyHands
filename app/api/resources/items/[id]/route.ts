@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 
 // Edit (PATCH) or delete (DELETE) an item. Wiki-open — any approved member can
@@ -9,9 +10,9 @@ import { getApprovedMember } from '@/lib/members'
 // claim-count confirm before calling DELETE. Deleting a whole LIST is the only
 // admin-gated action (see lists/[id]/route.ts).
 
-async function gate(userId: string | null) {
+async function gate(communityId: string, userId: string | null) {
   if (!userId) return { error: 'Unauthorized', status: 401 as const }
-  const member = await getApprovedMember(userId)
+  const member = await getApprovedMember(communityId, userId)
   if (!member) return { error: 'Only approved members can manage resources', status: 403 as const }
   if (member.suspended_at) return { error: 'Your attendance is suspended — resume it on your profile to manage resources.', status: 403 as const }
   return null
@@ -20,7 +21,8 @@ async function gate(userId: string | null) {
 export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const { userId } = await auth()
-  const denied = await gate(userId)
+  const community = await getCommunity()
+  const denied = await gate(community.id, userId)
   if (denied) return NextResponse.json({ error: denied.error }, { status: denied.status })
 
   const { name, note, quantity_needed } = await req.json()
@@ -46,7 +48,8 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
 export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const { userId } = await auth()
-  const denied = await gate(userId)
+  const community = await getCommunity()
+  const denied = await gate(community.id, userId)
   if (denied) return NextResponse.json({ error: denied.error }, { status: denied.status })
 
   const { error } = await supabaseAdmin.from('resources').delete().eq('id', params.id)

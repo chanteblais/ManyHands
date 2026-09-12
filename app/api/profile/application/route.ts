@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { EDITABLE_APPLICATION_FIELDS } from '@/lib/application-options'
 import {
   canEditApplication,
@@ -15,9 +16,12 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const user = await currentUser()
   const email = user?.emailAddresses[0]?.emailAddress
-  const application = await getOwnedApplication(userId, email)
+  const application = await getOwnedApplication(community.id, userId, email)
 
   if (!application) {
     return NextResponse.json({ error: 'Application not found' }, { status: 404 })
@@ -55,7 +59,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ success: true, unchanged: true })
   }
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('applications')
     .update({
       ...updates,
@@ -75,7 +79,7 @@ export async function PATCH(req: NextRequest) {
   const identityPatch: Record<string, unknown> = {}
   for (const k of identityKeys) if (k in updates) identityPatch[k] = updates[k]
   if (Object.keys(identityPatch).length > 0) {
-    await upsertMember(userId, { ...identityPatch, application_id: application.id as string })
+    await upsertMember(community.id, userId, { ...identityPatch, application_id: application.id as string })
   }
 
   const displayName =
@@ -85,7 +89,7 @@ export async function PATCH(req: NextRequest) {
 
   const changedLabels = Object.keys(changes).map(formatFieldLabel).join(', ')
 
-  await notifyAdmin({
+  await notifyAdmin(community, {
     applicationId: application.id,
     eventType: 'profile_updated',
     message: `${displayName} updated their profile (${changedLabels})`,

@@ -1,7 +1,8 @@
 import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { getApprovedMember } from '@/lib/members'
 import { Header } from '@/components/Header'
 import { MembersGrid, type MemberCard, type VolunteerCard } from './MembersGrid'
@@ -9,20 +10,22 @@ import { MembersGrid, type MemberCard, type VolunteerCard } from './MembersGrid'
 export default async function MembersPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // The viewer gate (approved members only) runs alongside the directory
   // queries — it gates the response, not what we fetch.
   const [viewer, { data: members }, { data: signups }, { data: volunteerRows }] = await Promise.all([
-    getApprovedMember(userId),
-    supabaseAdmin
+    getApprovedMember(community.id, userId),
+    db
       .from('applications')
       .select('id, first_name, preferred_name, avatar_url, clerk_user_id, email')
       .eq('status', 'approved')
       .order('first_name', { ascending: true }),
-    supabaseAdmin
+    db
       .from('camp_signups')
       .select('clerk_user_id, role_approval_status, roles ( name, departments ( name, icon ) )'),
-    supabaseAdmin
+    db
       .from('volunteers')
       .select('id, first_name, preferred_name, avatar_url, clerk_user_id, email')
       .eq('status', 'active')
@@ -73,7 +76,7 @@ export default async function MembersPage() {
 
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#D239F8', opacity: 0.7, marginBottom: '0.5rem' }}>
-            <span aria-hidden="true">✦ &nbsp;</span>Glåüm Camp 2026<span aria-hidden="true">&nbsp; ✦</span>
+            <span aria-hidden="true">✦ &nbsp;</span>{community.name} Camp 2026<span aria-hidden="true">&nbsp; ✦</span>
           </p>
           <h1 id="members-heading" style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2rem, 6vw, 3rem)', color: '#C8A848', marginBottom: '0.25rem', textShadow: '0 0 40px rgba(210,57,248,0.4)' }}>
             Many Hands

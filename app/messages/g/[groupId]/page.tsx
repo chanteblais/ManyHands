@@ -5,19 +5,21 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { Header } from '@/components/Header'
 import { findGroupConversation, getParticipantPrefs } from '@/lib/conversations'
 import { getApprovedMember } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 import { GroupThreadClient } from './GroupThreadClient'
 
 export default async function GroupThreadPage(props: { params: Promise<{ groupId: string }> }) {
   const params = await props.params;
   const { userId: myId } = await auth()
   if (!myId) redirect('/sign-in')
+  const community = await getCommunity()
 
   // The access check, group row, roster, and conversation lookup are
   // independent reads — run them together.
   const [me, { data: group }, { data: roster }, convId] = await Promise.all([
     // Approved members only — canonical gate (members table + email fallback;
     // see app/messages/page.tsx).
-    getApprovedMember(myId),
+    getApprovedMember(community.id, myId),
     // The group must exist…
     supabaseAdmin
       .from('groups')

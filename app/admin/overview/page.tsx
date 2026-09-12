@@ -12,6 +12,7 @@ import { getSuspendedClerkUserIds, isSuspended } from '@/lib/admin-counts'
 import { getShiftHoursOverview } from '@/lib/shift-hours-overview'
 import { shiftHue } from '@/lib/shift-colors'
 import { getAttentionItems, getAdminRunway } from '@/lib/admin-attention'
+import { getCommunity } from '@/lib/community'
 
 const divider: React.CSSProperties = {
   height: '1px',
@@ -57,6 +58,7 @@ export default async function OverviewPage() {
   if (!userId) redirect('/sign-in')
 
   if (!(await requireAdmin())) redirect('/')
+  const community = await getCommunity()
 
   // Everything below is independent — one parallel batch, no waterfalls.
   // attention/runway = the "Needs attention" digest + runway strip
@@ -76,10 +78,10 @@ export default async function OverviewPage() {
     { data: polls },
     { data: pollVotes },
   ] = await Promise.all([
-    getAttentionItems(),
-    getAdminRunway(),
+    getAttentionItems(community.id),
+    getAdminRunway(community.id),
     getShiftEventByUser(),
-    getShiftHoursOverview(),
+    getShiftHoursOverview(community.id),
     getGroupNamesByUser(),
     supabaseAdmin.from('groups').select('id, name').order('sort_order'),
     supabaseAdmin

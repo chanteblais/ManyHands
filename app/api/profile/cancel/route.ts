@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import {
   canCancelApplication,
   getOwnedApplication,
@@ -14,9 +15,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const user = await currentUser()
   const email = user?.emailAddresses[0]?.emailAddress
-  const application = await getOwnedApplication(userId, email)
+  const application = await getOwnedApplication(community.id, userId, email)
 
   if (!application) {
     return NextResponse.json({ error: 'Application not found' }, { status: 404 })
@@ -41,7 +45,7 @@ export async function POST(req: NextRequest) {
   }
 
   const now = new Date().toISOString()
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from('applications')
     .update({
       status: 'cancelled',
@@ -59,14 +63,14 @@ export async function POST(req: NextRequest) {
   }
 
   // Dual-write: mirror the cancellation onto the canonical member record.
-  await setMemberStatus(userId, application.id as string, 'cancelled')
+  await setMemberStatus(community.id, userId, application.id as string, 'cancelled')
 
   // Release their role + shift slots (same cleanup as the admin remove flow) —
   // a cancelled member must not keep occupying shift capacity or rosters.
   const memberClerkId = (application.clerk_user_id as string | null) ?? userId
   await Promise.all([
-    supabaseAdmin.from('camp_signups').delete().eq('clerk_user_id', memberClerkId),
-    supabaseAdmin.from('member_shift_signups').delete().eq('clerk_user_id', memberClerkId),
+    db.from('camp_signups').delete().eq('clerk_user_id', memberClerkId),
+    db.from('member_shift_signups').delete().eq('clerk_user_id', memberClerkId),
   ])
 
   const displayName =
@@ -74,7 +78,7 @@ export async function POST(req: NextRequest) {
     (application.first_name as string) ||
     'Camper'
 
-  await notifyAdmin({
+  await notifyAdmin(community, {
     applicationId: application.id,
     eventType: 'attendance_cancelled',
     message: `${displayName} cancelled their attendance`,

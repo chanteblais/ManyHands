@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { collectEventReminders, campDate } from '@/lib/event-reminders'
 import { sendEventReminderEmail } from '@/lib/send-email'
 
@@ -33,6 +34,7 @@ async function authorize(req: NextRequest): Promise<'cron' | 'admin' | null> {
 export async function GET(req: NextRequest) {
   const caller = await authorize(req)
   if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const community = await getCommunity()
 
   const params = req.nextUrl.searchParams
   const dryRun = caller === 'admin' ? params.get('send') !== '1' : params.get('dryRun') === '1'
@@ -104,6 +106,7 @@ export async function GET(req: NextRequest) {
 
       try {
         const result = await sendEventReminderEmail({
+          community,
           to: r.email, recipientName: r.name, phase, items: r.items,
           schedulePath: r.kind === 'volunteer' ? '/participate' : '/schedule',
         })

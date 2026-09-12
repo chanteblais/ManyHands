@@ -23,6 +23,7 @@ import { getGroupCollections } from '@/lib/group-collections'
 import { parseDistinctions } from '@/lib/distinctions'
 import { parseProfileFields, distinctionCatalog } from '@/lib/profile-fields'
 import { getAdminRunway } from '@/lib/admin-attention'
+import { getCommunity } from '@/lib/community'
 
 // "3 groups" / "1 group" — the panel status chips speak in counted nouns.
 const counted = (n: number, singular: string, plural = `${singular}s`) =>
@@ -33,6 +34,7 @@ export default async function ConfigurePage() {
   if (!userId) redirect('/sign-in')
 
   if (!(await requireAdmin())) redirect('/')
+  const community = await getCommunity()
 
   const [
     { data: configRows },
@@ -74,7 +76,7 @@ export default async function ConfigurePage() {
       .from('applications')
       .select('clerk_user_id, first_name, last_name, preferred_name, email, status')
       .eq('status', 'approved'),
-    getAdminRunway(),
+    getAdminRunway(community.id),
   ])
 
   const configMap = Object.fromEntries((configRows ?? []).map(r => [r.key, r.value]))

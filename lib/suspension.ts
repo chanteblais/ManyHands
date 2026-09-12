@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 import { deleteGroupWelcome } from './conversations'
 import type { MemberRecord } from './members'
 
@@ -22,13 +22,15 @@ export type SuspensionResult = {
 const EMPTY_RESULT: SuspensionResult = { roleRemoved: false, groupsRemoved: 0, shiftsRemoved: 0, resourceClaimsRemoved: 0 }
 
 export async function suspendMember(
+  communityId: string,
   member: MemberRecord,
   byClerkId: string,
   note?: string,
 ): Promise<SuspensionResult> {
+  const db = tenantDb(communityId)
   // Mark first — if a release below fails, the member is still safely
   // suspended and the join gates already hold.
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('members')
     .update({
       suspended_at: new Date().toISOString(),
@@ -44,23 +46,23 @@ export async function suspendMember(
   const [groups, shifts, campSignup, resourceClaims] = await Promise.all([
     // Leaving a group also leaves its message thread (group_members is the
     // source of truth for thread access — see docs/group-messaging.md).
-    supabaseAdmin
+    db
       .from('group_members')
       .delete({ count: 'exact' })
       .eq('clerk_user_id', member.clerk_user_id),
-    supabaseAdmin
+    db
       .from('member_shift_signups')
       .delete({ count: 'exact' })
       .eq('clerk_user_id', member.clerk_user_id),
     // Role + legacy single-shift both live on camp_signups — drop the whole
     // row, same cleanup as the cancel/remove flows.
-    supabaseAdmin
+    db
       .from('camp_signups')
       .delete({ count: 'exact' })
       .eq('clerk_user_id', member.clerk_user_id),
     // Shared-resource claims ("Bring Something") — free them so the board's
     // totals reflect reality while the member is paused.
-    supabaseAdmin
+    db
       .from('resource_claims')
       .delete({ count: 'exact' })
       .eq('clerk_user_id', member.clerk_user_id),
@@ -79,8 +81,8 @@ export async function suspendMember(
   }
 }
 
-export async function liftSuspension(member: MemberRecord): Promise<void> {
-  const { error } = await supabaseAdmin
+export async function liftSuspension(communityId: string, member: MemberRecord): Promise<void> {
+  const { error } = await tenantDb(communityId)
     .from('members')
     .update({ suspended_at: null, suspended_by: null, suspension_note: null })
     .eq('id', member.id)

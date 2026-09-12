@@ -3,7 +3,6 @@ import { Libre_Baskerville, Cormorant_Garamond } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { headers } from 'next/headers'
 import { clerkFallbackHome, resolveSiteOrigin } from '@/lib/site-origin'
-import { SITE_NAME, EVENT_NAME, SITE_DESCRIPTION } from '@/lib/site-config'
 import { getCommunity, toPublicCommunity } from '@/lib/community'
 import { CommunityProvider } from '@/components/CommunityProvider'
 import ServiceWorkerRegister from './ServiceWorkerRegister'
@@ -24,23 +23,26 @@ const cormorantGaramond = Cormorant_Garamond({
   variable: '--font-cormorant-garamond',
 })
 
-export const metadata: Metadata = {
-  title: `${SITE_NAME} @ ${EVENT_NAME}`,
-  description: SITE_DESCRIPTION,
-  icons: {
-    icon: [
-      { url: '/favicon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    shortcut: ['/favicon/favicon.ico'],
-    apple: '/favicon/apple-touch-icon.png',
-  },
-  // Manifest is generated dynamically by app/manifest.ts (auto-linked by Next).
-  appleWebApp: {
-    capable: true,
-    title: SITE_NAME,
-    statusBarStyle: 'black',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const { name, eventName, description } = await getCommunity()
+  return {
+    title: eventName ? `${name} @ ${eventName}` : name,
+    description: description ?? `${name} community`,
+    icons: {
+      icon: [
+        { url: '/favicon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+        { url: '/favicon/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      ],
+      shortcut: ['/favicon/favicon.ico'],
+      apple: '/favicon/apple-touch-icon.png',
+    },
+    // Manifest is generated dynamically by app/manifest.ts (auto-linked by Next).
+    appleWebApp: {
+      capable: true,
+      title: name,
+      statusBarStyle: 'black',
+    },
+  }
 }
 
 export const viewport: Viewport = {
@@ -101,9 +103,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           <CommunityProvider community={community}>
             <div className="site-shell">{children}</div>
+            {/* Inside the provider: InstallPrompt reads useCommunity() for the name. */}
+            <InstallPrompt />
           </CommunityProvider>
           <ServiceWorkerRegister />
-          <InstallPrompt />
         </body>
       </html>
     </ClerkProvider>

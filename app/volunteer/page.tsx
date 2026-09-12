@@ -1,6 +1,7 @@
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { getPageContentValue } from '@/lib/page-content'
 import { mergeVolunteerConfig } from '@/lib/form-config'
 import { VolunteerForm } from './VolunteerForm'
@@ -9,6 +10,8 @@ export default async function VolunteerPage(props: { searchParams: Promise<{ adm
   const searchParams = await props.searchParams;
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const user = await currentUser()
   const email = user?.emailAddresses[0]?.emailAddress ?? ''
@@ -25,9 +28,9 @@ export default async function VolunteerPage(props: { searchParams: Promise<{ adm
   }
 
   const [{ data: existing }, { data: application }, volunteerFormValue] = await Promise.all([
-    supabaseAdmin.from('volunteers').select('id, status').eq('clerk_user_id', userId).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-    supabaseAdmin.from('members').select('id, status').or(`clerk_user_id.eq.${userId},email.eq.${email}`).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-    getPageContentValue('config_volunteer_form'),
+    db.from('volunteers').select('id, status').eq('clerk_user_id', userId).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+    db.from('members').select('id, status').or(`clerk_user_id.eq.${userId},email.eq.${email}`).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+    getPageContentValue(community.id, 'config_volunteer_form'),
   ])
 
   let volunteerRaw: object = {}

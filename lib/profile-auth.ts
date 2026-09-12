@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
 
 export type OwnedApplication = Record<string, unknown> & {
   id: string
@@ -8,13 +8,14 @@ export type OwnedApplication = Record<string, unknown> & {
 }
 
 export async function getOwnedApplication(
+  communityId: string,
   userId: string,
   email: string | undefined
 ): Promise<OwnedApplication | null> {
   const filters = [`clerk_user_id.eq.${userId}`]
   if (email) filters.push(`email.eq.${email}`)
 
-  const { data } = await supabaseAdmin
+  const { data } = await tenantDb(communityId)
     .from('applications')
     .select('*')
     .or(filters.join(','))

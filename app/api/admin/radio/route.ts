@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/admin-auth'
 import { postRadioEvent } from '@/lib/radio'
-import { sendUserEmail, APP_URL } from '@/lib/send-email'
-import { SITE_NAME } from '@/lib/site-config'
+import { sendUserEmail, appOrigin } from '@/lib/send-email'
+import { getCommunity } from '@/lib/community'
 import { getAdminRadioEvents } from '@/lib/admin-program-data'
 
 // GET — recent radio events for the manager (all kinds, so admins can curate
@@ -25,6 +25,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const userId = await requireAdmin()
   if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const community = await getCommunity()
 
   const { message, detail, icon, notify } = await req.json().catch(() => ({}))
   if (typeof message !== 'string' || !message.trim()) {
@@ -94,9 +96,10 @@ export async function POST(req: NextRequest) {
       if (m.clerk_user_id && optedOut.has(m.clerk_user_id)) continue
       try {
         const result = await sendUserEmail(
+          community,
           m.email,
-          `${SITE_NAME} Radio: ${body.slice(0, 60)}${body.length > 60 ? '…' : ''}`,
-          `<p>Hi ${m.preferred_name || m.first_name || 'there'},</p><p>${body}</p><p><a href="${APP_URL}/radio">Tune in to Radio</a> for the rest of what's happening around camp ✦</p>`,
+          `${community.name} Radio: ${body.slice(0, 60)}${body.length > 60 ? '…' : ''}`,
+          `<p>Hi ${m.preferred_name || m.first_name || 'there'},</p><p>${body}</p><p><a href="${appOrigin(community)}/radio">Tune in to Radio</a> for the rest of what's happening around camp ✦</p>`,
         )
         if (result.ok) emailed++
       } catch (err) {

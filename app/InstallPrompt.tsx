@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { SITE_NAME } from '@/lib/site-config'
+import { useCommunity } from '@/components/CommunityProvider'
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>
@@ -33,6 +33,7 @@ export default function InstallPrompt() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null)
   const [show, setShow] = useState(false)
   const pathname = usePathname()
+  const { name: siteName } = useCommunity()
 
   useEffect(() => {
     if (isStandalone()) return
@@ -72,7 +73,7 @@ export default function InstallPrompt() {
   return (
     <div
       role="dialog"
-      aria-label={`Install ${SITE_NAME}`}
+      aria-label={`Install ${siteName}`}
       style={{
         position: 'fixed',
         left: '0.75rem',
@@ -102,7 +103,7 @@ export default function InstallPrompt() {
       />
       <div style={{ flex: '1 1 auto', minWidth: 0, fontSize: '0.85rem', lineHeight: 1.4 }}>
         <span>
-          Install <strong style={{ color: GOLD }}>{SITE_NAME}</strong> for quick access and a
+          Install <strong style={{ color: GOLD }}>{siteName}</strong> for quick access and a
           full-screen experience.
         </span>
       </div>

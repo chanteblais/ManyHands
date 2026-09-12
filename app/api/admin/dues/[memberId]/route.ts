@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 
 // Admin camp-dues toggle, keyed by row id. POST { paid: boolean, note?, entity? }.
@@ -12,6 +13,9 @@ export async function POST(req: NextRequest, props: { params: Promise<{ memberId
   const userId = await requireAdmin()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const body = await req.json().catch(() => ({}))
   const paid = body?.paid
   if (typeof paid !== 'boolean') {
@@ -20,7 +24,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ memberId
   const note = typeof body?.note === 'string' ? body.note.trim() : ''
   const table = body?.entity === 'volunteer' ? 'volunteers' : 'members'
 
-  const { data: row } = await supabaseAdmin
+  const { data: row } = await db
     .from(table)
     .select('id')
     .eq('id', params.memberId)
@@ -35,7 +39,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ memberId
     : { dues_paid_at: null, dues_paid_by: null, dues_note: null }
   const patch = table === 'members' && !paid ? { ...base, dues_reported_at: null } : base
 
-  const { error } = await supabaseAdmin.from(table).update(patch).eq('id', row.id)
+  const { error } = await db.from(table).update(patch).eq('id', row.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   return NextResponse.json({ success: true, dues_paid_at: base.dues_paid_at })

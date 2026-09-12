@@ -4,16 +4,18 @@ import { Footer } from '@/components/Footer'
 import { Section, Kicker } from '@/components/Section'
 import { getAllPageContent } from '@/lib/page-content'
 import { resolveMemberForUser } from '@/lib/members'
+import { getCommunity } from '@/lib/community'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AboutPage() {
   const { userId } = await auth()
+  const community = await getCommunity()
 
   // Member lookup and page content are independent — one round-trip.
   const [member, pageContent] = await Promise.all([
-    userId ? resolveMemberForUser(userId) : Promise.resolve(null),
-    getAllPageContent(),
+    userId ? resolveMemberForUser(community.id, userId) : Promise.resolve(null),
+    getAllPageContent(community.id),
   ])
   const hasApplied = !!member && member.status !== 'cancelled'
   const c = (key: string, fallback: string) => pageContent[key] ?? fallback
@@ -41,10 +43,10 @@ export default async function AboutPage() {
             }}
           />
           <p style={{ fontSize: '0.68rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#D239F8', marginBottom: '1rem', opacity: 0.85 }}>
-            What If 2026 · Theme Camp
+            {community.eventName} · Theme Camp
           </p>
           <h1 style={{ fontFamily: 'TokyoDreams, serif', fontSize: 'clamp(2.5rem, 8vw, 5rem)', color: '#C8A848', margin: '0 0 0.75rem', lineHeight: 1, textShadow: '0 0 40px rgba(210,57,248,0.4), 0 4px 20px rgba(0,0,0,0.8)' }}>
-            About Glåüm
+            About {community.name}
           </h1>
           <p style={{ fontSize: 'clamp(0.9rem, 2vw, 1.05rem)', fontStyle: 'italic', opacity: 0.6, maxWidth: '440px', margin: '0 auto', lineHeight: 1.75, fontFamily: 'var(--font-libre-baskerville)' }}>
             {c('home_tagline', 'Built by many hands. Held by many hearts.')}

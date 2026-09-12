@@ -1,4 +1,5 @@
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { shiftColorIndexMap } from '@/lib/shift-colors'
 import { buildScheduleDays } from '@/lib/schedule-days'
 import { displayPlacement } from '@/lib/late-night'
@@ -12,20 +13,22 @@ type Props = {
 // shifts they actually hold (member_shift_signups). The group says WHAT you
 // contribute, the shifts you signed up for say WHEN.
 export async function PersonalSchedule({ userId }: Props) {
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
   const EVENT_COLS = 'id, day, time, title, subtitle, detail_desc, icon_type, highlight, event_date, participation_type, shift_type_id, is_recurring'
 
   const [{ data: mandatoryEvents }, { data: heldRows }, { data: shiftTypes }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('schedule_events')
       .select(EVENT_COLS)
       .eq('participation_type', 'mandatory')
       .eq('visible', true)
       .order('sort_order', { ascending: true }),
-    supabaseAdmin
+    db
       .from('member_shift_signups')
       .select(`occurrence_date, schedule_events(${EVENT_COLS})`)
       .eq('clerk_user_id', userId),
-    supabaseAdmin.from('shift_types').select('id').order('sort_order'),
+    db.from('shift_types').select('id').order('sort_order'),
   ])
 
   // Palette slot per shift type (registry order) — drives the card colours.

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
-import { sendUserEmail, APP_URL } from '@/lib/send-email'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
+import { sendUserEmail, appOrigin } from '@/lib/send-email'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
@@ -9,9 +10,11 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   const userId = await requireAdmin()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
   const client = await clerkClient()
 
-  const { data: volunteer, error: fetchError } = await supabaseAdmin
+  const { data: volunteer, error: fetchError } = await db
     .from('volunteers')
     .select('id, clerk_user_id, first_name, preferred_name')
     .eq('id', params.id)
@@ -21,7 +24,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     return NextResponse.json({ error: 'Volunteer not found' }, { status: 404 })
   }
 
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('volunteers')
     .update({ status: 'active' })
     .eq('id', params.id)
@@ -31,7 +34,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
   // Notify the volunteer if they have a Clerk account linked
   if (volunteer.clerk_user_id) {
     const displayName = volunteer.preferred_name || volunteer.first_name || 'there'
-    await supabaseAdmin.from('user_notifications').insert([{
+    await db.from('user_notifications').insert([{
       clerk_user_id: volunteer.clerk_user_id,
       message: 'Your volunteer signup has been approved!',
       details: {},
@@ -48,9 +51,10 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     }
     if (email) {
       await sendUserEmail(
+        community,
         email,
-        'Your Glåüm volunteer signup has been approved!',
-        `<p>Hi ${displayName},</p><p>You're in! Your volunteer signup for Glåüm has been approved. Head to your <a href="${APP_URL}/profile">profile</a> to see next steps.</p><p>See you at camp ✦</p>`,
+        `Your ${community.name} volunteer signup has been approved!`,
+        `<p>Hi ${displayName},</p><p>You're in! Your volunteer signup for ${community.name} has been approved. Head to your <a href="${appOrigin(community)}/profile">profile</a> to see next steps.</p><p>See you at camp ✦</p>`,
       )
     }
   }

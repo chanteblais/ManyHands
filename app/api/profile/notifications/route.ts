@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { getNotificationPreferences } from '@/lib/notification-prefs'
 
 export const dynamic = 'force-dynamic'
@@ -23,6 +24,9 @@ export async function PATCH(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
   const body = await req.json().catch(() => ({}))
   const updates: Record<string, boolean> = {}
   for (const key of KEYS) {
@@ -33,7 +37,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'No valid preferences provided' }, { status: 400 })
   }
 
-  const { error } = await supabaseAdmin
+  const { error } = await db
     .from('notification_preferences')
     .upsert(
       { clerk_user_id: userId, ...updates, updated_at: new Date().toISOString() },

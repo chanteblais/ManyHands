@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
 import { getPageContentValue } from '@/lib/page-content'
 import { resolveMember, getMemberProfileValues, setProfileValues } from '@/lib/members'
 import { parseProfileFields, storedFields, coerceProfileValue, DISMISSED_KEY, type ProfileField } from '@/lib/profile-fields'
@@ -10,21 +10,23 @@ import { parseProfileFields, storedFields, coerceProfileValue, DISMISSED_KEY, ty
 //   GET   → { fields, values } the current member may see or edit.
 //   PATCH → write values for memberEditable fields (validated against the registry).
 
-async function loadStoredFields(): Promise<ProfileField[]> {
-  return storedFields(parseProfileFields(await getPageContentValue('config_profile_fields')))
+async function loadStoredFields(communityId: string): Promise<ProfileField[]> {
+  return storedFields(parseProfileFields(await getPageContentValue(communityId, 'config_profile_fields')))
 }
 
 export async function GET() {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+
   const user = await currentUser()
   const email = user?.emailAddresses[0]?.emailAddress
-  const member = await resolveMember(userId, email)
-  const values = member ? await getMemberProfileValues(member.id) : {}
+  const member = await resolveMember(community.id, userId, email)
+  const values = member ? await getMemberProfileValues(community.id, member.id) : {}
 
   // Only expose fields the member can actually see (public) or edit.
-  const fields = (await loadStoredFields()).filter(f => f.public || f.memberEditable)
+  const fields = (await loadStoredFields(community.id)).filter(f => f.public || f.memberEditable)
   return NextResponse.json({ fields, values })
 }
 
@@ -32,13 +34,15 @@ export async function PATCH(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const community = await getCommunity()
+
   const user = await currentUser()
   const email = user?.emailAddresses[0]?.emailAddress
-  const member = await resolveMember(userId, email)
+  const member = await resolveMember(community.id, userId, email)
   if (!member) return NextResponse.json({ error: 'No member profile found' }, { status: 404 })
 
   const body = (await req.json()) as Record<string, unknown>
-  const stored = await loadStoredFields()
+  const stored = await loadStoredFields(community.id)
   const editable = new Map(stored.filter(f => f.memberEditable).map(f => [f.key, f]))
 
   const updates: Record<string, unknown> = {}
@@ -58,7 +62,7 @@ export async function PATCH(req: NextRequest) {
       .map(String)
       .filter(k => { const f = editable.get(k); return f && f.askExisting && !f.required })
     if (requested.length) {
-      const current = await getMemberProfileValues(member.id)
+      const current = await getMemberProfileValues(community.id, member.id)
       const prev = Array.isArray(current[DISMISSED_KEY]) ? (current[DISMISSED_KEY] as unknown[]).map(String) : []
       updates[DISMISSED_KEY] = Array.from(new Set([...prev, ...requested]))
     }
@@ -68,6 +72,6 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'No editable fields provided' }, { status: 400 })
   }
 
-  await setProfileValues(member.id, updates)
+  await setProfileValues(community.id, member.id, updates)
   return NextResponse.json({ success: true })
 }

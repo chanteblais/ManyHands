@@ -5,7 +5,8 @@ import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { Section, Kicker, GoldDivider } from '@/components/Section'
 import { ScheduleSection } from '@/components/ScheduleSection'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { getAllPageContent, getPageContent } from '@/lib/page-content'
 import { getMemberGroups } from '@/lib/groups'
 import { getResourceWidgetState } from '@/lib/resources'
@@ -38,6 +39,8 @@ function timeAgo(ts: string): string {
 
 export default async function Home() {
   const { userId } = await auth()
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // ── Fetch member data when signed in ─────────────────────────
   let application: Record<string, unknown> | null = null
@@ -59,7 +62,7 @@ let canManagePolls = false
   // Kicked off before any member work — page content is user-independent and
   // is awaited in the parallel batch further down. (Supabase builders never
   // reject; errors come back on the result object.)
-  const pageContentQuery = getAllPageContent()
+  const pageContentQuery = getAllPageContent(community.id)
 
   if (userId) {
     // currentUser() is a Clerk Backend-API round-trip; the application lookup
@@ -67,7 +70,7 @@ let canManagePolls = false
     // overlap instead of queueing. Email matching survives as a rare fallback.
     const [user, appByIdRes] = await Promise.all([
       currentUser(),
-      supabaseAdmin
+      db
         .from('applications')
         .select('*')
         .eq('clerk_user_id', userId)
@@ -82,7 +85,7 @@ let canManagePolls = false
 
     let appRaw = appByIdRes.data
     if (!appRaw && email) {
-      const { data } = await supabaseAdmin
+      const { data } = await db
         .from('applications')
         .select('*')
         .eq('email', email)
@@ -96,12 +99,12 @@ let canManagePolls = false
 
     if (application?.status === 'approved') {
       const [signupResult, eventsResult, leadUpResult, spotlightResult, announcementsResult, pollsResult, pollVotesResult, shoutoutsResult, nextEventResult, radioFeed] = await Promise.all([
-        supabaseAdmin
+        db
           .from('camp_signups')
           .select('role_id, role_approval_status, roles(name, description, purpose, department_id, departments(name, icon))')
           .eq('clerk_user_id', userId)
           .maybeSingle(),
-        supabaseAdmin
+        db
           .from('schedule_events')
           .select('id, day, time, title, subtitle, icon_type, event_date')
           .eq('visible', true)
@@ -112,7 +115,7 @@ let canManagePolls = false
           .order('event_date', { ascending: true, nullsFirst: false })
           .order('sort_order', { ascending: true })
           .limit(4),
-        supabaseAdmin
+        db
           .from('lead_up_events')
           .select('id, title, event_date, start_time, location, host, image_url')
           .eq('visible', true)
@@ -120,13 +123,13 @@ let canManagePolls = false
           .order('event_date', { ascending: true, nullsFirst: false })
           .order('sort_order', { ascending: true })
           .limit(4),
-        supabaseAdmin
+        db
           .from('applications')
           .select('id, preferred_name, first_name, avatar_url, pronouns, clerk_user_id, find_at_camp')
           .eq('status', 'approved')
           .neq('clerk_user_id', userId)
           .limit(12),
-        supabaseAdmin
+        db
           .from('announcements')
           .select('id, title, body, pinned, created_at')
           .eq('visible', true)
@@ -134,17 +137,17 @@ let canManagePolls = false
           .order('pinned', { ascending: false })
           .order('created_at', { ascending: false })
           .limit(5),
-        supabaseAdmin
+        db
           .from('polls')
           .select('id, question, options, allow_multiple, expires_at')
           .eq('visible', true)
           .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
           .order('created_at', { ascending: false }),
-        supabaseAdmin
+        db
           .from('poll_votes')
           .select('poll_id, option_index')
           .eq('clerk_user_id', userId),
-        supabaseAdmin
+        db
           .from('shoutouts')
           .select('id, clerk_user_id, author_name, body, created_at')
           .eq('visible', true)
@@ -152,7 +155,7 @@ let canManagePolls = false
           .limit(50),
         // First dated future event regardless of the 14-day teaser window — lets
         // the teaser say "schedule begins <date>" instead of a bare empty state.
-        supabaseAdmin
+        db
           .from('schedule_events')
           .select('event_date')
           .eq('visible', true)
@@ -185,14 +188,14 @@ let canManagePolls = false
       const [authorRowsRes, allVotesRes, signupRowsRes] = await Promise.all([
         // Enrich shoutouts with each author's current avatar (no FK — join in JS).
         authorIds.length > 0
-          ? supabaseAdmin.from('applications').select('clerk_user_id, avatar_url').in('clerk_user_id', authorIds)
+          ? db.from('applications').select('clerk_user_id, avatar_url').in('clerk_user_id', authorIds)
           : empty,
         pollIds.length > 0
-          ? supabaseAdmin.from('poll_votes').select('poll_id, option_index').in('poll_id', pollIds)
+          ? db.from('poll_votes').select('poll_id, option_index').in('poll_id', pollIds)
           : empty,
         // Role info for all spotlight pool members
         clerkIds.length > 0
-          ? supabaseAdmin.from('camp_signups').select('clerk_user_id, roles(name, departments(name))').in('clerk_user_id', clerkIds)
+          ? db.from('camp_signups').select('clerk_user_id, roles(name, departments(name))').in('clerk_user_id', clerkIds)
           : empty,
       ])
 
@@ -247,7 +250,7 @@ let canManagePolls = false
     // Suspension flag (063) — a suspended member holds no commitments, so we
     // swap the attunement banner for a "paused" notice instead of nagging them.
     isApprovedForBatch && application?.clerk_user_id
-      ? supabaseAdmin.from('members').select('suspended_at, dues_paid_at, dues_reported_at').eq('clerk_user_id', application.clerk_user_id as string).maybeSingle()
+      ? db.from('members').select('suspended_at, dues_paid_at, dues_reported_at').eq('clerk_user_id', application.clerk_user_id as string).maybeSingle()
       : Promise.resolve({ data: null }),
   ])
   const isSuspended = !!(suspendedResult?.data?.suspended_at)
@@ -801,7 +804,7 @@ let canManagePolls = false
               opacity: 0.85,
             }}
           >
-            What If 2026 · Theme Camp
+            {community.eventName} · Theme Camp
           </p>
 
           {/* Wordmark */}
@@ -816,7 +819,7 @@ let canManagePolls = false
               letterSpacing: '-0.01em',
             }}
           >
-            Glåüm
+            {community.name}
           </h1>
 
           {/* Sponsored by */}
@@ -838,7 +841,7 @@ let canManagePolls = false
           >
             <Image
               src="/glaum-camp.jpg"
-              alt="Glåüm Camp — Gather, Connect, Attune."
+              alt={`${community.name} Camp — Gather, Connect, Attune.`}
               width={1200}
               height={675}
               priority

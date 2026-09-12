@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase'
+import { tenantDb } from './tenant-db'
 
 // clerk_user_id → display name from the canonical members record
 // (preferred name wins over first name; last name appended when present),
@@ -6,15 +6,16 @@ import { supabaseAdmin } from './supabase'
 // roster must name them like anyone else. Used wherever a signup row must
 // surface as a person, e.g. "Led by …". Ids with no row or no name are simply
 // absent from the result.
-export async function memberDisplayNames(clerkUserIds: string[]): Promise<Record<string, string>> {
+export async function memberDisplayNames(communityId: string, clerkUserIds: string[]): Promise<Record<string, string>> {
   const ids = Array.from(new Set(clerkUserIds.filter(Boolean)))
   if (ids.length === 0) return {}
+  const db = tenantDb(communityId)
   const [{ data: members }, { data: volunteers }] = await Promise.all([
-    supabaseAdmin
+    db
       .from('members')
       .select('clerk_user_id, first_name, last_name, preferred_name')
       .in('clerk_user_id', ids),
-    supabaseAdmin
+    db
       .from('volunteers')
       .select('clerk_user_id, first_name, last_name, preferred_name')
       .in('clerk_user_id', ids),
@@ -34,10 +35,10 @@ export async function memberDisplayNames(clerkUserIds: string[]): Promise<Record
 // route keys on the application id, not clerk_user_id or members.id). Ids
 // with no matching application are simply absent — callers should render
 // the name unlinked in that case.
-export async function applicationIdsByClerkId(clerkUserIds: string[]): Promise<Record<string, string>> {
+export async function applicationIdsByClerkId(communityId: string, clerkUserIds: string[]): Promise<Record<string, string>> {
   const ids = Array.from(new Set(clerkUserIds.filter(Boolean)))
   if (ids.length === 0) return {}
-  const { data } = await supabaseAdmin
+  const { data } = await tenantDb(communityId)
     .from('applications')
     .select('id, clerk_user_id')
     .in('clerk_user_id', ids)

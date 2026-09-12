@@ -1,7 +1,8 @@
 import { auth } from '@clerk/nextjs/server'
 import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { requireAdmin } from '@/lib/admin-auth'
 import { ApplicationRow } from './ApplicationRow'
 import { CollapsibleSection } from './CollapsibleSection'
@@ -33,6 +34,8 @@ export default async function AdminPage() {
   if (!userId) redirect('/sign-in')
 
   if (!(await requireAdmin())) redirect('/')
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   const [
     { data: volunteersRaw },
@@ -46,12 +49,12 @@ export default async function AdminPage() {
     { data: radioConfigRow },
     { data: duesConfigRow },
   ] = await Promise.all([
-    supabaseAdmin
+    db
       .from('volunteers')
       .select('id, first_name, last_name, preferred_name, email, phone, days_available, preferred_times, shift_interests, other_notes, signup_intent, status, created_at')
       .in('status', ['active', 'pending'])
       .order('created_at', { ascending: false }),
-    supabaseAdmin
+    db
       .from('applications')
       .select('id, clerk_user_id, first_name, last_name, preferred_name, email, status, submitted_at, attendance, membership_type, camped_before, setup_preference')
       .order('submitted_at', { ascending: false }),
@@ -61,19 +64,19 @@ export default async function AdminPage() {
     getSuspendedClerkUserIds(),
     getGroupNamesByUser(),
     getShiftEventByUser(),
-    getAdminRunway(),
-    supabaseAdmin
+    getAdminRunway(community.id),
+    db
       .from('admin_notifications')
       .select('id, application_id, event_type, message, details, created_at, read_at')
       .order('created_at', { ascending: false })
       .limit(20),
     safe(getAdminRadioEvents()),
-    supabaseAdmin
+    db
       .from('page_content')
       .select('value')
       .eq('key', 'config_radio')
       .maybeSingle(),
-    supabaseAdmin
+    db
       .from('page_content')
       .select('value')
       .eq('key', 'config_dues')
@@ -83,7 +86,7 @@ export default async function AdminPage() {
   // Dues roster depends on the configured audience (members / volunteers), so it
   // loads after the config row above.
   const duesConfig = parseDuesConfig(duesConfigRow?.value)
-  const duesRoster = await safe(getDuesRoster(duesConfig.audience))
+  const duesRoster = await safe(getDuesRoster(community.id, duesConfig.audience))
 
   const volunteers = volunteersRaw ?? []
   const pendingVolunteers = volunteers.filter(v => v.status === 'pending')

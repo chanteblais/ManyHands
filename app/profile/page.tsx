@@ -2,7 +2,8 @@ import { HandsBackdrop } from '@/components/HandsBackdrop'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { IconImage, ROUND_FILL } from '@/components/IconImage'
 import { redirect } from 'next/navigation'
-import { supabaseAdmin } from '@/lib/supabase'
+import { tenantDb } from '@/lib/tenant-db'
+import { getCommunity } from '@/lib/community'
 import { RememberSignedIn } from '@/components/RememberSignedIn'
 import { Header } from '@/components/Header'
 import { NotificationPreferences } from './NotificationPreferences'
@@ -57,20 +58,22 @@ function StatRow({ icon, label, value }: { icon: 'calendar' | 'star' | 'shield' 
 export default async function ProfilePage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
 
   // currentUser() is a Clerk Backend-API round-trip; both DB lookups key on
   // clerk_user_id, so all three overlap. Email matching survives as a rare
   // fallback for applications never linked to a Clerk account.
   const [user, appByIdRes, volunteerRes] = await Promise.all([
     currentUser(),
-    supabaseAdmin
+    db
       .from('applications')
       .select('*')
       .eq('clerk_user_id', userId)
       .order('submitted_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
-    supabaseAdmin
+    db
       .from('volunteers')
       .select('*')
       .eq('clerk_user_id', userId)
@@ -81,7 +84,7 @@ export default async function ProfilePage() {
   // Check for camp application (cancelled treated as no application)
   let applicationRaw = appByIdRes.data
   if (!applicationRaw && email) {
-    const { data } = await supabaseAdmin
+    const { data } = await db
       .from('applications')
       .select('*')
       .eq('email', email)
@@ -113,12 +116,12 @@ export default async function ProfilePage() {
   ] = await Promise.all([
     isActiveMember
       ? Promise.all([
-          supabaseAdmin
+          db
             .from('camp_signups')
             .select('role_id, role_approval_status, roles(name, description, purpose, department_id, departments(name, icon))')
             .eq('clerk_user_id', memberClerkId)
             .maybeSingle(),
-          supabaseAdmin
+          db
             .from('member_shift_signups')
             .select('schedule_events(id, title, day, time, icon_type, event_date)')
             .eq('clerk_user_id', memberClerkId),
@@ -129,12 +132,12 @@ export default async function ProfilePage() {
     // Shared-resource claims ("I'll bring one") — BRINGING rows on the commitments card.
     getMemberResourceClaims(memberClerkId),
     // Attunement config (Admin → Manage → Attunement Tasks) + distinction rules.
-    getPageContent(['config_attunement_tasks', 'config_shift_signup_open', 'config_distinctions', 'config_profile_fields', 'config_dues']),
+    getPageContent(community.id, ['config_attunement_tasks', 'config_shift_signup_open', 'config_distinctions', 'config_profile_fields', 'config_dues']),
     // Shift-hours state: held hours per shift type + obligations derived from the
     // member's groups/roles. Same helper as the home dashboard — keep in sync.
     getMemberShiftState(memberClerkId),
     // Canonical member row (Phase 1 member_profiles) for stored profile values.
-    resolveMember(memberClerkId, email),
+    resolveMember(community.id, memberClerkId, email),
     // Email preferences — server-rendered so NotificationPreferences skips its
     // mount fetch of /api/profile/notifications. Keyed by the CALLER (this is
     // always the member's own profile page).
@@ -193,7 +196,7 @@ export default async function ProfilePage() {
   // from reported Gatherings-Attended years). Guarded — empty when no member row
   // exists yet, so everything falls back to application-data-only behavior.
   const [profileValues, awardIds] = profileMember
-    ? await Promise.all([getMemberProfileValues(profileMember.id), getMemberAwards(profileMember.id)])
+    ? await Promise.all([getMemberProfileValues(community.id, profileMember.id), getMemberAwards(profileMember.id)])
     : [{} as Record<string, unknown>, null]
   // Profile-completion nudge: registry fields flagged "catch-up" (askExisting)
   // that this member hasn't filled and hasn't permanently dismissed. Computed
@@ -217,11 +220,11 @@ export default async function ProfilePage() {
   // link onto the canonical member record, so future identity reads resolve by
   // clerk_user_id rather than the email fallback.
   if (application?.status === 'approved' && !application.clerk_user_id) {
-    await supabaseAdmin
+    await db
       .from('applications')
       .update({ clerk_user_id: userId })
       .eq('id', application.id)
-    await supabaseAdmin
+    await db
       .from('members')
       .update({ clerk_user_id: userId })
       .eq('application_id', application.id)
@@ -464,7 +467,7 @@ export default async function ProfilePage() {
                   Join the Camp
                 </p>
                 <p style={{ fontSize: '0.875rem', lineHeight: 1.7, opacity: 0.6, marginBottom: '2rem', flex: 1 }}>
-                  Camp with Glåüm at What If 2026. Full participation — you'll sleep on site, help build and hold the space, and take on volunteer shifts as part of the camp.
+                  Camp with {community.name} at {community.eventName}. Full participation — you'll sleep on site, help build and hold the space, and take on volunteer shifts as part of the camp.
                 </p>
                 <a
                   href="/apply?track=member"
@@ -494,7 +497,7 @@ export default async function ProfilePage() {
                   Volunteer for a Shift
                 </p>
                 <p style={{ fontSize: '0.875rem', lineHeight: 1.7, opacity: 0.6, marginBottom: '2rem', flex: 1 }}>
-                  Not camping with Glåüm, but want to be part of it? Sign up to help out for a shift or two. We'll share more details about available roles closer to the event.
+                  Not camping with {community.name}, but want to be part of it? Sign up to help out for a shift or two. We'll share more details about available roles closer to the event.
                 </p>
                 <a
                   href="/volunteer"

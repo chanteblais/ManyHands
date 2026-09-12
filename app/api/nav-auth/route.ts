@@ -1,6 +1,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getCommunity } from '@/lib/community'
+import { tenantDb } from '@/lib/tenant-db'
 import { resolveMember } from '@/lib/members'
 
 export const dynamic = 'force-dynamic'
@@ -21,7 +22,10 @@ export async function GET() {
   // Fast path: a linked member row answers everything the nav needs (name,
   // email, avatar, approval) from one indexed query — no Clerk Backend-API
   // round-trip, which this route otherwise pays on every page view.
-  const memberRow = await resolveMember(userId)
+  const community = await getCommunity()
+  const db = tenantDb(community.id)
+
+  const memberRow = await resolveMember(community.id, userId)
   if (memberRow) {
     return NextResponse.json(
       {
@@ -51,7 +55,7 @@ export async function GET() {
   let avatarUrl: string | null = null
   let isApproved = false
 
-  const { data: appRow } = await supabaseAdmin
+  const { data: appRow } = await db
     .from('members')
     .select('avatar_url, status')
     .or(`clerk_user_id.eq.${userId}${email ? `,email.eq.${email}` : ''}`)
@@ -62,7 +66,7 @@ export async function GET() {
     avatarUrl = appRow.avatar_url ?? null
     isApproved = appRow.status === 'approved'
   } else {
-    const { data: volRow } = await supabaseAdmin
+    const { data: volRow } = await db
       .from('volunteers')
       .select('avatar_url')
       .eq('clerk_user_id', userId)
