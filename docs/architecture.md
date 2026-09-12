@@ -250,7 +250,7 @@ The platform serves many communities from one codebase, one database, one deploy
 
 ### Crons, storage, badge (since 1d)
 
-- **Crons** fire **hourly** (`vercel.json`) and sweep every active community, sending only when the community's local hour (`communities.timezone`, `lib/community-time.ts`) matches its `settings` hour (nudges 9, reminders 8 / 19 by default). An admin hitting a cron URL in the browser runs their own community only, hour gate bypassed, dry-run unless `?send=1`. Vercel's `?force=1` bypasses the gate for all communities.
+- **Crons** sweep every active community. Two schedule modes: **hourly** (no params) gates each community on its local hour (`communities.timezone`, `lib/community-time.ts`; `settings` hours — nudges 9, reminders 8 / 19 by default); **daily with `?force=1[&phase=…]`** skips the gate and runs for all communities at fixed UTC times. **Vercel Hobby allows crons at most once a day, so `vercel.json` uses the daily entries at Glåüm's old times** (16:00 / 15:00 / 02:00 UTC); switching to the hourly entry is a one-line change once the project is on Pro (or a second community needs its own hours). An admin hitting a cron URL in the browser runs their own community only, hour gate bypassed, dry-run unless `?send=1`.
 - **Storage**: new uploads are prefixed `<community_id>/` (`objectPath()`); see database.md → Storage Buckets.
 - **Badge**: `/api/badge?c=<slug>&role=&dept=` — assets from `communities.theme.badge` (`base_url`, `font_url`, `width`, `height`) or the repo's Glåüm defaults; asset + render caches keyed by slug.
 - **Picker**: `GET /api/me/communities` (the person's memberships × communities, with each community's origin) and `/communities` (list, or the no-community empty state).

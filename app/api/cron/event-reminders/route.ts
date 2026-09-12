@@ -12,11 +12,16 @@ import { sendEventReminderEmail } from '@/lib/send-email'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-// Gathering/shift reminders. One HOURLY Vercel Cron entry hits this route
-// (vercel.json); for every active community it decides, from the community's
-// local hour (communities.timezone + settings), which phase is due:
-//   • morning_of  — at reminder_morning_hour_local (default 8): items TODAY
-//   • day_before  — at reminder_evening_hour_local (default 19): items TOMORROW
+// Gathering/shift reminders. Two schedules are supported (vercel.json):
+//   • HOURLY entry, no params — for every active community, the community's
+//     local hour (communities.timezone + settings) decides which phase is due:
+//       morning_of — at reminder_morning_hour_local (default 8): items TODAY
+//       day_before — at reminder_evening_hour_local (default 19): items TOMORROW
+//   • DAILY entries with ?force=1&phase=… — the hour gate is skipped and the
+//     named phase runs for every community. This is what Vercel's Hobby plan
+//     allows (crons at most once a day), so it is the live config; the times
+//     are Glåüm's (15:00 / 02:00 UTC = 8am / 7pm Pacific daylight time).
+//     Per-community send hours need the hourly entry (Pro plan).
 // Reminders are batched (one email per member per phase per day) and deduped via
 // the event_reminders_sent ledger, so a re-fire or overlap never double-sends.
 
@@ -146,8 +151,11 @@ export async function GET(req: NextRequest) {
     jobs.push({ community: await getCommunity(), phases: requested ? [requested] : ['morning_of', 'day_before'] })
   } else {
     const force = params.get('force') === '1'
+    const forcedPhase = params.get('phase') as Phase | null
     for (const community of (await listCommunities()).filter(c => c.status === 'active')) {
-      const phases = force ? (['morning_of', 'day_before'] as Phase[]) : duePhases(community, now)
+      const phases = force
+        ? (forcedPhase ? [forcedPhase] : (['morning_of', 'day_before'] as Phase[]))
+        : duePhases(community, now)
       if (phases.length) jobs.push({ community, phases })
     }
   }

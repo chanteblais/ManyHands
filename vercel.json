@@ -1,12 +1,16 @@
 {
   "crons": [
     {
-      "path": "/api/cron/attunement-nudges",
-      "schedule": "0 * * * *"
+      "path": "/api/cron/attunement-nudges?force=1",
+      "schedule": "0 16 * * *"
     },
     {
-      "path": "/api/cron/event-reminders",
-      "schedule": "0 * * * *"
+      "path": "/api/cron/event-reminders?force=1&phase=morning_of",
+      "schedule": "0 15 * * *"
+    },
+    {
+      "path": "/api/cron/event-reminders?force=1&phase=day_before",
+      "schedule": "0 2 * * *"
     }
   ]
 }
