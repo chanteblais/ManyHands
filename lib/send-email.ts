@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import type { Community } from '@/lib/community'
+import { isDemoCommunity } from '@/lib/demo'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -29,11 +30,20 @@ export function emailBrand(community: Pick<Community, 'name' | 'hosts' | 'emailF
   return { name: community.name, origin: appOrigin(community), from: community.emailFrom || PLATFORM_FROM }
 }
 
-type BrandSource = Pick<Community, 'name' | 'hosts' | 'emailFrom'>
+// `settings` rides along so a demo community's mail can be dropped (lib/demo.ts).
+type BrandSource = Pick<Community, 'name' | 'hosts' | 'emailFrom' | 'settings'>
+
+/** The open demo sends nothing: its addresses are fake and its visitors anonymous. */
+function suppressedForDemo(community: BrandSource, subject: string): boolean {
+  if (!isDemoCommunity(community)) return false
+  console.info(`[send-email] demo community ${community.name} — not sending "${subject}"`)
+  return true
+}
 
 export type SendResult = { ok: boolean; error?: string }
 
 export async function sendAdminEmail(community: BrandSource, to: string, subject: string, html: string): Promise<SendResult> {
+  if (suppressedForDemo(community, subject)) return { ok: true }
   const brand = emailBrand(community)
   const { error } = await resend.emails.send({ from: brand.from, to, subject, html: wrap(brand, html) })
   if (error) {
@@ -44,6 +54,7 @@ export async function sendAdminEmail(community: BrandSource, to: string, subject
 }
 
 export async function sendUserEmail(community: BrandSource, to: string, subject: string, html: string): Promise<SendResult> {
+  if (suppressedForDemo(community, subject)) return { ok: true }
   const brand = emailBrand(community)
   const { error } = await resend.emails.send({ from: brand.from, to, subject, html: wrap(brand, html) })
   if (error) {

@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/event-reminders?force=1&phase=day_before",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/demo-reset",
+      "schedule": "0 10 * * *"
     }
   ]
 }

@@ -1,5 +1,7 @@
 import { getNotificationPreferences, type NotificationPreferences } from '@/lib/notification-prefs'
 import { sendPushToMember, type PushPayload } from '@/lib/push'
+import type { Community } from '@/lib/community'
+import { isDemoCommunity } from '@/lib/demo'
 
 // THE notification dispatch seam (docs/mobile-companion.md → standing
 // disciplines): member + event → their channels. Every member-facing
@@ -42,12 +44,15 @@ export type MemberNotification = {
 /**
  * Deliver one notification to one member via every channel their preference
  * allows. Channels run in parallel; failures are logged, never thrown — a
- * notification must never break the action that caused it.
+ * notification must never break the action that caused it. A demo community
+ * (lib/demo.ts) notifies nobody.
  */
 export async function dispatchMemberNotification(
+  community: Pick<Community, 'settings'>,
   clerkUserId: string,
   notification: MemberNotification
 ): Promise<void> {
+  if (isDemoCommunity(community)) return
   try {
     const prefs = notification.prefs ?? (await getNotificationPreferences(clerkUserId))
     if (!prefs[PREF_FOR_KIND[notification.kind]]) return

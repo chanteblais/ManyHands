@@ -7,6 +7,8 @@ import { getCommunity, toPublicCommunity } from '@/lib/community'
 import { CommunityProvider } from '@/components/CommunityProvider'
 import { themeOverrideCss, THEME_COLORS } from '@/lib/theme'
 import { clerkDomainConfig } from '@/lib/platform'
+import { isDemoCommunity } from '@/lib/demo'
+import DemoBanner from '@/components/DemoBanner'
 import ServiceWorkerCleanup from './ServiceWorkerCleanup'
 import './globals.css'
 
@@ -76,7 +78,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     : ({ signInUrl: '/sign-in', signUpUrl: '/sign-up' } as const)
   // Tenant resolution happens once per request, here; pages and routes call
   // getCommunity() themselves (cached) and pass community.id into tenantDb().
-  const community = toPublicCommunity(await getCommunity())
+  const fullCommunity = await getCommunity()
+  const community = toPublicCommunity(fullCommunity)
+  const isDemo = isDemoCommunity(fullCommunity)
   // A community's theme re-skins the site by overriding the :root tokens
   // declared in globals.css (lib/theme.ts); null when it sets none.
   const themeCss = themeOverrideCss(community.theme)
@@ -112,6 +116,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           style={{ fontFamily: 'var(--font-libre-baskerville), Georgia, serif' }}
         >
           <CommunityProvider community={community}>
+            {isDemo && <DemoBanner communityName={community.name} />}
             <div className="site-shell">{children}</div>
           </CommunityProvider>
           <ServiceWorkerCleanup />
