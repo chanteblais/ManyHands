@@ -1,6 +1,8 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { clerkClient } from '@clerk/nextjs/server'
 import type { Community } from '@/lib/community'
-import { tenantDb } from '@/lib/tenant-db'
+import { objectPath, tenantDb } from '@/lib/tenant-db'
 
 // The open demo (docs/features.md → Demo guest access). A community whose
 // `settings.demo` is true (set by scripts/seed-demo — Lantern Hollow) lets
@@ -50,6 +52,29 @@ export async function recentDemoGuestCount(communityId: string): Promise<number>
   return count ?? 0
 }
 
+// Guests get a random portrait from a small pool of AI-generated fictional
+// visitors, committed beside the seeded members' (next.config.js traces the
+// folder into /api/demo/enter). The copy lands in the guest's own avatar slot,
+// which the nightly reset clears with the rest of the demo's avatars.
+const GUEST_AVATAR_DIR = 'scripts/seed-demo/guest-avatars'
+
+async function uploadGuestAvatar(db: ReturnType<typeof tenantDb>, communityId: string, userId: string): Promise<string | null> {
+  try {
+    const dir = path.join(/* turbopackIgnore: true */ process.cwd(), GUEST_AVATAR_DIR)
+    const files = fs.readdirSync(dir).filter(f => f.endsWith('.webp'))
+    if (!files.length) return null
+    const file = files[Math.floor(Math.random() * files.length)]
+    const p = objectPath(communityId, `${userId}/avatar.webp`)
+    const { error } = await db.storage.from('avatars').upload(p, fs.readFileSync(path.join(dir, file)), { contentType: 'image/webp', upsert: true, cacheControl: '31536000' })
+    if (error) throw error
+    return db.storage.from('avatars').getPublicUrl(p).data.publicUrl
+  } catch (e) {
+    // A portrait is a nicety — never block the way in over it.
+    console.error('[demo] guest avatar failed', e)
+    return null
+  }
+}
+
 /**
  * Mint one guest: a throwaway Clerk user, an approved application + admin
  * member row in the demo community, and a short-lived sign-in ticket the
@@ -71,11 +96,12 @@ export async function createDemoGuest(community: Community): Promise<{ userId: s
   try {
     const db = tenantDb(community.id)
     const now = new Date().toISOString()
+    const avatarUrl = await uploadGuestAvatar(db, community.id, user.id)
     const { data: app, error: appErr } = await db
       .from('applications')
       .insert({
         clerk_user_id: user.id, first_name: 'Guest', last_name: 'Organizer', email, phone: GUEST_PHONE,
-        status: 'approved', submitted_at: now, reviewed_at: now,
+        status: 'approved', submitted_at: now, reviewed_at: now, avatar_url: avatarUrl,
         public_bio: 'Visiting the hollow to see how it all works.',
       })
       .select('id')
@@ -83,7 +109,7 @@ export async function createDemoGuest(community: Community): Promise<{ userId: s
     if (appErr) throw new Error(`applications: ${appErr.message}`)
     const { error: memErr } = await db.from('members').insert({
       clerk_user_id: user.id, application_id: app.id, first_name: 'Guest', last_name: 'Organizer',
-      email, phone: GUEST_PHONE, status: 'approved', role: 'admin',
+      email, phone: GUEST_PHONE, avatar_url: avatarUrl, status: 'approved', role: 'admin',
     })
     if (memErr) throw new Error(`members: ${memErr.message}`)
   } catch (e) {
