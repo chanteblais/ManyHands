@@ -13,13 +13,7 @@ export const COMMUNITY = {
   // localhost:<port> resolves to Glåüm (default), these to the demo.
   hosts: ['demo.withmanyhands.ca', '127.0.0.1:3001', 'lantern.localhost:3001', '127.0.0.1:3000', 'lantern.localhost:3000', 'lantern.localhost:3002'],
   theme: {
-    // "Lantern dusk": a midnight-blue sky, warm amber lantern light, and a
-    // coral ember accent (the accent also tints the glow at the top of every page).
-    colors: {
-      ink: '#141B2D', 'ink-deep': '#0E1422', shade: '#0A0F1C', plum: '#33406B', 'plum-dark': '#1D2640',
-      gold: '#F4B860', 'gold-pale': '#F8CC85', 'gold-deep': '#D99A3E', 'gold-dark': '#6A4312',
-      purple: '#EE7B67', lavender: '#F9C3B4', cream: '#F5EEE3',
-    },
+    // No colour overrides: the demo wears the default (Glåüm) palette.
     fonts: { display: "'Cormorant Garamond', 'TokyoDreams', serif" },
   },
   // Event window (YYYY-MM-DD); the runway pages count down to the start.
