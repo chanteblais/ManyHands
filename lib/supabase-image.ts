@@ -21,12 +21,24 @@
 //   a width×(original height) box — i.e. a full-height sliver cropped out of
 //   the middle of the photo, not a thumbnail. Every call site is a circle (or
 //   square) with CSS object-fit: cover, so height defaults to width.
+//
+// AVATARS SKIP ALL OF THIS (2026-09-25): an `avatars/…/avatar.webp` has a
+// pre-made 256px `avatar.thumb.webp` sibling (lib/avatar-thumb.mjs), so
+// requests up to that size get the thumbnail and larger ones the stored
+// ≤1024px original — both plain CDN files, nothing resized per request.
+// GIF avatars (animated, no thumbnail) still take the paths below.
+import { AVATAR_THUMB_SIZE, avatarThumbPath } from './avatar-thumb.mjs'
+
 const TRANSFORMS_ENABLED = process.env.NEXT_PUBLIC_SUPABASE_IMAGE_TRANSFORMS === 'true'
 
 export function supabaseResizedUrl(url: string | null, width: number, height: number = width): string | null {
   if (!url) return null
   const match = url.match(/\/storage\/v1\/object\/public\/([^?]+)(?:\?(.*))?$/)
   if (!match) return url
+  if (match[1].startsWith('avatars/')) {
+    const thumb = avatarThumbPath(url)
+    if (thumb) return Math.max(width, height) <= AVATAR_THUMB_SIZE ? thumb : url
+  }
   if (!TRANSFORMS_ENABLED) return nextOptimizedUrl(url, Math.max(width, height))
   const base = url.split('/storage/v1/object/public/')[0]
   const existingQuery = match[2] ? `&${match[2]}` : ''

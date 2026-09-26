@@ -13,6 +13,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import * as C from './content.mjs'
+import { avatarThumbPath } from '../../lib/avatar-thumb.mjs'
+import { makeAvatarThumb } from '../../lib/avatar-thumb-server.mjs'
 
 // Relative to the repo root (the CLI's cwd; /var/task on Vercel, where
 // next.config.js outputFileTracingIncludes ships the folder with the cron).
@@ -176,7 +178,11 @@ export async function seedDemoCommunity(db, opts = {}) {
     if (!fs.existsSync(file)) return null
     const buf = fs.readFileSync(file)
     const p = `${cid}/${clerkId(i)}/avatar.webp`
-    const { error } = await supabase.storage.from('avatars').upload(p, buf, { contentType: 'image/webp', upsert: true, cacheControl: '31536000' })
+    const opts = { contentType: 'image/webp', upsert: true, cacheControl: '31536000' }
+    // Small avatars render from the 256px thumbnail (lib/avatar-thumb.mjs).
+    const { error: thumbError } = await supabase.storage.from('avatars').upload(avatarThumbPath(p), await makeAvatarThumb(buf), opts)
+    if (thumbError) throw new Error(`avatar thumb ${p}: ${thumbError.message}`)
+    const { error } = await supabase.storage.from('avatars').upload(p, buf, opts)
     if (error) throw new Error(`avatar ${p}: ${error.message}`)
     return supabase.storage.from('avatars').getPublicUrl(p).data.publicUrl
   }

@@ -3,6 +3,8 @@ import path from 'node:path'
 import { clerkClient } from '@clerk/nextjs/server'
 import type { Community } from '@/lib/community'
 import { objectPath, tenantDb } from '@/lib/tenant-db'
+import { avatarThumbPath } from '@/lib/avatar-thumb.mjs'
+import { makeAvatarThumb } from '@/lib/avatar-thumb-server.mjs'
 
 // The open demo (docs/features.md → Demo guest access). A community whose
 // `settings.demo` is true (set by scripts/seed-demo — Lantern Hollow) lets
@@ -65,7 +67,12 @@ async function uploadGuestAvatar(db: ReturnType<typeof tenantDb>, communityId: s
     if (!files.length) return null
     const file = files[Math.floor(Math.random() * files.length)]
     const p = objectPath(communityId, `${userId}/avatar.webp`)
-    const { error } = await db.storage.from('avatars').upload(p, fs.readFileSync(path.join(dir, file)), { contentType: 'image/webp', upsert: true, cacheControl: '31536000' })
+    const buf = fs.readFileSync(path.join(dir, file))
+    const opts = { contentType: 'image/webp', upsert: true, cacheControl: '31536000' }
+    // Thumbnail first — small avatars render from it (lib/avatar-thumb.mjs).
+    const { error: thumbError } = await db.storage.from('avatars').upload(avatarThumbPath(p)!, await makeAvatarThumb(buf), opts)
+    if (thumbError) throw thumbError
+    const { error } = await db.storage.from('avatars').upload(p, buf, opts)
     if (error) throw error
     return db.storage.from('avatars').getPublicUrl(p).data.publicUrl
   } catch (e) {

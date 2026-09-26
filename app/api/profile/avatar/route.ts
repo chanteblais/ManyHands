@@ -4,6 +4,8 @@ import sharp from 'sharp'
 import { getCommunity } from '@/lib/community'
 import { tenantDb, objectPath } from '@/lib/tenant-db'
 import { upsertMember } from '@/lib/members'
+import { avatarThumbPath } from '@/lib/avatar-thumb.mjs'
+import { makeAvatarThumb } from '@/lib/avatar-thumb-server.mjs'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const MAX_BYTES = 5 * 1024 * 1024 // 5 MB
@@ -62,13 +64,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: uploadError.message }, { status: 500 })
   }
 
+  // The 256px sibling every small avatar renders from (lib/avatar-thumb.mjs).
+  // Written before the URL is saved, so no page ever points at a missing one.
+  const thumbPath = avatarThumbPath(path)
+  if (thumbPath) {
+    const { error: thumbError } = await db.storage
+      .from('avatars')
+      .upload(thumbPath, await makeAvatarThumb(buffer), { contentType: 'image/webp', upsert: true, cacheControl: '31536000' })
+    if (thumbError) {
+      console.error('[avatar thumb upload]', thumbError)
+      return NextResponse.json({ error: thumbError.message }, { status: 500 })
+    }
+  }
+
   // Re-uploads that change extension (e.g. old avatar.jpg → avatar.webp) would
   // otherwise strand the previous object; remove() ignores missing paths.
   // …including the pre-tenancy unprefixed path this member may still have.
   const stale = ['jpg', 'png', 'webp', 'gif'].flatMap((e) => [
     ...(e !== ext ? [objectPath(community.id, `${userId}/avatar.${e}`)] : []),
     `${userId}/avatar.${e}`,
-  ])
+  ]).concat(thumbPath ? [] : [objectPath(community.id, `${userId}/avatar.thumb.webp`)])
   await db.storage.from('avatars').remove(stale)
 
   const { data: { publicUrl } } = db.storage
