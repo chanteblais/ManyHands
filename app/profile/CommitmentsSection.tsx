@@ -47,7 +47,7 @@ function CircleIcon({ children, size = '56px' }: { children: React.ReactNode; si
     <div style={{
       width: size, height: size, borderRadius: '50%', flexShrink: 0, overflow: 'hidden',
       border: '1.5px solid #C07C26',
-      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgba(8,0,18,0.85))',
+      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgb(var(--shade-rgb) / 0.85))',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       {children}
@@ -130,7 +130,7 @@ export function CommitmentsSection({ contributions, role, dept, shifts, bringing
   const sidepad = compact ? '0 1.25rem' : '0 1.5rem'
 
   return (
-    <div style={{ border: '1.5px solid rgb(var(--gold-rgb) / 0.7)', borderRadius: '1rem', background: 'rgba(10,0,20,0.6)', overflow: 'hidden', boxShadow: '0 0 0 1px rgb(var(--gold-rgb) / 0.12), 0 0 24px rgb(var(--gold-rgb) / 0.08)', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ border: '1.5px solid rgb(var(--gold-rgb) / 0.7)', borderRadius: '1rem', background: 'rgb(var(--shade-rgb) / 0.6)', overflow: 'hidden', boxShadow: '0 0 0 1px rgb(var(--gold-rgb) / 0.12), 0 0 24px rgb(var(--gold-rgb) / 0.08)', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <style dangerouslySetInnerHTML={{ __html: `
         .commitments-rows { padding: ${sidepad}; }
         .commitments-row  { display: flex; align-items: center; gap: ${rowGap}; padding: ${rowPad}; }

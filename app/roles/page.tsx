@@ -169,7 +169,7 @@ export default async function RolesRegistryPage() {
               <div style={{
                 width: '64px', height: '64px', borderRadius: '50%', margin: '0 auto 0.7rem',
                 border: '1.5px solid var(--gold)',
-                background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.16), rgba(8,0,18,0.85))',
+                background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.16), rgb(var(--shade-rgb) / 0.85))',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 0 18px rgb(var(--gold-rgb) / 0.18)',
               }}>

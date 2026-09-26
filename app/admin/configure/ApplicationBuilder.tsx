@@ -1196,7 +1196,7 @@ export function ApplicationBuilder({
           display: 'flex', alignItems: 'center', gap: '0.6rem',
           padding: dirty && saveStatus !== 'saving' ? '0.35rem 0.4rem 0.35rem 1rem' : '0.45rem 0.9rem',
           borderRadius: '9999px',
-          background: 'rgba(20,10,30,0.88)', backdropFilter: 'blur(6px)',
+          background: 'rgb(var(--ink-rgb) / 0.88)', backdropFilter: 'blur(6px)',
           border: `1px solid ${
             saveStatus === 'error' ? 'rgb(var(--danger-rgb) / 0.4)'
             : saveStatus === 'saving' ? 'rgb(var(--gold-rgb) / 0.35)'

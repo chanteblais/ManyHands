@@ -32,7 +32,7 @@ function Medal({ d, frame = 88, glyphSize = '2.1rem', labelSize = '0.66rem' }: {
           // let the transparent sides overflow — overflow:hidden trims that
           // excess to the round edge. (Outer box-shadow is unaffected by clip.)
           overflow: 'hidden',
-          background: 'radial-gradient(circle at 38% 30%, rgb(var(--purple-rgb) / 0.16), rgba(8,0,18,0.9) 72%)',
+          background: 'radial-gradient(circle at 38% 30%, rgb(var(--purple-rgb) / 0.16), rgb(var(--shade-rgb) / 0.9) 72%)',
           border: '2px solid var(--gold)',
           boxShadow: '0 8px 24px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4), inset 0 0 18px rgb(var(--gold-rgb) / 0.18), inset 0 0 0 1px rgba(255,249,232,0.12)',
         }}
@@ -108,7 +108,7 @@ export function CabinetOfDistinctions({ distinctions, title = 'Cabinet of Distin
     <div style={{
       border: compact ? '1px solid rgb(var(--gold-rgb) / 0.28)' : '1.5px solid rgb(var(--gold-rgb) / 0.7)',
       borderRadius: '1rem',
-      background: 'rgba(10,0,20,0.6)',
+      background: 'rgb(var(--shade-rgb) / 0.6)',
       overflow: 'hidden',
       boxShadow: compact ? '0 0 0 1px rgb(var(--gold-rgb) / 0.06)' : '0 0 0 1px rgb(var(--gold-rgb) / 0.12), 0 0 24px rgb(var(--gold-rgb) / 0.08)',
     }}>

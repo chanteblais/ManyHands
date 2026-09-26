@@ -36,7 +36,7 @@ export function SpotlightWidget({
       padding: '1.5rem',
       border: '1px solid rgb(var(--gold-rgb) / 0.2)',
       borderRadius: '1rem',
-      background: 'rgba(10,0,20,0.6)',
+      background: 'rgb(var(--shade-rgb) / 0.6)',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',

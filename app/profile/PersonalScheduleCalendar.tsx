@@ -27,7 +27,7 @@ export type PersonalEvent = {
 const PX_PER_HOUR = 40
 const GOLD = 'var(--gold)'
 const CREAM = '#F3EAE5'
-const PANEL_BG = 'radial-gradient(circle at 50% 0%, rgba(92, 28, 110, 0.24), rgba(15, 0, 28, 0.94) 46%, rgba(8, 0, 18, 0.98) 100%)'
+const PANEL_BG = 'radial-gradient(circle at 50% 0%, rgba(92, 28, 110, 0.24), rgba(15, 0, 28, 0.94) 46%, rgb(var(--shade-rgb) / 0.98) 100%)'
 const GRID_LINE = 'rgb(var(--gold-rgb) / 0.12)'
 
 // Times + column via the shared late-night convention (lib/late-night.ts):
@@ -74,7 +74,7 @@ function EventCard({ event, top, height }: { event: PersonalEvent; top: number; 
       padding: tall ? '10px 12px' : '6px 10px',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start',
       boxShadow: isPersonalShift
-        ? `0 0 20px rgba(182,80,200,0.28), inset 0 0 24px rgba(20,0,30,0.35)`
+        ? `0 0 20px rgba(182,80,200,0.28), inset 0 0 24px rgb(var(--shade-rgb) / 0.35)`
         : `inset 0 0 20px rgba(0,0,0,0.22), 0 0 10px rgba(0,0,0,0.12)`,
     }}>
       {event.time && (

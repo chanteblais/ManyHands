@@ -63,7 +63,7 @@ export default async function AboutPage() {
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2rem', lineHeight: 1.15, textAlign: 'center' }}>
             {c('home_about_heading', 'A camp. A collective.')}
           </h2>
-          <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '1.25rem', background: 'rgba(10,0,20,0.45)', padding: '2rem 2.5rem' }}>
+          <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '1.25rem', background: 'rgb(var(--shade-rgb) / 0.45)', padding: '2rem 2.5rem' }}>
             {c('home_about_body', '').split('\n\n').filter(Boolean).map((para, i) => (
               <p key={i} style={{ fontSize: '1.05rem', lineHeight: 1.85, marginBottom: '1.25rem', fontStyle: i === 3 ? 'italic' : undefined, opacity: i === 3 ? 0.65 : 0.85, fontFamily: 'var(--font-libre-baskerville)' }}>
                 {para}
@@ -87,7 +87,7 @@ export default async function AboutPage() {
               { title: 'Stewardship', body: 'No one person should be responsible for carrying the whole community.' },
               { title: 'Communication', body: 'We strive to communicate honestly, directly, and in good faith.' },
             ].map(({ title, body }) => (
-              <div key={title} style={{ border: '1px solid rgb(var(--gold-rgb) / 0.18)', borderRadius: '1.25rem', background: 'rgba(10,0,20,0.45)', padding: '1.75rem 2rem' }}>
+              <div key={title} style={{ border: '1px solid rgb(var(--gold-rgb) / 0.18)', borderRadius: '1.25rem', background: 'rgb(var(--shade-rgb) / 0.45)', padding: '1.75rem 2rem' }}>
                 <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--gold)', margin: '0 0 0.75rem', letterSpacing: '0.04em' }}>
                   {title}
                 </p>
@@ -108,7 +108,7 @@ export default async function AboutPage() {
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2rem', textAlign: 'center' }}>
             {c('home_participate_heading', 'This Camp Runs on Participation')}
           </h2>
-          <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '1.25rem', background: 'rgba(10,0,20,0.45)', padding: '2rem 2.5rem', marginBottom: '2.5rem' }}>
+          <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.15)', borderRadius: '1.25rem', background: 'rgb(var(--shade-rgb) / 0.45)', padding: '2rem 2.5rem', marginBottom: '2.5rem' }}>
             <p style={{ fontSize: '1.05rem', lineHeight: 1.85, margin: 0, opacity: 0.85, fontFamily: 'var(--font-libre-baskerville)' }}>
               {c('home_participate_body', 'The Many Hands hold us all up. Sometimes we do the carrying. Sometimes we are carried. Everyone contributes in some way: setup, teardown, cooking, welcoming, cleaning, decorating, emotional support, infrastructure, care.')}
             </p>

@@ -81,7 +81,7 @@ function TextPanel({ initialContent, onClose }: { initialContent: Content; onClo
   return (
     <div style={{
       position: 'fixed', top: 0, right: 0, width: '380px', maxWidth: '100vw', height: '100vh',
-      overflowY: 'auto', zIndex: 300, background: 'rgba(12,4,24,0.98)',
+      overflowY: 'auto', zIndex: 300, background: 'rgb(var(--shade-rgb) / 0.98)',
       borderLeft: '1px solid rgb(var(--gold-rgb) / 0.2)', boxShadow: '-8px 0 40px rgba(0,0,0,0.5)',
       display: 'flex', flexDirection: 'column',
     }}>
@@ -136,7 +136,7 @@ function NewPollPanel({ onCreated, onClose }: { onCreated: () => void; onClose: 
   return (
     <div style={{
       position: 'fixed', top: 0, right: 0, width: '360px', maxWidth: '100vw', height: '100vh',
-      overflowY: 'auto', zIndex: 300, background: 'rgba(12,4,24,0.98)',
+      overflowY: 'auto', zIndex: 300, background: 'rgb(var(--shade-rgb) / 0.98)',
       borderLeft: '1px solid rgb(var(--purple-rgb) / 0.25)', boxShadow: '-8px 0 40px rgba(0,0,0,0.5)',
       display: 'flex', flexDirection: 'column',
     }}>
@@ -228,7 +228,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
         position: absolute; top: 8px; right: 8px; z-index: 20;
         display: flex; align-items: center; gap: 5px;
         padding: 4px 8px 4px 6px;
-        background: rgba(12,4,24,0.92);
+        background: rgb(var(--shade-rgb) / 0.92);
         border: 1px solid rgb(var(--gold-rgb) / 0.35);
         border-radius: 6px;
         cursor: grab;
@@ -559,7 +559,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 250,
           height: '48px',
           padding: '0 1.25rem',
-          background: 'rgba(10,2,20,0.97)',
+          background: 'rgb(var(--shade-rgb) / 0.97)',
           borderBottom: '1px solid rgb(var(--gold-rgb) / 0.18)',
           backdropFilter: 'blur(10px)',
           display: 'flex', alignItems: 'center', gap: '1rem',
@@ -640,7 +640,7 @@ export function HomePageEditor({ initialContent }: { initialContent: Content }) 
               position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 200,
               padding: '0.55rem 1.1rem', borderRadius: '9999px',
               border: '1px solid rgb(var(--gold-rgb) / 0.4)',
-              background: 'rgba(10,0,20,0.85)', color: 'var(--gold)',
+              background: 'rgb(var(--shade-rgb) / 0.85)', color: 'var(--gold)',
               fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase',
               cursor: 'pointer', backdropFilter: 'blur(8px)',
             }}

@@ -187,7 +187,7 @@ function CurrentSignupCards({
               <div style={{
                 width: '46px', height: '46px', borderRadius: '50%', flexShrink: 0,
                 border: '1.5px solid var(--gold)',
-                background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgba(8,0,18,0.85))',
+                background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgb(var(--shade-rgb) / 0.85))',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {dept?.icon && (isImageIcon(dept.icon)
@@ -631,7 +631,7 @@ function RolePicker({
           <style dangerouslySetInnerHTML={{ __html: `
             .role-seal-strip { --cols: var(--cols-m); display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 1.1rem; margin: 0 auto 1.4rem; max-width: calc(var(--cols) * 90px + (var(--cols) - 1) * 1.1rem); }
             .role-seal { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: calc((100% - (var(--cols) - 1) * 1.1rem) / var(--cols)); max-width: 90px; }
-            .role-seal-ring { width: 100%; max-width: 56px; aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--gold); background: radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgba(8,0,18,0.85)); display: flex; align-items: center; justify-content: center; }
+            .role-seal-ring { width: 100%; max-width: 56px; aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--gold); background: radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgb(var(--shade-rgb) / 0.85)); display: flex; align-items: center; justify-content: center; }
             .role-seal-ring .role-seal-emoji { font-size: 1.5rem; line-height: 1; }
             @media (min-width: 560px) {
               .role-seal-strip { --cols: var(--cols-d); max-width: calc(var(--cols) * 108px + (var(--cols) - 1) * 1.1rem); }

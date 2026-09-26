@@ -44,7 +44,7 @@ export function MobileTabBar({ links }: { links: TabBarLink[] }) {
           alignItems: 'stretch',
           // Near-opaque instead of frosted: the bar only exists on phones,
           // where a fixed backdrop-filter re-blurs on every scroll frame.
-          backgroundColor: 'rgba(20, 8, 30, 0.97)',
+          backgroundColor: 'rgb(var(--ink-rgb) / 0.97)',
           borderTop: '1px solid rgb(var(--gold-rgb) / 0.25)',
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}

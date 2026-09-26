@@ -37,7 +37,7 @@ function cardStyle(): React.CSSProperties {
   return {
     border: '1px solid rgb(var(--gold-rgb) / 0.28)',
     borderRadius: '1rem',
-    background: 'rgba(10,0,20,0.55)',
+    background: 'rgb(var(--shade-rgb) / 0.55)',
     boxShadow: '0 0 0 1px rgb(var(--gold-rgb) / 0.06), 0 18px 50px rgba(0,0,0,0.35)',
     padding: '0.9rem 1.05rem 1.05rem',
   }
@@ -420,7 +420,7 @@ function IconMedallion({ icon, size = 44 }: { icon: string; size?: number }) {
     <span aria-hidden style={{
       width: size, height: size, flexShrink: 0, borderRadius: '50%', overflow: 'hidden',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgba(8,0,18,0.85))',
+      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgb(var(--shade-rgb) / 0.85))',
       border: '1.5px solid #C07C26', fontSize: size >= 74 ? '1.85rem' : size >= 64 ? '1.55rem' : size >= 52 ? '1.3rem' : '1.1rem',
     }}>
       {isImageIcon(icon)
@@ -439,7 +439,7 @@ function ShiftMedallion({ icon, size = 76 }: { icon: string; size?: number }) {
     <span aria-hidden style={{
       width: size, height: size, flexShrink: 0, borderRadius: '50%', overflow: 'hidden',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgba(8,0,18,0.85))',
+      background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.14), rgb(var(--shade-rgb) / 0.85))',
       border: '1.5px solid #C07C26',
     }}>
       {isImageIcon(icon)

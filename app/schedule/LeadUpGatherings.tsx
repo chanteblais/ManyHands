@@ -91,7 +91,7 @@ export function LeadUpGatherings({ initialEvents }: {
       <style dangerouslySetInnerHTML={{ __html: `
         .leadup-card { display: flex; align-items: center; gap: 1.1rem;
           border-radius: 1rem; border: 1px solid rgb(var(--gold-rgb) / 0.28);
-          background: rgba(10,0,20,0.45); padding: 0.9rem 1.2rem; }
+          background: rgb(var(--shade-rgb) / 0.45); padding: 0.9rem 1.2rem; }
         .leadup-divider { width: 1px; align-self: stretch; flex-shrink: 0;
           background: linear-gradient(to bottom, transparent, rgb(var(--gold-rgb) / 0.32), transparent); }
         .leadup-body { flex: 1; min-width: 0; }

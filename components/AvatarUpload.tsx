@@ -148,7 +148,7 @@ export function AvatarUpload({
             alignItems: 'center',
             justifyContent: 'center',
             gap: '0.4rem',
-            background: 'rgba(10,4,20,0.6)',
+            background: 'rgb(var(--shade-rgb) / 0.6)',
             opacity: uploading ? 1 : 0,
             transition: 'opacity 0.2s',
             fontSize: '0.6rem',

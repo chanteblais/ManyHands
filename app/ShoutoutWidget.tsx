@@ -100,7 +100,7 @@ export function ShoutoutWidget({
   }
 
   return (
-    <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+    <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgb(var(--shade-rgb) / 0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
       <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
         <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>Shoutouts</p>
       </div>

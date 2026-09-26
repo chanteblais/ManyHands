@@ -42,6 +42,8 @@ textarea::placeholder {
     --ink: #1A0A24;
     --ink-rgb: 26 10 36;
     --ink-deep: #130820;
+    --shade: #0A0014;
+    --shade-rgb: 10 0 20;
     --plum: #5D2B7A;
     --plum-rgb: 93 43 122;
     --plum-dark: #2A0A3A;
@@ -186,7 +188,7 @@ textarea::placeholder {
      trade the glass for near-opaque ink. Components override the desktop
      tint via --glass-bg where their design differs. */
   .glass-bar {
-    background-color: var(--glass-bg-mobile, rgba(24, 9, 34, 0.97));
+    background-color: var(--glass-bg-mobile, rgb(var(--ink-rgb) / 0.97));
   }
 
   @media (min-width: 769px) {

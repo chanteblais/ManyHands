@@ -681,7 +681,7 @@ export function ResourceCommitments({
       // One list = one collapsible card. Collapsed by default: a header row
       // (title + health + summary) so the board is a scannable index of every
       // list. Open it to see items + add. Empty lists read just as clearly.
-      <div key={list.id} style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden' }}>
+      <div key={list.id} style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgb(var(--shade-rgb) / 0.5)', overflow: 'hidden' }}>
         {isEditingList ? (
           /* Inline list header edit (wiki) */
           <div style={{ padding: '1.1rem 1.25rem' }}>

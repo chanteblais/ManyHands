@@ -567,7 +567,7 @@ export function HeaderClient({ initialAuth }: { initialAuth?: NavAuthState }) {
           id="mobile-nav-menu"
           aria-label="Mobile"
           style={{
-            backgroundColor: 'rgba(20, 8, 30, 0.98)',
+            backgroundColor: 'rgb(var(--ink-rgb) / 0.98)',
             borderTop: '1px solid rgb(var(--gold-rgb) / 0.15)',
             padding: '0.75rem 1.25rem 1.5rem',
             display: 'flex',
