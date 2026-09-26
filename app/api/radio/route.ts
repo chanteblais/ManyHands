@@ -127,7 +127,7 @@ async function fanOut(opts: {
       message: `${senderName} mentioned you on Radio`,
       details: { radioEventId: postId },
     })
-    await dispatchMemberNotification(recipientId, {
+    await dispatchMemberNotification(community, recipientId, {
       kind: 'new_message',
       prefs,
       push: { title: `${community.name} Radio`, body: `${senderName} mentioned you: ${body.slice(0, 120)}`, link: '/radio' },
@@ -153,7 +153,7 @@ async function fanOut(opts: {
       const recipientId = m.clerk_user_id as string
       const recipientName = m.preferred_name || m.first_name || 'there'
       const prefs = await getNotificationPreferences(recipientId)
-      await dispatchMemberNotification(recipientId, {
+      await dispatchMemberNotification(community, recipientId, {
         kind: 'announcement',
         prefs,
         push: { title: `${community.name} Radio`, body: `${senderName}: ${body.slice(0, 120)}`, link: '/radio' },

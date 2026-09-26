@@ -258,7 +258,7 @@ async function notifyMentions(opts: {
 
     // Push per mention + email under the mention throttle, both through the
     // seam (which gates the two channels on the message preference).
-    await dispatchMemberNotification(recipientId, {
+    await dispatchMemberNotification(community, recipientId, {
       kind: 'new_message',
       prefs,
       push: {
@@ -335,7 +335,7 @@ async function notifyOptedIn(opts: {
       // Both channels ride the per-conversation burst throttle above — a busy
       // thread buzzes once, not per message (these are opt-in thread updates,
       // not personal mentions).
-      await dispatchMemberNotification(recipientId, {
+      await dispatchMemberNotification(community, recipientId, {
         kind: 'new_message',
         push: {
           title: groupName,

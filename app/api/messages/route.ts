@@ -146,7 +146,7 @@ async function notifyRecipient(opts: {
     ])
     const emailThrottled = Boolean(recent && recent.length > 0)
 
-    await dispatchMemberNotification(opts.recipientId, {
+    await dispatchMemberNotification(opts.community, opts.recipientId, {
       kind: 'new_message',
       prefs,
       push: {
