@@ -513,7 +513,7 @@ let canManagePolls = false
                 : 'Nothing scheduled yet.'
 
               const EventList = ({ events, label, href }: { events: (typeof upcomingEvents[number] & { image_url?: string | null })[]; label: string; href: string }) => (
-                <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+                <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgb(var(--shade-rgb) / 0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
                   <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.15)' }}>
                     <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.18em', color: 'var(--gold)', margin: 0, textTransform: 'uppercase', opacity: 0.9 }}>
                       {label}
@@ -570,7 +570,7 @@ let canManagePolls = false
 
               const widgetMap: Record<string, React.ReactNode> = {
                 announcements: announcements.length > 0 ? (
-                  <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+                  <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgb(var(--shade-rgb) / 0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
                     <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
                       <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>Announcements</p>
                     </div>
@@ -615,7 +615,7 @@ let canManagePolls = false
                         ? { text: '✓ all covered', color: 'var(--success)', op: 0.9 }
                         : { text: `${r.remaining} still needed`, color: 'var(--gold)', op: 0.95 }
                   return (
-                    <a href="/participate#bring" style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', textDecoration: 'none' }}>
+                    <a href="/participate#bring" style={{ border: '1px solid rgb(var(--gold-rgb) / 0.25)', borderRadius: '1rem', background: 'rgb(var(--shade-rgb) / 0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', textDecoration: 'none' }}>
                       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)' }}>
                         <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>Bring Something</p>
                         {w.hasAnyTargets && (
@@ -686,7 +686,7 @@ let canManagePolls = false
                 ) : null,
 
                 activity: recentActivity.length > 0 ? (
-                  <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '1rem', background: 'rgba(10,0,20,0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+                  <div style={{ border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '1rem', background: 'rgb(var(--shade-rgb) / 0.5)', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
                     <div style={{ padding: '1rem 1.5rem 0.75rem', borderBottom: '1px solid rgb(var(--gold-rgb) / 0.12)', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
                       <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0.55, margin: 0 }}>On the Air</p>
                       <a href="/radio" style={{ fontSize: '0.68rem', color: 'var(--gold)', opacity: 0.6, textDecoration: 'none', letterSpacing: '0.06em' }}>Tune in →</a>
@@ -930,7 +930,7 @@ let canManagePolls = false
           <div style={{
             border: '1px solid rgb(var(--gold-rgb) / 0.15)',
             borderRadius: '1.25rem',
-            background: 'rgba(10,0,20,0.45)',
+            background: 'rgb(var(--shade-rgb) / 0.45)',
             padding: '2rem 2.5rem',
           }}>
             {c('home_about_body', '').split('\n\n').filter(Boolean).map((para, i) => (
@@ -959,7 +959,7 @@ let canManagePolls = false
               <div key={title} style={{
                 border: '1px solid rgb(var(--gold-rgb) / 0.18)',
                 borderRadius: '1.25rem',
-                background: 'rgba(10,0,20,0.45)',
+                background: 'rgb(var(--shade-rgb) / 0.45)',
                 padding: '1.75rem 2rem',
               }}>
                 <p style={{
@@ -997,7 +997,7 @@ let canManagePolls = false
           <div style={{
             border: '1px solid rgb(var(--gold-rgb) / 0.15)',
             borderRadius: '1.25rem',
-            background: 'rgba(10,0,20,0.45)',
+            background: 'rgb(var(--shade-rgb) / 0.45)',
             padding: '2rem 2.5rem',
             marginBottom: '2.5rem',
           }}>

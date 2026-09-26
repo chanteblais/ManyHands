@@ -125,7 +125,7 @@ export function PollWidget({ polls, canManage = false }: { polls: Poll[]; canMan
     <div style={{
       border: '1px solid rgb(var(--gold-rgb) / 0.25)',
       borderRadius: '1rem',
-      background: 'rgba(10,0,20,0.5)',
+      background: 'rgb(var(--shade-rgb) / 0.5)',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',

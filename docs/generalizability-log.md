@@ -28,6 +28,7 @@ During **any** work on this codebase, whenever you write or read code that:
 
 | Date | Area / `file` | Type | What's Glåüm/What-If–specific | Suggested config approach | Status |
 |---|---|---|---|---|---|
+| 2026-09-25 | Card/panel backgrounds across ~20 components (`rgba(10,0,20,…)`, `rgba(8,0,18,…)`, etc.) | branding | Glåüm's purple-black was hardcoded into card backgrounds, so a re-themed community (Lantern Hollow) still showed purple-tinted cards | **Fixed:** new `shade` token (`--shade-rgb`) in `lib/theme.ts` + `globals.css`; all 42 uses now `rgb(var(--shade-rgb) / a)` (popover-ish ones → `--ink-rgb`). Lantern Hollow's teal palette was dropped at the same time — the demo now wears the default palette | fixed |
 | 2026-06-30 | `lib/site-config.ts`, `app/manifest.ts`, `app/layout.tsx` | branding/copy | Site/event name + PWA manifest read from env (`SITE_NAME`/`EVENT_NAME`) instead of hardcoded | Already env-driven; PWA manifest dynamic per deploy | good-pattern |
 | 2026-06-30 | Inline hex colors across ~all components (`#1A0A24`/`#C8A848`/`#D239F8`/`#F3EDE6`) | branding | Brand palette hardcoded inline in every component (per design-system.md) — biggest theming blocker | Per-community `community_config` color keys → CSS custom properties injected at layout level | open |
 | 2026-06-30 | `/api/badge`, `public/badge_base.png`, `TokyoDreams` font | branding | Badge base image + display font are local Glåüm assets | `community_config` `badge_base_url` + `badge_font_url`; load remotely | open |

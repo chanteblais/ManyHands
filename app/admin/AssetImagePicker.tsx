@@ -64,7 +64,7 @@ function AssetTile({ src, label, selected, onClick, fit = 'contain' }: {
     >
       <span style={{
         width: 60, height: 60, borderRadius: '0.5rem', overflow: 'hidden',
-        background: 'rgba(8,0,18,0.6)',
+        background: 'rgb(var(--shade-rgb) / 0.6)',
         border: selected ? '2px solid var(--gold)' : '1px solid rgb(var(--gold-rgb) / 0.2)',
         boxShadow: selected ? '0 0 0 1px rgb(var(--gold-rgb) / 0.4)' : 'none',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -157,7 +157,7 @@ export function AssetImagePicker({
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
         <span style={{
           width: 52, height: 52, flexShrink: 0, borderRadius: '0.5rem', overflow: 'hidden',
-          background: 'rgba(8,0,18,0.6)', border: '1px solid rgb(var(--gold-rgb) / 0.25)',
+          background: 'rgb(var(--shade-rgb) / 0.6)', border: '1px solid rgb(var(--gold-rgb) / 0.25)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           {!value

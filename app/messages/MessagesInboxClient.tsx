@@ -127,7 +127,7 @@ function NewMessageModal({ members, onClose }: { members: MemberOption[]; onClos
       aria-labelledby="new-message-title"
       style={{
         position: 'fixed', inset: 0, zIndex: 200,
-        background: 'rgba(10,4,18,0.75)',
+        background: 'rgb(var(--shade-rgb) / 0.75)',
         backdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '1.5rem',
@@ -246,7 +246,7 @@ function FindGroupModal({ onClose, onJoined }: { onClose: () => void; onJoined: 
       role="dialog"
       aria-modal="true"
       aria-labelledby="find-group-title"
-      style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(10,4,18,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgb(var(--shade-rgb) / 0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div style={{ width: '100%', maxWidth: '440px', background: 'rgba(22,8,34,0.98)', border: '1px solid rgb(var(--gold-rgb) / 0.2)', borderRadius: '1.1rem', boxShadow: '0 24px 64px rgba(0,0,0,0.6)', overflow: 'hidden' }}>

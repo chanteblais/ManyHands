@@ -323,7 +323,7 @@ export default async function ProfilePage() {
         <div style={{
           width: '84px', height: '84px', borderRadius: '50%',
           border: '1.5px solid var(--gold)',
-          background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgba(8,0,18,0.85))',
+          background: 'radial-gradient(circle at 42% 38%, rgb(var(--gold-rgb) / 0.18), rgb(var(--shade-rgb) / 0.85))',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 0 22px rgb(var(--gold-rgb) / 0.22), inset 0 0 0 1px rgba(255,249,232,0.1)',
         }}>

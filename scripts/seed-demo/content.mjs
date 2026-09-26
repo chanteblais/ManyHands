@@ -11,9 +11,9 @@ export const COMMUNITY = {
   timezone: 'America/Vancouver',
   // Local two-tenant testing: the same dev server answers both hosts —
   // localhost:<port> resolves to Glåüm (default), these to the demo.
-  hosts: ['demo.withmanyhands.ca', '127.0.0.1:3001', 'lantern.localhost:3001', '127.0.0.1:3000', 'lantern.localhost:3000'],
+  hosts: ['demo.withmanyhands.ca', '127.0.0.1:3001', 'lantern.localhost:3001', '127.0.0.1:3000', 'lantern.localhost:3000', 'lantern.localhost:3002'],
   theme: {
-    colors: { ink: '#0F1A1C', plum: '#1F4A4A', 'plum-dark': '#163537', gold: '#E0B45A', purple: '#4FB3A9', cream: '#F2EFE6' },
+    // No colour overrides: the demo wears the default (Glåüm) palette.
     fonts: { display: "'Cormorant Garamond', 'TokyoDreams', serif" },
   },
   // Event window (YYYY-MM-DD); the runway pages count down to the start.

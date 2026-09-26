@@ -34,6 +34,7 @@ Defined in `tailwind.config.ts` under `theme.extend.colors.glaum` and used throu
 | Cream | `#FFFACD` | `text-glaum-cream` | High-contrast text on dark |
 | Plum | `#5D2B7A` | `bg-glaum-plum` | Mid-tone purple fills |
 | Lavender | `#D9B3FF` | `text-glaum-lavender` | Light purple accents |
+| Shade | `#0A0014` (`rgb(var(--shade-rgb) / a)`) | — | Dark card/panel/overlay backgrounds, always with alpha (`0.45`–`0.98`). Use this, never a hardcoded `rgba(10,0,20,…)`, so a community theme recolours cards too |
 
 **Base text color:** `#F3EDE6` (warm off-white — not pure white)  
 **Placeholder text:** `rgba(243, 237, 230, 0.28)` (same cream, highly transparent)

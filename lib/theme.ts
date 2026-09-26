@@ -23,6 +23,7 @@ export type ThemeToken = {
 export const THEME_COLORS: Record<string, ThemeToken> = {
   ink: { css: 'ink', hex: '#1A0A24', rgb: true },            // site background
   'ink-deep': { css: 'ink-deep', hex: '#130820', rgb: false },
+  shade: { css: 'shade', hex: '#0A0014', rgb: true },          // dark card/panel backgrounds (with alpha)
   plum: { css: 'plum', hex: '#5D2B7A', rgb: true },          // background gradient
   'plum-dark': { css: 'plum-dark', hex: '#2A0A3A', rgb: false },
   gold: { css: 'gold', hex: '#C8A848', rgb: true },          // headings, links, dividers
