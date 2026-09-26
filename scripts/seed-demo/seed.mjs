@@ -10,7 +10,14 @@
 // plus avatar objects under `<community_id>/…` in the `avatars` bucket.
 // Idempotent with `reset`. Never touches any other community.
 
+import fs from 'node:fs'
+import path from 'node:path'
 import * as C from './content.mjs'
+
+// Relative to the repo root (the CLI's cwd; /var/task on Vercel, where
+// next.config.js outputFileTracingIncludes ships the folder with the cron).
+const AVATAR_DIR = 'scripts/seed-demo/avatars'
+const avatarSlug = m => `${m.first}-${m.last}`.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]+/g, '-')
 
 // Marks the rows of real Clerk users seeded as demo organizers
 // (`--organizer=`). A reset carries them over so a nightly reseed never drops
@@ -160,14 +167,14 @@ export async function seedDemoCommunity(db, opts = {}) {
   const groupConvId = Object.fromEntries(groupConvRows.map(c => [c.group_id, c.id]))
 
   // ── 4. people ────────────────────────────────────────────────────────────────
-  const PALETTE = ['#E0B45A', '#4FB3A9', '#C96A5B', '#6D8ECF', '#9C7BC4', '#5FA86B', '#D08A3E', '#8A6E5A']
+  // Portraits are AI-generated fictional people, committed as
+  // ./avatars/<first>-<last>.webp. A member with no file gets no photo — a few
+  // gaps on purpose, so it looks like a real roster (and has_photo means something).
   async function avatarUrl(i, m) {
     if (!avatars || dryRun) return null
-    const { default: sharp } = await import('sharp')
-    const initials = (m.first[0] + m.last[0]).toUpperCase()
-    const bg = PALETTE[i % PALETTE.length]
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" rx="128" fill="${bg}"/><text x="128" y="152" text-anchor="middle" font-family="Georgia, serif" font-size="104" fill="#1A1410" opacity="0.85">${initials}</text></svg>`
-    const buf = await sharp(Buffer.from(svg)).webp({ quality: 82 }).toBuffer()
+    const file = path.join(/* turbopackIgnore: true */ process.cwd(), AVATAR_DIR, `${avatarSlug(m)}.webp`)
+    if (!fs.existsSync(file)) return null
+    const buf = fs.readFileSync(file)
     const p = `${cid}/${clerkId(i)}/avatar.webp`
     const { error } = await supabase.storage.from('avatars').upload(p, buf, { contentType: 'image/webp', upsert: true, cacheControl: '31536000' })
     if (error) throw new Error(`avatar ${p}: ${error.message}`)

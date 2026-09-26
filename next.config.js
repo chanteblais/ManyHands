@@ -8,6 +8,13 @@ const nextConfig = {
   // localhost stays Glåüm. Dev-only — Next blocks its own chunk requests from
   // any origin not listed here, which renders as blank client pages.
   allowedDevOrigins: ['127.0.0.1', 'lantern.localhost', 'platform.localhost'],
+  // The nightly demo reseed (scripts/seed-demo/seed.mjs) and guest entry
+  // (lib/demo.ts) read the committed demo portraits from disk, so they must
+  // ship with those functions.
+  outputFileTracingIncludes: {
+    '/api/cron/demo-reset': ['./scripts/seed-demo/avatars/**'],
+    '/api/demo/enter': ['./scripts/seed-demo/guest-avatars/**'],
+  },
   images: {
     // Non-default `quality` values must be allow-listed in Next 16.
     qualities: [50, 65, 75],
