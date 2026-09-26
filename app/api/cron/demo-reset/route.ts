@@ -8,7 +8,7 @@ import { deleteDemoGuestUsers, isDemoCommunity } from '@/lib/demo'
 import { seedDemoCommunity, DEMO_SLUG } from '../../../../scripts/seed-demo/seed.mjs'
 
 export const dynamic = 'force-dynamic'
-// ~400 inserts across ~30 tables plus 30 avatar renders.
+// ~400 inserts across ~30 tables plus 25 portrait uploads.
 export const maxDuration = 60
 
 // Nightly reset of every demo community (lib/demo.ts): delete the guest Clerk

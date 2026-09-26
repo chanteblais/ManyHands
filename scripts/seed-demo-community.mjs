@@ -10,7 +10,7 @@
 //                                                              #   (existing organizer rows carry over)
 //   … --organizer=user_a,user_b   also give those real Clerk users an approved ADMIN member row each
 //                                (pass both your prod and dev-instance ids: localhost signs into the dev instance)
-//   … --no-avatars           skip generating/uploading portrait images
+//   … --no-avatars           skip uploading the portraits (scripts/seed-demo/avatars/)
 //
 // Writes ONLY rows carrying the demo community's id (every insert stamps it),
 // plus avatar objects under `<community_id>/…` in the `avatars` bucket. Uses
@@ -24,6 +24,7 @@ import * as C from './seed-demo/content.mjs'
 import { seedDemoCommunity } from './seed-demo/seed.mjs'
 
 const ROOT = path.join(path.dirname(new URL(import.meta.url).pathname), '..')
+process.chdir(ROOT) // seed.mjs reads the portraits relative to the repo root
 const argv = process.argv.slice(2)
 const DRY = argv.includes('--dry-run')
 const RESET = argv.includes('--reset')

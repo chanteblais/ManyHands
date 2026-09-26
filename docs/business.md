@@ -205,8 +205,11 @@ eventually new-tenant starter templates. If anything gets built early, it's this
 multi-tenancy in place the demo is not a second deployment but a **second community in the same
 database**: *Lantern Hollow*, a fictional theme camp at the "Solstice Gathering 2027" — 6
 departments, 12 roles (one restricted, with a pending request), 4 shift types, 9 shifts (four
-nightly), 6 groups in two collections (with threads + welcome notes), 30 invented members with
-generated portraits (approved / pending / suspended, dues paid / reported / owing), filled shifts,
+nightly), 6 groups in two collections (with threads + welcome notes), 30 invented members
+(approved / pending / suspended, dues paid / reported / owing) — 25 with AI-generated photo
+portraits of fictional people (`scripts/seed-demo/avatars/<first>-<last>.webp`, added 2026-09-25;
+candid golden-hour festival snapshots, one per member's role), 5 left without a photo on purpose
+so the roster reads real — filled shifts,
 3 gatherings with RSVPs, 3 resource lists with claims, a poll, announcements, shoutouts, radio
 chatter, two distinction rules and a manual grant, its own copy, event dates, teal/brass theme and
 timezone. `--dry-run` validates; `--reset` wipes and reseeds (the nightly "graffiti wipe");
