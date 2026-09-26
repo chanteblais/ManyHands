@@ -11,6 +11,11 @@ const nextConfig = {
   images: {
     // Non-default `quality` values must be allow-listed in Next 16.
     qualities: [50, 65, 75],
+    // Member uploads (avatars, icon art) resize through /_next/image while
+    // Supabase's own transforms are off — lib/supabase-image.ts.
+    remotePatterns: process.env.NEXT_PUBLIC_SUPABASE_URL
+      ? [{ protocol: 'https', hostname: new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname, pathname: '/storage/v1/object/public/**' }]
+      : [],
   },
   async headers() {
     return [
